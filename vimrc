@@ -8,6 +8,10 @@
 syntax on
 set nocompatible
 
+" load plugins with pathogen/vundle
+runtime bundle/pathogen/autoload/pathogen.vim
+call pathogen#infect()
+
 " basic displays and colors
 " (for detailed color settings, see section 3)
 colorscheme evening
