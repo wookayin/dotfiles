@@ -13,9 +13,27 @@ shopt -s histappend		# append, no overwrite
 HISTSIZE=10000
 HISTFILESIZE=20000
 
+##############
+# 2. Aliases #
+##############
+
+# color and with classfication
+alias ls='ls -F --color=auto'
+alias ll='ls -alF'
+
+# grep
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# alert for rm, cp, mv
+alias rm='rm -iv'
+alias cp='cp -iv'
+alias mv='mv -iv'
+
 
 ##################
-# 2. Color & PS1 #
+# 3. Color & PS1 #
 ##################
 
 COLOR_NONE="\e[0m"
