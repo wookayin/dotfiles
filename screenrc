@@ -1,0 +1,28 @@
+# ~/.screenrc
+
+# no startup message
+startup_message off
+
+# enable alternate screen switching (e.g. restore contents after exiting vim)
+altscreen on
+
+# no audible bell
+vbell off
+
+# more scrollbacks
+defscrollback 10000
+
+# automatically detach all screens on accidental hangup
+autodetach on
+
+# key settings
+bind R eval "source ~/.screenrc"	# <C-A><S-R> reloads .screenrc
+
+bindkey -k k3 prev	# <F3> for previous screen
+bindkey -k k4 next	# <F4> for next screen
+
+# status line
+hardstatus on
+hardstatus alwayslastline
+hardstatus string '%{= k}%{C}%H %{Y}[%{W} %{=kw}%?%-Lw%?%{G}%n*%f %t%?(%u)%?%{G}%{w}%?%+Lw%?%?%= %{Y}][ %{B}%Y-%m-%d %{y}%c %{Y}]'
+

@@ -7,7 +7,8 @@
 # (path of target symlink) : (location of source file in the repository)
 
 tasks = {
-	'~/.bashrc' : 'bashrc'
+	'~/.bashrc' : 'bashrc',
+	'~/.screenrc' : 'screenrc',
 }
 
 ################# END OF FIXME #################
