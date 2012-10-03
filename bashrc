@@ -31,6 +31,9 @@ alias rm='rm -iv'
 alias cp='cp -iv'
 alias mv='mv -iv'
 
+# screens
+alias scr='screen -rD'
+
 
 ##################
 # 3. Color & PS1 #
