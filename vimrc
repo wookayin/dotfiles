@@ -9,8 +9,11 @@ syntax on
 set nocompatible
 
 " load plugins with pathogen/vundle
-runtime bundle/pathogen/autoload/pathogen.vim
-call pathogen#infect()
+try
+	runtime bundle/pathogen/autoload/pathogen.vim
+	call pathogen#infect()
+catch
+endtry
 
 " basic displays and colors
 " (for detailed color settings, see section 3)
