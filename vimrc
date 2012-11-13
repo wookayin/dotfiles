@@ -89,6 +89,12 @@ map <down> gj
 imap <up> <c-o>gk
 imap <down> <c-o>gj
 
+" window navigation
+noremap <C-h> <C-w>h
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-l> <C-w>l
+
 " do not exit from visual mode when shifting
 " (gv : select the preivous area)
 vnoremap < <gv		
