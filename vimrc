@@ -61,9 +61,9 @@ set mouse=nvc
 set ttymouse=xterm2
 
 " encoding and line ending settings
-set encoding=utf8
-set fileencodings=utf8,cp949,latin1
-set fileformats="unix,dos"
+set encoding=utf-8
+set fileencodings=utf-8,cp949,latin1
+set fileformats=unix,dos
 
 " miscellanious
 set showmode
