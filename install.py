@@ -9,6 +9,7 @@
 tasks = {
 	'~/.bashrc' : 'bashrc',
 	'~/.screenrc' : 'screenrc',
+	'~/.gitconfig' : 'gitconfig',
 }
 
 ################# END OF FIXME #################

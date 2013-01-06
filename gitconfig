@@ -1,0 +1,15 @@
+[user]
+	name = wookayin
+	email = wookayin@gmail.com
+
+[alias]
+	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
+		-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' \
+		--abbrev-commit --date=short -n20
+
+[color]
+	status = auto
+	diff = auto
+	branch = auto
+	interactive = auto
+	ui = auto
