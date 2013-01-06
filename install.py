@@ -7,8 +7,15 @@
 # (path of target symlink) : (location of source file in the repository)
 
 tasks = {
+	# SHELLS
 	'~/.bashrc' : 'bashrc',
 	'~/.screenrc' : 'screenrc',
+
+	# VIM
+	'~/.vimrc' : 'vimrc',
+	'~/.vim' : 'vim',
+
+	# GIT
 	'~/.gitconfig' : 'gitconfig',
 }
 
