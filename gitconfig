@@ -4,7 +4,7 @@
 
 [alias]
 	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
-		-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' \
+		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
 		--abbrev-commit --date=short -n20
 
 [color]
