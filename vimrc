@@ -130,6 +130,10 @@ au FileType c,cpp,latex,tex highlight Comment ctermfg=cyan
 filetype plugin on
 filetype indent on
 
+" Use spaces instead of tab in python codes
+au FileType python set expandtab 
+
+
 """""""""""""""""""""""""""
 " 4. GUI Options
 """""""""""""""""""""""""""
