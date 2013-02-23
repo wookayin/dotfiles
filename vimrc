@@ -133,6 +133,9 @@ filetype indent on
 " Use spaces instead of tab in python codes
 au FileType python set expandtab 
 
+" filetype detections
+au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
+
 
 """""""""""""""""""""""""""
 " 4. GUI Options
