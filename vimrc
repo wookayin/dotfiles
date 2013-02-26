@@ -31,7 +31,7 @@ set smartindent
 set pastetoggle=<F8>
 
 set wrap
-set textwidth=0				" disable automatic line breaking 
+set textwidth=0				" disable automatic line breaking
 set cursorline
 
 " tab settings
@@ -100,7 +100,7 @@ noremap <C-l> <C-w>l
 
 " do not exit from visual mode when shifting
 " (gv : select the preivous area)
-vnoremap < <gv		
+vnoremap < <gv
 vnoremap > >gv
 
 " [F5] Make
@@ -131,10 +131,20 @@ filetype plugin on
 filetype indent on
 
 " Use spaces instead of tab in python codes
-au FileType python set expandtab 
+au FileType python set expandtab
 
 " filetype detections
 au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
+
+" remove trailing whitespaces on save
+fun! StripTrailingWhitespaces()
+	let l = line(".")
+	let c = col(".")
+	%s/\s\+$//e
+	call cursor(l, c)
+endfun
+
+autocmd FileType c,cpp,java,javascript,html,ruby,python autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 
 
 """""""""""""""""""""""""""
@@ -146,7 +156,7 @@ if has("gui_running")
 	language mes en
 	set langmenu=none
 	set guioptions-=T
-	set guioptions-=m 
+	set guioptions-=m
 	set encoding=utf8
 	set guifont=Consolas:h11:cANSI
 	set guifontwide=GulimChe:h12:cDEFAULT
