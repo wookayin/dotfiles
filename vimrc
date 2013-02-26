@@ -146,6 +146,14 @@ endfun
 
 autocmd FileType c,cpp,java,javascript,html,ruby,python autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 
+" highlight trailing whitespaces
+highlight ExtraWhitespace ctermbg=red guibg=red
+
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 
 """""""""""""""""""""""""""
 " 4. GUI Options
