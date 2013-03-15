@@ -17,6 +17,9 @@ tasks = {
 
 	# GIT
 	'~/.gitconfig' : 'gitconfig',
+
+	# X
+	'~/.Xmodmap' : 'Xmodmap',
 }
 
 ################# END OF FIXME #################
