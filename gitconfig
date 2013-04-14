@@ -9,3 +9,6 @@
 	branch = auto
 	interactive = auto
 	ui = auto
+
+[format]
+	pretty = fuller
