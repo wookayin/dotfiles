@@ -1,7 +1,3 @@
-[user]
-	name = wookayin
-	email = wookayin@gmail.com
-
 [alias]
 	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
 		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
