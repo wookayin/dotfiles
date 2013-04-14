@@ -170,3 +170,11 @@ if has("gui_running")
 	set guifontwide=GulimChe:h12:cDEFAULT
 endif
 
+
+"""""""""""""""""""""""""""
+" 5. Plugin Settings
+"""""""""""""""""""""""""""
+
+" vim-pandoc
+let g:pandoc_no_folding = 1		" no automatic folding
+

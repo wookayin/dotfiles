@@ -16,3 +16,6 @@
 [submodule "vim/bundle/nginx.vim"]
 	path = vim/bundle/nginx.vim
 	url = git://github.com/vim-scripts/nginx.vim.git
+[submodule "vim/bundle/vim-pandoc"]
+	path = vim/bundle/vim-pandoc
+	url = git://github.com/vim-pandoc/vim-pandoc
