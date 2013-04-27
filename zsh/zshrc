@@ -5,10 +5,16 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
+# Add custom config directory for Prezto.
+fpath=($HOME/.zsh/prezto-themes $fpath)
+
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
+
+# Source zsh script files.
+for config_file ($HOME/.zsh/*.zsh(N)) source $config_file
 
 # Customize to your needs...
 
