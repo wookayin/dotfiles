@@ -3,6 +3,7 @@
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Jongwook Choi <wookayin@gmail.com>
 #
 
 #
@@ -70,4 +71,11 @@ if [[ -d "$TMPDIR" ]]; then
     mkdir -p "$TMPPREFIX"
   fi
 fi
+
+
+#
+# Add custom config directory for Prezto.
+#  (note that this line is executed before initialization of prezto.)
+#
+fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes $fpath)
 
