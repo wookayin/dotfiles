@@ -79,3 +79,13 @@ fi
 #
 fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes $fpath)
 
+
+#
+# Python - Virtualenv
+
+# use system python for virtualenv commands.
+export VIRTUALENVWRAPPER_PYTHON='/usr/bin/python'
+
+# ensure that all new virtual environments are isolated from the system site-packages.
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+
