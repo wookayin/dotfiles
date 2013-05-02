@@ -15,3 +15,5 @@ for config_file ($HOME/.zsh/zsh.d/*.zsh(N)) source $config_file
 
 # Customize to your needs...
 
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting

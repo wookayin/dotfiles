@@ -21,7 +21,13 @@ function prompt_wook_precmd {
 
   # PWD
 
-  # TODO: rvm, virtualenv information
+  # Ruby - RVM
+  if (( $+functions[ruby-info] )); then
+    ruby-info on
+	ruby-info
+  fi
+
+  # TODO: Python virtualenv information
 }
 
 function prompt_wook_setup {
@@ -59,7 +65,10 @@ function prompt_wook_setup {
     'prompt' ' $(coalesce "%b" "%c")%s' \
     'rprompt' '%A%B%S%a%d%m%r%U%u'
 
-  # TODO: rvm, virtualenv
+  # Ruby - RVM
+  zstyle ':prezto:module:ruby:info:version' format ' %F{magenta}%v%f'
+
+  # TODO - Python virtualenv
 
   # Define prompts.
   PROMPT='\
@@ -71,6 +80,7 @@ function prompt_wook_setup {
 %B%F{red}${PWD}%f%b\
 ${git_info:+${(e)git_info[prompt]}}\
 %B%F{green}]\
+${ruby_info[version]}\
 
 ${editor_info[keymap]} \
 '
