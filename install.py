@@ -18,6 +18,15 @@ tasks = {
 	# GIT
 	'~/.gitconfig' : 'gitconfig',
 
+    # ZSH
+    '~/.zsh'      : 'zsh',
+    '~/.zlogin'   : 'zsh/zlogin',
+    '~/.zlogout'  : 'zsh/zlogout',
+    '~/.zpreztorc': 'zsh/zpreztorc',
+    '~/.zprofile' : 'zsh/zprofile',
+    '~/.zshenv'   : 'zsh/zshenv',
+    '~/.zshrc'    : 'zsh/zshrc',
+
 	# X
 	'~/.Xmodmap' : 'Xmodmap',
 }
