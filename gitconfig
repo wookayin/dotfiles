@@ -1,3 +1,8 @@
+[include]
+	# include external gitconfig file (requires git 1.7.10+)
+	# typically, user.name and user.email is configured.
+	path = ~/.gitconfig_secret
+
 [alias]
 	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
 		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
