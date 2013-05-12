@@ -35,6 +35,7 @@ zstyle ':prezto:load' pmodule \
   'prompt' \
   'ruby' \
   'python' \
+  'node' \
   'git'
 
 #

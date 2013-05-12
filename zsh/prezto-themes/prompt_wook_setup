@@ -32,6 +32,12 @@ function prompt_wook_precmd {
     python-info on
     python-info
   fi
+
+  # Node - NVM
+  if (( $+functions[node-info] )); then
+    node-info on
+    node-info
+  fi
 }
 
 function prompt_wook_setup {
@@ -75,6 +81,9 @@ function prompt_wook_setup {
   # Python virtualenv
   zstyle ':prezto:module:python:info:virtualenv' format ' %F{cyan}%v%f'
 
+  # Node nvm
+  zstyle ':prezto:module:node:info:version' format ' node:%F{green}%v%f'
+
   # Define prompts.
   PROMPT='\
 %B%F{green}[\
@@ -87,6 +96,7 @@ ${git_info:+${(e)git_info[prompt]}}\
 %B%F{green}]\
 ${ruby_info[version]}\
 ${python_info[virtualenv]}\
+${node_info[version]}\
 
 ${editor_info[keymap]} \
 '
