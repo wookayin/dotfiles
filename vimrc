@@ -68,6 +68,9 @@ set encoding=utf-8
 set fileencodings=utf-8,cp949,latin1
 set fileformats=unix,dos
 
+" split and autocomplete settings
+set splitbelow              " preview window at bottom
+
 " miscellanious
 set showmode
 set showcmd
@@ -157,6 +160,11 @@ autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
+
+
+" better popup menu colors (instead of dark black)
+highlight Pmenu ctermfg=black ctermbg=yellow
+highlight PmenuSel ctermfg=red ctermbg=white gui=bold
 
 """""""""""""""""""""""""""
 " 4. GUI Options
