@@ -84,6 +84,9 @@ set mps+=<:>
 " 2. Key Mappings
 """""""""""""""""""""""""""
 
+" the leader key
+let mapleader=","			" comma is the <Leader> key.
+
 " navigation key mapping
 map k gk
 map j gj
