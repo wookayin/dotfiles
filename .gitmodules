@@ -22,3 +22,6 @@
 [submodule "vim/bundle/python-mode"]
 	path = vim/bundle/python-mode
 	url = git://github.com/klen/python-mode.git
+[submodule "vim/bundle/jedi-vim"]
+	path = vim/bundle/jedi-vim
+	url = git://github.com/davidhalter/jedi-vim
