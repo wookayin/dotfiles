@@ -3,6 +3,9 @@
 	# typically, user.name and user.email is configured.
 	path = ~/.gitconfig_secret
 
+[core]
+	excludesfile = ~/.gitignore
+
 [alias]
 	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
 		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
@@ -17,5 +20,3 @@
 
 [format]
 	pretty = fuller
-[core]
-	excludesfile = /home/wookayin/.gitignore
