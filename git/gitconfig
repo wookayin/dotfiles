@@ -17,3 +17,5 @@
 
 [format]
 	pretty = fuller
+[core]
+	excludesfile = /home/wookayin/.gitignore

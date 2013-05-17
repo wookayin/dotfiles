@@ -17,6 +17,7 @@ tasks = {
 
     # GIT
     '~/.gitconfig' : 'git/gitconfig',
+    '~/.gitignore' : 'git/gitignore',
 
     # ZSH
     '~/.zsh'      : 'zsh',
