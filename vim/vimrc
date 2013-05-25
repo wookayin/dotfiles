@@ -121,6 +121,17 @@ imap <F2> <ESC>:w<CR>
 map <F2> <ESC><ESC>:w<CR>
 
 
+" Useful leader key combinations {{{
+
+" <leader><space> : turn off search highlight
+nmap <leader><space> :noh<CR>
+
+" <leader>cd : switch to the directory of the current buffer
+nmap <leader>cd :cd %:p:h<CR>
+
+" }}}
+
+
 """""""""""""""""""""""""""
 " 3. Highlight and Syntax
 """""""""""""""""""""""""""
