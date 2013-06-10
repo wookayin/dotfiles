@@ -129,6 +129,9 @@ nmap <leader><space> :noh<CR>
 " <leader>cd : switch to the directory of the current buffer
 nmap <leader>cd :cd %:p:h<CR>
 
+" <leader>r : screen sucks, redraw everything
+nnoremap <leader>r :redraw!<CR>
+
 " }}}
 
 
@@ -200,3 +203,12 @@ endif
 " vim-pandoc
 let g:pandoc_no_folding = 1		" no automatic folding
 
+" pymode off toggle
+let g:pymode_folding = 0
+
+" fugitive key mappings
+nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>gs :Gstatus<CR>:20wincmd +<CR>
+nnoremap <leader>gw :Gwrite<CR>
+nnoremap <leader>gb :Gblame<CR>:20wincmd <<CR>
+nnoremap <leader>gci :Gcommit<CR>
