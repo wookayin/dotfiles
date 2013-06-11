@@ -186,13 +186,23 @@ highlight PmenuSel ctermfg=red ctermbg=white gui=bold
 
 " gui settings
 if has("gui_running")
-	language mes en
-	set langmenu=none
-	set guioptions-=T
-	set guioptions-=m
-	set encoding=utf8
-	set guifont=Consolas:h11:cANSI
-	set guifontwide=GulimChe:h12:cDEFAULT
+
+	if has("gui_win32")
+		language mes en			" use english messages (korean characters broken)
+		set langmenu=none		" use english context menus (korean characters broken)
+		set guioptions-=T		" exclude toolbar
+		set guioptions-=m		" exclude menubar
+
+		" font setting for windows
+		set guifont=Consolas:h11:cANSI
+		set guifontwide=GulimChe:h12:cDEFAULT
+
+	elseif has("gui_gtk2")
+		" font setting for Ubuntu linux (GTK)
+		set guifont=Ubuntu\ Mono\ 12
+
+	endif
+
 endif
 
 
@@ -212,3 +222,4 @@ nnoremap <leader>gs :Gstatus<CR>:20wincmd +<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gb :Gblame<CR>:20wincmd <<CR>
 nnoremap <leader>gci :Gcommit<CR>
+
