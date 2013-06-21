@@ -15,14 +15,9 @@ try
 catch
 endtry
 
-" basic displays and colors
-" (for detailed color settings, see section 3)
-colorscheme evening
-set bg=dark
+" basic displays
 set number					" show line numbers
 set ruler
-"set t_Co=256
-"colorscheme xoria256
 
 " input settings
 set bs=indent,eol,start		" allow backspaces over everything
@@ -146,15 +141,29 @@ nnoremap <leader>r :redraw!<CR>
 " }}}
 
 
-"""""""""""""""""""""""""""
-" 3. Highlight and Syntax
-"""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""
+" 3. Colors, Highlight and Syntax
+"""""""""""""""""""""""""""""""""
 
-" highlight
-highlight LineNr ctermfg=black ctermbg=Gray
-highlight StatusLine ctermfg=LightGreen
+" color settings
+set t_Co=256				" use 256 color
+set bg=dark
 
-highlight Comment ctermfg=darkgreen
+" apply base theme
+colorscheme xoria256
+
+" override more customized colors
+highlight LineNr		ctermfg=black guifg=black ctermbg=245 guibg=#8a8a8a
+highlight StatusLine	ctermfg=LightGreen
+
+highlight Normal		ctermfg=255 guifg=white
+highlight Comment		ctermfg=035 guifg=#38B04A
+highlight Constant		ctermfg=204 guifg=#ff5f87
+highlight PreProc		ctermfg=219 guifg=#ffafff
+
+" no underline, current cursor line
+highlight CursorLine	cterm=none
+
 au FileType c,cpp,latex,tex highlight Comment ctermfg=cyan
 
 " IDE settings
