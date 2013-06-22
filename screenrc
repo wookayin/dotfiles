@@ -1,4 +1,5 @@
 # ~/.screenrc
+# vim: set foldmethod=marker:
 
 # no startup message
 startup_message off
@@ -20,6 +21,24 @@ bind R eval "source ~/.screenrc"	# <C-A><S-R> reloads .screenrc
 
 bindkey -k k3 prev	# <F3> for previous screen
 bindkey -k k4 next	# <F4> for next screen
+
+
+# Terminal and Color settings {{{
+
+# use 256 color terminal
+term "screen-256color"
+
+# tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# allow bold colors - necessary for some reason
+attrcolor b ".I"
+
+# use current bg color for erased chars
+defbce on
+
+# }}}
+
 
 # status line
 hardstatus on
