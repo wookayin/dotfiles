@@ -233,8 +233,21 @@ endif
 " vim-pandoc
 let g:pandoc_no_folding = 1		" no automatic folding
 
-" pymode off toggle
+
+" python-mode {{{
+
+" disable code folding by default
 let g:pymode_folding = 0
+
+" disable rope (terribly slow), in favor of jedi-vim
+let g:pymode_rope = 0
+
+" prefer jedi's <leader>r (rename), instead of run
+" however, jedi resets all the highlight :( - why?
+let g:pymode_run = 0
+
+" }}}
+
 
 " fugitive key mappings
 nnoremap <leader>gd :Gdiff<CR>
