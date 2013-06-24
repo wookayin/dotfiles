@@ -256,5 +256,9 @@ nnoremap <leader>gw :Gwrite<CR>
 nnoremap <leader>gb :Gblame<CR>:20wincmd <<CR>
 nnoremap <leader>gci :Gcommit<CR>
 
+" gundo key mappings and options
+let g:gundo_right = 1   " show at right
+nnoremap <leader>G :GundoToggle<CR>
+
 " tagbar key mappings
 nnoremap <leader>t :TagbarToggle<CR>
