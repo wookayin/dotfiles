@@ -25,7 +25,7 @@ set autoindent
 set smartindent
 set pastetoggle=<F8>
 
-set wrap
+set nowrap
 set textwidth=0				" disable automatic line breaking
 set cursorline
 
@@ -65,6 +65,10 @@ set fileformats=unix,dos
 
 " split and autocomplete settings
 set splitbelow              " preview window at bottom
+
+" no fucking swap and backup files
+set noswapfile
+set nobackup
 
 " miscellanious
 set showmode
