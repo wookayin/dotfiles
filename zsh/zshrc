@@ -14,4 +14,4 @@ fi
 for config_file ($HOME/.zsh/zsh.d/*.zsh(N)) source $config_file
 
 # Customize to your needs...
-export TERM=xterm-256color
+export TERM=xterm
