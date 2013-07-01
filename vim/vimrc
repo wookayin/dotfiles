@@ -54,8 +54,19 @@ set wildmode=list:longest,full
 set wildignore=*.swp,*.swo,*.class
 
 " status line
-set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
 set laststatus=2			" show anytime
+
+
+if isdirectory(expand("~/.vim/bundle/powerline/powerline"))
+	" use powerline, if possible
+	let g:Powerline_theme='long'
+	let g:Powerline_symbols='fancy'
+	set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+else
+	" customized statusline by fallback
+	set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
+endif
+
 
 " mouse behaviour
 set mouse=nvc
@@ -226,7 +237,7 @@ if has("gui_running")
 
 	elseif has("gui_gtk2")
 		" font setting for Ubuntu linux (GTK)
-		set guifont=Ubuntu\ Mono\ 12
+		set guifont=Ubuntu\ Mono\ for\ Powerline\ 12
 
 	endif
 
