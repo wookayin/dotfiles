@@ -9,7 +9,7 @@
 [alias]
 	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
 		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
-		--abbrev-commit --date=short -n20
+		--abbrev-commit --date=short --date-order -n25
 
 [color]
 	status = auto
