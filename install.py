@@ -30,6 +30,9 @@ tasks = {
 
     # X
     '~/.Xmodmap' : 'Xmodmap',
+
+    # GTK
+    '~/.gtkrc-2.0' : 'gtkrc-2.0',
 }
 
 ################# END OF FIXME #################
