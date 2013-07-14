@@ -8,6 +8,9 @@
 syntax on
 set nocompatible
 
+" use path '~/.vim' even on non-unix machine
+set runtimepath+=~/.vim
+
 " load plugins with pathogen/vundle
 try
 	runtime bundle/pathogen/autoload/pathogen.vim
