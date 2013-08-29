@@ -33,6 +33,9 @@ tasks = {
 
     # GTK
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
+
+    # .config
+    '~/.config/terminator' : 'config/terminator',
 }
 
 ################# END OF FIXME #################
