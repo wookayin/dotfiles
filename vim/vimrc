@@ -237,7 +237,7 @@ if has("gui_running")
 
 	elseif has("gui_gtk2")
 		" font setting for Ubuntu linux (GTK)
-		set guifont=Ubuntu\ Mono\ for\ Powerline\ 12
+		set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
 
 	endif
 
