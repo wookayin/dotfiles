@@ -57,6 +57,7 @@ function prompt_wook_setup {
 
   # git
   # For the unicode letters, be sure to use an appropriate font.
+  zstyle ':prezto:module:git:info' verbose 'yes'
   zstyle ':prezto:module:git:info:action'    format ':%%B%F{yellow}%s%f%%b'
   zstyle ':prezto:module:git:info:added'     format ' %%B%F{green}✚%f%%b'
   zstyle ':prezto:module:git:info:ahead'     format ' %%B%F{blue}↑%f%%b'
