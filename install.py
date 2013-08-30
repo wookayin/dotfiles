@@ -20,6 +20,7 @@ tasks = {
     '~/.gitignore' : 'git/gitignore',
 
     # ZSH
+    '~/.zprezto'  : 'zsh/zprezto',
     '~/.zsh'      : 'zsh',
     '~/.zlogin'   : 'zsh/zlogin',
     '~/.zlogout'  : 'zsh/zlogout',

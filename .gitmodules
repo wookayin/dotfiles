@@ -40,3 +40,6 @@
 [submodule "vim/bundle/powerline"]
 	path = vim/bundle/powerline
 	url = git://github.com/Lokaltog/powerline
+[submodule "zsh/zprezto"]
+	path = zsh/zprezto
+	url = https://github.com/sorin-ionescu/prezto
