@@ -43,3 +43,6 @@
 [submodule "zsh/zprezto"]
 	path = zsh/zprezto
 	url = https://github.com/sorin-ionescu/prezto
+[submodule "vim/bundle/vim-surround"]
+	path = vim/bundle/vim-surround
+	url = git://github.com/tpope/vim-surround
