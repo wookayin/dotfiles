@@ -40,12 +40,15 @@
 [submodule "vim/bundle/powerline"]
 	path = vim/bundle/powerline
 	url = git://github.com/Lokaltog/powerline
-[submodule "zsh/zprezto"]
-	path = zsh/zprezto
-	url = https://github.com/sorin-ionescu/prezto
 [submodule "vim/bundle/vim-surround"]
 	path = vim/bundle/vim-surround
 	url = git://github.com/tpope/vim-surround
 [submodule "vim/bundle/vim-repeat"]
 	path = vim/bundle/vim-repeat
 	url = git://github.com/tpope/vim-repeat
+[submodule "zsh/zprezto"]
+	path = zsh/zprezto
+	url = https://github.com/sorin-ionescu/prezto
+[submodule "zsh/z"]
+	path = zsh/z
+	url = https://github.com/rupa/z

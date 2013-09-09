@@ -13,5 +13,8 @@ fi
 # Source after-prezto zsh script files.
 for config_file ($HOME/.zsh/zsh.d/*.zsh(N)) source $config_file
 
+# Source Z -- jump around!
+source "${ZDOTDIR:-$HOME}/.zsh/z/z.sh"
+
 # Customize to your needs...
 export TERM=xterm
