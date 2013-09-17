@@ -29,6 +29,9 @@ tasks = {
     '~/.zshenv'   : 'zsh/zshenv',
     '~/.zshrc'    : 'zsh/zshrc',
 
+    # Bins
+    '~/.local/bin/fasd' : 'zsh/fasd/fasd',
+
     # X
     '~/.Xmodmap' : 'Xmodmap',
 
@@ -75,6 +78,12 @@ for target, source in tasks.items():
     if os.path.lexists(target):
         print >> stderr, ("%s : already exists" % target) + (options.force and ' (not a symlink, hence --force option ignored)' or '')
     else:
+        try:
+            mkdir_target = os.path.split(target)[0]
+            os.makedirs(mkdir_target)
+            print >> stderr, 'Created directory : {}'.format(mkdir_target)
+        except:
+            pass
         os.symlink(source, target)
         print >> stderr, ("%s : symlink created from '%s'" % (target, source))
 

@@ -49,6 +49,6 @@
 [submodule "zsh/zprezto"]
 	path = zsh/zprezto
 	url = https://github.com/sorin-ionescu/prezto
-[submodule "zsh/z"]
-	path = zsh/z
-	url = https://github.com/rupa/z
+[submodule "zsh/fasd"]
+	path = zsh/fasd
+	url = https://github.com/clvv/fasd.git

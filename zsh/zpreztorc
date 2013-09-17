@@ -33,6 +33,7 @@ zstyle ':prezto:load' pmodule \
   'utility' \
   'completion' \
   'prompt' \
+  'fasd' \
   'ruby' \
   'python' \
   'node' \
