@@ -8,6 +8,16 @@ alias rm='nocorrect rm -iv'
 # Screen
 alias scr='screen -rD'
 
+
+# Tmux ========================================= {{{
+
+# list sessions
+alias tmuxl='tmux list-sessions'
+# tmuxa <session> : attach to <session>, with 256color forced
+alias tmuxa='tmux -2 attach-session -t'
+# }}}
+
+
 # More Git aliases
 # (overrides przto's git/alias.zsh)
 
