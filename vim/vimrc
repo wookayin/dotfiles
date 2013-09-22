@@ -167,6 +167,12 @@ nnoremap <leader>r :redraw!<CR>
 set t_Co=256				" use 256 color
 set bg=dark
 
+if &term =~ '256color'
+	" Disable Background Color Erase (BCE) so that color schemes
+	" work properly when Vim is used inside tmux and GNU screen.
+	set t_ut=
+endif
+
 " apply base theme
 colorscheme xoria256
 

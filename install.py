@@ -38,6 +38,9 @@ tasks = {
     # GTK
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
 
+    # tmux
+    '~/.tmux.conf' : 'tmux.conf',
+
     # .config
     '~/.config/terminator' : 'config/terminator',
 }
