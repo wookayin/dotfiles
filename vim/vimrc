@@ -156,6 +156,10 @@ nmap <leader>cd :cd %:p:h<CR>
 " <leader>r : screen sucks, redraw everything
 nnoremap <leader>r :redraw!<CR>
 
+" <leader>y, <leader>p : yank to or paste from the system clipboard
+noremap <leader>y "+y
+noremap <leader>p "+p
+
 " }}}
 
 
