@@ -192,6 +192,13 @@ highlight PreProc		ctermfg=219 guifg=#ffafff
 " no underline, current cursor line
 highlight CursorLine	cterm=none
 
+" show cursorline for active window only
+augroup NrHighlight
+  autocmd!
+  autocmd BufEnter * setlocal cursorline
+  autocmd BufLeave * setlocal nocursorline
+augroup END
+
 au FileType c,cpp,latex,tex highlight Comment ctermfg=cyan
 
 " IDE settings
