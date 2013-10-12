@@ -13,8 +13,8 @@ alias scr='screen -rD'
 
 # list sessions
 alias tmuxl='tmux list-sessions'
-# tmuxa <session> : attach to <session>, with 256color forced
-alias tmuxa='tmux -2 attach-session -t'
+# tmuxa <session> : attach to <session> (force 256color and detach others)
+alias tmuxa='tmux -2 attach-session -d -t'
 # }}}
 
 
