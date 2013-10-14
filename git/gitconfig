@@ -9,7 +9,10 @@
 [alias]
 	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
 		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
-		--abbrev-commit --date=short --date-order -n25
+		--abbrev-commit --date=short --date-order -n35
+
+	unstage = reset HEAD --
+	discard = checkout --
 
 [color]
 	status = auto
