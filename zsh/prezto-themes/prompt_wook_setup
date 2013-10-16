@@ -85,12 +85,18 @@ function prompt_wook_setup {
   # Node nvm
   zstyle ':prezto:module:node:info:version' format ' node:%F{green}%v%f'
 
+  # Define the color for displaying host (machine name).
+  # Configurable using $PROMPT_HOST_COLOR variable, whose default value is blue (if was unset)
+  if [ -z "$PROMPT_HOST_COLOR" ]; then
+    PROMPT_HOST_COLOR='blue'
+  fi
+
   # Define prompts.
   PROMPT='\
 %B%F{green}[\
 %B%F{yellow}%n\
 %B%F{green}@\
-%B%F{blue}%m\
+%B%F{${PROMPT_HOST_COLOR}}%m\
 %B%F{green}:\
 %B%F{red}${PWD}%f%b\
 ${git_info:+${(e)git_info[prompt]}}\
