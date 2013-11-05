@@ -297,3 +297,14 @@ nnoremap <leader>G :GundoToggle<CR>
 
 " tagbar key mappings
 nnoremap <leader>t :TagbarToggle<CR>
+
+
+
+"""""""""""""""""""""""""""
+" Extra Settings
+"""""""""""""""""""""""""""
+
+" Use local vimrc if available
+if filereadable(expand("\~/.vimrc.local"))
+	source \~/.vimrc.local
+endif
