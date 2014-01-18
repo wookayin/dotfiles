@@ -242,6 +242,10 @@ highlight PmenuSel ctermfg=red ctermbg=white gui=bold
 " gui settings
 if has("gui_running")
 
+	if has("unix")
+		let s:uname = substitute(system("uname -s"), '\n', '', '')
+	endif
+
 	if has("gui_win32")
 		language mes en			" use english messages (korean characters broken)
 		set langmenu=none		" use english context menus (korean characters broken)
@@ -256,6 +260,10 @@ if has("gui_running")
 		" font setting for Ubuntu linux (GTK)
 		set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
 
+	elseif has("unix") && s:uname == "Darwin"
+		" font setting for Mac OS X (Darwin)
+		set guifont=Monaco\ for\ Powerline:h12
+		set guifontwide=Apple\ SD\ Gothic\ Neo\ UltraLight:h12
 	endif
 
 endif
