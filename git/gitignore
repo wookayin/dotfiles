@@ -4,3 +4,9 @@
 .*.s[a-w][a-z]
 Session.vim
 .netrwhist
+
+# Mac OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
