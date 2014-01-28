@@ -1,0 +1,31 @@
+# cpp Snippets
+
+snippet REP
+	for(int ${1:i} = 0; $1 < ${2:n}; ++$1) ${3}
+snippet FOR
+	for(int ${1:i} = ${2:0}; $1 < ${3:n}; ++$1) ${4}
+snippet ALL
+	${1:container}.begin(), $1.end()${2}
+snippet UNIQUE
+	${1:container}.erase(unique($1.begin(), $1.end()), $1.end());${2}
+snippet CLEAR
+	memset(${1:array}, ${2:0}, sizeof($1));
+snippet cin.sync
+	cin.sync_with_stdio(false);
+
+snippet using namespace
+	using namespace std;
+
+snippet #include
+	#include <cstdio>
+	#include <cstring>
+	#include <string>
+	#include <vector>
+	#include <queue>
+	#include <map>
+	#include <set>
+	#include <string>
+	#include <algorithm>
+	#include <iostream>
+	#include <sstream>
+
