@@ -106,8 +106,11 @@ let mapleader=","			" comma is the <Leader> key.
 " navigation key mapping
 map k gk
 map j gj
-map <up> gk
-map <down> gj
+sunmap k
+sunmap j
+
+nmap <up> gk
+nmap <down> gj
 imap <up> <c-o>gk
 imap <down> <c-o>gj
 
@@ -155,6 +158,9 @@ nmap <leader>cd :cd %:p:h<CR>
 
 " <leader>r : screen sucks, redraw everything
 nnoremap <leader>r :redraw!<CR>
+
+" <leader>src : source ~/.vimrc
+nnoremap <leader>src :source ~/.vimrc<CR>
 
 " <leader>y, <leader>p : yank to or paste from the system clipboard
 noremap <leader>y "+y
