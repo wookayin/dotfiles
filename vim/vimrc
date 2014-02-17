@@ -138,6 +138,7 @@ vnoremap > >gv
 
 " [F5] Make
 map <F5> <ESC>:w<CR>:make!<CR>
+imap <F5> <ESC>:w<CR>:make!<CR>
 
 " [F4] Next Error [Shift+F4] Previous Error
 map <F4> <ESC>:cn<CR>
@@ -147,6 +148,8 @@ map [26~ <ESC>:cp<CR>
 imap <F2> <ESC>:w<CR>
 map <F2> <ESC><ESC>:w<CR>
 
+" handy command-line mode
+nnoremap ; :
 
 " Useful leader key combinations {{{
 
@@ -166,8 +169,10 @@ nnoremap <leader>src :source ~/.vimrc<CR>
 noremap <leader>y "+y
 noremap <leader>p "+p
 
-" }}}
+" <leader>w : save
+nnoremap <leader>w :w!<CR>
 
+" }}}
 
 """""""""""""""""""""""""""""""""
 " 3. Colors, Highlight and Syntax
