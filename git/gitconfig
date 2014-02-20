@@ -5,14 +5,17 @@
 
 [core]
 	excludesfile = ~/.gitignore
+	pager = less -F
 
 [alias]
 	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
 		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
-		--abbrev-commit --date=short --date-order -n35
+		--abbrev-commit --date=short --date-order -n30
 
+	co = checkout
 	unstage = reset HEAD --
 	discard = checkout --
+	update-branch = branch -f --no-track
 
 [color]
 	status = auto
