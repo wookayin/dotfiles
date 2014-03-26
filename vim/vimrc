@@ -156,6 +156,9 @@ nnoremap ; :
 " <leader><space> : turn off search highlight
 nmap <leader><space> :noh<CR>
 
+" <leader>a : Ack!
+nnoremap <leader>a :Ack!<Space>
+
 " <leader>cd : switch to the directory of the current buffer
 nmap <leader>cd :cd %:p:h<CR>
 

@@ -58,6 +58,9 @@
 [submodule "vim/bundle/tlib_vim"]
 	path = vim/bundle/tlib_vim
 	url = https://github.com/tomtom/tlib_vim.git
+[submodule "vim/bundle/ack.vim"]
+	path = vim/bundle/ack.vim
+	url = https://github.com/mileszs/ack.vim/
 [submodule "zsh/zprezto"]
 	path = zsh/zprezto
 	url = https://github.com/sorin-ionescu/prezto
