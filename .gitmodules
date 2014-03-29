@@ -61,6 +61,9 @@
 [submodule "vim/bundle/ack.vim"]
 	path = vim/bundle/ack.vim
 	url = https://github.com/mileszs/ack.vim/
+[submodule "vim/bundle/matchit"]
+	path = vim/bundle/matchit
+	url = https://github.com/vim-scripts/matchit.zip
 [submodule "zsh/zprezto"]
 	path = zsh/zprezto
 	url = https://github.com/sorin-ionescu/prezto
