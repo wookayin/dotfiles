@@ -114,6 +114,9 @@ nmap <down> gj
 imap <up> <c-o>gk
 imap <down> <c-o>gj
 
+" Ignore errornous input in Mac OS X
+imap <D-space> <Nop>
+
 " window navigation
 noremap <C-h> <C-w>h
 noremap <C-j> <C-w>j
@@ -143,6 +146,7 @@ imap <F5> <ESC>:w<CR>:make!<CR>
 " [F4] Next Error [Shift+F4] Previous Error
 map <F4> <ESC>:cn<CR>
 map [26~ <ESC>:cp<CR>
+map [1;2S <ESC>:cp<CR>
 
 " [F2] save
 imap <F2> <ESC>:w<CR>
