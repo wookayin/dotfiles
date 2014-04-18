@@ -179,6 +179,12 @@ noremap <leader>p "+p
 " <leader>w : save
 nnoremap <leader>w :w!<CR>
 
+" <leader>S : Strip trailing whitespaces
+nnoremap <leader>S :call StripTrailingWhitespaces()<CR>
+
+" <leader>df : diffthis
+nnoremap <leader>df :diffthis<CR>
+
 " }}}
 
 """""""""""""""""""""""""""""""""
