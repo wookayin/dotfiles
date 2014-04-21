@@ -13,7 +13,9 @@
     palette = "#000000:#cd0000:#00cd00:#cdcd00:#1e90ff:#cd00cd:#00cdcd:#e5e5e5:#4c4c4c:#ff0000:#00ff00:#ffff00:#4682b4:#ff00ff:#00ffff:#ffffff"
     font = Ubuntu Mono derivative Powerline 13
     background_image = None
+    background_darkness = 0.80
     scrollback_lines = 5000
+    background_type = transparent
     use_system_font = False
     login_shell = True
     show_titlebar = False
