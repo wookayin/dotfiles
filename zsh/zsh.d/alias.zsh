@@ -23,8 +23,9 @@ alias tmuxa='tmux -2 attach-session -d -t'
 
 alias gh='git history'
 alias gha='gh --all'
-alias gd='git diff'
-alias gdc='gd --cached'
+alias gd='git diff --no-prefix'
+alias gdc='gd --cached --no-prefix'
+alias gds='gd --staged --no-prefix'
 alias gs='git status'
 alias gsu='gs -u'
 
