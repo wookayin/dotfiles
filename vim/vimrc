@@ -140,8 +140,15 @@ vnoremap < <gv
 vnoremap > >gv
 
 " [F5] Make
-map <F5> <ESC>:w<CR>:make!<CR>
-imap <F5> <ESC>:w<CR>:make!<CR>
+if isdirectory(expand("~/.vim/bundle/vim-dispatch"))
+	" use vim-dispatch if exists
+	map <F5> <ESC>:w<CR>:Make<CR>
+	imap <F5> <ESC>:w<CR>:Make<CR>
+else
+	" otherwise, fallback to default make
+	map <F5> <ESC>:w<CR>:make!<CR>
+	imap <F5> <ESC>:w<CR>:make!<CR>
+endif
 
 " [F4] Next Error [Shift+F4] Previous Error
 map <F4> <ESC>:cn<CR>
