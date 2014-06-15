@@ -1,0 +1,23 @@
+snippet utf8
+	# -*- coding: utf-8 -*-
+
+snippet import
+	import os
+	import sys
+
+snippet REP
+	for ${1:i} in xrange(${2:n}):
+	    ${3}
+
+snippet freopen
+	#sys.stdin = file('${1:input.txt}', 'r')
+	#sys.stdout = file('${2:output.txt}', 'w')
+	rl = sys.stdin.readline
+
+snippet main
+	def main():
+	    ${1:pass}
+
+	if __name__ == '__main__':
+	    main()
+
