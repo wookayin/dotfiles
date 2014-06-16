@@ -17,6 +17,10 @@
 	discard = checkout --
 	update-branch = branch -f --no-track
 
+	assume-unchanged = update-index --assume-unchanged
+	unassume-unchanged = update-index --no-assume-unchanged
+	list-assume-unchanged = !sh -c 'git ls-files -v | grep "^[a-z]" | sed "s/^..//"'
+
 [color]
 	status = auto
 	diff = auto
