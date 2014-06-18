@@ -48,6 +48,10 @@ set smartcase				" case-sensitive if keyword contains both uppercase and lowerca
 set incsearch
 set hlsearch
 
+" listchars for whitespaces
+set list
+set listchars=tab:»\ ,trail:·,extends:>,precedes:<
+
 " wildmenu settings
 set wildmenu
 set wildmode=list:longest,full
