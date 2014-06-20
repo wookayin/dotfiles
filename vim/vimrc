@@ -311,6 +311,21 @@ endif
 " 5. Plugin Settings
 """""""""""""""""""""""""""
 
+" CtrlP.vim : ignore patterns
+let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|bin)|(\.(ico|git|svn))$'
+
+" CtrlP-Z
+let g:ctrlp_z_nerdtree = 1
+let g:ctrlp_extensions = ['Z', 'F']
+
+nnoremap <leader>z :CtrlPZ<CR>
+
+" NerdTree
+" change CWD when the NERDtree is first loaded to the directory initialized in
+" (e.g. change CWD to the directory hitted by CtrlPZ)
+let g:NERDTreeChDirMode = 1
+
+
 " vim-pandoc
 let g:pandoc_no_folding = 1		" no automatic folding
 
