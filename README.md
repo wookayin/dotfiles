@@ -1,7 +1,7 @@
 Dotfiles
 ========
 
-Personal dotfiles for Linux systems.
+Personal dotfiles for *NIX systems.
 
 ## Installation
 

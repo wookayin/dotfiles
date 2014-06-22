@@ -1,5 +1,8 @@
 " wookayin's vimrc file
-" https://github.com/wookayin/vim-config
+" https://github.com/wookayin/dotfiles
+
+" https://raw.githubusercontent.com/wookayin/dotfiles/master/vim/vimrc
+
 
 """""""""""""""""""""""""""
 " 1. General Settings
@@ -13,7 +16,7 @@ set runtimepath+=~/.vim
 
 " load plugins with pathogen/vundle
 try
-	runtime bundle/pathogen/autoload/pathogen.vim
+	runtime bundle/vim-pathogen/autoload/pathogen.vim
 	call pathogen#infect()
 catch
 endtry

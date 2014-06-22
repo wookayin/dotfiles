@@ -1,54 +1,61 @@
-[submodule "vim/bundle/pathogen"]
-	path = vim/bundle/pathogen
-	url = git://github.com/tpope/vim-pathogen.git
+[submodule "zsh/zprezto"]
+	path = zsh/zprezto
+	url = https://github.com/sorin-ionescu/prezto
+[submodule "zsh/fasd"]
+	path = zsh/fasd
+	url = https://github.com/clvv/fasd.git
+
+[submodule "vim/bundle/vim-pathogen"]
+	path = vim/bundle/vim-pathogen
+	url = https://github.com/tpope/vim-pathogen.git
 [submodule "vim/bundle/nerdtree"]
 	path = vim/bundle/nerdtree
-	url = git://github.com/scrooloose/nerdtree.git
+	url = https://github.com/scrooloose/nerdtree.git
 [submodule "vim/bundle/vim-coffee-script"]
 	path = vim/bundle/vim-coffee-script
-	url = git://github.com/kchmck/vim-coffee-script
+	url = https://github.com/kchmck/vim-coffee-script
 [submodule "vim/bundle/vim-fugitive"]
 	path = vim/bundle/vim-fugitive
-	url = git://github.com/tpope/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive
 [submodule "vim/bundle/vim-javascript"]
 	path = vim/bundle/vim-javascript
-	url = git://github.com/pangloss/vim-javascript.git
+	url = https://github.com/pangloss/vim-javascript.git
 [submodule "vim/bundle/nginx.vim"]
 	path = vim/bundle/nginx.vim
-	url = git://github.com/vim-scripts/nginx.vim.git
+	url = https://github.com/vim-scripts/nginx.vim.git
 [submodule "vim/bundle/vim-pandoc"]
 	path = vim/bundle/vim-pandoc
-	url = git://github.com/vim-pandoc/vim-pandoc
+	url = https://github.com/vim-pandoc/vim-pandoc
 [submodule "vim/bundle/python-mode"]
 	path = vim/bundle/python-mode
-	url = git://github.com/klen/python-mode.git
+	url = https://github.com/klen/python-mode.git
 [submodule "vim/bundle/jedi-vim"]
 	path = vim/bundle/jedi-vim
-	url = git://github.com/davidhalter/jedi-vim
+	url = https://github.com/davidhalter/jedi-vim
 [submodule "vim/bundle/nerdcommenter"]
 	path = vim/bundle/nerdcommenter
-	url = git://github.com/scrooloose/nerdcommenter.git
+	url = https://github.com/scrooloose/nerdcommenter.git
 [submodule "vim/bundle/tagbar"]
 	path = vim/bundle/tagbar
-	url = git://github.com/majutsushi/tagbar
+	url = https://github.com/majutsushi/tagbar
 [submodule "vim/bundle/vim-colorschemes"]
 	path = vim/bundle/vim-colorschemes
-	url = git://github.com/flazz/vim-colorschemes.git
+	url = https://github.com/flazz/vim-colorschemes.git
 [submodule "vim/bundle/gundo"]
 	path = vim/bundle/gundo
-	url = git://github.com/sjl/gundo.vim
+	url = https://github.com/sjl/gundo.vim
 [submodule "vim/bundle/powerline"]
 	path = vim/bundle/powerline
-	url = git://github.com/Lokaltog/powerline
+	url = https://github.com/Lokaltog/powerline
 [submodule "vim/bundle/vim-surround"]
 	path = vim/bundle/vim-surround
-	url = git://github.com/tpope/vim-surround
+	url = https://github.com/tpope/vim-surround
 [submodule "vim/bundle/vim-repeat"]
 	path = vim/bundle/vim-repeat
-	url = git://github.com/tpope/vim-repeat
+	url = https://github.com/tpope/vim-repeat
 [submodule "vim/bundle/vim-gitgutter"]
 	path = vim/bundle/vim-gitgutter
-	url = git://github.com/airblade/vim-gitgutter.git
+	url = https://github.com/airblade/vim-gitgutter.git
 [submodule "vim/bundle/vim-snipmate"]
 	path = vim/bundle/vim-snipmate
 	url = https://github.com/garbas/vim-snipmate.git
@@ -73,9 +80,3 @@
 [submodule "vim/bundle/vim-tmux-navigator"]
 	path = vim/bundle/vim-tmux-navigator
 	url = https://github.com/christoomey/vim-tmux-navigator.git
-[submodule "zsh/zprezto"]
-	path = zsh/zprezto
-	url = https://github.com/sorin-ionescu/prezto
-[submodule "zsh/fasd"]
-	path = zsh/fasd
-	url = https://github.com/clvv/fasd.git
