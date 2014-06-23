@@ -1,6 +1,9 @@
 ! Xmodmap - Keyboard Mapping Settings for Linux
 
 ! for Realforce 87U Korean Users
+
 remove mod1 = Hangul
 keycode 108 = Hangul
+
+remove control = Hangul_Hanja
 keycode 105 = Hangul_Hanja
