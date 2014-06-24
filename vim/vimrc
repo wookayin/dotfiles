@@ -103,9 +103,9 @@ set lazyredraw				" no redrawing during macro execution
 set mps+=<:>
 
 
-"""""""""""""""""""""""""""
-" 2. Key Mappings
-"""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""
+" 2. Key and Functional Mappings
+""""""""""""""""""""""""""""""""
 
 " the leader key
 let mapleader=","			" comma is the <Leader> key.
@@ -165,6 +165,9 @@ map [1;2S <ESC>:cp<CR>
 " [F2] save
 imap <F2> <ESC>:w<CR>
 map <F2> <ESC><ESC>:w<CR>
+
+" Sudo Save (:Wsudo command)
+command! Wsudo w !sudo tee % > /dev/null
 
 " handy command-line mode
 nnoremap ; :
