@@ -14,7 +14,7 @@ set nocompatible
 " use path '~/.vim' even on non-unix machine
 set runtimepath+=~/.vim
 
-" load plugins with pathogen/vundle
+" load plugins with pathogen
 try
 	runtime bundle/vim-pathogen/autoload/pathogen.vim
 	call pathogen#infect()
@@ -329,8 +329,15 @@ nnoremap <leader>z :CtrlPZ<CR>
 let g:NERDTreeChDirMode = 1
 
 
-" vim-pandoc
-let g:pandoc_no_folding = 1		" no automatic folding
+" vim-pandoc {{{
+
+" disable automatic folding
+let g:pandoc#modules#disabled = ["folding"]
+
+" disable conceals
+let g:pandoc#syntax#conceal#use = 0
+
+" }}}
 
 
 " python-mode {{{

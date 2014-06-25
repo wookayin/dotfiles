@@ -26,6 +26,9 @@
 [submodule "vim/bundle/vim-pandoc"]
 	path = vim/bundle/vim-pandoc
 	url = https://github.com/vim-pandoc/vim-pandoc
+[submodule "vim/bundle/vim-pandoc-syntax"]
+	path = vim/bundle/vim-pandoc-syntax
+	url = https://github.com/vim-pandoc/vim-pandoc-syntax
 [submodule "vim/bundle/python-mode"]
 	path = vim/bundle/python-mode
 	url = https://github.com/klen/python-mode.git
