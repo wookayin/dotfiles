@@ -4,11 +4,11 @@ snippet REP
 	for(int ${1:i} = 0; $1 < ${2:n}; ++$1) ${3}
 snippet FOR
 	for(int ${1:i} = ${2:0}; $1 < ${3:n}; ++$1) ${4}
-snippet ALL
+snippet all
 	${1:container}.begin(), $1.end()${2}
-snippet UNIQUE
+snippet unique
 	${1:container}.erase(unique($1.begin(), $1.end()), $1.end());${2}
-snippet CLEAR
+snippet memset
 	memset(${1:array}, ${2:0}, sizeof($1));
 snippet cin.sync
 	cin.sync_with_stdio(false);
@@ -39,16 +39,20 @@ snippet main
 		return 0;
 	}
 
-snippet MACROS_COMMON
+snippet MACROS
 	#define REP(i, n) for(int i = 0; i < (int)(n); ++ i)
 	#define FOR(i, b, e) for(auto i = b; i < e; ++ i)
 	#define all(x) (x).begin(), (x).end()
 
-snippet MACROS_DEBUG
 	#define DEBUG(x) cerr << #x << " = " << x << endl;
 	#define DEBUGALL(x) { cerr << #x << " = "; for(const auto &e: x) cerr << e << " "; cerr << endl; }
 
-snippet FREOPEN
+snippet ONLINE_JUDGE
+	#ifndef ONLINE_JUDGE
+		freopen("${1:problem.in}", "rt", stdin);
+	#endif
+
+snippet freopen
 	freopen("${1:input.txt}", "rt", stdin);
 	freopen("${2:output.txt}", "wt", stdout);
 
