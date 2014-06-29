@@ -52,8 +52,8 @@ function prompt_wook_setup {
   add-zsh-hook precmd prompt_wook_precmd
 
   # editor (vi-mode, etc ...)
-  zstyle ':prezto:module:editor:info:keymap:primary' format '%B%F{red}❯%F{yellow}❯%F{green}❯%f%b'
-  zstyle ':prezto:module:editor:info:keymap:alternate' format '%B%F{green}❮%F{yellow}❮%F{red}❮%f%b'
+  zstyle ':prezto:module:editor:info:keymap:primary' format '%B%F{red}❯%F{yellow}❯%(?.%F{green}.%F{red})❯%f%b'
+  zstyle ':prezto:module:editor:info:keymap:alternate' format '%B%(?.%F{green}.%F{red})❮%F{yellow}❮%F{red}❮%f%b'
 
   # git
   # For the unicode letters, be sure to use an appropriate font.
@@ -97,7 +97,7 @@ function prompt_wook_setup {
 %B%F{yellow}%n\
 %B%F{green}@\
 %B%F{${PROMPT_HOST_COLOR}}%m\
-%B%F{green}:\
+%B%F{green}: \
 %B%F{red}${PWD}%f%b\
 ${git_info:+${(e)git_info[prompt]}}\
 %B%F{green}]\
