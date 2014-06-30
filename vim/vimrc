@@ -178,7 +178,7 @@ nnoremap ; :
 nmap <leader><space> :noh<CR>
 
 " <leader>a : Ack!
-nnoremap <leader>a :Ack!<Space>
+nnoremap <leader>a :Ack! -i<Space>
 
 " <leader>cd : switch to the directory of the current buffer
 nmap <leader>cd :cd %:p:h<CR>
@@ -367,7 +367,7 @@ let g:gundo_right = 1   " show at right
 nnoremap <leader>G :GundoToggle<CR>
 
 " tagbar key mappings
-nnoremap <leader>t :TagbarToggle<CR>
+nnoremap <leader>T :TagbarToggle<CR>
 
 
 
