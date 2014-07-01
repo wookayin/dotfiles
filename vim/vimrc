@@ -64,13 +64,15 @@ set wildignore=*.swp,*.swo,*.class
 set laststatus=2			" show anytime
 
 
-if isdirectory(expand("~/.vim/bundle/powerline/powerline"))
-	" use powerline, if possible
-	let g:Powerline_theme='long'
-	let g:Powerline_symbols='fancy'
-	set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+if isdirectory(expand("~/.vim/bundle/vim-airline"))
+	" use airline, with powerline-ish theme
+	let g:airline_theme='powerlineish'
+	let g:airline_powerline_fonts=1
+
+	" suppress mixed-indent warning for javadoc-like comments (/** */)
+	let g:airline#extensions#whitespace#mixed_indent_algo = 1
 else
-	" customized statusline by fallback
+	" native customized statusline by fallback
 	set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
 endif
 
