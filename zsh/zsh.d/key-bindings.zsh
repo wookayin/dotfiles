@@ -20,3 +20,5 @@ bindkey '^N' down-history
 bindkey '^P' up-history
 
 bindkey '^R' history-incremental-search-backward
+
+bindkey '\e.' insert-last-word # Alt-.
