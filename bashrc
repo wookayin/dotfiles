@@ -7,6 +7,11 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+# Platform detection
+platform='linux'
+if [[ `uname` == 'Darwin' ]]; then
+  platform='osx'
+fi
 
 # history settings
 shopt -s histappend		# append, no overwrite
@@ -17,8 +22,12 @@ HISTFILESIZE=20000
 # 2. Aliases #
 ##############
 
-# color and with classfication
-alias ls='ls -F --color=auto'
+# ls color and with classfication
+if [[ $platform == 'osx' ]]; then
+  alias ls='ls -F -G'
+else
+  alias ls='ls -F --color=auto'
+fi
 alias ll='ls -alF'
 
 # grep
