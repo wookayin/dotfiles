@@ -216,6 +216,7 @@ nnoremap <leader>df :diffthis<CR>
 """""""""""""""""""""""""""""""""
 
 " color settings
+" @see http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
 set t_Co=256				" use 256 color
 set bg=dark
 
@@ -229,13 +230,13 @@ endif
 colorscheme xoria256
 
 " override more customized colors
-highlight LineNr		ctermfg=black guifg=black ctermbg=245 guibg=#8a8a8a
-highlight StatusLine	ctermfg=LightGreen
+highlight StatusLine    ctermfg=LightGreen
 
-highlight Normal		ctermfg=255 guifg=white
-highlight Comment		ctermfg=035 guifg=#38B04A
-highlight Constant		ctermfg=204 guifg=#ff5f87
-highlight PreProc		ctermfg=219 guifg=#ffafff
+highlight Normal        ctermfg=255 guifg=white
+highlight Comment       ctermfg=035 guifg=#38B04A
+highlight Constant      ctermfg=204 guifg=#ff5f87
+highlight PreProc       ctermfg=219 guifg=#ffafff
+highlight SpecialKey    ctermfg=242 guifg=#4e4e4e
 
 " no underline, current cursor line
 highlight CursorLine	cterm=none
@@ -246,8 +247,6 @@ augroup NrHighlight
   autocmd BufEnter * setlocal cursorline
   autocmd BufLeave * setlocal nocursorline
 augroup END
-
-au FileType c,cpp,latex,tex highlight Comment ctermfg=cyan
 
 " IDE settings
 filetype plugin on
