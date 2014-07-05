@@ -33,6 +33,7 @@ zstyle ':prezto:load' pmodule \
   'utility' \
   'completion' \
   'prompt' \
+  'syntax-highlighting' \
   'fasd' \
   'ruby' \
   'python' \
@@ -111,10 +112,23 @@ zstyle ':prezto:module:prompt' theme 'wook'
 # By default main, brackets, and cursor are enabled.
 # zstyle ':prezto:module:syntax-highlighting' highlighters \
 #   'main' \
-#   'brackets' \
 #   'pattern' \
+#   'brackets' \
 #   'cursor' \
 #   'root'
+
+# Highlight Options and Colors
+# @see https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/highlighters/main/main-highlighter.zsh
+zstyle ':prezto:module:syntax-highlighting' styles \
+  'builtin' 'fg=green' \
+  'alias' 'fg=cyan' \
+  'command' 'fg=cyan' \
+  'path' 'fg=white,bold' \
+  'globbing' 'fg=white,bold,underline' \
+  'single-quoted-argument' 'fg=magenta' \
+  'double-quoted-argument' 'fg=cyan' \
+  'assign' 'fg=magenta' \
+  'function' 'fg=yellow'
 
 #
 # Terminal
