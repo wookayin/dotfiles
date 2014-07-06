@@ -106,7 +106,8 @@ set mps+=<:>
 
 " jump to the last position when reopening a file
 if has("autocmd")
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"zz" | endif
+  let s:last_position_disable_filetypes = ['gitcommit']
+  au BufReadPost * if index(s:last_position_disable_filetypes, &ft) < 0 && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"zz" | endif
 endif
 
 
@@ -236,7 +237,7 @@ highlight Normal        ctermfg=255 guifg=white
 highlight Comment       ctermfg=035 guifg=#38B04A
 highlight Constant      ctermfg=204 guifg=#ff5f87
 highlight PreProc       ctermfg=219 guifg=#ffafff
-highlight SpecialKey    ctermfg=242 guifg=#4e4e4e
+highlight SpecialKey    ctermfg=242 guifg=#666666
 
 " no underline, current cursor line
 highlight CursorLine	cterm=none
@@ -320,19 +321,25 @@ endif
 " 5. Plugin Settings
 """""""""""""""""""""""""""
 
-" CtrlP.vim : ignore patterns
+" CtrlP.vim {{{
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|bin)|(\.(ico|git|svn))$'
+" }}}
 
-" CtrlP-Z
+" CtrlP-Z {{{
 let g:ctrlp_z_nerdtree = 1
 let g:ctrlp_extensions = ['Z', 'F']
 
 nnoremap <leader>z :CtrlPZ<CR>
+nnoremap <leader>f :CtrlPF<CR>
+" }}}
 
-" NerdTree
+" NerdTree {{{
+
 " change CWD when the NERDtree is first loaded to the directory initialized in
 " (e.g. change CWD to the directory hitted by CtrlPZ)
 let g:NERDTreeChDirMode = 1
+
+" }}}
 
 " UltiSnips {{
 let g:UltiSnipsExpandTrigger="<c-j>"
