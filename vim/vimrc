@@ -334,6 +334,11 @@ nnoremap <leader>z :CtrlPZ<CR>
 " (e.g. change CWD to the directory hitted by CtrlPZ)
 let g:NERDTreeChDirMode = 1
 
+" UltiSnips {{
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+" }}}
 
 " vim-pandoc {{{
 
