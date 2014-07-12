@@ -1,3 +1,5 @@
+# vim: set ft=gitconfig:
+
 [include]
 	# include external gitconfig file (requires git 1.7.10+)
 	# typically, user.name and user.email is configured.
@@ -31,9 +33,12 @@
 [format]
 	pretty = fuller
 
+[push]
+	# Adopt the new default in Git 2.x
+	default = simple
+
 [credential]
 	# Enable HTTP(S) auth credential caching
 	# for 60 seconds (requires git 1.7.9+)
 	helper = cache --timeout 60
 
-# vim: set ft=gitconfig:
