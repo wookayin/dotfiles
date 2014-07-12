@@ -233,6 +233,9 @@ colorscheme xoria256
 " override more customized colors
 highlight StatusLine    ctermfg=LightGreen
 
+highlight LineNr        ctermfg=248 ctermbg=233 guifg=#a8a8a8 guibg=#121212
+highlight SignColumn    ctermfg=248 ctermbg=233 guifg=#a8a8a8 guibg=#121212
+
 highlight Normal        ctermfg=255 guifg=white
 highlight Comment       ctermfg=035 guifg=#38B04A
 highlight Constant      ctermfg=204 guifg=#ff5f87
