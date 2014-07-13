@@ -13,5 +13,5 @@ fi
 # Source after-prezto zsh script files.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
-# Customize to your needs...
-export TERM=xterm-256color
+# Terminal
+export TERM=screen-256color
