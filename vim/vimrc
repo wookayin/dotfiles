@@ -376,12 +376,17 @@ let g:pymode_run = 0
 " }}}
 
 
-" fugitive key mappings
-nnoremap <leader>gd :Gdiff<CR>
+" fugitive {{{
+
+" key mappings
+nnoremap <leader>gd :Gvdiff<CR>
+nnoremap <leader>gD :Gvdiff HEAD<CR>
 nnoremap <leader>gs :Gstatus<CR>:20wincmd +<CR>
 nnoremap <leader>gw :Gwrite<CR>
-nnoremap <leader>gb :Gblame<CR>:20wincmd <<CR>
-nnoremap <leader>gci :Gcommit<CR>
+nnoremap <leader>gb :Gblame -w<CR>:vertical resize 10<CR>
+nnoremap <leader>gci :Gcommit --verbose<CR>
+
+" }}}
 
 " gundo key mappings and options
 let g:gundo_right = 1   " show at right
