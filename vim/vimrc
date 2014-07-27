@@ -334,6 +334,10 @@ let g:ctrlp_extensions = ['Z', 'F']
 
 nnoremap <leader>z :CtrlPZ<CR>
 nnoremap <leader>f :CtrlPF<CR>
+
+command! Z CtrlPZ
+command! F CtrlPF
+
 " }}}
 
 " NerdTree {{{
