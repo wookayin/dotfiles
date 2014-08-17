@@ -18,6 +18,9 @@ snippet pu
 snippet using namespace
 	using namespace std;
 
+snippet vec
+	vector<${1:int}> ${2}
+
 snippet #include
 	#include <cassert>
 	#include <cmath>
@@ -43,6 +46,10 @@ snippet MACROS
 	#define REP(i, n) for(int i = 0; i < (int)(n); ++ i)
 	#define FOR(i, b, e) for(auto i = b; i < e; ++ i)
 	#define all(x) (x).begin(), (x).end()
+
+	typedef long long LL;
+	typedef vector<int> VI;
+	typedef pair<int, int> PII;
 
 	#define DEBUG(x) cerr << #x << " = " << x << endl;
 	#define DEBUGALL(x) { cerr << #x << " = "; for(const auto &e: x) cerr << e << " "; cerr << endl; }
