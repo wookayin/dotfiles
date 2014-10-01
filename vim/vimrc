@@ -143,11 +143,21 @@ nnoremap <C-t>     :tabnew<CR>
 nnoremap <C-S-tab> :tabprevious<CR>
 nnoremap <C-tab>   :tabnext<CR>
 
-" Tab alternative navigations
+" Alternative tab navigations (@seealso gt, gT)
 " (terminals might capture <Ctrl-t> or something else)
 nnoremap <leader>tn  :tabnext<CR>
 nnoremap <leader>tp  :tabprev<CR>
 
+" Handy tab navigations: <Alt-num>
+nnoremap 1 1gt
+nnoremap 2 2gt
+nnoremap 3 3gt
+nnoremap 4 4gt
+nnoremap 5 5gt
+nnoremap 6 6gt
+nnoremap 7 7gt
+nnoremap 8 8gt
+nnoremap 9 9gt
 
 " do not exit from visual mode when shifting
 " (gv : select the preivous area)
