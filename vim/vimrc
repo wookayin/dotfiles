@@ -104,6 +104,9 @@ set lazyredraw				" no redrawing during macro execution
 
 set mps+=<:>
 
+" diff: ignore whitespaces
+set diffopt+=iwhite
+
 " jump to the last position when reopening a file
 if has("autocmd")
   let s:last_position_disable_filetypes = ['gitcommit']
