@@ -38,6 +38,10 @@ snippet #include
 	#include <sstream>
 	using namespace std;
 
+	#define REP(i, n) for(int i = 0; i < (int)(n); ++ i)
+	#define FOR(i, b, e) for(auto i = b; i < e; ++ i)
+	#define all(x) (x).begin(), (x).end()
+
 snippet main
 	int main() {
 		${1}
