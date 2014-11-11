@@ -104,6 +104,11 @@ set lazyredraw				" no redrawing during macro execution
 
 set mps+=<:>
 
+" when launching files via quickfix, CtrlP, or something else,
+" first switch to existing tab (if any) that contains the target buffer,
+" or open a new buffer by splitting window in the current tab otherwise.
+set switchbuf+=usetab,split
+
 " diff: ignore whitespaces
 set diffopt+=iwhite
 
