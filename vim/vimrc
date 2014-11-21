@@ -344,6 +344,10 @@ endif
 
 " CtrlP.vim {{{
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|bin)|(\.(ico|git|svn))$'
+
+" Default to filename searches (switch: C-D)
+let g:ctrlp_by_filename = 1
+
 " }}}
 
 " CtrlP-Z {{{
