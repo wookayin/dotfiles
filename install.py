@@ -14,6 +14,7 @@ tasks = {
     # VIM
     '~/.vimrc' : 'vim/vimrc',
     '~/.vim' : 'vim',
+    '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
 
     # GIT
     '~/.gitconfig' : 'git/gitconfig',
@@ -44,6 +45,11 @@ tasks = {
     # .config
     '~/.config/terminator' : 'config/terminator',
 }
+
+actions = [
+    # Run vim-plug installation
+    'vim +PlugInstall +qall now'
+]
 
 ################# END OF FIXME #################
 
@@ -90,3 +96,6 @@ for target, source in tasks.items():
         os.symlink(source, target)
         print >> stderr, ("%s : symlink created from '%s'" % (target, source))
 
+for action in actions:
+    print 'Executing : ' + action
+    os.system(action)

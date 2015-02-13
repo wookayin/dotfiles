@@ -5,7 +5,19 @@
 
 
 """""""""""""""""""""""""""
-" 1. General Settings
+" 0. Load Plugin
+"""""""""""""""""""""""""""
+
+" All the vim plugins, powered by 'vim-plug', are
+" listed up in the separate file 'plugins.vim'.
+" It is for making this vimrc could also work out-of-box
+" even if not managed by dotfiles.
+if filereadable(expand("\~/.vim/plugins.vim"))
+	source \~/.vim/plugins.vim
+endif
+
+"""""""""""""""""""""""""""
+" 1. general settings
 """""""""""""""""""""""""""
 
 syntax on
