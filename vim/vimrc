@@ -176,7 +176,7 @@ vnoremap < <gv
 vnoremap > >gv
 
 " [F5] Make
-if isdirectory(expand("~/.vim/bundle/vim-dispatch"))
+if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
 	" use vim-dispatch if exists
 	map <F5> <ESC>:w<CR>:Make<CR>
 	imap <F5> <ESC>:w<CR>:Make<CR>

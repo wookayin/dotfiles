@@ -6,7 +6,7 @@ Plug 'bling/vim-airline'
 
 " Integration and Interfaces
 Plug 'scrooloose/nerdtree'
-Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
