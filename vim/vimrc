@@ -76,18 +76,9 @@ set wildignore=*.swp,*.swo,*.class
 set laststatus=2			" show anytime
 
 
-if isdirectory(expand("~/.vim/bundle/vim-airline"))
-	" use airline, with powerline-ish theme
-	let g:airline_theme='powerlineish'
-	let g:airline_powerline_fonts=1
-
-	" suppress mixed-indent warning for javadoc-like comments (/** */)
-	let g:airline#extensions#whitespace#mixed_indent_algo = 1
-else
-	" native customized statusline by fallback
-	set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
-endif
-
+" native customized statusline, if airline is not available
+" (this setting will be replaced afterwards by airline)
+set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
 
 " mouse behaviour
 set mouse=nvc
@@ -353,6 +344,18 @@ endif
 """""""""""""""""""""""""""
 " 5. Plugin Settings
 """""""""""""""""""""""""""
+
+" Airline {{{
+	" use airline, with powerline-ish theme
+	let g:airline_theme='powerlineish'
+	let g:airline_powerline_fonts=1
+
+	" enable tabline feature
+	let g:airline#extensions#tabline#enabled = 1
+
+	" suppress mixed-indent warning for javadoc-like comments (/** */)
+	let g:airline#extensions#whitespace#mixed_indent_algo = 1
+" }}}
 
 " CtrlP.vim {{{
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|bin)|(\.(ico|git|svn))$'
