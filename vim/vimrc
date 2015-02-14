@@ -383,6 +383,13 @@ command! F CtrlPF
 " (e.g. change CWD to the directory hitted by CtrlPZ)
 let g:NERDTreeChDirMode = 1
 
+" <Leader>N toggles NERDTree (across tab)
+map <Leader>N <plug>NERDTreeTabsToggle<CR>
+
+" Startup Options (do NOT show automatically)
+let g:nerdtree_tabs_open_on_console_startup = 0
+let g:nerdtree_tabs_open_on_gui_startup = 0
+
 " }}}
 
 " UltiSnips {{

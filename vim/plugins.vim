@@ -3,9 +3,11 @@ call plug#begin('~/.vim/plugged')
 " General and Behaviour
 Plug 'flazz/vim-colorschemes'
 Plug 'bling/vim-airline'
+Plug 'mhinz/vim-startify'
 
 " Integration and Interfaces
 Plug 'scrooloose/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-fugitive'
