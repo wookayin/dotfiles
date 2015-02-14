@@ -399,6 +399,9 @@ let g:pandoc#modules#disabled = ["folding"]
 " disable conceals
 let g:pandoc#syntax#conceal#use = 0
 
+" disable spell check
+let g:pandoc#spell#enabled = 0
+
 " }}}
 
 
