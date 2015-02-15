@@ -17,7 +17,7 @@ if filereadable(expand("\~/.vim/plugins.vim"))
 endif
 
 """""""""""""""""""""""""""
-" 1. general settings
+" 1. General Settings
 """""""""""""""""""""""""""
 
 syntax on
@@ -344,6 +344,21 @@ endif
 """""""""""""""""""""""""""
 " 5. Plugin Settings
 """""""""""""""""""""""""""
+
+" vim-startify {{{
+
+let g:startify_bookmarks = [
+	\ '~/.vim/vimrc',
+	\ '~/.vim/plugins.vim',
+	\ ]
+
+let g:startify_skiplist = [
+    \ 'COMMIT_EDITMSG',
+    \ $VIMRUNTIME .'/doc',
+    \ 'plugged/.*/doc',
+    \ 'bundle/.*/doc',
+	\ ]
+" }}}
 
 " Airline {{{
 	" use airline, with powerline-ish theme
