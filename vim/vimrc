@@ -407,6 +407,22 @@ let g:nerdtree_tabs_open_on_gui_startup = 0
 
 " }}}
 
+
+" Easymotion {{{
+
+" Trigger <,F> to launch easymotion global jump
+nmap <leader>F <Plug>(easymotion-s)
+
+" backward, forward search is mapped to easymotion.
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+
+" Jump to first match, by Enter or Space
+let g:EasyMotion_enter_jump_first = 1
+let g:EasyMotion_space_jump_first = 1
+
+" }}}
+
 " UltiSnips {{
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
