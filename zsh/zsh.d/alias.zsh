@@ -21,8 +21,8 @@ alias tmuxa='tmux -2 attach-session -d -t'
 # }}}
 
 
-# More Git aliases
-# (overrides przto's git/alias.zsh)
+# More Git aliases ============================= {{{
+# (overrides prezto's default git/alias.zsh)
 
 alias gh='git history'
 alias gha='gh --all'
@@ -32,3 +32,17 @@ alias gds='gd --staged --no-prefix'
 alias gs='git status'
 alias gsu='gs -u'
 
+# }}}
+
+
+# Some useful aliases for CLI scripting (pipe, etc)
+alias awk1="awk '{print \$1}'"
+alias awk2="awk '{print \$2}'"
+alias awk3="awk '{print \$3}'"
+alias awk4="awk '{print \$4}'"
+alias awk5="awk '{print \$5}'"
+alias awk6="awk '{print \$6}'"
+alias awk7="awk '{print \$7}'"
+alias awk8="awk '{print \$8}'"
+alias awk9="awk '{print \$9}'"
+alias awklast="awk '{print \$\(NF\)}'"
