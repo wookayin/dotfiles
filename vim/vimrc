@@ -249,7 +249,7 @@ if &term =~ '256color'
 endif
 
 " apply base theme
-colorscheme xoria256
+silent! colorscheme xoria256
 
 " override more customized colors
 highlight StatusLine    ctermfg=LightGreen
