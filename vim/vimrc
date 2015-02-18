@@ -206,8 +206,9 @@ nnoremap ; :
 " <leader><space> : turn off search highlight
 nmap <leader><space> :noh<CR>
 
-" <leader>a : Ack!
-nnoremap <leader>a :Ack! -i<Space>
+" Plugin ag.vim
+" <leader>ag : Ag (search file contents)
+nnoremap <leader>ag :Ag! -i ""<Left>
 
 " <leader>cd : switch to the directory of the current buffer
 nmap <leader>cd :cd %:p:h<CR>

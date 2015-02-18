@@ -15,7 +15,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'majutsushi/tagbar'
 Plug 'kien/ctrlp.vim'
 Plug 'vim-scripts/ctrlp-z'
-Plug 'mileszs/ack.vim'
+Plug 'rking/ag.vim'
 
 " Utilities
 Plug 'tpope/vim-surround'
