@@ -35,6 +35,11 @@ alias gsu='gs -u'
 # }}}
 
 
+# Other Stuffs
+alias ipy='ipython'
+alias ipynb='ipython notebook'
+
+
 # Some useful aliases for CLI scripting (pipe, etc)
 alias awk1="awk '{print \$1}'"
 alias awk2="awk '{print \$2}'"
