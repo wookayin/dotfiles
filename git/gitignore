@@ -10,3 +10,11 @@ Session.vim
 .AppleDouble
 .LSOverride
 ._*
+
+# IDE stuffs
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.ipynb_checkpoints/
