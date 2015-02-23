@@ -34,6 +34,7 @@ Plug 'vim-scripts/nginx.vim'
 Plug 'klen/python-mode'
 Plug 'davidhalter/jedi-vim'
 Plug 'pangloss/vim-javascript'
+Plug 'briancollins/vim-jst'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 
