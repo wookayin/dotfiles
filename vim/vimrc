@@ -201,6 +201,7 @@ command! Wsudo w !sudo tee % > /dev/null
 " handy command-line mode
 nnoremap ; :
 
+
 " Useful leader key combinations {{{
 
 " <leader><space> : turn off search highlight
@@ -231,6 +232,23 @@ nnoremap <leader>S :call StripTrailingWhitespaces()<CR>
 
 " <leader>df : diffthis
 nnoremap <leader>df :diffthis<CR>
+
+" Surround a word with quotes, single quotes, parens, brackets, braces, etc.
+"   requires and powered by the plugin surround.vim :-)
+" (Note) for visual blocks, use S command from surround.vim
+map  <leader>s" ysiw"
+map  <leader>s' ysiw'
+map  <leader>s` ysiw`
+map  <leader>s* ysiw*l
+map  <leader>s_ ysiw_l
+map  <leader>s~ ysiw~l
+map  <leader>s$ ysiw$
+map  <leader>s( ysiw(
+map  <leader>s) ysiw)
+map  <leader>s[ ysiw[
+map  <leader>s] ysiw]
+map  <leader>s{ ysiw{
+map  <leader>s} ysiw}
 
 " }}}
 
