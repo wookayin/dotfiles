@@ -1,0 +1,3 @@
+setlocal expandtab
+
+setlocal iskeyword+=:
