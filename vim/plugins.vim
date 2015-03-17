@@ -31,6 +31,7 @@ Plug 'MarcWeber/vim-addon-mw-utils'
 
 " Syntax, Completion, Coding stuffs
 Plug 'vim-scripts/nginx.vim'
+Plug 'vim-ruby/vim-ruby'
 Plug 'klen/python-mode'
 Plug 'davidhalter/jedi-vim'
 Plug 'pangloss/vim-javascript'
