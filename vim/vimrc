@@ -179,11 +179,11 @@ vnoremap > >gv
 if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
 	" use vim-dispatch if exists
 	map <F5> <ESC>:w<CR>:Make<CR>
-	imap <F5> <ESC>:w<CR>:Make<CR>
+	imap <F5> <ESC>:w<CR>:Make<CR>a
 else
 	" otherwise, fallback to default make
 	map <F5> <ESC>:w<CR>:make!<CR>
-	imap <F5> <ESC>:w<CR>:make!<CR>
+	imap <F5> <ESC>:w<CR>:make!<CR>a
 endif
 
 " [F4] Next Error [Shift+F4] Previous Error
