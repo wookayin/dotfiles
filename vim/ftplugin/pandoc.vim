@@ -1,8 +1,12 @@
 setlocal expandtab
+set ts=4
+set sw=4
+set sts=4
+
 setlocal iskeyword+=:
 
 if !filereadable('Makefile')
-	let &g:makeprg = "pandoc % -t latex -o %:r.pdf && open %:r.pdf"
+    let &g:makeprg = "pandoc % -t latex -o %:r.pdf && open %:r.pdf"
 endif
 
 " Markdown headings
