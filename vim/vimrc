@@ -190,6 +190,7 @@ endif
 map <F4> <ESC>:cn<CR>
 map [26~ <ESC>:cp<CR>
 map [1;2S <ESC>:cp<CR>
+map [29~ <ESC>:cp<CR>
 
 " [F2] save
 imap <F2> <ESC>:w<CR>
