@@ -175,11 +175,22 @@ nnoremap 9 9gt
 vnoremap < <gv
 vnoremap > >gv
 
-" [F5] Make
+
+" [F5] Make and Build
 if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
 	" use vim-dispatch if exists
-	map <F5> <ESC>:w<CR>:Make<CR>
-	imap <F5> <ESC>:w<CR>:Make<CR>a
+
+	" <F5>: run make, with asynchronously or headless
+	map  <F5> <ESC>:w<CR>:Make!<CR>
+	imap <F5> <ESC>:w<CR>:Make!<CR>a
+
+	" <leader-F5>: run make with visible progress (split window in tmux)
+	map  <leader><F5> <ESC>:w<CR>:Make<CR>
+	imap <leader><F5> <ESC>:w<CR>:Make<CR>a
+
+	" <F6>: show quickfix window (scroll bottom)
+	map  <F6> :Copen<CR>G
+	imap <F6> <ESC>:Copen<CR>G:wincmd w<CR>a
 else
 	" otherwise, fallback to default make
 	map <F5> <ESC>:w<CR>:make!<CR>
