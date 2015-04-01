@@ -7,7 +7,11 @@ setlocal completeopt=longest,menuone,preview
 " ====================
 
 " Show <Quickfix List> buffer at the right splitted vertically
-noremap <F6> <ESC>:cclose<CR>:vertical 60copen<CR>:wincmd h<CR>
+if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
+	noremap <F6> <ESC>:cclose<CR>:Copen<CR>:wincmd L<CR>:60wincmd \|<CR>:wincmd h<CR>
+else
+	noremap <F6> <ESC>:cclose<CR>:vertical 60copen<CR>:wincmd h<CR>
+endif
 
 " Automatic makeprg generation (regarding %:r.in, %r.ans)
 if !filereadable('Makefile')
