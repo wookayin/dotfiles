@@ -322,7 +322,8 @@ fun! StripTrailingWhitespaces()
 	call cursor(l, c)
 endfun
 
-autocmd FileType c,cpp,java,javascript,html,ruby,python autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
+autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc,tex
+	\ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 
 " highlight trailing whitespaces
 highlight ExtraWhitespace ctermbg=red guibg=red
@@ -388,7 +389,7 @@ let g:startify_skiplist = [
     \ $VIMRUNTIME .'/doc',
     \ 'plugged/.*/doc',
     \ 'bundle/.*/doc',
-	\ ]
+    \ ]
 " }}}
 
 " Airline {{{
