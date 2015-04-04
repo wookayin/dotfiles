@@ -143,6 +143,10 @@ imap <down> <c-o>gj
 " Ignore errornous input in Mac OS X
 imap <D-space> <Nop>
 
+" <Ctrl-Space> invokes <C-X><C-O> (omni-completion)
+inoremap <C-Space> <C-x><C-o>
+inoremap <C-@> <C-x><C-o>
+
 " window navigation
 noremap <C-h> <C-w>h
 noremap <C-j> <C-w>j
