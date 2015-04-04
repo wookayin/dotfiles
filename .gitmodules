@@ -7,7 +7,7 @@
 
 [submodule "vim/bundle/vim-pathogen"]
 	path = vim/bundle/vim-pathogen
-	url = https://github.com/tpope/vim-pathogen.git
+	url = https://github.com/tpope/vim-pathogen
 [submodule "vim/bundle/vim-plug"]
 	path = vim/bundle/vim-plug
 	url = https://github.com/junegunn/vim-plug
