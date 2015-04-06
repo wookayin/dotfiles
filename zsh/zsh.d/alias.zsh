@@ -18,6 +18,9 @@ alias tmuxl='tmux list-sessions'
 # tmuxa <session> : attach to <session> (force 256color and detach others)
 alias tmuxa='tmux -2 attach-session -d -t'
 
+# I am lazy, yeah
+alias t='tmuxa'
+
 # }}}
 
 
