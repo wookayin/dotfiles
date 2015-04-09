@@ -24,6 +24,8 @@
 	unassume-unchanged = update-index --no-assume-unchanged
 	list-assume-unchanged = !sh -c 'git ls-files -v | grep "^[a-z]" | sed "s/^..//"'
 
+	amend = commit --amend
+
 [color]
 	status = auto
 	diff = auto
