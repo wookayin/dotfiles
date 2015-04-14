@@ -303,17 +303,14 @@ highlight CursorLine	cterm=none
 
 " show cursorline for active window only
 augroup NrHighlight
-  autocmd!
-  autocmd BufEnter * setlocal cursorline
-  autocmd BufLeave * setlocal nocursorline
+	autocmd!
+	autocmd BufEnter * setlocal cursorline
+	autocmd BufLeave * setlocal nocursorline
 augroup END
 
 " IDE settings
 filetype plugin on
 filetype indent on
-
-" Use spaces instead of tab in python codes
-au FileType python set expandtab
 
 " filetype detections
 au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
@@ -396,11 +393,11 @@ let g:startify_bookmarks = [
 	\ ]
 
 let g:startify_skiplist = [
-    \ 'COMMIT_EDITMSG',
-    \ $VIMRUNTIME .'/doc',
-    \ 'plugged/.*/doc',
-    \ 'bundle/.*/doc',
-    \ ]
+	\ 'COMMIT_EDITMSG',
+	\ $VIMRUNTIME .'/doc',
+	\ 'plugged/.*/doc',
+	\ 'bundle/.*/doc',
+	\ ]
 " }}}
 
 " Airline {{{
