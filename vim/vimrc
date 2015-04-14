@@ -427,8 +427,8 @@ let g:ctrlp_by_filename = 1
 let g:ctrlp_z_nerdtree = 1
 let g:ctrlp_extensions = ['Z', 'F']
 
-nnoremap <leader>z :CtrlPZ<CR>
-nnoremap <leader>f :CtrlPF<CR>
+nnoremap <leader>Z :CtrlPZ<CR>
+nnoremap <leader>F :CtrlPF<CR>
 
 command! Z CtrlPZ
 command! F CtrlPF
@@ -453,8 +453,8 @@ let g:nerdtree_tabs_open_on_gui_startup = 0
 
 " Easymotion {{{
 
-" Trigger <,F> to launch easymotion global jump
-nmap <leader>F <Plug>(easymotion-s)
+" Trigger <,f> to launch easymotion global jump
+nmap <leader>f <Plug>(easymotion-s)
 
 " backward, forward search is mapped to easymotion.
 map  / <Plug>(easymotion-sn)
