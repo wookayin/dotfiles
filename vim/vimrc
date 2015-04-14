@@ -343,6 +343,13 @@ autocmd BufWinLeave * call clearmatches()
 highlight Pmenu ctermfg=black ctermbg=yellow
 highlight PmenuSel ctermfg=red ctermbg=white gui=bold
 
+" http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
+function! ShowSyntaxGroup()
+	echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+		\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+		\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+endfunction
+
 """""""""""""""""""""""""""
 " 4. GUI Options
 """""""""""""""""""""""""""
