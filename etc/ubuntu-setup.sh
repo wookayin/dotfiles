@@ -2,10 +2,11 @@
 
 install_essential_packages() {
 	local -a packages; packages=( \
-		build-essential terminator htop \
-		vim \
+		build-essential \
+		vim zsh curl \
 		python-software-properties software-properties-common \
 		cmake cmake-data \
+		terminator htop \
 		silversearcher-ag \
 		openssh-server mosh \
 		)
