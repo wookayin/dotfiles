@@ -30,6 +30,9 @@ install_ppa_tmux() {
 
 
 # entrypoint script
+if [ `uname` != "Linux" ]; then
+	echo "Run on Linux (not on Mac OS X)"; exit 1
+fi
 if [ -n "$1" ]; then
 	$1
 else
