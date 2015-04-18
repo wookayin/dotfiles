@@ -181,16 +181,29 @@ vnoremap > >gv
 
 
 " [F5] Make and Build
+" smartly dispatch according to filetype
+function! s:run_make(bang)
+	let l:silent_filetypes = ['tex', 'pandoc']
+	" (1) bang given, force background
+	if a:bang == "!" | Make!
+	" (2) for specified filetypes, use background
+	elseif index(l:silent_filetypes, &filetype) >= 0 | Make!
+	" (3) otherwise, make with foreground shown
+	else | Make
+	end
+endfunction
+command! -nargs=0 -bang RunMake call s:run_make("<bang>")
+
 if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
 	" use vim-dispatch if exists
 
-	" <F5>: run make, with asynchronously or headless
-	map  <F5> <ESC>:w<CR>:Make!<CR>
-	imap <F5> <ESC>:w<CR>:Make!<CR>a
+	" <F5>: run make, asynchronously or split windows (dispatch)
+	map  <F5> <ESC>:w<CR>:RunMake<CR>
+	imap <F5> <ESC>:w<CR>:RunMake<CR>a
 
 	" <leader-F5>: run make with visible progress (split window in tmux)
-	map  <leader><F5> <ESC>:w<CR>:Make<CR>
-	imap <leader><F5> <ESC>:w<CR>:Make<CR>a
+	map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
+	imap <leader><F5> <ESC>:w<CR>:RunMake!<CR>a
 
 	" <F6>: show quickfix window (scroll bottom)
 	map  <F6> :Copen<CR>G
