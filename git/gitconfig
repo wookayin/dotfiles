@@ -4,7 +4,7 @@
 [include]
 	# include external gitconfig file (requires git 1.7.10+)
 	# typically, user.name and user.email is configured.
-	path = ~/.gitconfig_secret
+	path = ~/.gitconfig.secret
 
 [core]
 	excludesfile = ~/.gitignore
