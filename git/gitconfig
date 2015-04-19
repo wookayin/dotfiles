@@ -34,6 +34,9 @@
 	ui = auto
 
 [diff]
+	# --no-prefix (for git diff, git show) such as 'a/' 'b/' blah
+	noprefix = true
+
 	# Detect copies as well as renames
 	renames = copies
 
