@@ -38,9 +38,14 @@ alias gsu='gs -u'
 # }}}
 
 
-# Other Stuffs
+# Python ======================================= {{{
 alias ipy='ipython'
 alias ipynb='ipython notebook'
+
+# pip install nose, rednose
+alias nt='NOSE_REDNOSE=1 nosetests -v'
+
+# }}}
 
 
 # Some useful aliases for CLI scripting (pipe, etc)
