@@ -8,6 +8,7 @@ Plug 'mhinz/vim-startify'
 " Integration and Interfaces
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-fugitive'
