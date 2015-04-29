@@ -59,3 +59,11 @@ alias awk7="awk '{print \$7}'"
 alias awk8="awk '{print \$8}'"
 alias awk9="awk '{print \$9}'"
 alias awklast="awk '{print \$\(NF\)}'"
+
+
+# Etc ======================================= {{{
+
+# nvidia-smi every 1 sec
+alias smi='watch -n1 nvidia-smi'
+
+# }}}
