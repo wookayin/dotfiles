@@ -6,6 +6,7 @@ Plug 'bling/vim-airline'
 Plug 'mhinz/vim-startify'
 
 " Integration and Interfaces
+Plug 'junegunn/fzf', { 'dir': '~/.fzf' }
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
