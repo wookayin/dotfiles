@@ -18,6 +18,7 @@ Plug 'majutsushi/tagbar'
 Plug 'kien/ctrlp.vim'
 Plug 'vim-scripts/ctrlp-z'
 Plug 'rking/ag.vim'
+Plug 'kshenoy/vim-signature'
 
 " Utilities
 Plug 'tpope/vim-surround'
