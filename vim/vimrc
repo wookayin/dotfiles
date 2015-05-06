@@ -425,6 +425,11 @@ let g:startify_skiplist = [
 	let g:airline#extensions#whitespace#mixed_indent_algo = 1
 " }}}
 
+" FZF {{{
+" abbrev :F for :FZF
+cnoreabbrev F FZF
+" }}}
+
 " CtrlP.vim {{{
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|bin)|(\.(ico|git|svn))$'
 
@@ -441,7 +446,7 @@ nnoremap <leader>Z :CtrlPZ<CR>
 nnoremap <leader>F :CtrlPF<CR>
 
 command! Z CtrlPZ
-command! F CtrlPF
+"command! F CtrlPF
 
 " }}}
 
