@@ -12,6 +12,10 @@ snippet $$ Math equation block
 	$$
 		${0}
 	$$
+snippet align \begin{aligned} ... \end{aligned} block
+	\begin{aligned}
+	${0}
+	\end{aligned}
 snippet aligned \begin{aligned} ... \end{aligned} block
 	\begin{aligned}
 	${0}
@@ -64,6 +68,12 @@ snippet matrix 2X2 matrix (or other)
 	${4:C}  &  ${5:D}
 	\end{$1matrix}
 #
+# Useful Preamble Things
+# ======================
+snippet preamble Load useful preambles
+	\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+	\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+
 # Figure, etc.
 # ============
 snippet figure
