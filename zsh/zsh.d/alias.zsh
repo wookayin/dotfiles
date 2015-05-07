@@ -39,8 +39,14 @@ alias gsu='gs -u'
 
 
 # Python ======================================= {{{
+
+# virtualenv
+alias wo='workon'
+
+# ipython
 alias ipy='ipython'
 alias ipynb='ipython notebook'
+alias ipynb0='ipynb --ip=0.0.0.0'
 
 # pip install nose, rednose
 alias nt='NOSE_REDNOSE=1 nosetests -v'
