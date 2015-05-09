@@ -474,9 +474,9 @@ let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
 " Trigger <,f> to launch easymotion global jump
 nmap <leader>f <Plug>(easymotion-s)
 
-" backward, forward search is mapped to easymotion.
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
+" backward, forward search may mapped to easymotion.
+"map  / <Plug>(easymotion-sn)
+"omap / <Plug>(easymotion-tn)
 
 " Jump to first match, by Enter or Space
 let g:EasyMotion_enter_jump_first = 1
