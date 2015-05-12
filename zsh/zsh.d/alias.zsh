@@ -45,6 +45,8 @@ alias wo='workon'
 
 # ipython
 alias ipy='ipython'
+alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
+
 alias ipynb='ipython notebook'
 alias ipynb0='ipynb --ip=0.0.0.0'
 
