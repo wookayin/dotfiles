@@ -520,6 +520,10 @@ let g:pymode_run = 0
 " one might need to run 'pip install ipdb'
 let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
 
+" Skip some errors and warnings
+"  E501 : line too long
+let g:pymode_lint_ignore = "E501"
+
 " }}}
 
 
