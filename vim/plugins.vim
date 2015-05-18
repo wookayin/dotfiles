@@ -3,7 +3,6 @@ call plug#begin('~/.vim/plugged')
 " General and Behaviour
 Plug 'flazz/vim-colorschemes'
 Plug 'bling/vim-airline'
-Plug 'mhinz/vim-startify'
 
 " Integration and Interfaces
 Plug 'junegunn/fzf', { 'dir': '~/.fzf' }
