@@ -336,7 +336,7 @@ fun! StripTrailingWhitespaces()
 	call cursor(l, c)
 endfun
 
-autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc,tex
+autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
 	\ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 
 " highlight trailing whitespaces
