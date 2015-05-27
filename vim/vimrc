@@ -63,6 +63,9 @@ set smartcase				" case-sensitive if keyword contains both uppercase and lowerca
 set incsearch
 set hlsearch
 
+" use spaces for tabbing, by default
+set expandtab
+
 " listchars for whitespaces
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
