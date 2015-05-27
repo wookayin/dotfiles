@@ -13,7 +13,7 @@
 " It is for making this vimrc could also work out-of-box
 " even if not managed by dotfiles.
 if filereadable(expand("\~/.vim/plugins.vim"))
-	source \~/.vim/plugins.vim
+    source \~/.vim/plugins.vim
 endif
 
 """""""""""""""""""""""""""
@@ -28,23 +28,23 @@ set runtimepath+=~/.vim
 
 " load plugins with pathogen
 try
-	runtime bundle/vim-pathogen/autoload/pathogen.vim
-	call pathogen#infect()
+    runtime bundle/vim-pathogen/autoload/pathogen.vim
+    call pathogen#infect()
 catch
 endtry
 
 " basic displays
-set number					" show line numbers
+set number                  " show line numbers
 set ruler
 
 " input settings
-set bs=indent,eol,start		" allow backspaces over everything
+set bs=indent,eol,start     " allow backspaces over everything
 set autoindent
 set smartindent
 set pastetoggle=<F8>
 
 set nowrap
-set textwidth=0				" disable automatic line breaking
+set textwidth=0             " disable automatic line breaking
 set cursorline
 
 " tab settings
@@ -53,13 +53,13 @@ set shiftwidth=4
 set softtabstop=4
 
 " tab navigation
-set showtabline=2			" always show tab pannel
+set showtabline=2           " always show tab pannel
 
 set scrolloff=3
 
 " search
-set ignorecase				" case-insensitive by default
-set smartcase				" case-sensitive if keyword contains both uppercase and lowercase
+set ignorecase              " case-insensitive by default
+set smartcase               " case-sensitive if keyword contains both uppercase and lowercase
 set incsearch
 set hlsearch
 
@@ -76,7 +76,7 @@ set wildmode=list:longest,full
 set wildignore=*.swp,*.swo,*.class
 
 " status line
-set laststatus=2			" show anytime
+set laststatus=2            " show anytime
 
 
 " native customized statusline, if airline is not available
@@ -106,7 +106,7 @@ set showcmd
 set visualbell
 set history=1000
 set undolevels=1000
-set lazyredraw				" no redrawing during macro execution
+set lazyredraw              " no redrawing during macro execution
 
 set mps+=<:>
 
@@ -130,7 +130,7 @@ endif
 """"""""""""""""""""""""""""""""
 
 " the leader key
-let mapleader=","			" comma is the <Leader> key.
+let mapleader=","           " comma is the <Leader> key.
 
 " navigation key mapping
 map k gk
@@ -186,35 +186,35 @@ vnoremap > >gv
 " [F5] Make and Build
 " smartly dispatch according to filetype
 function! s:run_make(bang)
-	let l:silent_filetypes = ['tex', 'pandoc']
-	" (1) bang given, force background
-	if a:bang == "!" | Make!
-	" (2) for specified filetypes, use background
-	elseif index(l:silent_filetypes, &filetype) >= 0 | Make!
-	" (3) otherwise, make with foreground shown
-	else | Make
-	end
+    let l:silent_filetypes = ['tex', 'pandoc']
+    " (1) bang given, force background
+    if a:bang == "!" | Make!
+    " (2) for specified filetypes, use background
+    elseif index(l:silent_filetypes, &filetype) >= 0 | Make!
+    " (3) otherwise, make with foreground shown
+    else | Make
+    end
 endfunction
 command! -nargs=0 -bang RunMake call s:run_make("<bang>")
 
 if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
-	" use vim-dispatch if exists
+    " use vim-dispatch if exists
 
-	" <F5>: run make, asynchronously or split windows (dispatch)
-	map  <F5> <ESC>:w<CR>:RunMake<CR>
-	imap <F5> <ESC>:w<CR>:RunMake<CR>a
+    " <F5>: run make, asynchronously or split windows (dispatch)
+    map  <F5> <ESC>:w<CR>:RunMake<CR>
+    imap <F5> <ESC>:w<CR>:RunMake<CR>a
 
-	" <leader-F5>: run make with visible progress (split window in tmux)
-	map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
-	imap <leader><F5> <ESC>:w<CR>:RunMake!<CR>a
+    " <leader-F5>: run make with visible progress (split window in tmux)
+    map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
+    imap <leader><F5> <ESC>:w<CR>:RunMake!<CR>a
 
-	" <F6>: show quickfix window (scroll bottom)
-	map  <F6> :Copen<CR>G
-	imap <F6> <ESC>:Copen<CR>G:wincmd w<CR>a
+    " <F6>: show quickfix window (scroll bottom)
+    map  <F6> :Copen<CR>G
+    imap <F6> <ESC>:Copen<CR>G:wincmd w<CR>a
 else
-	" otherwise, fallback to default make
-	map <F5> <ESC>:w<CR>:make!<CR>
-	imap <F5> <ESC>:w<CR>:make!<CR>a
+    " otherwise, fallback to default make
+    map <F5> <ESC>:w<CR>:make!<CR>
+    imap <F5> <ESC>:w<CR>:make!<CR>a
 endif
 
 " [F4] Next Error [Shift+F4] Previous Error
@@ -290,13 +290,13 @@ map  <leader>s} ysiw}
 
 " color settings
 " @see http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
-set t_Co=256				" use 256 color
+set t_Co=256                 " use 256 color
 set bg=dark
 
 if &term =~ '256color'
-	" Disable Background Color Erase (BCE) so that color schemes
-	" work properly when Vim is used inside tmux and GNU screen.
-	set t_ut=
+    " Disable Background Color Erase (BCE) so that color schemes
+    " work properly when Vim is used inside tmux and GNU screen.
+    set t_ut=
 endif
 
 " apply base theme
@@ -315,13 +315,13 @@ highlight PreProc       ctermfg=219 guifg=#ffafff
 highlight SpecialKey    ctermfg=242 guifg=#666666
 
 " no underline, current cursor line
-highlight CursorLine	cterm=none
+highlight CursorLine    cterm=none
 
 " show cursorline for active window only
 augroup NrHighlight
-	autocmd!
-	autocmd BufEnter * setlocal cursorline
-	autocmd BufLeave * setlocal nocursorline
+    autocmd!
+    autocmd BufEnter * setlocal cursorline
+    autocmd BufLeave * setlocal nocursorline
 augroup END
 
 " IDE settings
@@ -333,14 +333,14 @@ au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
 
 " remove trailing whitespaces on save
 fun! StripTrailingWhitespaces()
-	let l = line(".")
-	let c = col(".")
-	%s/\s\+$//e
-	call cursor(l, c)
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
 endfun
 
 autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
-	\ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
+    \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 
 " highlight trailing whitespaces
 highlight ExtraWhitespace ctermbg=red guibg=red
@@ -358,9 +358,9 @@ highlight PmenuSel ctermfg=red ctermbg=white gui=bold
 
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 function! ShowSyntaxGroup()
-	echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-		\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-		\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+    echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
 endfunction
 
 """""""""""""""""""""""""""
@@ -370,29 +370,29 @@ endfunction
 " gui settings
 if has("gui_running")
 
-	if has("unix")
-		let s:uname = substitute(system("uname -s"), '\n', '', '')
-	endif
+    if has("unix")
+        let s:uname = substitute(system("uname -s"), '\n', '', '')
+    endif
 
-	if has("gui_win32")
-		language mes en			" use english messages (korean characters broken)
-		set langmenu=none		" use english context menus (korean characters broken)
-		set guioptions-=T		" exclude toolbar
-		set guioptions-=m		" exclude menubar
+    if has("gui_win32")
+        language mes en         " use english messages (korean characters broken)
+        set langmenu=none       " use english context menus (korean characters broken)
+        set guioptions-=T       " exclude toolbar
+        set guioptions-=m       " exclude menubar
 
-		" font setting for windows
-		set guifont=Consolas:h11:cANSI
-		set guifontwide=GulimChe:h12:cDEFAULT
+        " font setting for windows
+        set guifont=Consolas:h11:cANSI
+        set guifontwide=GulimChe:h12:cDEFAULT
 
-	elseif has("gui_gtk2")
-		" font setting for Ubuntu linux (GTK)
-		set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
+    elseif has("gui_gtk2")
+        " font setting for Ubuntu linux (GTK)
+        set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
 
-	elseif has("unix") && s:uname == "Darwin"
-		" font setting for Mac OS X (Darwin)
-		set guifont=Monaco\ for\ Powerline:h12
-		set guifontwide=Apple\ SD\ Gothic\ Neo\ UltraLight:h12
-	endif
+    elseif has("unix") && s:uname == "Darwin"
+        " font setting for Mac OS X (Darwin)
+        set guifont=Monaco\ for\ Powerline:h12
+        set guifontwide=Apple\ SD\ Gothic\ Neo\ UltraLight:h12
+    endif
 
 endif
 
@@ -404,28 +404,28 @@ endif
 " vim-startify {{{
 
 let g:startify_bookmarks = [
-	\ '~/.vim/vimrc',
-	\ '~/.vim/plugins.vim',
-	\ ]
+    \ '~/.vim/vimrc',
+    \ '~/.vim/plugins.vim',
+    \ ]
 
 let g:startify_skiplist = [
-	\ 'COMMIT_EDITMSG',
-	\ $VIMRUNTIME .'/doc',
-	\ 'plugged/.*/doc',
-	\ 'bundle/.*/doc',
-	\ ]
+    \ 'COMMIT_EDITMSG',
+    \ $VIMRUNTIME .'/doc',
+    \ 'plugged/.*/doc',
+    \ 'bundle/.*/doc',
+    \ ]
 " }}}
 
 " Airline {{{
-	" use airline, with powerline-ish theme
-	let g:airline_theme='powerlineish'
-	let g:airline_powerline_fonts=1
+    " use airline, with powerline-ish theme
+    let g:airline_theme='powerlineish'
+    let g:airline_powerline_fonts=1
 
-	" enable tabline feature
-	let g:airline#extensions#tabline#enabled = 1
+    " enable tabline feature
+    let g:airline#extensions#tabline#enabled = 1
 
-	" suppress mixed-indent warning for javadoc-like comments (/** */)
-	let g:airline#extensions#whitespace#mixed_indent_algo = 1
+    " suppress mixed-indent warning for javadoc-like comments (/** */)
+    let g:airline#extensions#whitespace#mixed_indent_algo = 1
 " }}}
 
 " FZF {{{
@@ -557,5 +557,5 @@ nnoremap <leader>T :TagbarToggle<CR>
 
 " Use local vimrc if available
 if filereadable(expand("\~/.vimrc.local"))
-	source \~/.vimrc.local
+    source \~/.vimrc.local
 endif
