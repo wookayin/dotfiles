@@ -1,7 +1,7 @@
 " python.vim
 
 if !filereadable('Makefile')
-	let &l:makeprg="python %"
+    let &l:makeprg="python %"
 endif
 
 setlocal expandtab
