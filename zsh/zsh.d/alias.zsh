@@ -53,6 +53,9 @@ alias ipynb0='ipynb --ip=0.0.0.0'
 # pip install nose, rednose
 alias nt='NOSE_REDNOSE=1 nosetests -v'
 
+# Useful python utilities
+alias httpserve='python -mSimpleHTTPServer'
+
 # }}}
 
 
