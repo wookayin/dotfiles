@@ -45,6 +45,9 @@ tasks = {
 
     # .config
     '~/.config/terminator' : 'config/terminator',
+
+    # pip
+    '~/.pip/pip.conf' : 'pip/pip.conf',
 }
 
 actions = [
