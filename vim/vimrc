@@ -186,7 +186,7 @@ vnoremap > >gv
 " [F5] Make and Build
 " smartly dispatch according to filetype
 function! s:run_make(bang)
-    let l:silent_filetypes = ['tex', 'pandoc']
+    let l:silent_filetypes = ['tex', 'pandoc', 'lilypond']
     " (1) bang given, force background
     if a:bang == "!" | Make!
     " (2) for specified filetypes, use background
