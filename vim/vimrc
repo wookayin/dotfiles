@@ -252,8 +252,9 @@ nnoremap <leader>r :redraw!<CR>
 " <leader>src : source ~/.vimrc
 nnoremap <leader>src :source ~/.vimrc<CR>
 
-" <leader>y, <leader>p : yank to or paste from the system clipboard
+" <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
 noremap <leader>y "*y
+noremap <leader>x "*x
 noremap <leader>p "*p
 
 " <leader>w : save
