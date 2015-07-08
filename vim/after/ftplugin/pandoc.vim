@@ -3,7 +3,7 @@ set ts=4
 set sw=4
 set sts=4
 
-setlocal iskeyword+=:
+setlocal iskeyword+=_,:
 
 if !filereadable('Makefile')
     let &g:makeprg = "pandoc % -t latex -o %:r.pdf"
