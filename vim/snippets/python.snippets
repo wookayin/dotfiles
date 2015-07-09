@@ -16,9 +16,14 @@ snippet freopen
 
 snippet class
 	class ${1:ClassName}(${2:object}):
-	    def __init__(self):
-	        pass
 
+	    def __init__(self):
+			${3:super($1, self).__init__()}
+			${0}
+
+		def __repr__(self):
+			return str(self)
+#
 snippet main
 	def main():
 	    ${1:pass}
