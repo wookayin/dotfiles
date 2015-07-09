@@ -26,6 +26,9 @@
 
 	amend = commit --amend
 
+	wdiff = diff --color-words
+	wshow = show --color-words
+
 [color]
 	status = auto
 	diff = auto
