@@ -20,3 +20,9 @@ if [[ -n "$TMUX" ]]; then
 else
   export TERM="xterm-256color"
 fi
+
+# iTerm integration (for OS X iTerm2)
+# @see https://iterm2.com/shell_integration.html
+if [[ "`uname`" == "Darwin" ]] && [[ -f ${HOME}/.iterm2_shell_integration.zsh ]]; then
+    source ${HOME}/.iterm2_shell_integration.zsh
+fi
