@@ -48,8 +48,9 @@ tasks = {
     # .config
     '~/.config/terminator' : 'config/terminator',
 
-    # pip
+    # pip and python
     '~/.pip/pip.conf' : 'pip/pip.conf',
+    '~/.pythonrc.py' : 'pythonrc.py',
 }
 
 actions = [
