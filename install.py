@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 
 ################# BEGIN OF FIXME #################
@@ -55,10 +55,18 @@ tasks = {
 
 actions = [
     # Run vim-plug installation
-    'vim +PlugInstall +qall now'
+    'vim +PlugInstall +qall'
 ]
 
 ################# END OF FIXME #################
+
+def _wrap_colors(ansicode):
+    return (lambda msg: ansicode + str(msg) + '\033[0m')
+GRAY   = _wrap_colors("\033[0;37m")
+RED    = _wrap_colors("\033[0;31m")
+GREEN  = _wrap_colors("\033[0;32m")
+YELLOW = _wrap_colors("\033[0;33m")
+BLUE   = _wrap_colors("\033[0;34m")
 
 
 import glob, os
@@ -76,33 +84,50 @@ def option():
 current_dir = os.path.abspath(os.path.dirname(__file__))
 options = option()
 
+def log(msg):
+    stderr.write(msg)
+    stderr.write('\n')
+
 for target, source in tasks.items():
     # normalize paths
     source = os.path.join(current_dir, source)
     target = os.path.expanduser(target)
 
-    # if source does not exists...
+    # bad entry if source does not exists...
     if not os.path.lexists(source):
-        print >> stderr, ("source %s : does not exists" % source)
+        log(RED("source %s : does not exist" % source))
         continue
 
-    # if --force option is given, delete the previously existing symlink
-    if os.path.lexists(target) and os.path.islink(target) and options.force == True:
-        os.unlink(target)
-
-    # make a symbolic link!
+    # if --force option is given, delete and override the previous symlink
     if os.path.lexists(target):
-        print >> stderr, ("%s : already exists" % target) + (options.force and ' (not a symlink, hence --force option ignored)' or '')
-    else:
+        if options.force:
+            if os.path.islink(target):
+                os.unlink(target)
+            else:
+                log("{:50s} : {}".format(
+                    BLUE(target),
+                    YELLOW("already exists but not a symbolic link; --force option ignored")
+                ))
+        else:
+            log("{:50s}: {}".format(
+                BLUE(target),
+                GRAY("already exists, skipped")
+            ))
+
+    # make a symbolic link if available
+    if not os.path.lexists(target):
         try:
             mkdir_target = os.path.split(target)[0]
             os.makedirs(mkdir_target)
-            print >> stderr, 'Created directory : {}'.format(mkdir_target)
+            log(GREEN('Created directory : %s' % mkdir_target))
         except:
             pass
         os.symlink(source, target)
-        print >> stderr, ("%s : symlink created from '%s'" % (target, source))
+        log("{:50s} : {}".format(
+            BLUE(target),
+            GREEN("symlink created from '%s'" % source)
+        ))
 
 for action in actions:
-    print 'Executing : ' + action
+    print('Executing : ' + action)
     os.system(action)
