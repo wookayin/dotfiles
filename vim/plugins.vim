@@ -45,5 +45,6 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'LaTeX-Box-Team/LaTeX-Box'
 Plug 'gisraptor/vim-lilypond-integrator'
 Plug 'tfnico/vim-gradle'
+Plug 'rdolgushin/groovy.vim'
 
 call plug#end()
