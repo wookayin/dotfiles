@@ -425,6 +425,9 @@ let g:startify_skiplist = [
     " enable tabline feature
     let g:airline#extensions#tabline#enabled = 1
 
+    " do not display buffers in the tabline if there is only one tab
+    let g:airline#extensions#tabline#show_buffers = 0
+
     " suppress mixed-indent warning for javadoc-like comments (/** */)
     let g:airline#extensions#whitespace#mixed_indent_algo = 1
 " }}}
