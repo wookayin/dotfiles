@@ -3,6 +3,7 @@
 "
 " https://github.com/wookayin/dotfiles
 
+scriptencoding utf-8
 
 """""""""""""""""""""""""""
 " 0. Load Plugin
