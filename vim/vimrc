@@ -125,6 +125,8 @@ if has("autocmd")
   au BufReadPost * if index(s:last_position_disable_filetypes, &ft) < 0 && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"zz" | endif
 endif
 
+" use strong encryption
+set cryptmethod=blowfish2
 
 """"""""""""""""""""""""""""""""
 " 2. Key and Functional Mappings
