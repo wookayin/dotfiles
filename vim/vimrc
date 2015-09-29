@@ -126,7 +126,11 @@ if has("autocmd")
 endif
 
 " use strong encryption
-set cryptmethod=blowfish2
+if v:version == 704 && has('patch399')
+    set cryptmethod=blowfish2 " Requires >= 7.4.399
+else
+    set cryptmethod=blowfish
+endif
 
 """"""""""""""""""""""""""""""""
 " 2. Key and Functional Mappings
