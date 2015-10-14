@@ -92,3 +92,7 @@ export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
 # python startup
 export PYTHONSTARTUP=$HOME/.pythonrc.py
+
+
+# Disable dot files in archive
+export COPYFILE_DISABLE=true
