@@ -32,6 +32,7 @@ Plug 'tomtom/tlib_vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
 
 " Syntax, Completion, Coding stuffs
+Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-scripts/nginx.vim'
 Plug 'vim-ruby/vim-ruby'
