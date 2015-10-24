@@ -1,3 +1,5 @@
+let s:darwin = has('mac')
+
 call plug#begin('~/.vim/plugged')
 
 " General and Behaviour
@@ -30,6 +32,9 @@ Plug 'SirVer/ultisnips'
 Plug 'vim-scripts/matchit.zip'
 Plug 'tomtom/tlib_vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
+if s:darwin
+  Plug 'rizzatti/dash.vim',  { 'on': 'Dash' }
+endif
 
 " Syntax, Completion, Coding stuffs
 Plug 'octol/vim-cpp-enhanced-highlight'
