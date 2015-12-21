@@ -518,7 +518,7 @@ let g:pandoc#spell#enabled = 0
 " }}}
 
 
-" python-mode {{{
+" python {{{
 
 " disable code folding by default
 let g:pymode_folding = 0
@@ -540,6 +540,11 @@ let g:pymode_lint_cwindow = 0
 " Skip some errors and warnings
 "  E501 : line too long
 let g:pymode_lint_ignore = "E501"
+
+" Make jedi's completeopt not to include 'longest',
+" to prevent underscore prefix auto-completion (e.g. self.__)
+" @see jedi-vim issues #429
+let g:jedi#auto_vim_configuration = 0
 
 " }}}
 
