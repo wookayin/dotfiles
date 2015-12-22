@@ -538,8 +538,9 @@ let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
 let g:pymode_lint_cwindow = 0
 
 " Skip some errors and warnings
+"  E401 : multiple imports on one line
 "  E501 : line too long
-let g:pymode_lint_ignore = "E501"
+let g:pymode_lint_ignore = "E401,E501"
 
 " Make jedi's completeopt not to include 'longest',
 " to prevent underscore prefix auto-completion (e.g. self.__)
