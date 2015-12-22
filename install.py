@@ -49,7 +49,7 @@ tasks = {
     '~/.config/terminator' : 'config/terminator',
 
     # pip and python
-    '~/.pip/pip.conf' : 'pip/pip.conf',
+    #'~/.pip/pip.conf' : 'pip/pip.conf',
     '~/.pythonrc.py' : 'pythonrc.py',
 }
 
