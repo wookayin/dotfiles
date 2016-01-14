@@ -520,6 +520,10 @@ let g:pandoc#spell#enabled = 0
 
 " python {{{
 
+" heavenshell/vim-pydocstring
+" Change default keymapping to <C-_> (default is <C-l>)
+nmap <silent> <C-_> <Plug>(pydocstring)
+
 " disable code folding by default
 let g:pymode_folding = 0
 
