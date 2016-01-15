@@ -24,7 +24,6 @@ Plug 'kshenoy/vim-signature'
 " Utilities
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'rhysd/clever-f.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'scrooloose/nerdcommenter'
 Plug 'sjl/gundo.vim'
