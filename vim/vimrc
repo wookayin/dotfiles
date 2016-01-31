@@ -443,9 +443,12 @@ let g:startify_skiplist = [
 " FZF {{{
 " abbrev :F for :FZF
 cnoreabbrev F FZF
+
+" Invoke FZF Using Ctrl-P
+nmap <C-P> :FZF<CR>
 " }}}
 
-" CtrlP.vim {{{
+" CtrlP.vim (deprecated) {{{
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|bin)|(\.(ico|git|svn))$'
 
 " Default to filename searches (switch: C-D)
@@ -453,17 +456,6 @@ let g:ctrlp_by_filename = 1
 
 " }}}
 
-" CtrlP-Z {{{
-let g:ctrlp_z_nerdtree = 1
-let g:ctrlp_extensions = ['Z', 'F']
-
-nnoremap <leader>Z :CtrlPZ<CR>
-nnoremap <leader>F :CtrlPF<CR>
-
-command! Z CtrlPZ
-"command! F CtrlPF
-
-" }}}
 
 " NerdTree {{{
 

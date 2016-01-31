@@ -9,6 +9,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 " Integration and Interfaces
 Plug 'junegunn/fzf', { 'dir': '~/.fzf' }
+Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -18,8 +19,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'majutsushi/tagbar'
-Plug 'kien/ctrlp.vim'
-Plug 'vim-scripts/ctrlp-z'
 Plug 'rking/ag.vim'
 Plug 'kshenoy/vim-signature'
 
