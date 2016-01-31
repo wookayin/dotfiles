@@ -352,6 +352,7 @@ autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc,tex
 
 " highlight trailing whitespaces
 highlight ExtraWhitespace ctermbg=red guibg=red
+autocmd FileType GV highlight clear ExtraWhitespace
 
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
