@@ -34,6 +34,7 @@ tasks = {
     '~/.local/bin/fasd' : 'zsh/fasd/fasd',
     '~/.local/bin/imgcat' : 'bin/imgcat',
     '~/.local/bin/imgls' : 'bin/imgls',
+    '~/.local/bin/fzf' : '~/.fzf/bin/fzf', # fzf is at $HOME/.fzf
 
     # X
     '~/.Xmodmap' : 'Xmodmap',
@@ -102,7 +103,7 @@ for l in stat.split('\n'):
 
 for target, source in tasks.items():
     # normalize paths
-    source = os.path.join(current_dir, source)
+    source = os.path.join(current_dir, os.path.expanduser(source))
     target = os.path.expanduser(target)
 
     # bad entry if source does not exists...
@@ -121,7 +122,7 @@ for target, source in tasks.items():
                     YELLOW("already exists but not a symbolic link; --force option ignored")
                 ))
         else:
-            log("{:50s}: {}".format(
+            log("{:50s} : {}".format(
                 BLUE(target),
                 GRAY("already exists, skipped")
             ))
