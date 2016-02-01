@@ -69,9 +69,15 @@ YELLOW = _wrap_colors("\033[0;33m")
 BLUE   = _wrap_colors("\033[0;34m")
 
 
-import glob, os
+import os
+import sys
+import subprocess
 from optparse import OptionParser
 from sys import stderr
+
+def log(msg):
+    stderr.write(msg)
+    stderr.write('\n')
 
 # command line arguments
 def option():
@@ -80,13 +86,19 @@ def option():
     (options, args) = parser.parse_args()
     return options
 
-# get current directory (absolute path) and options
-current_dir = os.path.abspath(os.path.dirname(__file__))
 options = option()
 
-def log(msg):
-    stderr.write(msg)
-    stderr.write('\n')
+# get current directory (absolute path) and options
+current_dir = os.path.abspath(os.path.dirname(__file__))
+os.chdir(current_dir)
+
+# check if git submodules are loaded properly
+stat = subprocess.check_output("git submodule status", shell=True)
+for l in stat.split('\n'):
+    if len(l) and l[0] == '-':
+        log(RED("git submodule %s does not exist!" % l.split()[1]))
+        log(RED(" you may run: $ git submodule update --init"))
+        sys.exit(1)
 
 for target, source in tasks.items():
     # normalize paths
