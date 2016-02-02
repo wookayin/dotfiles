@@ -15,4 +15,4 @@ setlocal cc=80
 
 " goto definition
 map  <F3> :call jedi#goto()<CR>
-imap <F3> :call jeid#goto()<CR>
+imap <F3> <ESC>:call jedi#goto()<CR>
