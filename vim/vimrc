@@ -339,6 +339,8 @@ filetype indent on
 " filetype detections
 au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
 
+autocmd FileType git setlocal foldlevel=1
+
 " remove trailing whitespaces on save
 fun! StripTrailingWhitespaces()
     let l = line(".")
