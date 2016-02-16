@@ -47,7 +47,7 @@ alias wo='workon'
 alias ipy='ipython'
 alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
 
-alias ipynb='ipython notebook'
+alias ipynb='jupyter notebook'
 alias ipynb0='ipynb --ip=0.0.0.0'
 
 # pip install nose, rednose
