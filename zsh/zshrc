@@ -26,3 +26,6 @@ fi
 if [[ "`uname`" == "Darwin" ]] && [[ -f ${HOME}/.iterm2_shell_integration.zsh ]]; then
     source ${HOME}/.iterm2_shell_integration.zsh
 fi
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
