@@ -546,6 +546,10 @@ let g:pymode_lint_ignore = "E401,E501"
 " @see jedi-vim issues #429
 let g:jedi#auto_vim_configuration = 0
 
+" Turn off call signatures temporarily, due to an annoying bug
+" @see https://github.com/davidhalter/jedi-vim/issues/257
+let g:jedi#show_call_signatures = 0
+
 " }}}
 
 
