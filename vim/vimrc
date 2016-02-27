@@ -94,8 +94,8 @@ set fileencodings=utf-8,cp949,latin1
 set fileformats=unix,dos
 
 " split and autocomplete settings
-set splitbelow                      " preview window at bottom
-set completeopt=menuone,preview     " show preview and pop-up menu
+set splitbelow                              " preview window at bottom
+set completeopt=menuone,preview,longest     " show preview and pop-up menu
 
 
 " no fucking swap and backup files
