@@ -431,7 +431,7 @@ let g:startify_skiplist = [
 
 " Airline {{{
     " use airline, with powerline-ish theme
-    let g:airline_theme='powerlineish'
+    let g:airline_theme='bubblegum'
     let g:airline_powerline_fonts=1
 
     " enable tabline feature
