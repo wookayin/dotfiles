@@ -10,6 +10,9 @@
 	excludesfile = ~/.gitignore
 	pager = less -F
 
+	# do not quote non-ascii characters; display unicodes as-is
+	quotepath = false
+
 [alias]
 	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
 		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
