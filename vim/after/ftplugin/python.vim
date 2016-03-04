@@ -10,6 +10,9 @@ setlocal sw=4
 setlocal sts=4
 setlocal cc=80
 
+" braceless.vim
+BracelessEnable +indent +highlight
+
 " shortcuts
 " =========
 
