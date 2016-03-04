@@ -450,6 +450,15 @@ cnoreabbrev F FZF
 
 " Invoke FZF Using Ctrl-P
 nmap <C-P> :FZF<CR>
+
+
+" Leader key mappings for vim-fzf commands
+
+" Tags in the current buffer (see tagbar)
+nnoremap <leader>FT :BTags<CR>
+" Git commits
+nnoremap <leader>FG :Commits<CR>
+
 " }}}
 
 " CtrlP.vim (deprecated) {{{
