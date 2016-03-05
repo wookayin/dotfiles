@@ -461,6 +461,8 @@ nmap <C-P> :FZF<CR>
 
 " Leader key mappings for vim-fzf commands
 
+" List all open buffers
+nnoremap <leader>FB :Buffers<CR>
 " Tags in the current buffer (see tagbar)
 nnoremap <leader>FT :BTags<CR>
 " Git commits
