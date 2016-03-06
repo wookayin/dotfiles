@@ -15,3 +15,6 @@
 [submodule "tmux/plugins/tpm"]
 	path = tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
+[submodule "zsh/k"]
+	path = zsh/k
+	url = https://github.com/supercrabtree/k
