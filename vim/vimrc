@@ -215,7 +215,6 @@ if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
 
     " <leader-F5>: run make with visible progress (split window in tmux)
     map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
-    imap <leader><F5> <ESC>:w<CR>:RunMake!<CR>a
 
     " <F6>: show quickfix window (scroll bottom)
     map  <F6> :Copen<CR>G
