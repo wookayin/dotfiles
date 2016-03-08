@@ -477,6 +477,17 @@ let g:ctrlp_by_filename = 1
 
 " }}}
 
+" SuperTab {{{
+
+" Use 'omnicomplete' as the default completion type.
+" It may fallback to default keyword completion (<C-P>).
+let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
+
+" sometimes we may want to insert tabs or spaces for indentation.
+" no tab completion at the start of line, after comma, or after whitespace.
+let g:SuperTabNoCompleteAfter = ['^', ',', '\s']
+
+" }}}
 
 " NerdTree {{{
 

@@ -10,6 +10,7 @@ Plug 'vim-airline/vim-airline-themes'
 " Integration and Interfaces
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
 Plug 'junegunn/fzf.vim'
+Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
