@@ -484,8 +484,8 @@ let g:ctrlp_by_filename = 1
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 
 " sometimes we may want to insert tabs or spaces for indentation.
-" no tab completion at the start of line, after comma, or after whitespace.
-let g:SuperTabNoCompleteAfter = ['^', ',', '\s']
+" no tab completion at the start of line or after whitespace.
+let g:SuperTabNoCompleteAfter = ['^', '\s']
 
 " }}}
 
