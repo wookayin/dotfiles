@@ -149,8 +149,9 @@ sunmap j
 
 nmap <up> gk
 nmap <down> gj
-imap <up> <c-o>gk
-imap <down> <c-o>gj
+
+inoremap <up> <c-\><c-o>gk
+inoremap <down> <c-\><c-o>gj
 
 " Ignore errornous input in Mac OS X
 imap <D-space> <Nop>
