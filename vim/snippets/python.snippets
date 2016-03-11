@@ -34,7 +34,6 @@ snippet init
 snippet repr
 	def __repr__(self):
 		return ${1:str(self)}
-
 #
 snippet main
 	def main():
@@ -42,4 +41,9 @@ snippet main
 
 	if __name__ == '__main__':
 	    main()
-
+#
+snippet argparse
+	import argparse
+	parser = argparse.ArgumentParser(description=__doc__)
+	parser.add_argument('${1:-o}', ${2:'outfile',} default=${3:None}, type=${4:str}, help=None)
+	args = parser.parse_args()
