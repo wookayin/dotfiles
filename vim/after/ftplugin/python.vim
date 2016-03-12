@@ -11,7 +11,14 @@ setlocal sts=4
 setlocal cc=80
 
 " braceless.vim
-BracelessEnable +indent +highlight
+silent! BracelessEnable +indent +highlight
+
+" For python, exclude 'longest' from completeopt in order
+" to prevent underscore prefix auto-completion (e.g. self.__)
+" @see jedi-vim issues #429
+" @see g:jedi#auto_vim_configuration
+set completeopt-=longest
+
 
 " shortcuts
 " =========
