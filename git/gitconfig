@@ -1,4 +1,4 @@
-# vim: set ft=gitconfig:
+# vim: set ft=gitconfig noet:
 # @seealso https://www.kernel.org/pub/software/scm/git/docs/git-config.html
 
 [include]
@@ -53,8 +53,11 @@
 	# Adopt the new default in Git 2.x
 	default = simple
 
+[branch]
+	# Make all new branches to automatically use rebase rather than merge, on pull
+	autosetuprebase = always
+
 [credential]
 	# Enable HTTP(S) auth credential caching
 	# for 60 seconds (requires git 1.7.9+)
 	helper = cache --timeout 60
-
