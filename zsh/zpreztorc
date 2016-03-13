@@ -66,6 +66,19 @@ zstyle ':prezto:module:editor' key-bindings 'vi'
 # zstyle ':prezto:module:gnu-utility' prefix 'g'
 
 #
+# History Substring Search
+#
+
+# Set the query found color.
+# zstyle ':prezto:module:history-substring-search:color' found ''
+
+# Set the query not found color.
+# zstyle ':prezto:module:history-substring-search:color' not-found ''
+
+# Set the search globbing flags.
+# zstyle ':prezto:module:history-substring-search' globbing-flags ''
+
+#
 # Pacman
 #
 
@@ -82,54 +95,48 @@ zstyle ':prezto:module:editor' key-bindings 'vi'
 zstyle ':prezto:module:prompt' theme 'wook'
 
 #
+# Ruby
+#
+
+# Auto switch the Ruby version on directory change.
+# zstyle ':prezto:module:ruby:chruby' auto-switch 'yes'
+
+#
 # Screen
 #
 
-# Auto start a session when Zsh is launched.
-# zstyle ':prezto:module:screen' auto-start 'yes'
+# Auto start a session when Zsh is launched in a local terminal.
+# zstyle ':prezto:module:screen:auto-start' local 'yes'
+
+# Auto start a session when Zsh is launched in a SSH connection.
+# zstyle ':prezto:module:screen:auto-start' remote 'yes'
 
 #
-# GPG-Agent
+# SSH
 #
 
-# Enable SSH-Agent protocol emulation.
-# zstyle ':prezto:module:gpg-agent' ssh-support 'yes'
-
-#
-# SSH-Agent
-#
-
-# Enable ssh-agent forwarding.
-# zstyle ':prezto:module:ssh-agent' forwarding 'yes'
-
-# Set ssh-agent identities to load.
-# zstyle ':prezto:module:ssh-agent' identities 'id_rsa' 'id_rsa2' 'id_github'
+# Set the SSH identities to load into the agent.
+# zstyle ':prezto:module:ssh:load' identities 'id_rsa' 'id_rsa2' 'id_github'
 
 #
 # Syntax Highlighting
 #
 
 # Set syntax highlighters.
-# By default main, brackets, and cursor are enabled.
+# By default, only the main highlighter is enabled.
 # zstyle ':prezto:module:syntax-highlighting' highlighters \
 #   'main' \
-#   'pattern' \
 #   'brackets' \
+#   'pattern' \
+#   'line' \
 #   'cursor' \
 #   'root'
-
-# Highlight Options and Colors
-# @see https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/highlighters/main/main-highlighter.zsh
-zstyle ':prezto:module:syntax-highlighting' styles \
-  'builtin' 'fg=green' \
-  'alias' 'fg=cyan' \
-  'command' 'fg=cyan' \
-  'path' 'fg=white,bold' \
-  'globbing' 'fg=white,bold,underline' \
-  'single-quoted-argument' 'fg=magenta' \
-  'double-quoted-argument' 'fg=cyan' \
-  'assign' 'fg=magenta' \
-  'function' 'fg=yellow'
+#
+# Set syntax highlighting styles.
+# zstyle ':prezto:module:syntax-highlighting' styles \
+#   'builtin' 'bg=blue' \
+#   'command' 'bg=blue' \
+#   'function' 'bg=blue'
 
 #
 # Terminal
@@ -138,10 +145,21 @@ zstyle ':prezto:module:syntax-highlighting' styles \
 # Auto set the tab and window titles.
 zstyle ':prezto:module:terminal' auto-title 'yes'
 
+# Set the window title format.
+# zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
+
+# Set the tab title format.
+# zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
+
 #
 # Tmux
 #
 
-# Auto start a session when Zsh is launched.
-# zstyle ':prezto:module:tmux' auto-start 'yes'
+# Auto start a session when Zsh is launched in a local terminal.
+# zstyle ':prezto:module:tmux:auto-start' local 'yes'
 
+# Auto start a session when Zsh is launched in a SSH connection.
+# zstyle ':prezto:module:tmux:auto-start' remote 'yes'
+
+# Integrate with iTerm2.
+# zstyle ':prezto:module:tmux:iterm' integrate 'yes'
