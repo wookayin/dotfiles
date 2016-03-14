@@ -32,6 +32,7 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'archive' \
+  'rsync' \
   'completion' \
   'prompt' \
   'syntax-highlighting' \
