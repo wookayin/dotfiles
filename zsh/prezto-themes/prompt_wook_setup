@@ -38,6 +38,13 @@ function prompt_wook_precmd {
     node-info on
     node-info
   fi
+
+  # nvidia-cuda information
+  if [ ! -z "${CUDA_VISIBLE_DEVICES+1}" ]; then
+    cuda_info=" CUDA:$CUDA_VISIBLE_DEVICES"
+  else
+    unset cuda_info
+  fi
 }
 
 function prompt_wook_setup {
@@ -103,6 +110,7 @@ ${git_info:+${(e)git_info[prompt]}}\
 %B%F{green}]\
 ${ruby_info[version]}\
 ${python_info[virtualenv]}\
+${cuda_info}\
 ${node_info[version]}\
 
 ${editor_info[keymap]} \
