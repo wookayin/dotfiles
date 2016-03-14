@@ -54,9 +54,17 @@ tasks = {
     '~/.pythonrc.py' : 'pythonrc.py',
 }
 
-actions = [
+post_actions = [
     # Run vim-plug installation
-    'vim +PlugInstall +qall'
+    'vim +PlugInstall +qall',
+
+    # Change default shell if possible
+    r'''# Change default shell to zsh
+    if [[ ! "$SHELL" = *zsh ]]; then
+        echo -e '\033[0;33mPlease type your password if you wish to change the default shell to ZSH\e[m'
+        chsh -s /bin/zsh && echo -e 'Successfully changed the default shell, please re-login'
+    fi
+    '''
 ]
 
 ################# END OF FIXME #################
@@ -64,6 +72,7 @@ actions = [
 def _wrap_colors(ansicode):
     return (lambda msg: ansicode + str(msg) + '\033[0m')
 GRAY   = _wrap_colors("\033[0;37m")
+WHITE  = _wrap_colors("\033[1;37m")
 RED    = _wrap_colors("\033[0;31m")
 GREEN  = _wrap_colors("\033[0;32m")
 YELLOW = _wrap_colors("\033[0;33m")
@@ -141,6 +150,6 @@ for target, source in tasks.items():
             GREEN("symlink created from '%s'" % source)
         ))
 
-for action in actions:
-    print('Executing : ' + action)
-    os.system(action)
+for action in post_actions:
+    print(WHITE('Executing : ') + action.strip().split('\n')[0])
+    subprocess.call(['bash', '-c', action])
