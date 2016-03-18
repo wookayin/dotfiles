@@ -85,9 +85,10 @@ import subprocess
 from optparse import OptionParser
 from sys import stderr
 
-def log(msg):
+def log(msg, cr=True):
     stderr.write(msg)
-    stderr.write('\n')
+    if cr:
+        stderr.write('\n')
 
 # command line arguments
 def option():
@@ -104,11 +105,21 @@ os.chdir(current_dir)
 
 # check if git submodules are loaded properly
 stat = subprocess.check_output("git submodule status", shell=True)
-for l in stat.split('\n'):
-    if len(l) and l[0] == '-':
-        log(RED("git submodule %s does not exist!" % l.split()[1]))
-        log(RED(" you may run: $ git submodule update --init"))
+submodule_missing = [l.split()[1] for l in stat.split('\n') if len(l) and l[0] == '-']
+
+if submodule_missing:
+    log(RED("git submodule %s does not exist!" % submodule_missing[0]))
+    log(RED(" you may run: $ git submodule update --init --recursive"))
+
+    log("")
+    log(YELLOW("Do you want to update submodules? (y/n) "), cr=False)
+    shall_we = (raw_input().lower() == 'y')
+    if shall_we:
+        subprocess.call('git submodule update --init --recursive', shell=True)
+    else:
+        log(RED("Aborted."))
         sys.exit(1)
+
 
 for target, source in tasks.items():
     # normalize paths
