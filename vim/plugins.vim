@@ -14,6 +14,7 @@ Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'vim-voom/VOoM', { 'on' : 'Voom' }
 Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-fugitive'
@@ -57,5 +58,6 @@ Plug 'LaTeX-Box-Team/LaTeX-Box'
 Plug 'gisraptor/vim-lilypond-integrator'
 Plug 'tfnico/vim-gradle'
 Plug 'rdolgushin/groovy.vim'
+
 
 call plug#end()

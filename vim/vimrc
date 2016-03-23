@@ -508,6 +508,9 @@ let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
 
 " }}}
 
+" Voom {{{
+let g:voom_ft_modes = {'pandoc': 'markdown', 'tex': 'latex'}
+" }}}
 
 " Easymotion {{{
 
