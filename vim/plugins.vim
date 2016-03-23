@@ -14,7 +14,7 @@ Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'vim-voom/VOoM', { 'on' : 'Voom' }
+Plug 'vim-voom/VOoM', { 'on' : ['Voom', 'VoomToggle'] }
 Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-fugitive'
