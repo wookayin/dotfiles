@@ -42,6 +42,15 @@ snippet main
 	if __name__ == '__main__':
 	    main()
 #
+snippet embed
+	from IPython import embed; embed()
+
+snippet ipdb
+	import ipdb; ipdb.set_trace()
+
+snippet pudb
+	import pudb; pudb.set_trace()
+
 snippet argparse
 	import argparse
 	parser = argparse.ArgumentParser(description=__doc__)
