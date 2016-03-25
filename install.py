@@ -122,7 +122,7 @@ if submodule_missing:
         sys.exit(1)
 
 
-for target, source in tasks.items():
+for target, source in sorted(tasks.items()):
     # normalize paths
     source = os.path.join(current_dir, os.path.expanduser(source))
     target = os.path.expanduser(target)
