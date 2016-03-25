@@ -48,6 +48,7 @@ tasks = {
 
     # .config
     '~/.config/terminator' : 'config/terminator',
+    '~/.config/pudb/pudb.cfg' : 'config/pudb/pudb.cfg',
 
     # pip and python
     #'~/.pip/pip.conf' : 'pip/pip.conf',
