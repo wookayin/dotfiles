@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: set noet:
 
 install_essential_packages() {
 	local -a packages; packages=( \
@@ -26,6 +27,21 @@ install_ppa_tmux() {
 	sudo add-apt-repository -y ppa:pi-rho/dev
 	sudo apt-get update
 	sudo apt-get install -y tmux
+}
+
+install_ppa_nginx() {
+	# https://launchpad.net/~nginx/+archive/ubuntu/stable
+	sudo add-apt-repository -y ppa:nginx/stable
+	sudo apt-get update
+	sudo apt-get install -y nginx
+}
+
+install_all() {
+	# TODO dependency management: duplicated 'apt-get update'?
+	install_essential_packages
+	install_ppa_tmux
+	install_ppa_git
+	install_ppa_nginx
 }
 
 
