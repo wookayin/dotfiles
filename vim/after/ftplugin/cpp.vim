@@ -19,8 +19,12 @@ if !filereadable('Makefile')
     let s:basename = expand("%:r")
     let s:has_input  = filereadable(s:basename . ".in")
     let s:has_answer = filereadable(s:basename . ".ans")
+    let s:extraflag = ""
 
-    let s:makeprg_compile = printf("g++ -g -Wall --std=c++0x -O2 %s -o %s", s:sourcefile, s:basename)
+    let s:gccver = system("g++ --version | grep '^g++' | sed 's/^.* //g'")
+    if s:gccver >= "4.9.0" | let s:extraflag = s:extraflag . " -fdiagnostics-color=never" | endif
+
+    let s:makeprg_compile = printf("g++ -g -Wall --std=c++0x -O2 %s -o %s %s", s:sourcefile, s:basename, s:extraflag)
     let s:makeprg_run     = printf("time ./%s", s:basename)
     if s:has_input  | let s:makeprg_run .= printf(" < %s.in", s:basename) | endif
     if s:has_answer | let s:makeprg_run .= printf(" | tee %s.out && diff -wu %s.out %s.ans", s:basename, s:basename, s:basename) | endif
