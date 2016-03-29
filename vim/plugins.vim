@@ -42,6 +42,7 @@ endif
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-scripts/nginx.vim'
+Plug 'Tyilo/applescript.vim'
 Plug 'vim-ruby/vim-ruby'
 Plug 'klen/python-mode'
 Plug 'heavenshell/vim-pydocstring'
