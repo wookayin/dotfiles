@@ -593,6 +593,9 @@ let g:jedi#show_call_signatures = 0
 
 " }}}
 
+" LaTeX {{{
+let g:LatexBox_Folding = 1
+" }}}
 
 " fugitive {{{
 
