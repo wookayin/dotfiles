@@ -35,6 +35,9 @@ alias gds='gd --staged --no-prefix'
 alias gs='git status'
 alias gsu='gs -u'
 
+# using the vim plugin 'GV'!
+alias gv='vim +:GV'
+
 # }}}
 
 
