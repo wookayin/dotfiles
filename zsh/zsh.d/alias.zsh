@@ -36,7 +36,11 @@ alias gs='git status'
 alias gsu='gs -u'
 
 # using the vim plugin 'GV'!
-alias gv='vim +:GV'
+function _vim_gv {
+    vim -c ":GV $1"
+}
+alias gv='_vim_gv'
+alias gva='gv --all'
 
 # }}}
 
