@@ -21,30 +21,23 @@ snippet class
 	class ${1:ClassName}(${2:object}):
 
 	    def __init__(self):
-			${3:super($1, self).__init__()}
-			${0}
+	        ${3:super($1, self).__init__()}
+	        ${0}
 
-		def __repr__(self):
-			return str(self)
+	    def __repr__(self):
+	        return str(self)
 
 snippet super
 	super(${1:ChildClass}, self).__init__(${2:args})
 
 snippet init
 	def __init__(self):
-		${1:pass}
+	    ${1:pass}
 
 snippet repr
 	def __repr__(self):
-		return ${1:str(self)}
-#
-snippet main
-	def main():
-	    ${1:pass}
+	    return ${1:str(self)}
 
-	if __name__ == '__main__':
-	    main()
-#
 snippet embed
 	from IPython import embed; embed()
 
@@ -59,3 +52,10 @@ snippet argparse
 	parser = argparse.ArgumentParser(description=__doc__)
 	parser.add_argument('${1:-o}', ${2:'outfile',} default=${3:None}, type=${4:str}, help=None)
 	args = parser.parse_args()
+
+snippet main
+	def main():
+	    ${1:pass}
+
+	if __name__ == '__main__':
+	    main()
