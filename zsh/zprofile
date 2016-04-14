@@ -1,2 +1,2 @@
-# set default permission of file to 604 (rw----r--)
-umask 072
+# set default permission of file to 644 (rw-r--r--)
+umask 022
