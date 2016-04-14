@@ -85,4 +85,9 @@ alias awklast="awk '{print \$\(NF\)}'"
 # nvidia-smi every 1 sec
 alias smi='watch -n1 nvidia-smi'
 
+function usegpu {
+    export CUDA_VISIBLE_DEVICES=$1
+}
+
+
 # }}}
