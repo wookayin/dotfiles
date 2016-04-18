@@ -50,7 +50,7 @@ snippet pudb
 snippet argparse
 	import argparse
 	parser = argparse.ArgumentParser(description=__doc__)
-	parser.add_argument('${1:-o}', ${2:'outfile',} default=${3:None}, type=${4:str}, help=None)
+	parser.add_argument('${1:-o}', ${2:'--outfile',} default=${3:None}, type=${4:str})
 	args = parser.parse_args()
 
 snippet main
