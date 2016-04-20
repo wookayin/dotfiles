@@ -591,6 +591,10 @@ let g:jedi#smart_auto_mappings = 0
 " @see https://github.com/davidhalter/jedi-vim/issues/257
 let g:jedi#show_call_signatures = 0
 
+" make jedi-vim open a new tab instead of switching the current buffer,
+" when goto (e.g. goto definition) is performed
+let g:jedi#use_tabs_not_buffers = 1
+
 " }}}
 
 " LaTeX {{{
