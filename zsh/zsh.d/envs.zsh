@@ -10,3 +10,7 @@ export FZF_CTRL_R_OPTS='--sort'
 # @see history/init.zsh
 export HISTSIZE=100000
 export SAVEHIST=100000
+
+# No, I don't want share command history.
+unsetopt SHARE_HISTORY
+setopt NO_SHARE_HISTORY
