@@ -82,6 +82,9 @@ alias awklast="awk '{print \$\(NF\)}'"
 
 # Etc ======================================= {{{
 
+# default watch options
+alias watch='watch --color -n1'
+
 # nvidia-smi every 1 sec
 alias smi='watch -n1 nvidia-smi'
 
