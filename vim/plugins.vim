@@ -23,6 +23,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'majutsushi/tagbar'
 Plug 'rking/ag.vim'
 Plug 'kshenoy/vim-signature'
+Plug 'junegunn/vim-easy-align'
 
 " Utilities
 Plug 'tpope/vim-surround'
