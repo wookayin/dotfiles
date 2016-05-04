@@ -46,6 +46,9 @@
 	# Detect copies as well as renames
 	renames = copies
 
+[merge]
+	conflictstyle = diff3
+
 [format]
 	pretty = fuller
 
