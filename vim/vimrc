@@ -581,6 +581,10 @@ let g:pymode_run = 0
 " one might need to run 'pip install ipdb'
 let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
 
+" Check code on every save (not on the fly)
+let g:pymode_lint_on_write = 1
+let g:pymode_lint_unmodified = 1
+
 " Do NOT open quickfix window when any pymode_lint errors have been found
 let g:pymode_lint_cwindow = 0
 
