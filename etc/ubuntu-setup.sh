@@ -18,7 +18,7 @@ install_ppa_git() {
     # https://launchpad.net/~git-core/+archive/ubuntu/ppa
     sudo add-apt-repository -y ppa:git-core/ppa
     sudo apt-get update
-    sudo apt-get install -y git-all
+    sudo apt-get install -y git-all git-extras
 }
 
 install_ppa_tmux() {
