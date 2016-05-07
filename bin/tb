@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+
+import subprocess
+import argparse
+import os.path
+
+parser = argparse.ArgumentParser(description=r'''
+Launch tensorboard on multiple directories in an easy way.
+''')
+parser.add_argument('--port', default=6006, type=int)
+parser.add_argument('dirs', nargs='+', type=str)
+args = parser.parse_args()
+
+if not args.dirs:
+    import sys
+    sys.stderr.write('Argument required\n')
+    sys.exit(1)
+
+cmd = 'tensorboard --port="{}" --logdir="{}"'.format(
+    args.port,
+    ','.join(["%s:%s" % (os.path.basename(s), s) for s in args.dirs])
+)
+print(cmd)
+subprocess.call(cmd, shell=True)
