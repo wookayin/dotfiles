@@ -567,6 +567,9 @@ let g:pandoc#spell#enabled = 0
 " Change default keymapping to <C-_> (default is <C-l>)
 nmap <silent> <C-_> <Plug>(pydocstring)
 
+" :Lint shortcut for :PymodeLint
+command! -nargs=0 Lint PymodeLint
+
 " disable code folding by default
 let g:pymode_folding = 0
 
