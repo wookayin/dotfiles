@@ -450,7 +450,7 @@ let g:startify_skiplist = [
 " Inside vim, set environment variable FZF_DEFAULT_COMMAND
 " so that it can list the files by 'git ls-files' or 'ag'.
 if executable("ag")
-    let $FZF_DEFAULT_COMMAND = '(git ls-files ":/" || ag -l -g "") | LC_COLLATE=C sort  2> /dev/null'
+    let $FZF_DEFAULT_COMMAND = '(git ls-files ":/" || ag -l -g "") | LC_COLLATE=C sort | uniq  2> /dev/null'
 endif
 
 " abbrev :F for :FZF
