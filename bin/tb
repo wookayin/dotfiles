@@ -15,6 +15,7 @@ parser.add_argument('dirs', nargs='+', type=str,
                     help='directories of train instances to monitor')
 args = parser.parse_args()
 
+args.dirs = [s for s in args.dirs if os.path.isdir(s)]
 for s in args.dirs:
     print('Monitoring %s ...' % s)
 print('')
