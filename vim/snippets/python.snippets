@@ -59,3 +59,11 @@ snippet main
 
 	if __name__ == '__main__':
 	    main()
+#
+# Tensorflow
+#
+snippet tfsession
+	session = tf.Session(config=tf.ConfigProto(
+	    gpu_options=tf.GPUOptions(per_process_gpu_memory_fraction=0.333),
+	    device_count={'GPU': 1},
+	))
