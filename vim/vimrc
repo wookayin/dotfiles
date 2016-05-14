@@ -271,7 +271,8 @@ noremap <leader>p "*p
 nnoremap <leader>w :w!<CR>
 
 " <leader>S : Strip trailing whitespaces
-nnoremap <leader>S :call StripTrailingWhitespaces()<CR>
+command! -nargs=0 Strip call StripTrailingWhitespaces()
+nnoremap <leader>S :Strip<CR>
 
 " <leader>df : diffthis
 nnoremap <leader>df :diffthis<CR>
