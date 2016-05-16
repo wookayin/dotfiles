@@ -85,6 +85,14 @@ fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes $fpath)
 # Python - Virtualenv, etc.
 #
 
+if [[ "$(uname)" == "Darwin" ]]; then
+    # Mac OS X: use python shipped by Homebrew for virtualenv.
+    export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python'
+else
+    # use default system python for virtualenv.
+    export VIRTUALENVWRAPPER_PYTHON='/usr/bin/python'
+fi
+
 # ensure that all new virtual environments are isolated from the system site-packages.
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
