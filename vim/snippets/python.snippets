@@ -64,6 +64,6 @@ snippet main
 #
 snippet tfsession
 	session = tf.Session(config=tf.ConfigProto(
-	    gpu_options=tf.GPUOptions(per_process_gpu_memory_fraction=0.333),
+	    gpu_options=tf.GPUOptions(allow_growth=True),
 	    device_count={'GPU': 1},
 	))
