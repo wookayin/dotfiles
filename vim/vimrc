@@ -294,6 +294,9 @@ map  <leader>s] ysiw]
 map  <leader>s{ ysiw{
 map  <leader>s} ysiw}
 
+" Zoom Tmux
+map <leader>z :silent exec "!tmux resize-pane -Z"<CR>
+
 " }}}
 
 """""""""""""""""""""""""""""""""
