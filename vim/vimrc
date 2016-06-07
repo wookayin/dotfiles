@@ -208,6 +208,9 @@ function! s:run_make(bang)
 endfunction
 command! -nargs=0 -bang RunMake call s:run_make("<bang>")
 
+" A handy way to set makeprg.
+command! -nargs=1 Makeprg let &g:makeprg="<args>" | echo "makeprg = <args>"
+
 if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
     " use vim-dispatch if exists
 
