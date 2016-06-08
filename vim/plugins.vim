@@ -47,8 +47,9 @@ Plug 'Tyilo/applescript.vim'
 Plug 'vim-ruby/vim-ruby'
 Plug 'klen/python-mode'
 Plug 'heavenshell/vim-pydocstring'
-"Plug 'tweekmonster/braceless.vim'
-Plug 'davidhalter/jedi-vim'
+if !has('nvim')
+    Plug 'davidhalter/jedi-vim'
+endif
 Plug 'othree/html5.vim'
 Plug 'kchmck/vim-coffee-script'
 Plug 'pangloss/vim-javascript'
@@ -65,7 +66,11 @@ if has('nvim')
     function! DoRemote(arg)
         UpdateRemotePlugins
     endfunction
+
     Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+
+    " in neovim, deoplete-jedi replaces jedi-vim
+    Plug 'zchee/deoplete-jedi'
 endif
 
 call plug#end()
