@@ -8,6 +8,12 @@ alias rm='nocorrect rm -iv'
 # Screen
 alias scr='screen -rD'
 
+# v: Neovim (if exists) or Vim
+if command -v nvim 2>&1 >/dev/null; then
+    alias v='nvim'
+else
+    alias v='vim'
+fi
 
 # Tmux ========================================= {{{
 
