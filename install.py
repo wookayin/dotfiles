@@ -16,6 +16,9 @@ tasks = {
     '~/.vim' : 'vim',
     '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
 
+    # NeoVIM
+    '~/.config/nvim' : 'nvim',
+
     # GIT
     '~/.gitconfig' : 'git/gitconfig',
     '~/.gitignore' : 'git/gitignore',

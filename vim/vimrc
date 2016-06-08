@@ -86,7 +86,11 @@ set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
 
 " mouse behaviour
 set mouse=nvc
-set ttymouse=xterm2
+if ! has('nvim')
+    " vim only (not in neovim)
+    set ttymouse=xterm2
+endif
+
 
 " encoding and line ending settings
 set encoding=utf-8
@@ -128,10 +132,12 @@ if has("autocmd")
 endif
 
 " use strong encryption
-if v:version == 704 && has('patch399')
-    set cryptmethod=blowfish2 " Requires >= 7.4.399
-else
-    set cryptmethod=blowfish
+if ! has('nvim')
+    if v:version == 704 && has('patch399')
+        set cryptmethod=blowfish2 " Requires >= 7.4.399
+    else
+        set cryptmethod=blowfish
+    endif
 endif
 
 """"""""""""""""""""""""""""""""

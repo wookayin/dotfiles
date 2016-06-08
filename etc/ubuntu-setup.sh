@@ -35,6 +35,14 @@ install_ppa_nginx() {
     sudo apt-get install -y nginx
 }
 
+install_neovim() {
+    sudo add-apt-repository -y ppa:neovim-ppa/unstable
+    sudo apt-get install
+    sudo apt-get install -y neovim
+    sudo /usr/bin/pip install neovim
+    sudo /usr/bin/pip3 install neovim
+}
+
 install_all() {
     # TODO dependency management: duplicated 'apt-get update'?
     install_essential_packages
