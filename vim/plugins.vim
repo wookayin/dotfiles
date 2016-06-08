@@ -61,5 +61,11 @@ Plug 'gisraptor/vim-lilypond-integrator'
 Plug 'tfnico/vim-gradle'
 Plug 'rdolgushin/groovy.vim'
 
+if has('nvim')
+    function! DoRemote(arg)
+        UpdateRemotePlugins
+    endfunction
+    Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+endif
 
 call plug#end()

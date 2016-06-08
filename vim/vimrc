@@ -650,7 +650,9 @@ nnoremap <leader>G :GundoToggle<CR>
 " tagbar key mappings
 nnoremap <leader>T :TagbarToggle<CR>
 
-
+" deoplete.nvim {{{
+let g:deoplete#enable_at_startup = 1
+" }}}
 
 """""""""""""""""""""""""""
 " Extra Settings
