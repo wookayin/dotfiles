@@ -37,7 +37,7 @@ install_ppa_nginx() {
 
 install_neovim() {
     sudo add-apt-repository -y ppa:neovim-ppa/unstable
-    sudo apt-get install
+    sudo apt-get update
     sudo apt-get install -y neovim
     sudo /usr/bin/pip install neovim
     sudo /usr/bin/pip3 install neovim
