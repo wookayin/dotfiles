@@ -46,6 +46,9 @@
 	# Detect copies as well as renames
 	renames = copies
 
+	# smarter diff on splits around blank lines (Git 2.9.0+)
+	compactionHeuristic = true
+
 [merge]
 	conflictstyle = diff3
 
