@@ -9,3 +9,6 @@ let g:tex_isk='48-57,_,a-z,A-Z,192-255,:'
 if !filereadable('Makefile')
     let &l:makeprg = "(latexmk -pdf -pdflatex=\"xelatex -halt-on-error -interaction=nonstopmode\" %:r && latexmk -c %:r)"
 endif
+
+" configure default fold level
+setlocal foldlevel=3
