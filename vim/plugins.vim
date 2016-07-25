@@ -40,26 +40,18 @@ if s:darwin
 endif
 
 " Syntax, Completion, Coding stuffs
-Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'rust-lang/rust.vim'
-Plug 'vim-scripts/nginx.vim'
-Plug 'Tyilo/applescript.vim'
-Plug 'vim-ruby/vim-ruby'
+Plug 'sheerun/vim-polyglot'
+
 Plug 'klen/python-mode'
-Plug 'heavenshell/vim-pydocstring'
 if !has('nvim')
     Plug 'davidhalter/jedi-vim'
 endif
-Plug 'othree/html5.vim'
-Plug 'kchmck/vim-coffee-script'
-Plug 'pangloss/vim-javascript'
-Plug 'briancollins/vim-jst'
-Plug 'wavded/vim-stylus'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'LaTeX-Box-Team/LaTeX-Box'
 Plug 'gisraptor/vim-lilypond-integrator'
 Plug 'tfnico/vim-gradle'
+Plug 'Tyilo/applescript.vim'
 Plug 'rdolgushin/groovy.vim'
 
 if has('nvim')
