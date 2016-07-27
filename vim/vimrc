@@ -615,6 +615,15 @@ let g:pymode_lint_cwindow = 0
 "  E501 : line too long
 let g:pymode_lint_ignore = "E401,E501"
 
+
+" For neovim, disable jedi's autocompletion behavior but
+" enable all the other features (e.g. goto, or refactoring)
+" The autocompletion is supported by deoplete-jedi.
+if has('nvim')
+    " @see https://github.com/zchee/deoplete-jedi/issues/35
+    let g:jedi#completions_enabled = 0
+endif
+
 " Make jedi's completeopt not to include 'longest',
 " to prevent underscore prefix auto-completion (e.g. self.__)
 " @see jedi-vim issues #429

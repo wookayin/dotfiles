@@ -43,9 +43,8 @@ endif
 Plug 'sheerun/vim-polyglot'
 
 Plug 'klen/python-mode'
-if !has('nvim')
-    Plug 'davidhalter/jedi-vim'
-endif
+Plug 'davidhalter/jedi-vim'
+
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'LaTeX-Box-Team/LaTeX-Box'
