@@ -428,6 +428,12 @@ endif
 " 5. Plugin Settings
 """""""""""""""""""""""""""
 
+" vim-polyglot {{{
+
+let g:polyglot_disabled = ['python']
+
+" }}}
+
 " vim-startify {{{
 
 let g:startify_bookmarks = [
