@@ -472,8 +472,8 @@ if executable("ag")
     let $FZF_DEFAULT_COMMAND = '(git ls-files ":/" || ag -l -g "") | LC_COLLATE=C sort | uniq  2> /dev/null'
 endif
 
-" abbrev :F for :FZF
-cnoreabbrev F FZF
+" :F is a shortcut for :FZF
+command! F FZF
 
 " Invoke FZF Using Ctrl-P
 nmap <C-P> :FZF<CR>
