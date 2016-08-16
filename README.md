@@ -8,12 +8,16 @@ Personal dotfiles for \*NIX (Mac OS X and Linux) systems.
 ### Clone and Install!
 
 ```bash
-git clone --recursive https://github.com/wookayin/dotfiles.git ~/.dotfiles
+git clone --recursive -j8 https://github.com/wookayin/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles && python install.py
 ```
 
+Note: The `-j8` (`--jobs 8`) option works with Git >= 2.8 (for parallel submodule fetching).
+For older versions of Git, try without `-j` option.
+
 The installation script will create symbolic links for the specified dotfiles.
-If the target file already exists (e.g. `~/.vim`), you will have to manually resolve it (delete the old one or just ignore).
+If some target file already exists (e.g. `~/.vim`), you will need to manually resolve the conflict (delete the old one or just ignore).
+
 
 ### install.py script
 
