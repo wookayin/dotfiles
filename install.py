@@ -69,7 +69,22 @@ post_actions = [
         echo -e '\033[0;33mPlease type your password if you wish to change the default shell to ZSH\e[m'
         chsh -s /bin/zsh && echo -e 'Successfully changed the default shell, please re-login'
     fi
-    '''
+    ''',
+
+    # Create ~/.gitconfig.secret file and check user configuration
+    r'''# Create ~/.gitconfig.secret and user configuration
+    if [ ! -f ~/.gitconfig.secret ]; then
+        cat > ~/.gitconfig.secret <<EOL
+# vim: set ft=gitconfig:
+EOL
+    fi
+    if ! git config --file ~/.gitconfig.secret user.name 2>&1 > /dev/null; then echo -ne '
+    \033[1;33m[!] Please configure git user name and email:
+        git config --file ~/.gitconfig.secret user.name "(YOUR NAME)"
+        git config --file ~/.gitconfig.secret user.email "(YOUR EMAIL)"
+\033[0m'
+    fi
+    ''',
 ]
 
 ################# END OF FIXME #################
