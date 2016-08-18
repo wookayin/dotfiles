@@ -36,9 +36,12 @@ install_ppa_nginx() {
 }
 
 install_neovim() {
+    # https://launchpad.net/~neovim-ppa/+archive/ubuntu/unstable
     sudo add-apt-repository -y ppa:neovim-ppa/unstable
     sudo apt-get update
     sudo apt-get install -y neovim
+
+    command -v /usr/bin/pip3 2>&1 > /dev/null || sudo apt-get install python3-pip
     sudo /usr/bin/pip install neovim
     sudo /usr/bin/pip3 install neovim
 }
