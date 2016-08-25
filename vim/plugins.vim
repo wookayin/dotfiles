@@ -45,6 +45,8 @@ Plug 'sheerun/vim-polyglot'
 Plug 'klen/python-mode'
 Plug 'davidhalter/jedi-vim'
 
+Plug 'artur-shaik/vim-javacomplete2'
+
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'LaTeX-Box-Team/LaTeX-Box'
