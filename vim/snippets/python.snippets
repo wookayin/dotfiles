@@ -65,6 +65,9 @@ snippet main
 snippet PATH
 	__PATH__ = os.path.abspath(os.path.dirname(__file__))
 #
+snippet jsondump
+	json.dumps(${1:object}, sort_keys=True, indent=4, separators=(',', ': '))
+#
 # Tensorflow
 #
 snippet tfsession
