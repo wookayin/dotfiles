@@ -63,6 +63,9 @@ post_actions = [
     # Run vim-plug installation
     'vim +PlugInstall +qall',
 
+    # Install tmux plugins via tpm
+    '~/.tmux/plugins/tpm/bin/install_plugins',
+
     # Change default shell if possible
     r'''# Change default shell to zsh
     if [[ ! "$SHELL" = *zsh ]]; then
