@@ -354,6 +354,7 @@ filetype indent on
 
 " filetype detections
 au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
+au BufRead,BufNewFile *.prototxt if &ft == '' | setfiletype yaml | endif
 
 autocmd FileType git setlocal foldlevel=1
 
