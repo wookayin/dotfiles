@@ -172,6 +172,12 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
+if has('nvim')
+    " workaround for <c-h> mapping bug in neovim
+    " @see https://github.com/neovim/neovim/issues/2048
+    nmap <BS> <C-W>h
+endif
+
 " Tab navigations
 nnoremap <C-t>     :tabnew<CR>
 nnoremap <C-S-tab> :tabprevious<CR>
