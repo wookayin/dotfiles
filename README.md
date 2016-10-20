@@ -12,7 +12,7 @@ git clone --recursive -j8 https://github.com/wookayin/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles && python install.py
 ```
 
-Note: The `-j8` (`--jobs 8`) option works with Git >= 2.8 (for parallel submodule fetching).
+Note: The `-j8` (`--jobs 8`) option works with Git >= 2.8 (parallel submodule fetching).
 For older versions of Git, try without `-j` option.
 
 The installation script will create symbolic links for the specified dotfiles.
