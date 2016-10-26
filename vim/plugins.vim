@@ -41,6 +41,7 @@ endif
 
 " Syntax, Completion, Coding stuffs
 Plug 'sheerun/vim-polyglot'
+Plug 'tmux-plugins/vim-tmux'
 
 Plug 'klen/python-mode'
 Plug 'davidhalter/jedi-vim'
