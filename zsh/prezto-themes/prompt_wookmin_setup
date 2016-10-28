@@ -1,0 +1,113 @@
+#
+# A theme of my own!
+# Inspired and based on Sorin's zsh prompt theme.
+#
+# Authors:
+#   Jongwook Choi <wookayin@gmail.com>
+#   Sorin Ionescu <sorin.ionescu@gmaiolcom>
+
+
+function prompt_wookmin_precmd {
+  # A pre-command prompt hook function.
+
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+
+  # Get Git repository information.
+  if (( $+functions[git-info] )); then
+    git-info on
+    git-info
+  fi
+
+  # PWD
+
+  # Ruby - RVM
+  if (( $+functions[ruby-info] )); then
+    ruby-info on
+    ruby-info
+  fi
+
+  # Python - Virtualenv
+  if (( $+functions[python-info] )); then
+    python-info on
+    python-info
+  fi
+
+  # Node - NVM
+  if (( $+functions[node-info] )); then
+    node-info on
+    node-info
+  fi
+
+  # nvidia-cuda information
+  if [ ! -z "${CUDA_VISIBLE_DEVICES+1}" ]; then
+    cuda_info=" CUDA:$CUDA_VISIBLE_DEVICES"
+  else
+    unset cuda_info
+  fi
+}
+
+function prompt_wookmin_setup {
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent subst)
+
+  # Load required functions and dependencies.
+  autoload -Uz add-zsh-hook
+
+  # Add hook that is executed before each command.
+  add-zsh-hook precmd prompt_wookmin_precmd
+
+  # editor (vi-mode, etc ...)
+  zstyle ':prezto:module:editor:info:keymap:primary' format '%B%F{red}❯%F{yellow}❯%(?.%F{green}.%F{red})❯%f%b'
+  zstyle ':prezto:module:editor:info:keymap:alternate' format '%B%(?.%F{green}.%F{red})❮%F{yellow}❮%F{red}❮%f%b'
+
+  # git
+  # For the unicode letters, be sure to use an appropriate font.
+  zstyle ':prezto:module:git:info' verbose 'yes'
+  zstyle ':prezto:module:git:info:action'    format ':%%B%F{yellow}%s%f%%b'
+  zstyle ':prezto:module:git:info:added'     format ' %%B%F{green}✚%f%%b'
+  zstyle ':prezto:module:git:info:ahead'     format ' %%B%F{blue}↑%f%%b'
+  zstyle ':prezto:module:git:info:behind'    format ' %%B%F{blue}↓%f%%b'
+  zstyle ':prezto:module:git:info:branch'    format ':%F{green}%b%f'
+  zstyle ':prezto:module:git:info:commit'    format '(%F{yellow}%.7c%f)'
+  zstyle ':prezto:module:git:info:deleted'   format ' %%B%F{red}✖%f%%b'
+  zstyle ':prezto:module:git:info:modified'  format ' %%B%F{yellow}✱%f%%b'
+  zstyle ':prezto:module:git:info:position'  format ':%F{red}%p%f'
+  zstyle ':prezto:module:git:info:renamed'   format ' %%B%F{magenta}→%f%%b'
+  zstyle ':prezto:module:git:info:stashed'   format ' %%B%F{cyan}✭%f%%b'
+  zstyle ':prezto:module:git:info:unmerged'  format ' %%B%F{yellow}═%f%%b'
+  zstyle ':prezto:module:git:info:untracked' format ' %%B%F{white}?%f%%b'
+
+  zstyle ':prezto:module:git:info:keys' format \
+    'prompt' ' $(coalesce "%b" "%c")%s' \
+    'rprompt' '%A%B%S%a%d%m%r%U%u'
+
+  # Ruby - RVM
+  zstyle ':prezto:module:ruby:info:version' format ' %F{magenta}%v%f'
+
+  # Python virtualenv
+  zstyle ':prezto:module:python:info:virtualenv' format ' %F{cyan}%v%f'
+
+  # Node nvm
+  zstyle ':prezto:module:node:info:version' format ' node:%F{green}%v%f'
+
+  # Define the color for displaying host (machine name).
+  # Configurable using $PROMPT_HOST_COLOR variable, whose default value is blue (if was unset)
+  if [ -z "$PROMPT_HOST_COLOR" ]; then
+    PROMPT_HOST_COLOR='blue'
+  fi
+
+  # Define prompts.
+  PROMPT='\
+${editor_info[keymap]} \
+'
+
+  RPROMPT='${cuda_info} ${python_info[virtualenv]} ${git_info[rprompt]}'
+
+  SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+}
+
+prompt_wookmin_setup "$@"
+
+# vim: set ft=zsh:
