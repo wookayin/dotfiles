@@ -90,12 +90,14 @@ snippet tightlist Preambles for \tightlist
 # ============
 snippet graphics
 	\includegraphics[width=\textwidth]{${1:filename.png}}
+#
 snippet figure
 	\begin{figure}[htb] \begin{center}
 	    \includegraphics[width=\textwidth]{${1:filename.png}}
 	    \caption{${2:Caption here}}
 	    \label{fig:${3:figure1}}
 	\end{center} \end{figure}
+#
 snippet subfigure
 	\begin{figure}[h!]
 	\centering
@@ -111,3 +113,7 @@ snippet subfigure
 	    \caption{Second Subfigure}
 	\end{subfigure}
 	\end{figure}
+#
+snippet newcolumntype
+	\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+	%\setlength\tabcolsep{2pt} % default value: 6pt
