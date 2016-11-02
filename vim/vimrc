@@ -397,6 +397,8 @@ function! ShowSyntaxGroup()
         \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
 endfunction
 
+noremap <leader>syn :call ShowSyntaxGroup()<cr>
+
 """""""""""""""""""""""""""
 " 4. GUI Options
 """""""""""""""""""""""""""
