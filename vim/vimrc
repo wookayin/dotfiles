@@ -654,6 +654,16 @@ let g:jedi#use_tabs_not_buffers = 1
 
 " }}}
 
+
+" deoplete-clang {{{
+
+let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.4/lib/libclang.so'
+
+let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
+
+" }}}
+
+
 " LaTeX {{{
 let g:LatexBox_Folding = 1
 " }}}
