@@ -5,10 +5,10 @@ install_essential_packages() {
         build-essential \
         vim zsh curl \
         python-software-properties software-properties-common \
-        cmake cmake-data ctags \
-        terminator htop \
+        cmake cmake-data ctags autoconf \
+        terminator htop iotop iftop \
         silversearcher-ag \
-        openssh-server mosh \
+        openssh-server mosh rdate \
         )
 
     sudo apt-get install -y ${packages[@]}
