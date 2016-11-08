@@ -40,6 +40,8 @@ if s:darwin
 endif
 
 " Syntax, Completion, Coding stuffs
+Plug 'editorconfig/editorconfig-vim'
+
 Plug 'sheerun/vim-polyglot'
 Plug 'tmux-plugins/vim-tmux'
 
