@@ -45,7 +45,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'tmux-plugins/vim-tmux'
 
-Plug 'klen/python-mode'
+Plug 'klen/python-mode', { 'branch' : 'develop' }
 Plug 'davidhalter/jedi-vim'
 
 Plug 'artur-shaik/vim-javacomplete2'
