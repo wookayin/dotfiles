@@ -95,7 +95,9 @@ endif
 
 
 " encoding and line ending settings
-set encoding=utf-8
+if !has('nvim')
+    set encoding=utf-8
+endif
 set fileencodings=utf-8,cp949,latin1
 set fileformats=unix,dos
 
