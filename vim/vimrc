@@ -176,6 +176,24 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
+" in terminal mode (neovim)
+if has('nvim')
+    " <C-\><C-n> is the key sequence for escaping form terminal mode
+    " double <C-\> also goes for escaping from terminal
+    tmap <C-\><C-\> <C-\><C-n>
+
+    " Automatically enter insert mode when entering neovim terminal buffer
+    autocmd BufWinEnter,WinEnter term://* startinsert
+
+    " Mapping for <c-hjkl> in terminal mode
+    " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
+    tmap <C-h> <C-\><C-n><C-h>
+    tmap <C-j> <C-\><C-n><C-j>
+    tmap <C-k> <C-\><C-n><C-k>
+    "tmap <C-l> <C-\><C-n><C-l>
+    " TODO: <c-l> is for clear screen...?
+endif
+
 if has('nvim')
     " workaround for <c-h> mapping bug in neovim
     " @see https://github.com/neovim/neovim/issues/2048
