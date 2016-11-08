@@ -24,6 +24,8 @@ endif
 syntax on
 set nocompatible
 
+set shell=/bin/zsh
+
 " use path '~/.vim' even on non-unix machine
 set runtimepath+=~/.vim
 
