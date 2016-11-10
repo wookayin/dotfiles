@@ -19,6 +19,13 @@ if empty(glob("/usr/bin/python3"))
     let g:python3_host_prog = '/usr/local/bin/python3'
 endif
 
+" VimR support {{{
+" @see https://github.com/qvacua/vimr/wiki#initvim
+if has('gui_vimr')
+    set termguicolors
+    set title
+endif
+" }}}
 
 " delegate to the plain vimrc.
 source ~/.vimrc
