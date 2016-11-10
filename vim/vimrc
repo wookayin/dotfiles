@@ -179,8 +179,9 @@ noremap <C-l> <C-w>l
 " in terminal mode (neovim)
 if has('nvim')
     " <C-\><C-n> is the key sequence for escaping form terminal mode
-    " double <C-\> also goes for escaping from terminal
-    tmap <C-\><C-\> <C-\><C-n>
+    " <c-[> and double <C-\> also goes for escaping from terminal
+    tnoremap <C-[> <C-\><C-n>
+    tnoremap <C-\><C-\> <C-\><C-n>
 
     " Automatically enter insert mode when entering neovim terminal buffer
     autocmd BufWinEnter,WinEnter term://* startinsert
