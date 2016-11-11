@@ -680,9 +680,18 @@ let g:jedi#use_tabs_not_buffers = 1
 
 " deoplete-clang {{{
 
-let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.4/lib/libclang.so'
+if filereadable('/usr/lib/llvm-3.4/lib/libclang.so')
+    let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.4/lib/libclang.so'
+elseif filereadable('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
+    let g:deoplete#sources#clang#libclang_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
+endif
 
-let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
+
+if isdirectory('/usr/include/clang')
+    let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
+elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
+    let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
+endif
 
 " }}}
 
