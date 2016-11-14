@@ -121,7 +121,7 @@ set lazyredraw              " no redrawing during macro execution
 
 set mps+=<:>
 
-" when launching files via quickfix, CtrlP, or something else,
+" when launching files via quickfix, FZF, or something else,
 " first switch to existing tab (if any) that contains the target buffer,
 " or open a new buffer by splitting window in the current tab otherwise.
 set switchbuf+=usetab,split
@@ -522,13 +522,6 @@ nnoremap <leader>FG :Commits<CR>
 
 " }}}
 
-" CtrlP.vim (deprecated) {{{
-let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|bin)|(\.(ico|git|svn))$'
-
-" Default to filename searches (switch: C-D)
-let g:ctrlp_by_filename = 1
-
-" }}}
 
 " SuperTab {{{
 
