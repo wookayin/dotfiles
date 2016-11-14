@@ -29,6 +29,9 @@ set shell=/bin/zsh
 " use path '~/.vim' even on non-unix machine
 set runtimepath+=~/.vim
 
+" add ~/.local/bin to $PATH
+let $PATH .= ":" . expand("\~/.local/bin")
+
 " load plugins with pathogen
 try
     runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -509,6 +512,16 @@ command! F FZF
 
 " Invoke FZF Using Ctrl-P
 nmap <C-P> :FZF<CR>
+
+" custom commands using fzf
+" :Z -- cd to recent working directories using fasd
+command! -nargs=* Z :call fzf#run
+                \({
+                \ 'source' : printf('fasd -Rdl "%s"',
+                \                   escape(empty(<q-args>) ? '' : <q-args>, '"\')),
+                \ 'sink': 'cd',
+                \ 'options': '-1 -0 --no-sort +m',
+                \})
 
 
 " Leader key mappings for vim-fzf commands
