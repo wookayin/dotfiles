@@ -21,11 +21,25 @@ install_ppa_git() {
     sudo apt-get install -y git-all git-extras
 }
 
-install_ppa_tmux() {
-    # https://launchpad.net/~pi-rho/+archive/ubuntu/dev
-    sudo add-apt-repository -y ppa:pi-rho/dev
-    sudo apt-get update
-    sudo apt-get install -y tmux
+install_latest_tmux() {
+    # tmux 2.3 is installed from source compilation,
+    # as there is no tmux 2.3+ package that is compatible with ubuntu 14.04
+    # ---
+    # For {libncurses,libevent >= 5}, we might use
+    # https://launchpad.net/ubuntu/+archive/primary/+files/tmux_2.3-4_${archi}.deb
+    # archi=$(dpkg --print-architecture)  # e.g. amd64
+
+    apt-get install -y libevent-dev libncurses5-dev libutempter-dev || exit 1;
+    TMP_TMUX_DIR="/tmp/.tmux-src/"
+
+    TMUX_TGZ_FILE="tmux-2.3.tar.gz"
+    TMUX_DOWNLOAD_URL="https://github.com/tmux/tmux/releases/download/2.3/${TMUX_TGZ_FILE}"
+
+    wget -nc ${TMUX_DOWNLOAD_URL} -P ${TMP_TMUX_DIR} || exit 1;
+    cd ${TMP_TMUX_DIR} && tar -xvzf ${TMUX_TGZ_FILE} || exit 1;
+    cd "tmux-2.3" && ./configure || exit 1;
+    make clean && make -j2 && make install || exit 1;
+    tmux -V
 }
 
 install_ppa_nginx() {
