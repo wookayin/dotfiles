@@ -28,7 +28,7 @@ install_ppa_git() {
 install_latest_tmux() {
     # tmux 2.3 is installed from source compilation,
     # as there is no tmux 2.3+ package that is compatible with ubuntu 14.04
-    # For {libncurses,libevent >= 5}, we might use
+    # For {libncurses,libevent >= 6}, we might use
     # https://launchpad.net/ubuntu/+archive/primary/+files/tmux_2.3-4_${archi}.deb
     # archi=$(dpkg --print-architecture)  # e.g. amd64
     set -e
