@@ -153,6 +153,7 @@ endif
 
 " the leader key
 let mapleader=","           " comma is the <Leader> key.
+let maplocalleader=","      " comma : <LocalLeader>
 
 " navigation key mapping
 map k gk
