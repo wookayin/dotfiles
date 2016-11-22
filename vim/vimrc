@@ -704,6 +704,8 @@ endif
 
 " LaTeX {{{
 let g:LatexBox_Folding = 1
+
+let g:vimtex_mappings_enabled = 1
 " }}}
 
 " fugitive {{{

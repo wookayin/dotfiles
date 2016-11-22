@@ -52,7 +52,8 @@ Plug 'artur-shaik/vim-javacomplete2'
 
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'LaTeX-Box-Team/LaTeX-Box'
+"Plug 'LaTeX-Box-Team/LaTeX-Box'
+Plug 'lervag/vimtex', { 'for' : ['tex', 'plaintex'] }
 Plug 'gisraptor/vim-lilypond-integrator'
 Plug 'tfnico/vim-gradle'
 Plug 'Tyilo/applescript.vim'
