@@ -466,7 +466,8 @@ endif
 
 " vim-polyglot {{{
 
-let g:polyglot_disabled = ['python']
+" in favor of python-mode and vimtex ...
+let g:polyglot_disabled = ['python', 'latex']
 
 " }}}
 
