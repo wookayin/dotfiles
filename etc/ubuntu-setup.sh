@@ -4,6 +4,7 @@ _version_check() {
     curver="$1"; targetver="$2";
     [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
 }
+
 install_essential_packages() {
     local -a packages; packages=( \
         build-essential \
@@ -71,7 +72,7 @@ install_neovim() {
 install_all() {
     # TODO dependency management: duplicated 'apt-get update'?
     install_essential_packages
-    install_ppa_tmux
+    install_latest_tmux
     install_ppa_git
     install_ppa_nginx
 }
