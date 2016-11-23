@@ -34,6 +34,7 @@ Plug 'sjl/gundo.vim'
 Plug 'SirVer/ultisnips'
 Plug 'vim-scripts/matchit.zip'
 Plug 'tomtom/tlib_vim'
+Plug 'junegunn/vader.vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
 if s:darwin
   Plug 'rizzatti/dash.vim',  { 'on': 'Dash' }
