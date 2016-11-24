@@ -534,6 +534,9 @@ nnoremap <leader>FB :Buffers<CR>
 nnoremap <leader>FT :BTags<CR>
 " Git commits
 nnoremap <leader>FG :Commits<CR>
+" History (recently opened files)
+nnoremap <leader>FH :History<CR>
+nnoremap <leader>H :History<CR>
 
 " }}}
 
