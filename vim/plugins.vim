@@ -52,6 +52,7 @@ Plug 'tmux-plugins/vim-tmux'
 
 Plug 'klen/python-mode', { 'branch' : 'develop' }
 Plug 'davidhalter/jedi-vim'
+Plug 'wookayin/vim-python-enhanced-syntax'
 
 Plug 'artur-shaik/vim-javacomplete2'
 
