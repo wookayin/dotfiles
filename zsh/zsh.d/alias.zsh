@@ -14,6 +14,9 @@ if command -v nvim 2>&1 >/dev/null; then
 fi
 alias vi='vim'
 
+# Just open ~/.vimrc
+alias vimrc='vim +cd\ ~/.vim ~/.vim/vimrc'
+
 # Tmux ========================================= {{{
 
 # create a new session with name
