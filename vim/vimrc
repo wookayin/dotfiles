@@ -412,6 +412,8 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
 
+" Unset paste when leaving insert mode
+autocmd InsertLeave * silent! set nopaste
 
 " better popup menu colors (instead of dark black)
 highlight Pmenu ctermfg=black ctermbg=yellow
