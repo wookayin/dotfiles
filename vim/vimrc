@@ -295,6 +295,7 @@ nmap <leader><space> :noh<CR>
 " <leader>ag : Ag (search file contents)
 nnoremap <leader>ag :Ag! -i ""<Left>
 
+
 " <leader>cd : switch to the directory of the current buffer
 nmap <leader>cd :cd %:p:h<CR>
 
@@ -518,6 +519,7 @@ command! F FZF
 nmap <C-P> :FZF<CR>
 
 " custom commands using fzf
+
 " :Z -- cd to recent working directories using fasd
 command! -nargs=* Z :call fzf#run
                 \({
@@ -527,6 +529,14 @@ command! -nargs=* Z :call fzf#run
                 \ 'options': '-1 -0 --no-sort +m',
                 \})
 
+" :Plugs -- list all vim plugins and open the directory of the selected
+command! -nargs=* Plugs call fzf#run
+            \({
+            \ 'source':  map(sorted(keys(g:plugs)), 'g:plug_home . "/" . v:val'),
+            \ 'options': '--delimiter "/" --nth -1' . printf(' --query "%s"', <q-args>),
+            \ 'down':    '~33%',
+            \ 'sink':    'NERDTree'
+            \})
 
 " Leader key mappings for vim-fzf commands
 
