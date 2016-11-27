@@ -521,13 +521,14 @@ nmap <C-P> :FZF<CR>
 " custom commands using fzf
 
 " :Z -- cd to recent working directories using fasd
-command! -nargs=* Z :call fzf#run
-                \({
-                \ 'source' : printf('fasd -Rdl "%s"',
-                \                   escape(empty(<q-args>) ? '' : <q-args>, '"\')),
-                \ 'sink': 'cd',
-                \ 'options': '-1 -0 --no-sort +m',
-                \})
+command! -nargs=* Z call fzf#run
+            \({
+            \ 'source':  printf('fasd -Rdl "%s"',
+            \                   escape(empty(<q-args>) ? '' : <q-args>, '"\')),
+            \ 'options': '-1 -0 --no-sort +m',
+            \ 'down':    '~33%',
+            \ 'sink':    'NERDTree'
+            \})
 
 " :Plugs -- list all vim plugins and open the directory of the selected
 command! -nargs=* Plugs call fzf#run
