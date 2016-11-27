@@ -533,7 +533,7 @@ command! -nargs=* Z call fzf#run
 " :Plugs -- list all vim plugins and open the directory of the selected
 command! -nargs=* Plugs call fzf#run
             \({
-            \ 'source':  map(sorted(keys(g:plugs)), 'g:plug_home . "/" . v:val'),
+            \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home . "/" . v:val'),
             \ 'options': '--delimiter "/" --nth -1' . printf(' --query "%s"', <q-args>),
             \ 'down':    '~33%',
             \ 'sink':    'NERDTree'
