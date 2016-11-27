@@ -182,6 +182,10 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
+nnoremap <tab> <c-w>w
+nnoremap <S-tab> <c-w>W
+
+
 " in terminal mode (neovim)
 if has('nvim')
     " <C-\><C-n> is the key sequence for escaping form terminal mode
