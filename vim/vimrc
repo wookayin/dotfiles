@@ -344,7 +344,14 @@ map  <leader>s{ ysiw{
 map  <leader>s} ysiw}
 
 " Zoom Tmux
-map <leader>z :silent exec "!tmux resize-pane -Z"<CR>
+noremap <silent> <leader>z :silent exec "!tmux resize-pane -Z"<CR>
+
+" Prevent accidental <Ctrl-A> on Tmux
+if $TERM =~ 'screen'
+    nnoremap <C-a> <nop>
+    " To increase numbers, press <comma>, <c-a>, a ...?
+    nnoremap <leader><C-a> <C-a>
+endif
 
 " }}}
 
