@@ -5,9 +5,9 @@
 
 scriptencoding utf-8
 
-"""""""""""""""""""""""""""
-" 0. Load Plugin
-"""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""
+" 0. Load Plugin {{{
+"""""""""""""""""""""""""""""""""""""""""
 
 " All the vim plugins, powered by 'vim-plug', are
 " listed up in the separate file 'plugins.vim'.
@@ -17,9 +17,10 @@ if filereadable(expand("\~/.vim/plugins.vim"))
     source \~/.vim/plugins.vim
 endif
 
-"""""""""""""""""""""""""""
-" 1. General Settings
-"""""""""""""""""""""""""""
+" }}}
+"""""""""""""""""""""""""""""""""""""""""
+" 1. General Settings {{{
+"""""""""""""""""""""""""""""""""""""""""
 
 syntax on
 set nocompatible
@@ -147,9 +148,10 @@ if ! has('nvim')
     endif
 endif
 
-""""""""""""""""""""""""""""""""
-" 2. Key and Functional Mappings
-""""""""""""""""""""""""""""""""
+" }}}
+"""""""""""""""""""""""""""""""""""""""""
+" 2. Key and Functional Mappings {{{
+"""""""""""""""""""""""""""""""""""""""""
 
 " the leader key
 let mapleader=","           " comma is the <Leader> key.
@@ -342,9 +344,10 @@ map <leader>z :silent exec "!tmux resize-pane -Z"<CR>
 
 " }}}
 
-"""""""""""""""""""""""""""""""""
-" 3. Colors, Highlight and Syntax
-"""""""""""""""""""""""""""""""""
+" }}}
+"""""""""""""""""""""""""""""""""""""""""
+" 3. Colors, Highlight and Syntax {{{
+"""""""""""""""""""""""""""""""""""""""""
 
 " color settings
 " @see http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
@@ -429,9 +432,10 @@ endfunction
 
 noremap <leader>syn :call ShowSyntaxGroup()<cr>
 
-"""""""""""""""""""""""""""
-" 4. GUI Options
-"""""""""""""""""""""""""""
+" }}}
+"""""""""""""""""""""""""""""""""""""""""
+" 4. GUI Options {{{
+"""""""""""""""""""""""""""""""""""""""""
 
 " gui settings
 if has("gui_running")
@@ -463,9 +467,10 @@ if has("gui_running")
 endif
 
 
-"""""""""""""""""""""""""""
-" 5. Plugin Settings
-"""""""""""""""""""""""""""
+" }}}
+"""""""""""""""""""""""""""""""""""""""""
+" 5. Plugin Settings {{{
+"""""""""""""""""""""""""""""""""""""""""
 
 " vim-polyglot {{{
 
@@ -553,7 +558,6 @@ nnoremap <leader>H :History<CR>
 
 " }}}
 
-
 " SuperTab {{{
 
 " Use 'omnicomplete' as the default completion type.
@@ -616,7 +620,7 @@ nmap ga <Plug>(EasyAlign)
 
 " }}}
 
-" UltiSnips {{
+" UltiSnips {{{
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
@@ -637,6 +641,10 @@ let g:pandoc#spell#enabled = 0
 
 " vim-javacomplete2 {{{
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
+" }}}
+
+" deoplete.nvim {{{
+let g:deoplete#enable_at_startup = 1
 " }}}
 
 " python {{{
@@ -701,7 +709,6 @@ let g:jedi#use_tabs_not_buffers = 1
 
 " }}}
 
-
 " deoplete-clang {{{
 
 if filereadable('/usr/lib/llvm-3.4/lib/libclang.so')
@@ -718,7 +725,6 @@ elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
 endif
 
 " }}}
-
 
 " LaTeX {{{
 let g:LatexBox_Folding = 1
@@ -746,22 +752,26 @@ nnoremap <leader>gci :Gcommit --verbose<CR>
 
 " }}}
 
-" gundo key mappings and options
+" gundo key mappings and options {{{
 let g:gundo_right = 1   " show at right
 nnoremap <leader>G :GundoToggle<CR>
-
-" tagbar key mappings
-nnoremap <leader>T :TagbarToggle<CR>
-
-" deoplete.nvim {{{
-let g:deoplete#enable_at_startup = 1
 " }}}
 
-"""""""""""""""""""""""""""
-" Extra Settings
-"""""""""""""""""""""""""""
+" tagbar key mappings {{{
+nnoremap <leader>T :TagbarToggle<CR>
+" }}}
+
+" }}}
+"""""""""""""""""""""""""""""""""""""""""
+" Extra Settings {{{
+"""""""""""""""""""""""""""""""""""""""""
 
 " Use local vimrc if available
 if filereadable(expand("\~/.vimrc.local"))
     source \~/.vimrc.local
 endif
+
+" }}}
+
+" 'zo' for open a fold, or 'zR' for all folds
+" vim: set foldmethod=marker foldlevel=0:
