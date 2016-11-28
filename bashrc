@@ -12,7 +12,7 @@ umask 072
 # Platform detection
 platform='linux'
 if [[ `uname` == 'Darwin' ]]; then
-  platform='osx'
+  platform='mac'
 fi
 
 # history settings
@@ -25,7 +25,7 @@ HISTFILESIZE=20000
 ##############
 
 # ls color and with classfication
-if [[ $platform == 'osx' ]]; then
+if [[ $platform == 'mac' ]]; then
   alias ls='ls -F -G'
 else
   alias ls='ls -F --color=auto'
@@ -68,7 +68,7 @@ BOLD_CYAN="\033[1;36m"
 WHITE="\033[1;37m"
 
 git_branch() {
-	local git_branch=`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'` 
+	local git_branch=`git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'`
 	local git_stat="`git status -unormal 2>&1`"
 
 	local color_stat=''
@@ -94,3 +94,6 @@ if [[ -n "$TMUX" ]]; then
 else
   export TERM="xterm-256color"
 fi
+
+# Additional Completion
+if [ -f /usr/local/etc/bash_completion ]; then source /usr/local/etc/bash_completion; fi
