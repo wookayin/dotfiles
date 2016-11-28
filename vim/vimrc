@@ -300,6 +300,7 @@ nmap <leader><space> :noh<CR>
 " Plugin ag.vim
 " <leader>ag : Ag (search file contents)
 nnoremap <leader>ag :Ag! -i ""<Left>
+xnoremap <silent> <leader>ag y:Ag <C-R>"<CR>
 
 
 " <leader>cd : switch to the directory of the current buffer
