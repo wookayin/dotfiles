@@ -84,6 +84,18 @@ snippet preamble Load useful preambles
 	\newcommand\norm[1]{\left\lVert#1\right\rVert}
 snippet tightlist Preambles for \tightlist
 	\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+#
+snippet deftodo
+	\newcommand{\\${1:todo}}[1]{\mbox{\color{red}{\small\bf\sf [${2:TODO: }#1]}}}
+snippet defabbr
+	\newcommand{\eg}{\emph{e.g.}\@\xspace}
+	\newcommand{\ie}{\emph{i.e.}\@\xspace}
+	\newcommand{\etal}{\emph{et al.}\@\xspace}
+	\makeatletter
+	\newcommand*{\etc}{\@ifnextchar{.}%
+	    {\emph{etc}}%
+	    {\emph{etc.}\@\xspace}%
+	}\makeatother
 
 
 # Figure, etc.
