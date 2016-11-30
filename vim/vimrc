@@ -752,7 +752,7 @@ endif
 " for :Vimtexview, move Skim's position to where the cursor currently points to.
 if has('mac')
     let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-    let g:vimtex_view_general_options = '-r @line @pdf @tex'
+    let g:vimtex_view_general_options = '-r -g @line @pdf @tex'
 endif
 
 " }}}
