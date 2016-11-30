@@ -743,6 +743,11 @@ let g:LatexBox_Folding = 1
 
 let g:vimtex_mappings_enabled = 1
 
+" Disable callback feature if vim lacks feature +clientserver
+if ! (has('clientserver') || has('nvim'))
+    let g:vimtex_latexmk_callback = 0
+endif
+
 " in macOS, use Skim as the default LaTeX PDF viewer (for vimtex)
 " for :Vimtexview, move Skim's position to where the cursor currently points to.
 if has('mac')
