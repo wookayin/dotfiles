@@ -128,7 +128,7 @@ os.chdir(current_dir)
 
 # check if git submodules are loaded properly
 stat = subprocess.check_output("git submodule status --recursive", shell=True)
-submodule_missing = [l.split()[1] for l in stat.split('\n') if len(l) and l[0] == '-']
+submodule_missing = [l.split()[1] for l in stat.split('\n') if len(l) and l[0] != ' ']
 
 if submodule_missing:
     log(RED("git submodule %s does not exist!" % submodule_missing[0]))
