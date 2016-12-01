@@ -78,6 +78,12 @@ if has('nvim')
     " C/C++ completion
     Plug 'zchee/deoplete-clang'
 
+elseif v:version >= 800
+
+    " Vim 8.0: Alternative async-completor plugin
+    " built-in support for python (jedi), java, etc.
+    Plug 'maralla/completor.vim'
+
 endif
 
 call plug#end()
