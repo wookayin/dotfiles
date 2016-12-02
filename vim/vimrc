@@ -239,16 +239,30 @@ vnoremap < <gv
 vnoremap > >gv
 
 
-" [F5] Make and Build
+" -----------------------
+" [F5] Make and Build {{{
+" -----------------------
+" use Make (vim-dispatch) or Neomake (neomake)
+if has_key(g:plugs, 'neomake')
+    " neomake; always use the bang version so that :copen can sync
+    command! -nargs=0 -bang TheMake Neomake!
+    command! -nargs=0 TheCopen copen
+else
+    " vim-dispatch
+    command! -nargs=0 -bang TheMake Make<bang>
+    command! -nargs=0 TheCopen Copen
+endif
+
+
 " smartly dispatch according to filetype
 function! s:run_make(bang)
     let l:silent_filetypes = ['tex', 'pandoc', 'lilypond']
     " (1) bang given, force background
-    if a:bang == "!" | Make!
+    if a:bang == "!" | TheMake!
     " (2) for specified filetypes, use background
-    elseif index(l:silent_filetypes, &filetype) >= 0 | Make!
+    elseif index(l:silent_filetypes, &filetype) >= 0 | TheMake!
     " (3) otherwise, make with foreground shown
-    else | Make
+    else | TheMake
     end
 endfunction
 command! -nargs=0 -bang RunMake call s:run_make("<bang>")
@@ -256,7 +270,7 @@ command! -nargs=0 -bang RunMake call s:run_make("<bang>")
 " A handy way to set makeprg.
 command! -nargs=1 Makeprg let &g:makeprg="<args>" | echo "makeprg = <args>"
 
-if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
+if has_key(g:plugs, 'vim-dispatch')
     " use vim-dispatch if exists
 
     " <F5>: run make, asynchronously or split windows (dispatch)
@@ -267,13 +281,16 @@ if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
     map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
 
     " <F6>: show quickfix window (scroll bottom)
-    map  <F6> :Copen<CR>G
-    imap <F6> <ESC>:Copen<CR>G:wincmd w<CR>a
+    map  <F6> :TheCopen<CR>G
+    imap <F6> <ESC>:TheCopen<CR>G:wincmd w<CR>a
 else
     " otherwise, fallback to default make
     map <F5> <ESC>:w<CR>:make!<CR>
     imap <F5> <ESC>:w<CR>:make!<CR>a
 endif
+
+" }}}
+
 
 " [F4] Next Error [Shift+F4] Previous Error
 map <F4> <ESC>:cn<CR>
