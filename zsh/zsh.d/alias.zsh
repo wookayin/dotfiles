@@ -1,6 +1,8 @@
 # Custom Alias commands for ZSH
 
 # Basic
+alias c='command'
+
 alias cp='nocorrect cp -iv'
 alias mv='nocorrect mv -iv'
 alias rm='nocorrect rm -iv'
