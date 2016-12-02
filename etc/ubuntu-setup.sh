@@ -26,6 +26,15 @@ install_ppa_git() {
     sudo apt-get install -y git-all git-extras
 }
 
+install_ppa_vim8() {
+    # For Ubuntu 14.04 and 16.04
+    # https://launchpad.net/~jonathonf/+archive/ubuntu/vim
+    sudo add-apt-repository -y ppa:jonathonf/vim
+    sudo apt-get update
+    sudo apt-get install -y vim vim-doc vim-nox
+    #sudo apt-get install -y vim-gnome vim-gtk
+}
+
 install_latest_tmux() {
     # tmux 2.3 is installed from source compilation,
     # as there is no tmux 2.3+ package that is compatible with ubuntu 14.04
@@ -73,6 +82,7 @@ install_all() {
     # TODO dependency management: duplicated 'apt-get update'?
     install_essential_packages
     install_latest_tmux
+    install_ppa_vim8
     install_ppa_git
     install_ppa_nginx
 }
