@@ -141,7 +141,7 @@ endif
 
 " use strong encryption
 if ! has('nvim')
-    if v:version == 704 && has('patch399')
+    if v:version >= 800 || v:version == 704 && has('patch399')
         set cryptmethod=blowfish2 " Requires >= 7.4.399
     else
         set cryptmethod=blowfish
