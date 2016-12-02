@@ -12,4 +12,4 @@ if !filereadable('Makefile')
 endif
 
 " configure default fold level
-setlocal foldlevel=3
+setlocal foldlevel=1
