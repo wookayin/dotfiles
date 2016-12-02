@@ -568,6 +568,9 @@ nnoremap <leader>FG :Commits<CR>
 nnoremap <leader>FH :History<CR>
 nnoremap <leader>H :History<CR>
 
+" :H goes to :History
+command! H History
+
 " }}}
 
 " SuperTab {{{
