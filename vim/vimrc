@@ -545,6 +545,13 @@ let g:startify_skiplist = [
     let g:airline#extensions#whitespace#mixed_indent_algo = 1
 " }}}
 
+" Neomake {{{
+
+" so that ':Neomake clean' invokes 'make clean'
+let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
+
+" }}}
+
 " FZF {{{
 
 " Inside vim, set environment variable FZF_DEFAULT_COMMAND
