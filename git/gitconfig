@@ -8,7 +8,7 @@
 
 [core]
 	excludesfile = ~/.gitignore
-	pager = less -F
+	pager = less -FE
 
 	# do not quote non-ascii characters; display unicodes as-is
 	quotepath = false
