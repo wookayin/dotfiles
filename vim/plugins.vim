@@ -24,6 +24,7 @@ if has('nvim') || v:version >= 800
     Plug 'neomake/neomake'
 endif
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'airblade/vim-gitgutter'
