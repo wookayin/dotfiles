@@ -22,10 +22,10 @@ function prompt_wook_precmd {
   # PWD
 
   # Ruby - RVM
-  if (( $+functions[ruby-info] )); then
-    ruby-info on
-    ruby-info
-  fi
+  #if (( $+functions[ruby-info] )); then
+  #  ruby-info on
+  #  ruby-info
+  #fi
 
   # Python - Virtualenv
   if (( $+functions[python-info] )); then
@@ -84,7 +84,7 @@ function prompt_wook_setup {
     'rprompt' '%A%B%S%a%d%m%r%U%u'
 
   # Ruby - RVM
-  zstyle ':prezto:module:ruby:info:version' format ' %F{magenta}%v%f'
+  #zstyle ':prezto:module:ruby:info:version' format ' %F{magenta}%v%f'
 
   # Python virtualenv
   zstyle ':prezto:module:python:info:virtualenv' format ' %F{cyan}%v%f'
@@ -108,13 +108,13 @@ function prompt_wook_setup {
 %B%F{red}${PWD}%f%b\
 ${git_info:+${(e)git_info[prompt]}}\
 %B%F{green}]\
-${ruby_info[version]}\
 ${python_info[virtualenv]}\
 ${cuda_info}\
 ${node_info[version]}\
 
 ${editor_info[keymap]} \
 '
+#${ruby_info[version]}\
 
   RPROMPT='${git_info[rprompt]}'
 
