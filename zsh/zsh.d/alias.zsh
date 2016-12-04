@@ -31,6 +31,22 @@ alias tmuxa='tmux -2 attach-session -d -t'
 # I am lazy, yeah
 alias t='tmuxa'
 
+# tmuxp
+function tmuxp {
+    tmuxpfile="$1"
+    if [ -z "$tmuxpfile" ] && [[ -s ".tmuxp.yaml" ]]; then
+        tmuxpfile=".tmuxp.yaml"
+    fi
+
+    if [[ -s "$tmuxpfile" ]]; then
+        # (load) e.g. $ tmuxp [.tmuxp.yaml]
+        command tmuxp load $tmuxpfile
+    else
+        # (normal commands)
+        command tmuxp $@;
+    fi
+}
+
 # }}}
 
 
