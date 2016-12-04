@@ -1,10 +1,16 @@
 " additional and custom syntax for LaTeX documents
 
 " treat \begin{comment}...\end{comment} region as comment
-syn region texComment     start="\\begin{comment}"  end="\\end{comment}\|%stopzone\>"
+syn region texCommentRegion     start="\\begin{comment}"  end="\\end{comment}\|%stopzone\>"
+syn cluster texFoldGroup        add=texCommentRegion
+hi! def link texCommentRegion   texComment
 
 
 " more distinctive colors {{{
+" ---------------------------
+
+" texCommentRegion: similar to texComment (ctermfg=35) but slightly different color
+hi texCommentRegion ctermfg=108     guifg=#87af5f
 
 " \eq{...}, \ref{...}
 hi texRefZone       ctermfg=142     guifg=#afaf00
