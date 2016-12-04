@@ -591,6 +591,9 @@ command! -nargs=* Plugs call fzf#run
 
 " List all open buffers
 nnoremap <leader>FB :Buffers<CR>
+nnoremap <leader>B :Buffers<CR>
+" :B goes to :Buffers
+command! B Buffers
 " Tags in the current buffer (see tagbar)
 nnoremap <leader>FT :BTags<CR>
 " Git commits
@@ -598,7 +601,6 @@ nnoremap <leader>FG :Commits<CR>
 " History (recently opened files)
 nnoremap <leader>FH :History<CR>
 nnoremap <leader>H :History<CR>
-
 " :H goes to :History
 command! H History
 
