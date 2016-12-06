@@ -1,60 +1,48 @@
 # Document Blocks and Environments
 # ================================
-snippet begin \begin{} ... \end{} block
-	\begin{${1:env}}
-	    ${0}
-	\end{$1}
-snippet \begin \begin{} ... \end{} block
-	\begin{${1:env}}
-	    ${0}
-	\end{$1}
 snippet $$ Math equation block
 	$$
 	    ${0}
 	$$
-snippet align \begin{align} ... \end{align} block
-	\begin{align}
+snippet \begin \begin{} ... \end{} block
+	\begin{${1:env}}
 	    ${0}
+	\end{$1}
+snippet begin \begin{} ... \end{} block
+	\begin{${1:env}}${0}
+	\end{$1}
+snippet align \begin{align} ... \end{align} block
+	\begin{align}${0}
 	\end{align}
 snippet aligned \begin{aligned} ... \end{aligned} block
-	\begin{aligned}
-	    ${0}
+	\begin{aligned}${0}
 	\end{aligned}
 snippet flalign \begin{flalign} ... \end{flalign} block
-	\begin{flalign}
-	    ${0}
+	\begin{flalign}${0}
 	\end{flalign}
 snippet center \begin{center} ... \end{center} block
-	\begin{center}
-	    ${0}
+	\begin{center}${0}
 	\end{center}
 snippet comment \begin{comment} ... \end{comment} block
-	\begin{comment}
-	    ${0}
+	\begin{comment}${0}
 	\end{comment}
 snippet equation \begin{equation} ... \end{equation} block
-	\begin{equation}
-	    ${0}
+	\begin{equation}${0}
 	\end{equation}
 snippet minted \begin{minted} ... \end{minted} block
-	\begin{minted}
-	    ${0}
+	\begin{minted}${0}
 	\end{minted}
 snippet verbatim \begin{verbatim} ... \end{verbatim} block
-	\begin{verbatim}
-	    ${0}
+	\begin{verbatim}${0}
 	\end{verbatim}
 snippet tabular \begin{tabular} ... \end{tabular} block
-	\begin{tabular}{${2:c}}
-	    ${0}
+	\begin{tabular}{${2:c}}${0}
 	\end{tabular}
 snippet enum \begin{enumerate} ... \end{enumerate} block
-	\begin{enumerate}
-	    ${0}
+	\begin{enumerate}${0}
 	\end{enumerate}
 snippet item \begin{itemize} ... \end{itemize} block
-	\begin{itemize}
-	    \item ${0}
+	\begin{itemize}\item ${0}
 	\end{itemize}
 #
 # Math Shortcuts
@@ -132,4 +120,4 @@ snippet subfigure
 #
 snippet newcolumntype
 	\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
-	%\setlength\tabcolsep{2pt} % default value: 6pt
+	%\setlength\tabcolsep{2pt}  % default value: 6pt
