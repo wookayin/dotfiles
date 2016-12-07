@@ -169,6 +169,9 @@ nmap <down> gj
 inoremap <up> <c-\><c-o>gk
 inoremap <down> <c-\><c-o>gj
 
+noremap <C-F> <C-D>
+noremap <C-B> <C-U>
+
 " Ignore errornous input in Mac OS X
 imap <D-space> <Nop>
 
