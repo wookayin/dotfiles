@@ -511,13 +511,13 @@ endif
 " 5. Plugin Settings {{{
 """""""""""""""""""""""""""""""""""""""""
 
+" ----------------------------------------------------------------
 " vim-polyglot {{{
 
 " in favor of python-mode and vimtex ...
 let g:polyglot_disabled = ['python', 'latex']
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " vim-startify {{{
 
 let g:startify_bookmarks = [
@@ -531,7 +531,7 @@ let g:startify_skiplist = [
     \ 'plugged/.*/doc',
     \ 'bundle/.*/doc',
     \ ]
-" }}}
+" ---------------------------------------------------------------- }}}
 
 " vim-highlightedyank {{{
 if ! has("nvim")
@@ -540,30 +540,30 @@ endif
 
 "hi HighlightedyankRegion cterm=reverse gui=reverse
 let g:highlightedyank_highlight_duration = 1000
-" }}}
 
+" ---------------------------------------------------------------- }}}
 " Airline {{{
-    " use airline, with powerline-ish theme
-    let g:airline_theme='bubblegum'
-    let g:airline_powerline_fonts=1
 
-    " enable tabline feature
-    let g:airline#extensions#tabline#enabled = 1
+" use airline, with powerline-ish theme
+let g:airline_theme='bubblegum'
+let g:airline_powerline_fonts=1
 
-    " do not display buffers in the tabline if there is only one tab
-    let g:airline#extensions#tabline#show_buffers = 0
+" enable tabline feature
+let g:airline#extensions#tabline#enabled = 1
 
-    " suppress mixed-indent warning for javadoc-like comments (/** */)
-    let g:airline#extensions#whitespace#mixed_indent_algo = 1
-" }}}
+" do not display buffers in the tabline if there is only one tab
+let g:airline#extensions#tabline#show_buffers = 0
 
+" suppress mixed-indent warning for javadoc-like comments (/** */)
+let g:airline#extensions#whitespace#mixed_indent_algo = 1
+
+" ---------------------------------------------------------------- }}}
 " Neomake {{{
 
 " so that ':Neomake clean' invokes 'make clean'
 let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " FZF {{{
 
 " Inside vim, set environment variable FZF_DEFAULT_COMMAND
@@ -616,8 +616,7 @@ nnoremap <leader>H :History<CR>
 " :H goes to :History
 command! H History
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " SuperTab {{{
 
 " Use 'omnicomplete' as the default completion type.
@@ -628,8 +627,7 @@ let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 " no tab completion at the start of line or after whitespace.
 let g:SuperTabNoCompleteAfter = ['^', '\s']
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " NerdTree {{{
 
 " change CWD when the NERDtree is first loaded to the directory initialized in
@@ -646,16 +644,14 @@ let g:nerdtree_tabs_open_on_gui_startup = 0
 " filter out some files, by extension
 let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " Voom {{{
 
 let g:voom_ft_modes = {'pandoc': 'markdown', 'tex': 'latex'}
 
 nnoremap <leader>V :VoomToggle<CR>
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " Easymotion {{{
 
 " Trigger <,f> to launch easymotion global jump
@@ -669,8 +665,7 @@ nmap <leader>f <Plug>(easymotion-s)
 let g:EasyMotion_enter_jump_first = 1
 let g:EasyMotion_space_jump_first = 1
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " vim-easy-align {{{
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -678,14 +673,13 @@ xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-" }}}
 
+" ---------------------------------------------------------------- }}}
 " vim-pandoc {{{
 
 " disable automatic folding
@@ -697,17 +691,16 @@ let g:pandoc#syntax#conceal#use = 0
 " disable spell check
 let g:pandoc#spell#enabled = 0
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " vim-javacomplete2 {{{
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
-" }}}
 
+" ---------------------------------------------------------------- }}}
 " deoplete.nvim {{{
 let g:deoplete#enable_at_startup = 1
-" }}}
 
-" python {{{
+" ---------------------------------------------------------------- }}}
+" python (pymode, jedi) {{{
 
 " heavenshell/vim-pydocstring
 " Change default keymapping to <C-_> (default is <C-l>)
@@ -769,8 +762,7 @@ let g:jedi#show_call_signatures = 0
 let g:jedi#use_tabs_not_buffers = 0
 let g:jedi#use_splits_not_buffers = 'bottom'
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " deoplete-clang {{{
 
 if filereadable('/usr/lib/llvm-3.4/lib/libclang.so')
@@ -786,9 +778,9 @@ elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
     let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
 endif
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " LaTeX {{{
+
 let g:LatexBox_Folding = 1
 
 let g:vimtex_mappings_enabled = 1
@@ -805,8 +797,7 @@ if has('mac')
     let g:vimtex_view_general_options = '-r -g @line @pdf @tex'
 endif
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " fugitive {{{
 
 " key mappings
@@ -822,16 +813,16 @@ au FileType gitcommit nnoremap <buffer> <silent>
             \ cA :bd<CR>:<C-U>Gcommit --verbose --amend<CR>
 
 
-" }}}
-
+" ---------------------------------------------------------------- }}}
 " gundo key mappings and options {{{
 let g:gundo_right = 1   " show at right
 nnoremap <leader>G :GundoToggle<CR>
-" }}}
 
+" ---------------------------------------------------------------- }}}
 " tagbar key mappings {{{
 nnoremap <leader>T :TagbarToggle<CR>
-" }}}
+
+" ---------------------------------------------------------------- }}}
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
