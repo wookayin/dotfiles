@@ -17,7 +17,7 @@ fi
 alias vi='vim'
 
 # Just open ~/.vimrc
-alias vimrc='vim +cd\ ~/.vim ~/.vim/vimrc'
+alias vimrc='vim +cd\ ~/.vim -O ~/.vim/vimrc ~/.vim/plugins.vim'
 
 # Tmux ========================================= {{{
 
