@@ -533,6 +533,15 @@ let g:startify_skiplist = [
     \ ]
 " }}}
 
+" vim-highlightedyank {{{
+if ! has("nvim")
+    map y <Plug>(highlightedyank)
+endif
+
+"hi HighlightedyankRegion cterm=reverse gui=reverse
+let g:highlightedyank_highlight_duration = 1000
+" }}}
+
 " Airline {{{
     " use airline, with powerline-ish theme
     let g:airline_theme='bubblegum'
