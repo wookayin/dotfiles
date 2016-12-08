@@ -340,7 +340,7 @@ nnoremap <leader>r :redraw!<CR>
 nnoremap <leader>src :source ~/.vimrc<CR>
 
 " <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
-noremap <leader>y "*y
+map <leader>y "*y
 noremap <leader>x "*x
 noremap <leader>p "*p
 
