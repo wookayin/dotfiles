@@ -532,7 +532,27 @@ let g:startify_skiplist = [
     \ 'bundle/.*/doc',
     \ ]
 " ---------------------------------------------------------------- }}}
+" vim-emoji {{{
 
+" replace emoji in selected lines
+" (snippet brought from @junegunn/dotfiles)
+function! s:replace_emojis() range
+    for lnum in range(a:firstline, a:lastline)
+        let line = getline(lnum)
+        let subs = substitute(line,
+                    \ ':\([^:]\+\):', '\=emoji#for(submatch(1), submatch(0))', 'g')
+        if line != subs
+            call setline(lnum, subs)
+        endif
+    endfor
+    redraw!
+endfunction
+
+command! -range EmojiReplace <line1>,<line2>call s:replace_emojis()
+xnoremap <leader>emoji :Emoji<CR>
+
+
+" ---------------------------------------------------------------- }}}
 " vim-highlightedyank {{{
 if ! has("nvim")
     map y <Plug>(highlightedyank)

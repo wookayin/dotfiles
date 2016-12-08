@@ -34,6 +34,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'junegunn/vim-easy-align'
 
 " Utilities
+Plug 'junegunn/vim-emoji'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'Lokaltog/vim-easymotion'
