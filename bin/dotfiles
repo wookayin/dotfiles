@@ -33,9 +33,11 @@ BLUE   = _wrap_colors("\033[0;34m")
 def update():
     '''Update the dotfiles from github.'''
 
+    dotfiles_dir = os.path.expanduser('~/.dotfiles')
+
     def _git_head():
-        ret = subprocess.check_output('git rev-parse --short HEAD', shell=True,
-                                      cwd=os.path.expanduser('~/.dotfiles'))
+        ret = subprocess.check_output('git rev-parse --short HEAD',
+                                      shell=True, cwd=dotfiles_dir)
         return ret.strip()
 
     git_old_head = _git_head()
@@ -56,9 +58,10 @@ def update():
         print(YELLOW('[*] dotfiles is up-to-date.'))
     else:
         print(GREEN('[*] Update complete!'))
-        print('Changelog: {}..{}'.format(git_old_head, git_new_head))
+        print(WHITE('Changelog: {}..{}'.format(git_old_head, git_new_head)))
         subprocess.call('git log --pretty=oneline --abbrev-commit {}..{}'\
-                        .format(git_old_head, git_new_head), shell=True)
+                        .format(git_old_head, git_new_head),
+                        shell=True, cwd=dotfiles_dir)
 
 
 def open_github():
