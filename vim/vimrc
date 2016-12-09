@@ -385,7 +385,29 @@ endif
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
-" 3. Colors, Highlight and Syntax {{{
+" 3. More Functions and Commands {{{
+"""""""""""""""""""""""""""""""""""""""""
+
+" ----------------------------------------------------------------------------
+" <Leader>?/! : Google it / Feeling lucky
+"   (code brought from @junegunn/dotfiles)
+" ----------------------------------------------------------------------------
+function! s:goog(pat, lucky)
+  let q = '"'.substitute(a:pat, '["\n]', ' ', 'g').'"'
+  let q = substitute(q, '[[:punct:] ]',
+       \ '\=printf("%%%02X", char2nr(submatch(0)))', 'g')
+  call system(printf('open "https://www.google.com/search?%sq=%s"',
+                   \ a:lucky ? 'btnI&' : '', q))
+endfunction
+
+nnoremap <leader>? :call <SID>goog(expand("<cword>"), 0)<cr>
+nnoremap <leader>! :call <SID>goog(expand("<cword>"), 1)<cr>
+xnoremap <leader>? "gy:call <SID>goog(@g, 0)<cr>gv
+xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
+
+" }}}
+"""""""""""""""""""""""""""""""""""""""""
+" 4. Appearance (e.g. Colors, Syntax) {{{
 """""""""""""""""""""""""""""""""""""""""
 
 " color settings
@@ -473,7 +495,7 @@ noremap <leader>syn :call ShowSyntaxGroup()<cr>
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
-" 4. GUI Options {{{
+" 5. GUI Options {{{
 """""""""""""""""""""""""""""""""""""""""
 
 " gui settings
@@ -508,7 +530,7 @@ endif
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
-" 5. Plugin Settings {{{
+" 6. Plugin Settings {{{
 """""""""""""""""""""""""""""""""""""""""
 
 " ----------------------------------------------------------------
