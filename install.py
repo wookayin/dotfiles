@@ -34,6 +34,7 @@ tasks = {
     '~/.zshrc'    : 'zsh/zshrc',
 
     # Bins
+    '~/.local/bin/dotfiles' : 'bin/dotfiles',
     '~/.local/bin/fasd' : 'zsh/fasd/fasd',
     '~/.local/bin/imgcat' : 'bin/imgcat',
     '~/.local/bin/imgls' : 'bin/imgls',
