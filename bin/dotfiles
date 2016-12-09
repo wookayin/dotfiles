@@ -1,0 +1,96 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+'''
+   @wookayin's              ███████╗██╗██╗     ███████╗███████╗
+   ██████╗  █████╗ ████████╗██╔════╝██║██║     ██╔════╝██╔════╝
+   ██╔══██╗██╔══██╗╚══██╔══╝█████╗  ██║██║     █████╗  ███████╗
+   ██║  ██║██║  ██║   ██║   ██╔══╝  ██║██║     ██╔══╝  ╚════██║
+   ██████╔╝╚█████╔╝   ██║   ██║     ██║███████╗███████╗███████║
+   ╚═════╝  ╚═════╝   ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
+
+bin/dotfiles -- a command-line helper for managing dotfiles
+https://dotfiles.wook.kr
+'''
+
+from __future__ import print_function
+
+import subprocess
+import os.path
+import sys
+
+
+def _wrap_colors(ansicode):
+    return (lambda msg: ansicode + str(msg) + '\033[0m')
+GRAY   = _wrap_colors("\033[0;37m")
+WHITE  = _wrap_colors("\033[1;37m")
+RED    = _wrap_colors("\033[0;31m")
+GREEN  = _wrap_colors("\033[0;32m")
+YELLOW = _wrap_colors("\033[0;33m")
+BLUE   = _wrap_colors("\033[0;34m")
+
+
+def update():
+    '''Update the dotfiles from github.'''
+
+    def _git_head():
+        ret = subprocess.check_output('git rev-parse --short HEAD', shell=True,
+                                      cwd=os.path.expanduser('~/.dotfiles'))
+        return ret.strip()
+
+    git_old_head = _git_head()
+
+    # TODO: check if current branch is master
+    action = '''
+        set -x
+        cd ~/.dotfiles
+        git stash
+        git pull --ff-only && python install.py
+        git stash pop
+    '''
+    subprocess.call(['bash', '-c', action])
+
+    git_new_head = _git_head()
+
+    if git_old_head == git_new_head:
+        print(YELLOW('[*] dotfiles is up-to-date.'))
+    else:
+        print(GREEN('[*] Update complete!'))
+        print('Changelog: {}..{}'.format(git_old_head, git_new_head))
+        subprocess.call('git log --pretty=oneline --abbrev-commit {}..{}'\
+                        .format(git_old_head, git_new_head), shell=True)
+
+
+def open_github():
+    '''Open the github repository in the web browser.'''
+
+    import webbrowser
+    webbrowser.open("https://dotfiles.wook.kr", new=0)
+
+
+def main():
+    COMMANDS = {
+        'update': update,
+        'github': open_github,
+    }
+
+    from argparse import ArgumentParser, RawTextHelpFormatter
+    parser = ArgumentParser(description=__doc__,
+                            formatter_class=RawTextHelpFormatter)
+    subparsers = parser.add_subparsers(title='Available commands',
+                                       dest="command")
+
+    for (cmd, action) in COMMANDS.iteritems():
+        subparsers.add_parser(cmd, help=action.__doc__)
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+    else:
+        args = parser.parse_args()
+
+    COMMANDS[args.command]()
+
+
+if __name__ == '__main__':
+    main()
