@@ -24,5 +24,5 @@ set completeopt-=longest
 " =========
 
 " goto definition
-map  <F3> :call jedi#goto()<CR>
-imap <F3> <ESC>:call jedi#goto()<CR>
+map  <F3> :call jedi#goto_assignments()<CR>
+imap <F3> <ESC>:call jedi#goto_assignments()<CR>
