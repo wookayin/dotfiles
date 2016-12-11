@@ -26,3 +26,7 @@ set completeopt-=longest
 " goto definition
 map  <F3> :call jedi#goto_assignments()<CR>
 imap <F3> <ESC>:call jedi#goto_assignments()<CR>
+
+" show usages
+map <F7> :call jedi#usages()<CR>
+imap <F7> <ESC>:call jedi#usages()<CR>
