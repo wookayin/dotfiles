@@ -248,6 +248,9 @@ nnoremap 9 9gt
 vnoremap < <gv
 vnoremap > >gv
 
+" Locations
+nnoremap [l :lprevious<CR>
+nnoremap ]l :lnext<CR>
 
 " -----------------------
 " [F5] Make and Build {{{
