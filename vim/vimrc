@@ -662,6 +662,15 @@ nnoremap <leader>H :History<CR>
 command! H History
 
 " ---------------------------------------------------------------- }}}
+" Dash {{{
+
+" ----------------------------------------------------------------------------
+" <Leader>/ : Launch Dash on the words on cursor or in block
+" ----------------------------------------------------------------------------
+nnoremap <leader>/ :Dash <cword><cr>
+xnoremap <leader>/ "gy:Dash <c-r>g<cr>gv
+
+" ---------------------------------------------------------------- }}}
 " SuperTab {{{
 
 " Use 'omnicomplete' as the default completion type.
