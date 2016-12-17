@@ -614,14 +614,24 @@ let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
 " Inside vim, set environment variable FZF_DEFAULT_COMMAND
 " so that it can list the files by 'git ls-files' or 'ag'.
 if executable("ag")
-    let $FZF_DEFAULT_COMMAND = '(git ls-files ":/" || ag -l -g "") | LC_COLLATE=C sort | uniq  2> /dev/null'
+    "let $FZF_DEFAULT_COMMAND = '(git ls-files ":/" || ag -l -g "") | LC_COLLATE=C sort | uniq  2> /dev/null'
+    let $FZF_DEFAULT_COMMAND = 'ag -l -g "" 2> /dev/null'
 endif
 
-" :F is a shortcut for :FZF
-command! F FZF
+" :F is a shortcut for :GFiles or :FZF
+function! s:fzf_smart()
+    let l:git_dir = fugitive#extract_git_dir(expand('%:p'))
+    " in a git repo, invoke :GFiles
+    if ! empty(l:git_dir) | GFiles
+    " not in git repo, invoke :FZF by fallback
+    else | FZF a:args
+    endif
+endfunction
+command! -nargs=0 F call s:fzf_smart()
 
-" Invoke FZF Using Ctrl-P
-nmap <C-P> :FZF<CR>
+" Invoke F (FZF) Using Ctrl-P
+nmap <C-P> :F<CR>
+
 
 " custom commands using fzf
 
