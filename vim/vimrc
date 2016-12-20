@@ -624,7 +624,7 @@ function! s:fzf_smart()
     " in a git repo, invoke :GFiles
     if ! empty(l:git_dir) | GFiles
     " not in git repo, invoke :FZF by fallback
-    else | FZF a:args
+    else | FZF
     endif
 endfunction
 command! -nargs=0 F call s:fzf_smart()
