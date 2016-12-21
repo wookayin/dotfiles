@@ -47,9 +47,7 @@ Plug 'vim-scripts/matchit.zip'
 Plug 'tomtom/tlib_vim'
 Plug 'junegunn/vader.vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
-if s:darwin
-  Plug 'rizzatti/dash.vim',  { 'on': 'Dash' }
-endif
+Plug 'rizzatti/dash.vim',  { 'on': 'Dash' }
 
 " Syntax, Completion, Coding stuffs
 Plug 'editorconfig/editorconfig-vim'
