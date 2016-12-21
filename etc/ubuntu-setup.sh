@@ -10,7 +10,7 @@ install_essential_packages() {
         build-essential \
         vim zsh curl \
         python-software-properties software-properties-common \
-        cmake cmake-data ctags autoconf \
+        cmake cmake-data ctags autoconf pkg-config \
         terminator htop iotop iftop \
         silversearcher-ag \
         openssh-server mosh rdate \
