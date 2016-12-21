@@ -35,6 +35,18 @@ install_ppa_vim8() {
     #sudo apt-get install -y vim-gnome vim-gtk
 }
 
+install_neovim() {
+    # https://launchpad.net/~neovim-ppa/+archive/ubuntu/unstable
+    sudo add-apt-repository -y ppa:neovim-ppa/unstable
+    sudo apt-get update
+    sudo apt-get install -y neovim
+
+    command -v /usr/bin/pip 2>&1 > /dev/null || sudo apt-get install -y python-pip
+    command -v /usr/bin/pip3 2>&1 > /dev/null || sudo apt-get install -y python3-pip
+    sudo /usr/bin/pip install neovim
+    sudo /usr/bin/pip3 install neovim
+}
+
 install_latest_tmux() {
     # tmux 2.3 is installed from source compilation,
     # as there is no tmux 2.3+ package that is compatible with ubuntu 14.04
@@ -67,22 +79,12 @@ install_ppa_nginx() {
     sudo apt-get install -y nginx
 }
 
-install_neovim() {
-    # https://launchpad.net/~neovim-ppa/+archive/ubuntu/unstable
-    sudo add-apt-repository -y ppa:neovim-ppa/unstable
-    sudo apt-get update
-    sudo apt-get install -y neovim
-
-    command -v /usr/bin/pip3 2>&1 > /dev/null || sudo apt-get install python3-pip
-    sudo /usr/bin/pip install neovim
-    sudo /usr/bin/pip3 install neovim
-}
-
 install_all() {
     # TODO dependency management: duplicated 'apt-get update'?
     install_essential_packages
     install_latest_tmux
     install_ppa_vim8
+    install_neovim
     install_ppa_git
     install_ppa_nginx
 }
