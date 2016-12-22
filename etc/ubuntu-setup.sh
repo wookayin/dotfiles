@@ -79,9 +79,19 @@ install_ppa_nginx() {
     sudo apt-get install -y nginx
 }
 
+install_node() {
+    # https://github.com/nodesource/distributions/tree/master/deb
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+
+    # some default global packages
+    sudo npm install -g http-server
+}
+
 install_all() {
     # TODO dependency management: duplicated 'apt-get update'?
     install_essential_packages
+    install_node
     install_latest_tmux
     install_ppa_vim8
     install_neovim
