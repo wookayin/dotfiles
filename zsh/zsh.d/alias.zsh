@@ -109,6 +109,13 @@ alias awk9="awk '{print \$9}'"
 alias awklast="awk '{print \$\(NF\)}'"
 
 
+# Codes ===================================== {{{
+
+alias prettyxml='xmllint --format - | pygmentize'
+
+# }}}
+
+
 # Etc ======================================= {{{
 
 # default watch options
