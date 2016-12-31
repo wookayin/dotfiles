@@ -26,4 +26,5 @@ setopt NO_SHARE_HISTORY
 
 # GO {{{
 export GOPATH=$HOME/.go
+path=( $path $GOPATH/bin )
 # }}}
