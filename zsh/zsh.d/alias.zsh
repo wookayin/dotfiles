@@ -111,7 +111,7 @@ alias awklast="awk '{print \$\(NF\)}'"
 
 # Codes ===================================== {{{
 
-alias prettyxml='xmllint --format - | pygmentize'
+alias prettyxml='xmllint --format - | pygmentize -l xml'
 
 # }}}
 
