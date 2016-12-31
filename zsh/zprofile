@@ -1,2 +1,11 @@
 # set default permission of file to 644 (rw-r--r--)
 umask 022
+
+# Temporary fix for the path order in the login shell.
+# $PATH is overriden by path_helper in /etc/zprofile,
+# after ~/.zshenv.
+path=(
+  $HOME/.local/bin
+  $path
+  /usr/local/{bin,sbin}
+)
