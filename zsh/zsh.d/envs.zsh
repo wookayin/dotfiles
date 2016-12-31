@@ -23,3 +23,7 @@ export SAVEHIST=100000
 # No, I don't want share command history.
 unsetopt SHARE_HISTORY
 setopt NO_SHARE_HISTORY
+
+# GO {{{
+export GOPATH=$HOME/.go
+# }}}
