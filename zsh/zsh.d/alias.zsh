@@ -7,6 +7,16 @@ alias cp='nocorrect cp -iv'
 alias mv='nocorrect mv -iv'
 alias rm='nocorrect rm -iv'
 
+# list
+if command -v exa 2>&1 >/dev/null; then
+    # exa is our friend :)
+    alias ls='exa'
+    alias l='exa --long --group --git'
+else
+    # fallback to normal ls
+    alias l='ls'
+fi
+
 # Screen
 alias scr='screen -rD'
 
