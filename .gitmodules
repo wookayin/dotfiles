@@ -4,10 +4,6 @@
 [submodule "zsh/fasd"]
 	path = zsh/fasd
 	url = https://github.com/clvv/fasd.git
-[submodule "zsh/k"]
-	path = zsh/k
-	url = https://github.com/supercrabtree/k
-
 [submodule "vim/bundle/vim-plug"]
 	path = vim/bundle/vim-plug
 	url = https://github.com/junegunn/vim-plug
