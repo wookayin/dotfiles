@@ -19,6 +19,12 @@ snippet freopen
 	#sys.stdout = file('${2:output.txt}', 'w')
 	rl = sys.stdin.readline
 
+snippet testcase
+	import unittest
+	class Test${1:Example}(unittest.TestCase):
+	    def test_hello(self):
+	        self.assertFalse("Implement me!")
+
 snippet class
 	class ${1:ClassName}(${2:object}):
 
