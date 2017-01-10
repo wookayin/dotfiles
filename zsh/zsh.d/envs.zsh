@@ -28,3 +28,10 @@ setopt NO_SHARE_HISTORY
 export GOPATH=$HOME/.go
 path=( $path $GOPATH/bin )
 # }}}
+
+# Bazel {{{
+if [ -f $HOME/.bazel/bin/bazel ]; then
+  export BAZEL_HOME="$HOME/.bazel"
+  path=( $path $BAZEL_HOME/bin )
+fi
+# }}}
