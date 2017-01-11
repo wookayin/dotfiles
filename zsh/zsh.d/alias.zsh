@@ -21,9 +21,9 @@ fi
 alias scr='screen -rD'
 
 # vim: Defaults to Neovim if exists
-if command -v nvim 2>&1 >/dev/null; then
-    alias vim='nvim'
-fi
+#if command -v nvim 2>&1 >/dev/null; then
+#    alias vim='nvim'
+#fi
 alias vi='vim'
 
 # Just open ~/.vimrc
