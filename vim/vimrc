@@ -578,6 +578,18 @@ command! -range EmojiReplace <line1>,<line2>call s:replace_emojis()
 xnoremap <leader>emoji :Emoji<CR>
 
 " ---------------------------------------------------------------- }}}
+" vim-asterisk (enhanced *) {{{
+
+"' Use z (stay) behavior as default
+map *  <Plug>(asterisk-z*)
+map #  <Plug>(asterisk-z#)
+map g* <Plug>(asterisk-gz*)
+map g# <Plug>(asterisk-gz#)
+
+" Keep cursor position across matches
+let g:asterisk#keeppos = 1
+
+" ---------------------------------------------------------------- }}}
 " incsearch {{{
 
 " incsearch.vim
