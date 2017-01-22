@@ -24,6 +24,7 @@ tasks = {
     '~/.gitignore' : 'git/gitignore',
 
     # ZSH
+    '~/.zplug'    : 'zsh/zplug',
     '~/.zprezto'  : 'zsh/zprezto',
     '~/.zsh'      : 'zsh',
     '~/.zlogin'   : 'zsh/zlogin',
