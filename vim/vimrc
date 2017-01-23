@@ -593,9 +593,11 @@ let g:asterisk#keeppos = 1
 " incsearch {{{
 
 " incsearch.vim
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
+if has_key(g:plugs, 'incsearch.vim')
+  map /  <Plug>(incsearch-forward)
+  map ?  <Plug>(incsearch-backward)
+  map g/ <Plug>(incsearch-stay)
+endif
 
 " incsearch-fuzzy.vim
 map z/ <Plug>(incsearch-fuzzy-/)
