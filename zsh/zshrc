@@ -1,16 +1,55 @@
-#
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#   Jongwook Choi <wookayin@gmail.com>
+# .zshrc
+# ======
 
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+# zplug           {{{
+# ===================
+if [[ ! -s "${ZDOTDIR:-$HOME}/.zplug/init.zsh" ]]; then
+  echo "zplug is not installed; please update dotfiles"
+fi
+source "${ZDOTDIR:-$HOME}/.zplug/init.zsh";
+
+# Source the Prezto configuration file.
+if [[ -s "${ZDOTDIR:-$HOME}/.zpreztorc" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zpreztorc"
 fi
 
-# Source after-prezto zsh script files.
+# ------------------------------------------------------
+# zplug plugin definition {{{
+
+# Use legacy prezto modules until I complete migration.
+zplug "modules/environment", from:prezto
+zplug "modules/terminal", from:prezto
+zplug "modules/editor", from:prezto
+zplug "modules/history", from:prezto
+zplug "modules/directory", from:prezto
+zplug "modules/spectrum", from:prezto
+zplug "modules/utility", from:prezto
+zplug "modules/archive", from:prezto
+#zplug "modules/prompt", from:prezto
+zplug "modules/rsync", from:prezto
+zplug "modules/completion", from:prezto
+zplug "modules/syntax-highlighting", from:prezto
+zplug "modules/fasd", from:prezto
+zplug "modules/ruby", from:prezto
+zplug "modules/python", from:prezto
+zplug "modules/node", from:prezto
+zplug "modules/git", from:prezto
+
+# Install plugins if there are plugins that have not been installed
+if [[ -o interactive ]] && ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+
+# Then, source plugins and add commands to $PATH
+zplug load #--verbose
+
+# }}} ===================
+
+
+# Source after-zplug zsh script files.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
 # Terminal
