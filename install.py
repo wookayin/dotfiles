@@ -100,6 +100,7 @@ WHITE  = _wrap_colors("\033[1;37m")
 RED    = _wrap_colors("\033[0;31m")
 GREEN  = _wrap_colors("\033[0;32m")
 YELLOW = _wrap_colors("\033[0;33m")
+CYAN   = _wrap_colors("\033[0;36m")
 BLUE   = _wrap_colors("\033[0;34m")
 
 
@@ -198,5 +199,8 @@ for target, source in sorted(tasks.items()):
         ))
 
 for action in post_actions:
-    print(WHITE('Executing : ') + action.strip().split('\n')[0])
+    log(CYAN('Executing: ') + action.strip().split('\n')[0])
     subprocess.call(['bash', '-c', action])
+
+log("\n" + GREEN("Done! "), cr=False)
+log(GRAY("Please restart shell (e.g. `exec zsh`) if necessary\n"))
