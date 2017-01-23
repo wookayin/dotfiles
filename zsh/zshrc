@@ -35,6 +35,12 @@ zplug "modules/python", from:prezto
 zplug "modules/node", from:prezto
 zplug "modules/git", from:prezto
 
+# ZSH theme
+zplug "mafredri/zsh-async", from:github
+zplug "wookayin/pure", use:pure.zsh, from:github, as:theme
+
+# ------------------------------------------------------ }}}
+
 # Install plugins if there are plugins that have not been installed
 if [[ -o interactive ]] && ! zplug check --verbose; then
     printf "Install? [y/N]: "
