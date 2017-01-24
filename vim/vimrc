@@ -325,7 +325,7 @@ nnoremap ; :
 " Useful leader key combinations {{{
 
 " <leader><space> : turn off search highlight
-nmap <leader><space> :noh<CR>
+nmap <silent> <leader><space> :noh<CR>
 
 " Plugin ag.vim
 " <leader>ag : Ag (search file contents)
