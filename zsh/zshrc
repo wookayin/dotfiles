@@ -29,11 +29,15 @@ zplug "modules/archive", from:prezto
 zplug "modules/rsync", from:prezto
 zplug "modules/completion", from:prezto
 zplug "modules/syntax-highlighting", from:prezto
-zplug "modules/fasd", from:prezto
+zplug "modules/fasd", from:prezto, defer:2
 zplug "modules/ruby", from:prezto
 zplug "modules/python", from:prezto
 zplug "modules/node", from:prezto
 zplug "modules/git", from:prezto
+
+# Dirty hacks for Prezto:
+# @see https://github.com/zplug/zplug/issues/373
+zstyle ":prezto:module:completion" loaded 'yes'
 
 # ZSH theme
 zplug "mafredri/zsh-async", from:github
