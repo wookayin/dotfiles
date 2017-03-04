@@ -113,7 +113,7 @@ install_exa() {
         echo -e "${COLOR_RED}SHA1 checksum mismatch, aborting!${COLOR_NONE}"
         exit 1;
     fi
-    sudo cp "exa-linux-x86_64" "/usr/local/bin/exa"
+    sudo cp "exa-linux-x86_64" "/usr/local/bin/exa" || exit 1;
     echo -e "${COLOR_GREEN}Installation of exa successful!${COLOR_NONE}"
     echo "$(which exa) : $(exa --version)"
     rm -rf ${TMP_EXA_DIR}
