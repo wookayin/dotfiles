@@ -93,6 +93,10 @@ else
     export VIRTUALENVWRAPPER_PYTHON='/usr/bin/python'
 fi
 
+# Set the directory where virtual environments are stored.
+export WORKON_HOME="$HOME/.virtualenvs"
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
 # ensure that all new virtual environments are isolated from the system site-packages.
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
