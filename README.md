@@ -11,18 +11,19 @@ Installation
 One-liner (if, you trust):
 
 ```bash
-$ curl -fsSL https://dotfiles.wook.kr/etc/install | bash
+curl -fsSL https://dotfiles.wook.kr/etc/install | bash
 ```
 
 An alternative:
 
 ```bash
-git clone --recursive -j8 https://github.com/wookayin/dotfiles.git ~/.dotfiles
+git clone --recursive https://github.com/wookayin/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles && python install.py
 ```
-
+<!--
 Note: The option `-j8` (`--jobs 8`) works with Git >= 2.8 (parallel submodule fetching).
 For older versions of Git, try without `-j` option.
+-->
 
 The installation script will create symbolic links for the specified dotfiles.
 If some target file already exists (e.g. `~/.vim`), you will need to manually resolve the conflict (delete the old one or just ignore).
