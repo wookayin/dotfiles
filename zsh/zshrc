@@ -4,8 +4,13 @@
 # zplug           {{{
 # ===================
 if [[ ! -s "${ZDOTDIR:-$HOME}/.zplug/init.zsh" ]]; then
-  echo "zplug is not installed; please update dotfiles"
+  echo -e "\033[0;31m zplug is not installed; please update dotfiles !"
+  echo -e "\033[0;33m  e.g. $ dotfiles update\n\
+       $ cd ~/.dotfiles && python install.py"
+  echo -e "\033[0m"
+  return
 fi
+
 source "${ZDOTDIR:-$HOME}/.zplug/init.zsh";
 
 # Source the Prezto configuration file.
