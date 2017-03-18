@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Usage: curl -fsSL https://dotfiles.wook.kr/etc/install
+
+cat <<EOF
+   @wookayin's              ███████╗██╗██╗     ███████╗███████╗
+   ██████╗  █████╗ ████████╗██╔════╝██║██║     ██╔════╝██╔════╝
+   ██╔══██╗██╔══██╗╚══██╔══╝█████╗  ██║██║     █████╗  ███████╗
+   ██║  ██║██║  ██║   ██║   ██╔══╝  ██║██║     ██╔══╝  ╚════██║
+   ██████╔╝╚█████╔╝   ██║   ██║     ██║███████╗███████╗███████║
+   ╚═════╝  ╚═════╝   ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
+EOF
+
+_version_check() {
+    curver="$1"; targetver="$2";
+    [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
+}
+
+if _version_check "$(git --version | cut -d' ' -f3)" "2.8"; then
+    GIT_FLAGS="-j8"
+fi
+
+GIT_REPO="https://github.com/wookayin/dotfiles.git"
+
+set -x
+set -e
+
+# ============================================================================
+
+cd ~
+
+git clone --recursive ${GIT_FLAGS} ${GIT_REPO} ~/.dotfiles
+cd ~/.dotfiles && python install.py
+
+echo "All Done!"
