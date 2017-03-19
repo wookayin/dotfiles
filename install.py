@@ -114,6 +114,8 @@ BLUE   = _wrap_colors("\033[0;34m")
 import os
 import sys
 import subprocess
+
+from signal import signal, SIGPIPE, SIG_DFL
 from optparse import OptionParser
 from sys import stderr
 
@@ -207,4 +209,9 @@ for target, source in sorted(tasks.items()):
 
 for action in post_actions:
     print(WHITE('Executing : ') + action.strip().split('\n')[0])
-    subprocess.call(['bash', '-c', action])
+    subprocess.call(['bash', '-c', action],
+                    preexec_fn=lambda: signal(SIGPIPE, SIG_DFL))
+
+print("\n" +
+      GREEN("All set! Why don't you just ") +
+      WHITE("exec zsh") + GREEN(" ?"))
