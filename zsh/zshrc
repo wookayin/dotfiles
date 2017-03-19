@@ -35,9 +35,11 @@ zplug "modules/rsync", from:prezto
 zplug "modules/completion", from:prezto
 zplug "modules/syntax-highlighting", from:prezto
 zplug "modules/fasd", from:prezto, defer:2
-zplug "modules/ruby", from:prezto
-zplug "modules/node", from:prezto
 zplug "modules/git", from:prezto
+
+zplug "modules/ruby", from:prezto, if:"$+commands[ruby]"
+zplug "modules/node", from:prezto, if:"$+commands[node]"
+
 
 # Dirty hacks for Prezto:
 # @see https://github.com/zplug/zplug/issues/373
@@ -55,8 +57,11 @@ zplug "wookayin/pure", use:pure.zsh, from:github, as:theme
 # ------------------------------------------------------ }}}
 
 # Install plugins if there are plugins that have not been installed
-if [[ -o interactive ]] && ! zplug check --verbose; then
-    printf "Install? [y/N]: "
+if [[ -o interactive ]] && ! zplug check; then
+    # show the list of plugins whose installation are incomplete
+    zplug check --verbose
+
+    printf "Install zplug plugins? [y/N]: "
     if read -q; then
         echo; zplug install
     fi
