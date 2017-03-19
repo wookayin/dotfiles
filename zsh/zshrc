@@ -54,6 +54,9 @@ fi
 zplug "mafredri/zsh-async", from:github
 zplug "wookayin/pure", use:pure.zsh, from:github, as:theme
 
+# More ZSH widgets and utilities
+zplug 'zsh-users/zsh-autosuggestions'
+
 # ------------------------------------------------------ }}}
 
 # Install plugins if there are plugins that have not been installed
