@@ -37,8 +37,8 @@ zplug "modules/syntax-highlighting", from:prezto
 zplug "modules/fasd", from:prezto, defer:2
 zplug "modules/git", from:prezto
 
-zplug "modules/ruby", from:prezto, if:"$+commands[ruby]"
-zplug "modules/node", from:prezto, if:"$+commands[node]"
+zplug "modules/ruby", from:prezto, if:"(( $+commands[ruby] ))"
+zplug "modules/node", from:prezto, if:"(( $+commands[node] ))"
 
 
 # Dirty hacks for Prezto:
