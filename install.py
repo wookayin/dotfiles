@@ -24,7 +24,7 @@ tasks = {
     '~/.gitignore' : 'git/gitignore',
 
     # ZSH
-    '~/.zprezto'  : 'zsh/zprezto',
+    '~/.zplug'    : 'zsh/zplug',
     '~/.zsh'      : 'zsh',
     '~/.zlogin'   : 'zsh/zlogin',
     '~/.zlogout'  : 'zsh/zlogout',
@@ -61,6 +61,14 @@ tasks = {
 }
 
 post_actions = [
+    # zplug installation
+    '''# Install zplug and clear cache
+    zsh -c "
+        source ${HOME}/.zshrc      # source zplug and list plugins
+        zplug clear                # clear cache
+        zplug install"             # install!
+    '''
+
     # Run vim-plug installation
     'vim +PlugInstall +qall',
 
@@ -107,6 +115,8 @@ BLUE   = _wrap_colors("\033[0;34m")
 import os
 import sys
 import subprocess
+
+from signal import signal, SIGPIPE, SIG_DFL
 from optparse import OptionParser
 from sys import stderr
 
@@ -200,7 +210,8 @@ for target, source in sorted(tasks.items()):
 
 for action in post_actions:
     log(CYAN('Executing: ') + action.strip().split('\n')[0])
-    subprocess.call(['bash', '-c', action])
+    subprocess.call(['bash', '-c', action],
+                    preexec_fn=lambda: signal(SIGPIPE, SIG_DFL))
 
 log("\n" + GREEN("Done! "), cr=False)
 log(GRAY("Please restart shell (e.g. `exec zsh`) if necessary\n"))

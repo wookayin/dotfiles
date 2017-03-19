@@ -86,10 +86,6 @@ alias gva='gv --all'
 # virtualenv
 alias wo='workon'
 
-# override prezto's default
-# use 'py' command from pythonpy
-unalias py
-
 # ipython
 alias ipy='ipython'
 alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
