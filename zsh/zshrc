@@ -57,6 +57,11 @@ zplug "wookayin/pure", use:pure.zsh, from:github, as:theme
 # More ZSH widgets and utilities
 zplug 'zsh-users/zsh-autosuggestions'
 
+# Additional zplug from ~/.zshrc.local
+if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zshrc.local"
+fi
+
 # ------------------------------------------------------ }}}
 
 # Install plugins if there are plugins that have not been installed
