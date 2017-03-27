@@ -50,7 +50,8 @@ Plug 'vim-scripts/matchit.zip'
 Plug 'tomtom/tlib_vim'
 Plug 'junegunn/vader.vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'rizzatti/dash.vim',  { 'on': 'Dash' }
+Plug 'rizzatti/dash.vim',   { 'on': 'Dash' }
+Plug 'wookayin/vim-typora', { 'on': 'Typora' }
 
 " Syntax, Completion, Coding stuffs
 Plug 'editorconfig/editorconfig-vim'
