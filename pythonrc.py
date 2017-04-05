@@ -6,3 +6,9 @@ try:
 except ImportError:
     import readline, rlcompleter
     readline.parse_and_bind("tab: complete")
+
+# https://github.com/laike9m/pdir2
+try:
+    import pdir
+except ImportError:
+    pass
