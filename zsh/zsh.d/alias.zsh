@@ -126,7 +126,8 @@ alias prettyxml='xmllint --format - | pygmentize -l xml'
 
 # open some macOS applications
 if [[ "$(uname)" == "Darwin" ]]; then
-    alias typora='open -a Typora'
+    function typora   { open -a Typora $@ }
+    function skim     { open -a Skim $@ }
 fi
 
 
