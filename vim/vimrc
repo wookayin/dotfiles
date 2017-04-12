@@ -614,6 +614,13 @@ endif
 let g:highlightedyank_highlight_duration = 1000
 
 " ---------------------------------------------------------------- }}}
+" editorconfig {{{
+
+let g:EditorConfig_core_mode = 'python_external'
+"let g:EditorConfig_core_mode = 'external_command'
+
+
+" ---------------------------------------------------------------- }}}
 " Airline {{{
 
 " use airline, with powerline-ish theme
