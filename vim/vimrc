@@ -834,10 +834,11 @@ let g:pymode_lint_cwindow = 0
 let g:pymode_lint_ignore = "E401,E501"
 
 
-" For neovim, disable jedi's autocompletion behavior but
-" enable all the other features (e.g. goto, or refactoring)
-" The autocompletion is supported by deoplete-jedi.
-if has('nvim')
+" For neovim or vim8 (completor.vim),
+" disable jedi's autocompletion behavior but enable all the other features (e.g. goto, or refactoring)
+" The autocompletion is supported by deoplete-jedi or completor.vim.
+if has_key(g:plugs, 'deoplete-jedi') || has_key(g:plugs, 'completor.vim')
+"if has('nvim') || v:version >= 800
     " @see https://github.com/zchee/deoplete-jedi/issues/35
     let g:jedi#completions_enabled = 0
 endif
