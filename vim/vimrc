@@ -226,12 +226,6 @@ nnoremap <C-t>     :tabnew<CR>
 nnoremap <C-S-tab> :tabprevious<CR>
 nnoremap <C-tab>   :tabnext<CR>
 
-" Alternative tab navigations (@seealso gt, gT)
-" (terminals might capture <Ctrl-t> or something else)
-nnoremap <leader>tn  :tabnext<CR>
-nnoremap <leader>tp  :tabprev<CR>
-nnoremap <leader>tt  :tabnew<CR>
-
 " Handy tab navigations: <Alt-num>
 nnoremap 1 1gt
 nnoremap 2 2gt
