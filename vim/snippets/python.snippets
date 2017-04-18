@@ -76,8 +76,24 @@ snippet PATH
 snippet jsondump
 	json.dumps(${1:object}, sort_keys=True, indent=4, separators=(',', ': '))
 #
-# Tensorflow
+# Common imports,
+# ML, Data Science, Tensorflow, ...
 #
+snippet np
+	import numpy as np
+
+snippet osp
+	import os.path as osp
+
+snippet PIL
+	from PIL import Image
+
+snippet tf
+	import tensorflow as tf
+
+snippet tflayers
+	import tensorflow.contrib.layers as layers
+
 snippet tfsession
 	session = tf.Session(config=tf.ConfigProto(
 	    gpu_options=tf.GPUOptions(allow_growth=True),
