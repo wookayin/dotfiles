@@ -877,6 +877,9 @@ endif
 
 let g:LatexBox_Folding = 1
 
+" suppress version warning
+let g:vimtex_disable_version_warning = 1
+
 let g:vimtex_mappings_enabled = 1
 
 " Disable callback feature if vim lacks feature +clientserver
