@@ -885,6 +885,9 @@ let g:vimtex_mappings_enabled = 1
 " Disable callback feature if vim lacks feature +clientserver
 if ! (has('clientserver') || has('nvim'))
     let g:vimtex_latexmk_callback = 0
+
+    " see https://github.com/lervag/vimtex/issues/507
+    let g:vimtex_compiler_latexmk = {'callback' : 0}
 endif
 
 " in macOS, use Skim as the default LaTeX PDF viewer (for vimtex)
