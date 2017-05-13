@@ -50,8 +50,8 @@ install_neovim() {
 
     command -v /usr/bin/pip 2>&1 > /dev/null || sudo apt-get install -y python-pip
     command -v /usr/bin/pip3 2>&1 > /dev/null || sudo apt-get install -y python3-pip
-    sudo /usr/bin/pip install neovim
-    sudo /usr/bin/pip3 install neovim
+    sudo /usr/bin/pip install --upgrade neovim
+    sudo /usr/bin/pip3 install --upgrade neovim
 }
 
 install_latest_tmux() {
