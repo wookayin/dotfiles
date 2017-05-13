@@ -29,6 +29,7 @@
 	unstage = reset HEAD --
 	discard = checkout --
 	update-branch = branch -f --no-track
+	ub = branch -f --no-track
 
 	assume-unchanged = update-index --assume-unchanged
 	unassume-unchanged = update-index --no-assume-unchanged
