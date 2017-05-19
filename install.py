@@ -150,7 +150,8 @@ current_dir = os.path.abspath(os.path.dirname(__file__))
 os.chdir(current_dir)
 
 # check if git submodules are loaded properly
-stat = subprocess.check_output("git submodule status --recursive", shell=True)
+stat = subprocess.check_output("git submodule status --recursive",
+                               shell=True, universal_newlines=True)
 submodule_issues = [(l.split()[1], l[0]) for l in stat.split('\n') if len(l) and l[0] != ' ']
 
 if submodule_issues:

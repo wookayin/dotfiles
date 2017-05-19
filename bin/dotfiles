@@ -83,7 +83,7 @@ def main():
     subparsers = parser.add_subparsers(title='Available commands',
                                        dest="command")
 
-    for (cmd, action) in COMMANDS.iteritems():
+    for (cmd, action) in COMMANDS.items():
         subparsers.add_parser(cmd, help=action.__doc__)
 
     if len(sys.argv) == 1:
