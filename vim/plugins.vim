@@ -95,4 +95,9 @@ elseif v:version >= 800
 
 endif
 
+" Additional, optional local plugins
+if filereadable(expand("\~/.vim/plugins.local.vim"))
+    source \~/.vim/plugins.local.vim
+endif
+
 call plug#end()
