@@ -3,6 +3,7 @@
 import subprocess
 import argparse
 import os.path
+import sys
 
 parser = argparse.ArgumentParser(description=r'''
 Launch tensorboard on multiple directories in an easy way.
@@ -13,19 +14,32 @@ parser.add_argument('--quiet', '-q', action='store_true',
                     help='Run in silent mode')
 parser.add_argument('dirs', nargs='+', type=str,
                     help='directories of train instances to monitor')
-args = parser.parse_args()
 
-args.dirs = [s for s in args.dirs if os.path.isdir(s)]
-for s in args.dirs:
-    print('Monitoring %s ...' % s)
-print('')
+RED   = lambda msg: ("\033[0;31m") + str(msg) + ('\033[0m')
+GREEN = lambda msg: ("\033[0;32m") + str(msg) + ('\033[0m')
 
-cmd = 'tensorboard --port="{}" --logdir="{}"'.format(
-    args.port,
-    ','.join(["%s:%s" % (os.path.basename(s), s) for s in args.dirs])
-)
-if args.quiet:
-    cmd += ' 2>/dev/null'
 
-print(cmd)
-subprocess.call(cmd, shell=True)
+def main():
+    args = parser.parse_args()
+    args.dirs = [s for s in args.dirs if os.path.isdir(s)]
+
+    if not args.dirs:
+        print(RED('Error: No valid directories to watch'))
+        return 1
+
+    for s in args.dirs:
+        print(GREEN('Monitoring %s ...' % s))
+    print('')
+
+    cmd = 'tensorboard --port="{}" --logdir="{}"'.format(
+        args.port,
+        ','.join(["%s:%s" % (os.path.basename(s), s) for s in args.dirs])
+    )
+    if args.quiet:
+        cmd += ' 2>/dev/null'
+
+    print(cmd)
+    subprocess.call(cmd, shell=True)
+
+if __name__ == '__main__':
+    sys.exit(main())
