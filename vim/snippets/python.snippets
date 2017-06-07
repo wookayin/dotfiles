@@ -37,15 +37,15 @@ snippet class
 
 snippet super
 	super(${1:ChildClass}, self).__init__(${2:args})
-
+#
 snippet init
 	def __init__(self):
 	    ${1:pass}
-
+#
 snippet repr
 	def __repr__(self):
 	    return ${1:str(self)}
-
+#
 snippet embed
 	from IPython import embed; embed()  # XXX DEBUG
 
@@ -103,6 +103,8 @@ snippet tfsession
 	    gpu_options=tf.GPUOptions(allow_growth=True),
 	    device_count={'GPU': 1},
 	))
+snippet tfprint
+	${1:tensor} = tf.Print($1, data=[$1], first_n=${2:10})  # XXX DEBUG
 snippet tfpdb
 	# XXX DEBUG tf breakpoint {{{
 	def _breakpoint_func(${2}):
