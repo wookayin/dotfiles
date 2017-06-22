@@ -7,6 +7,12 @@ alias cp='nocorrect cp -iv'
 alias mv='nocorrect mv -iv'
 alias rm='nocorrect rm -iv'
 
+if (( $+commands[htop] )); then
+    alias top='htop'
+    alias topc='htop -s PERCENT_CPU'
+    alias topm='htop -s PERCENT_MEM'
+fi
+
 # list
 if command -v exa 2>&1 >/dev/null; then
     # exa is our friend :)
