@@ -56,6 +56,7 @@ zplug "wookayin/pure", use:pure.zsh, from:github, as:theme
 
 # More ZSH widgets and utilities
 zplug 'zsh-users/zsh-autosuggestions'
+zplug 'MichaelAquilina/zsh-autoswitch-virtualenv'
 
 # Additional zplug from ~/.zshrc.local
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
