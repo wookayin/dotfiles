@@ -26,6 +26,15 @@ install_essential_packages() {
     sudo apt-get install -y ${packages[@]}
 }
 
+install_python_packages() {
+    sudo apt-get install -y python-dev virtualenv virtualenvwrapper
+    sudo apt-get install -y python-pip python3-pip
+
+    # install recent versions (9+) of pip at /usr/local/bin
+    sudo /usr/bin/pip install --upgrade pip         # pip
+    sudo /usr/bin/pip3 install --upgrade pip        # pip3
+}
+
 install_ppa_git() {
     # https://launchpad.net/~git-core/+archive/ubuntu/ppa
     sudo add-apt-repository -y ppa:git-core/ppa
@@ -122,6 +131,7 @@ install_exa() {
 install_all() {
     # TODO dependency management: duplicated 'apt-get update'?
     install_essential_packages
+    install_python_packages
     install_node
     install_latest_tmux
     install_ppa_vim8
