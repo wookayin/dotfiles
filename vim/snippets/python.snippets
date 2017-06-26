@@ -103,6 +103,8 @@ snippet tfsession
 	    gpu_options=tf.GPUOptions(allow_growth=True),
 	    device_count={'GPU': 1},
 	))
+snippet tfsaver
+	saver = tf.train.Saver(max_to_keep=1000)
 snippet tfprint
 	${1:tensor} = tf.Print($1, data=[$1], first_n=${2:10})  # XXX DEBUG
 snippet tfpdb
