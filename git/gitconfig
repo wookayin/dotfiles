@@ -57,6 +57,10 @@
 	# smarter diff on splits around blank lines (Git 2.9.0+)
 	compactionHeuristic = true
 
+[diff "sqlite3"]
+	binary = true
+	textconv = "echo .dump | sqlite3"
+
 [merge]
 	conflictstyle = diff3
 
