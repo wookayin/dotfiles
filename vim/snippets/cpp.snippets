@@ -1,9 +1,14 @@
 # cpp Snippets
 
-snippet REP
-	for(int ${1:i} = 0; $1 < ${2:n}; ++$1) ${3}
-snippet FOR
+snippet for
 	for(int ${1:i} = ${2:0}; $1 < ${3:n}; ++$1) ${4}
+snippet rep
+	for(int ${1:i} = 0; $1 < ${2:n}; ++$1) ${3}
+snippet repi
+	for(int i = 0; i < ${1:n}; ++ i) ${2}
+snippet repj
+	for(int j = 0; j < ${1:n}; ++ j) ${2}
+#
 snippet kase
 	for(int kase = 1; kase <= T; ++ kase) {
 	    ${1}
