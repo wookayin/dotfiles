@@ -8,7 +8,7 @@ setlocal completeopt=longest,menuone,preview
 
 " Show <Quickfix List> buffer at the right splitted vertically
 if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
-    noremap <F6> <ESC>:cclose<CR>:Copen<CR>:wincmd L<CR>:60wincmd \|<CR>:wincmd h<CR>
+    noremap <F6> <ESC>:cclose<CR>:TheCopen<CR>:wincmd L<CR>:60wincmd \|<CR>:wincmd h<CR>
 else
     noremap <F6> <ESC>:cclose<CR>:vertical 60copen<CR>:wincmd h<CR>
 endif
