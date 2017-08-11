@@ -84,6 +84,8 @@ set wildignore=*.swp,*.swo,*.class
 
 " status line
 set laststatus=2            " show anytime
+set noshowmode              " don't display mode, e.g. '-- INSERT --'
+set showcmd
 
 
 " native customized statusline, if airline is not available
@@ -115,9 +117,6 @@ set noswapfile
 set nobackup
 
 " miscellanious
-set showmode
-set showcmd
-
 set visualbell
 set history=1000
 set undolevels=1000
@@ -787,6 +786,10 @@ let g:pandoc#spell#enabled = 0
 " ---------------------------------------------------------------- }}}
 " vim-javacomplete2 {{{
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
+
+" ---------------------------------------------------------------- }}}
+" echodoc.vim {{{
+let g:echodoc#enable_at_startup = 1
 
 " ---------------------------------------------------------------- }}}
 " deoplete.nvim {{{

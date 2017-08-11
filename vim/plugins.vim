@@ -74,6 +74,9 @@ Plug 'tfnico/vim-gradle'
 Plug 'Tyilo/applescript.vim'
 Plug 'rdolgushin/groovy.vim'
 
+Plug 'Shougo/echodoc.vim'
+
+
 if has('nvim')
     function! DoRemote(arg)
         UpdateRemotePlugins
