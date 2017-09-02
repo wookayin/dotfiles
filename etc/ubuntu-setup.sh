@@ -64,26 +64,26 @@ install_neovim() {
 }
 
 install_latest_tmux() {
-    # tmux 2.3 is installed from source compilation,
-    # as there is no tmux 2.3+ package that is compatible with ubuntu 14.04
-    # For {libncurses,libevent >= 6}, we might use
-    # https://launchpad.net/ubuntu/+archive/primary/+files/tmux_2.3-4_${archi}.deb
+    # tmux 2.5 will be installed from source compilation,
+    # since there is no tmux 2.3+ package that is compatible with ubuntu 14.04.
+    # For {libncurses,libevent >= 6} (e.g. ubuntu 16.04+), we may use
+    # https://launchpad.net/ubuntu/+archive/primary/+files/tmux_2.5-4_${archi}.deb
     # archi=$(dpkg --print-architecture)  # e.g. amd64
     set -e
 
-    if _version_check "$(tmux -V | cut -d' ' -f2)" "2.3"; then
+    if _version_check "$(tmux -V | cut -d' ' -f2)" "2.5"; then
         echo "$(tmux -V) : $(which tmux)"
         echo "  Already installed, skipping installation"; return
     fi
     apt-get install -y libevent-dev libncurses5-dev libutempter-dev || exit 1;
     TMP_TMUX_DIR="/tmp/.tmux-src/"
 
-    TMUX_TGZ_FILE="tmux-2.3.tar.gz"
-    TMUX_DOWNLOAD_URL="https://github.com/tmux/tmux/releases/download/2.3/${TMUX_TGZ_FILE}"
+    TMUX_TGZ_FILE="tmux-2.5.tar.gz"
+    TMUX_DOWNLOAD_URL="https://github.com/tmux/tmux/releases/download/2.5/${TMUX_TGZ_FILE}"
 
     wget -nc ${TMUX_DOWNLOAD_URL} -P ${TMP_TMUX_DIR} || exit 1;
     cd ${TMP_TMUX_DIR} && tar -xvzf ${TMUX_TGZ_FILE} || exit 1;
-    cd "tmux-2.3" && ./configure || exit 1;
+    cd "tmux-2.5" && ./configure || exit 1;
     make clean && make -j2 && make install || exit 1;
     tmux -V
 }
