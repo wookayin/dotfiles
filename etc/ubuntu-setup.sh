@@ -89,10 +89,12 @@ install_latest_tmux() {
 }
 
 install_ppa_nginx() {
+    sudo service apache2 stop || true;
+
     # https://launchpad.net/~nginx/+archive/ubuntu/stable
     sudo add-apt-repository -y ppa:nginx/stable
     sudo apt-get update
-    sudo apt-get install -y nginx
+    sudo apt-get install -y nginx-full
 }
 
 install_node() {
