@@ -75,7 +75,7 @@ install_latest_tmux() {
         echo "$(tmux -V) : $(which tmux)"
         echo "  Already installed, skipping installation"; return
     fi
-    apt-get install -y libevent-dev libncurses5-dev libutempter-dev || exit 1;
+    sudo apt-get install -y libevent-dev libncurses5-dev libutempter-dev || exit 1;
     TMP_TMUX_DIR="/tmp/.tmux-src/"
 
     TMUX_TGZ_FILE="tmux-2.5.tar.gz"
@@ -84,7 +84,9 @@ install_latest_tmux() {
     wget -nc ${TMUX_DOWNLOAD_URL} -P ${TMP_TMUX_DIR} || exit 1;
     cd ${TMP_TMUX_DIR} && tar -xvzf ${TMUX_TGZ_FILE} || exit 1;
     cd "tmux-2.5" && ./configure || exit 1;
-    make clean && make -j2 && make install || exit 1;
+    make clean && make -j2 || exit 1;
+
+    sudo make install || exit 1;
     tmux -V
 }
 
