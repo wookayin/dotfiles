@@ -95,5 +95,8 @@ else
   export TERM="xterm-256color"
 fi
 
+# PATH for local settings
+export PATH="~/.local/bin/:$PATH"
+
 # Additional Completion
 if [ -f /usr/local/etc/bash_completion ]; then source /usr/local/etc/bash_completion; fi
