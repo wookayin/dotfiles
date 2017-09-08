@@ -42,7 +42,12 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'haya14busa/vim-asterisk'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
-Plug 'machakann/vim-highlightedyank'
+
+if v:version >= 800 || v:version == 704 && has('patch786')
+    " requires vim 7.4.786+ (see issue #23)
+    Plug 'machakann/vim-highlightedyank'
+endif
+
 Plug 'scrooloose/nerdcommenter'
 Plug 'sjl/gundo.vim'
 Plug 'SirVer/ultisnips'
