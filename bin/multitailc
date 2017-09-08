@@ -1,0 +1,6 @@
+#!/bin/bash
+args=""
+for file in "$@"; do
+    args+="-cT ANSI $file "
+done
+multitail $args
