@@ -601,7 +601,7 @@ map zg/ <Plug>(incsearch-fuzzy-stay)
 
 " ---------------------------------------------------------------- }}}
 " vim-highlightedyank {{{
-if ! has("nvim")
+if ! has("nvim") && has_key(g:plugs, 'vim-highlightedyank')
     map y <Plug>(highlightedyank)
 endif
 
