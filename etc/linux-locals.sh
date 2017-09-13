@@ -19,6 +19,21 @@ install_zsh() {
     ~/.local/bin/zsh --version
 }
 
+
+install_bazel() {
+    BAZEL_VER="0.5.4"
+    BAZEL_URL="https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/bazel-${BAZEL_VER}-installer-linux-x86_64.sh"
+
+    TMP_BAZEL_DIR="/tmp/$USER/bazel/"
+    mkdir -p $TMP_BAZEL_DIR
+    wget -O $TMP_BAZEL_DIR/bazel-installer.sh $BAZEL_URL
+
+    bash $TMP_BAZEL_DIR/bazel-installer.sh \
+        --bin=$HOME/.local/bin \
+        --base=$HOME/.bazel
+}
+
+
 # die immediately if error occurs
 set -e
 
