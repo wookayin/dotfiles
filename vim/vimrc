@@ -95,7 +95,9 @@ set showcmd
 set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
 
 " mouse behaviour
-set mouse=nvc
+if has('mouse')
+    set mouse=nvc
+endif
 if ! has('nvim')
     " vim only (not in neovim)
     set ttymouse=xterm2
