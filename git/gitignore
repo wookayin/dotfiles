@@ -19,5 +19,8 @@ Session.vim
 .settings/
 .ipynb_checkpoints/
 
+# Virtualenv
+.venv*
+
 # Etc
 npm-debug.log
