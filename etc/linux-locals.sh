@@ -73,6 +73,20 @@ install_bazel() {
 }
 
 
+install_anaconda3() {
+    # installs Anaconda-python3.
+    set -e
+
+    # https://www.anaconda.com/download/
+    TMP_DIR="/tmp/$USER/anaconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
+    wget -nc "https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh"
+
+    # will install at $HOME/.anaconda3 (see zsh config for PATH)
+    ANACONDA_PREFIX="$HOME/.anaconda3/"
+    bash "Anaconda3-4.4.0-Linux-x86_64.sh" -b -p ${ANACONDA_PREFIX}
+}
+
+
 # entrypoint script
 if [ `uname` != "Linux" ]; then
     echo "Run on Linux (not on Mac OS X)"; exit 1

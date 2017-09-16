@@ -24,6 +24,12 @@ export SAVEHIST=100000
 unsetopt SHARE_HISTORY
 setopt NO_SHARE_HISTORY
 
+# Anaconda3 {{{
+if [ -d $HOME/.anaconda3/bin/ ]; then
+  path=( $path $HOME/.anaconda3/bin )
+fi
+# }}}
+
 # GO {{{
 export GOPATH=$HOME/.go
 path=( $path $GOPATH/bin )
