@@ -21,8 +21,8 @@
 	log = less -FE
 
 [alias]
-	history = log --graph --pretty=format:'%C(yellow)%h%Creset \
-		-%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
+	history = log --graph --decorate \
+		--pretty=format:'%C(yellow)%h%Creset  %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
 		--abbrev-commit --date=short --date-order -n30
 
 	co = checkout
@@ -39,6 +39,12 @@
 
 	wdiff = diff --color-words
 	wshow = show --color-words
+
+[color "decorate"]
+	# With git 1.8+, %C(auto)%d will assign different color to each refspec.
+	HEAD = cyan
+	branch = yellow
+	tag = magenta
 
 [color]
 	status = auto
