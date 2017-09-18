@@ -87,6 +87,39 @@ install_anaconda3() {
 }
 
 
+install_vim() {
+    # install latest vim
+    set -e
+
+    TMP_VIM_DIR="/tmp/$USER/vim/"; mkdir -p $TMP_VIM_DIR
+    VIM_LATEST_VERSION=$(\
+        curl -L https://api.github.com/repos/vim/vim/tags 2>/dev/null | \
+        python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+    )
+    test -n $VIM_LATEST_VERSION
+    VIM_LATEST_VERSION=${VIM_LATEST_VERSION/v/}    # (e.g) 8.0.1234
+
+    VIM_DOWNLOAD_URL="https://github.com/vim/vim/archive/v${VIM_LATEST_VERSION}.tar.gz"
+
+    wget -nc ${VIM_DOWNLOAD_URL} -P ${TMP_VIM_DIR} || true;
+    cd ${TMP_VIM_DIR} && tar -xvzf v${VIM_LATEST_VERSION}.tar.gz
+    cd "vim-${VIM_LATEST_VERSION}/src"
+
+    ./configure --prefix="$PREFIX" \
+        --with-features=huge \
+        --enable-pythoninterp
+
+    make clean && make -j8 && make install
+    ~/.local/bin/vim --version | head -n2
+
+    # make sure that all necessary features are shipped
+    if ! (vim --version | grep -q '+python'); then
+        echo "vim: python is not enabled"
+        exit 1;
+    fi
+}
+
+
 # entrypoint script
 if [ `uname` != "Linux" ]; then
     echo "Run on Linux (not on Mac OS X)"; exit 1
