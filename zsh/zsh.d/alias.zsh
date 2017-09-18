@@ -148,7 +148,7 @@ alias watch='watch --color -n1'
 
 # nvidia-smi/gpustat every 1 sec
 #alias smi='watch -n1 nvidia-smi'
-alias watchgpu='watch --color -n0.2 gpustat'
+alias watchgpu='watch --color -n0.2 "gpustat --color || gpustat"'
 alias smi='watchgpu'
 
 function usegpu {
