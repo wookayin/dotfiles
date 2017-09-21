@@ -119,6 +119,23 @@ install_vim() {
     fi
 }
 
+install_neovim() {
+    # install neovim nightly
+    set -e
+
+    TMP_NVIM_DIR="/tmp/$USER/neovim"; mkdir -p $TMP_NVIM_DIR
+    NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
+
+    cd $TMP_NVIM_DIR
+    wget -nc $NVIM_DOWNLOAD_URL || true;
+    tar -xvzf "nvim-linux64.tar.gz"
+
+    # copy and merge into ~/.local/bin
+    cp -RTv "nvim-linux64/" "$PREFIX"
+
+    $PREFIX/bin/nvim --version
+}
+
 
 # entrypoint script
 if [ `uname` != "Linux" ]; then
