@@ -299,6 +299,9 @@ else
     imap <F5> <ESC>:w<CR>:make!<CR>a
 endif
 
+" Alternative to <F5>
+map <leader>m <F5>
+
 " }}}
 
 
