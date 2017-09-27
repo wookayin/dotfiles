@@ -191,6 +191,10 @@ noremap <C-l> <C-w>l
 nnoremap <tab> <c-w>w
 nnoremap <S-tab> <c-w>W
 
+" zoom and unzoom (like tmux) -- by 'vim-maximizer'
+nnoremap <C-w>z :MaximizerToggle<CR>
+
+
 
 " in terminal mode (neovim)
 if has('nvim')
