@@ -152,8 +152,16 @@ alias watchgpu='watch --color -n0.2 "gpustat --color || gpustat"'
 alias smi='watchgpu'
 
 function usegpu {
+    gpu_id="$1"
+    if [[ "$1" == "none" ]]; then
+        gpu_id=""
+    elif [[ "$1" == "auto" ]] && (( $+commands[gpustat] )); then
+        gpu_id=$(/usr/bin/python -c 'import gpustat, sys; \
+            g = max(gpustat.new_query(), key=lambda g: g.memory_available); \
+            g.print_to(sys.stderr); print(g.index)')
+    fi
     export CUDA_DEVICE_ORDER=PCI_BUS_ID
-    export CUDA_VISIBLE_DEVICES=$1
+    export CUDA_VISIBLE_DEVICES=$gpu_id
 }
 
 
