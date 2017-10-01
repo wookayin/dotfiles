@@ -428,6 +428,11 @@ if &term =~ '256color'
     set t_ut=
 endif
 
+" 24-bit true color: neovim 0.1.5+ / vim 7.4.1799+
+if (has("termguicolors")) && &term == 'xterm-256color'
+  set termguicolors
+endif
+
 " apply base theme
 silent! colorscheme xoria256
 
