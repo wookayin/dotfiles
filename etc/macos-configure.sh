@@ -17,6 +17,17 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 set -x
 
 ################################################################
+# General settings
+################################################################
+
+configure_settings() {
+    # Faster key repeat
+    defaults write NSGlobalDomain InitialKeyRepeat -int 20
+    defaults write NSGlobalDomain KeyRepeat -int 2
+}
+
+
+################################################################
 # Screen
 ################################################################
 
