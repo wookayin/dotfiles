@@ -494,8 +494,8 @@ autocmd BufWinLeave * call clearmatches()
 autocmd InsertLeave * silent! set nopaste
 
 " better popup menu colors (instead of dark black)
-highlight Pmenu ctermfg=black ctermbg=yellow
-highlight PmenuSel ctermfg=red ctermbg=white gui=bold
+highlight Pmenu ctermfg=black ctermbg=yellow guifg=black guibg=#ffec99
+highlight PmenuSel ctermfg=red ctermbg=white guifg=red guibg=white gui=bold
 
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 function! ShowSyntaxGroup()
