@@ -8,7 +8,7 @@ setlocal expandtab
 setlocal ts=4
 setlocal sw=4
 setlocal sts=4
-setlocal cc=80
+setlocal cc=100
 
 " braceless.vim
 silent! BracelessEnable +indent +highlight
