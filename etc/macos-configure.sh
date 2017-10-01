@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# Some sensible settings for Mac OS X
+# Some sensible settings for macOS
 # insipred by https://mths.be/osx
 
-# Ensure that this script is running on OS X
+# Ensure that this script is running on macOS
 if [ `uname` != "Darwin" ]; then
-	echo "Run on Mac OS X !"; exit 1
+    echo "Run on macOS !"; exit 1
 fi
 
 # Ask for the administrator password upfront
@@ -21,8 +21,8 @@ set -x
 ################################################################
 
 configure_screen() {
-	# Screen: enable HiDPI display resolution modes
-	sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
+    # Screen: enable HiDPI display resolution modes
+    sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
 }
 
 ################################################################
@@ -30,11 +30,11 @@ configure_screen() {
 ################################################################
 
 configure_finder() {
-	# Finder: show status bar
-	defaults write com.apple.finder ShowStatusBar -bool true
+    # Finder: show status bar
+    defaults write com.apple.finder ShowStatusBar -bool true
 
-	# Finder: show path bar
-	defaults write com.apple.finder ShowPathbar -bool true
+    # Finder: show path bar
+    defaults write com.apple.finder ShowPathbar -bool true
 }
 
 ################################################################
@@ -42,8 +42,8 @@ configure_finder() {
 ################################################################
 
 configure_safari() {
-	# Safari: show the full URL in the address bar (note: this still hides the scheme)
-	defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
+    # Safari: show the full URL in the address bar (note: this still hides the scheme)
+    defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 }
 
 
