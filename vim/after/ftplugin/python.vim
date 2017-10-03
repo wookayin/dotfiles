@@ -20,6 +20,10 @@ silent! BracelessEnable +indent +highlight
 " @see g:jedi#auto_vim_configuration
 set completeopt-=longest
 
+" Prevent vim from removing indentation on python comments
+" https://stackoverflow.com/questions/2360249/
+inoremap # X<BS>#
+
 
 " shortcuts
 " =========
