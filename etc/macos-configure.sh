@@ -14,13 +14,11 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until `.osx` has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-set -x
-
 ################################################################
 # General settings
 ################################################################
 
-configure_settings() {
+configure_general() {
     # Faster key repeat
     defaults write NSGlobalDomain InitialKeyRepeat -int 20
     defaults write NSGlobalDomain KeyRepeat -int 2
@@ -59,7 +57,29 @@ configure_safari() {
 
 
 ################################################################
+# Skim
+################################################################
 
-configure_screen
-configure_finder
-configure_safari
+configure_skim() {
+    # force skim to always autoupdate/autorefresh
+    defaults write -app Skim SKAutoReloadFileUpdate -boolean true
+}
+
+
+################################################################
+
+all() {
+    configure_general
+    configure_screen
+    configure_finder
+    configure_safari
+    configure_skim
+}
+
+if [ -n "$1" ]; then
+    set -x
+    $1
+else
+    echo "Usage: $0 [command], where command is one of the following:"
+    declare -F | cut -d" " -f3 | grep -v '^_'
+fi
