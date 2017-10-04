@@ -47,6 +47,7 @@ tasks = {
     # Bins
     '~/.local/bin/dotfiles' : 'bin/dotfiles',
     '~/.local/bin/fasd' : 'zsh/fasd/fasd',
+    '~/.local/bin/is_mosh' : 'zsh/is_mosh/is_mosh',
     '~/.local/bin/imgcat' : 'bin/imgcat',
     '~/.local/bin/imgls' : 'bin/imgls',
     '~/.local/bin/fzf' : '~/.fzf/bin/fzf', # fzf is at $HOME/.fzf
