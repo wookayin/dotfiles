@@ -98,9 +98,6 @@ if has('nvim')
     " vimscript
     Plug 'machakann/vim-Verdin', { 'for': ['vim'] }
 
-    " gdb integration
-    Plug 'huawenyu/neogdb.vim'
-
 elseif v:version >= 800
 
     " Vim 8.0: Alternative async-completor plugin
