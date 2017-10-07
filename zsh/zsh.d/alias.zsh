@@ -64,7 +64,15 @@ function tmuxp {
 }
 
 # }}}
+# SSH ========================================= {{{
 
+function ssh-tmuxa {
+    host="$1"
+    ssh $host -t tmux attach -d -t "$2"
+}
+alias sshta=ssh-tmuxa
+compdef '_hosts' ssh-tmuxa
+# }}}
 
 # More Git aliases ============================= {{{
 # (overrides prezto's default git/alias.zsh)
