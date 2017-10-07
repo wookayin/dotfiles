@@ -447,7 +447,7 @@ function s:auto_termguicolors()
     return
   endif
 
-  if &term == 'xterm-256color' && !s:is_mosh()
+  if (&term == 'xterm-256color' || &term == 'nvim') && !s:is_mosh()
     set termguicolors
   else
     set notermguicolors
