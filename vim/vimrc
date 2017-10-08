@@ -459,6 +459,14 @@ call s:auto_termguicolors()
 " apply base theme
 silent! colorscheme xoria256
 
+" airline theme: status line and tab line
+if &termguicolors
+  let g:airline_theme='deus'
+else
+  let g:airline_theme='bubblegum'
+endif
+
+
 " override more customized colors
 highlight StatusLine    ctermfg=LightGreen
 highlight ColorColumn   ctermbg=52 guibg=#5f0000
@@ -654,9 +662,9 @@ let g:EditorConfig_core_mode = 'python_external'
 
 " ---------------------------------------------------------------- }}}
 " Airline {{{
+" Note: for airline theme, see the 'appearance' section
 
 " use airline, with powerline-ish theme
-let g:airline_theme='bubblegum'
 let g:airline_powerline_fonts=1
 
 " enable tabline feature
