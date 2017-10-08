@@ -18,7 +18,7 @@ setlocal foldlevel=1
 " default makeprg
 if !filereadable('Makefile')
     "let &l:makeprg = "(latexmk -pdf -pdflatex=\"xelatex -halt-on-error -interaction=nonstopmode\" %:r && latexmk -c %:r)"
-    let &l:makeprg = "xelatex -recorder -halt-on-error -interaction=nonstopmode %:r"
+    let &l:makeprg = "xelatex -recorder -halt-on-error -interaction=nonstopmode -synctex=1 %:r"
 endif
 
 " If using neomake, run callbacks after make is done
