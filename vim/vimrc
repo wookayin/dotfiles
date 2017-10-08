@@ -188,9 +188,6 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
-nnoremap <tab> <c-w>w
-nnoremap <S-tab> <c-w>W
-
 " zoom and unzoom (like tmux) -- by 'vim-maximizer'
 nnoremap <C-w>z :MaximizerToggle<CR>
 
