@@ -482,7 +482,7 @@ highlight SpecialKey    ctermfg=242 guifg=#666666
 
 " colors for gui/24bit mode {{
 " DiffAdd - inserted lines (dark green)
-highlight DiffAdd       guibg=#102a05 guifg=NONE
+highlight DiffAdd       guibg=#103a05 guifg=NONE
 " DiffDelete - deleted/filler lines (gray 246)
 highlight DiffDelete    guibg=#949494
 " DiffChange - changed lines (dark red)
