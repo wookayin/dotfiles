@@ -341,7 +341,11 @@ xnoremap <silent> <leader>ag y:Ag <C-R>"<CR>
 nmap <leader>cd :cd %:p:h<CR>
 
 " <leader>r : screen sucks, redraw everything
-nnoremap <leader>r :redraw!<CR>
+function! Redraw()
+  redraw!
+  call s:auto_termguicolors()   " re-detect true colors
+endfunction
+nnoremap <leader>r :call Redraw()<CR>
 
 " <leader>src : source ~/.vimrc
 nnoremap <leader>src :source ~/.vimrc<CR>
@@ -428,8 +432,40 @@ if &term =~ '256color'
     set t_ut=
 endif
 
+" 24-bit true color: neovim 0.1.5+ / vim 7.4.1799+
+" enable ONLY if TERM is set valid and it is NOT under mosh
+function! s:is_mosh()
+  let output = system("is_mosh -v")
+  if v:shell_error
+    return 0
+  endif
+  return !empty(l:output)
+endfunction
+
+function s:auto_termguicolors()
+  if !(has("termguicolors"))
+    return
+  endif
+
+  if (&term == 'xterm-256color' || &term == 'nvim') && !s:is_mosh()
+    set termguicolors
+  else
+    set notermguicolors
+  endif
+endfunction
+call s:auto_termguicolors()
+
+
 " apply base theme
 silent! colorscheme xoria256
+
+" airline theme: status line and tab line
+if &termguicolors
+  let g:airline_theme='deus'
+else
+  let g:airline_theme='bubblegum'
+endif
+
 
 " override more customized colors
 highlight StatusLine    ctermfg=LightGreen
@@ -443,6 +479,18 @@ highlight Comment       ctermfg=035 guifg=#38B04A
 highlight Constant      ctermfg=204 guifg=#ff5f87
 highlight PreProc       ctermfg=219 guifg=#ffafff
 highlight SpecialKey    ctermfg=242 guifg=#666666
+
+" colors for gui/24bit mode {{
+" DiffAdd - inserted lines (dark green)
+highlight DiffAdd       guibg=#102a05 guifg=NONE
+" DiffDelete - deleted/filler lines (gray 246)
+highlight DiffDelete    guibg=#949494
+" DiffChange - changed lines (dark red)
+highlight DiffChange    guibg=#471515 guifg=NONE
+" DiffChange - changed 'text'(brighter red)
+highlight DiffText      guibg=#721b1b guifg=NONE
+" }}
+
 
 " no underline, current cursor line
 highlight CursorLine    cterm=none
@@ -489,8 +537,8 @@ autocmd BufWinLeave * call clearmatches()
 autocmd InsertLeave * silent! set nopaste
 
 " better popup menu colors (instead of dark black)
-highlight Pmenu ctermfg=black ctermbg=yellow
-highlight PmenuSel ctermfg=red ctermbg=white gui=bold
+highlight Pmenu ctermfg=black ctermbg=yellow guifg=black guibg=#ffec99
+highlight PmenuSel ctermfg=red ctermbg=white guifg=red guibg=white gui=bold
 
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 function! ShowSyntaxGroup()
@@ -626,9 +674,9 @@ let g:EditorConfig_core_mode = 'python_external'
 
 " ---------------------------------------------------------------- }}}
 " Airline {{{
+" Note: for airline theme, see the 'appearance' section
 
 " use airline, with powerline-ish theme
-let g:airline_theme='bubblegum'
 let g:airline_powerline_fonts=1
 
 " enable tabline feature

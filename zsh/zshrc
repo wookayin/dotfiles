@@ -86,12 +86,8 @@ zplug load #--verbose
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
 # Terminal
-# screen-256color if inside tmux, xterm-256color otherwise
-if [[ -n "$TMUX" ]]; then
-  export TERM="screen-256color"
-else
-  export TERM="xterm-256color"
-fi
+# Use xterm-256color (for tmux, too)
+export TERM="xterm-256color"
 
 # iTerm integration (for OS X iTerm2)
 # @see https://iterm2.com/shell_integration.html
