@@ -1,3 +1,16 @@
+# Styles
+# ================================
+snippet bf
+	{\bf ${1}}$0
+snippet emph
+	\emph{${1}}$0
+snippet textbf
+	\textbf{${1}}$0
+snippet textif
+	\textit{${1}}$0
+snippet textsf
+	\textsf{${1}}$0
+#
 # Document Blocks and Environments
 # ================================
 snippet $$ Math equation block
@@ -70,11 +83,13 @@ snippet matrix 2X2 matrix (or other)
 #
 # Useful Preamble Things
 # ======================
-snippet preamble Load useful preambles
-	\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+snippet argmin Define \argmin
 	\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+snippet argmax Define \argmax
+	\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+snippet norm Define \norm command
 	\newcommand\norm[1]{\left\lVert#1\right\rVert}
-snippet tightlist Preambles for \tightlist
+snippet tightlist Define \tightlist
 	\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 #
 snippet deftodo
