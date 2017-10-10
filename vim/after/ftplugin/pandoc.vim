@@ -6,7 +6,7 @@ set sts=2
 setlocal iskeyword+=_,:
 
 if !filereadable('Makefile')
-    let &l:makeprg = "pandoc % -t latex -o %:r.pdf"
+    let &l:makeprg = 'pandoc % -t latex -o "%:r".pdf'
 endif
 
 " Markdown headings
