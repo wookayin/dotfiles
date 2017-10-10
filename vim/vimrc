@@ -457,7 +457,7 @@ call s:auto_termguicolors()
 silent! colorscheme xoria256
 
 " airline theme: status line and tab line
-if &termguicolors
+if has("termguicolors") && &termguicolors
   let g:airline_theme='deus'
 else
   let g:airline_theme='bubblegum'
