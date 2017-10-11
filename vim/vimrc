@@ -291,9 +291,6 @@ if has_key(g:plugs, 'vim-dispatch')
     " <leader-F5>: run make with visible progress (split window in tmux)
     map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
 
-    " <F6>: show quickfix window (scroll bottom)
-    map  <F6> :TheCopen<CR>G
-    imap <F6> <ESC>:TheCopen<CR>G:wincmd w<CR>a
 else
     " otherwise, fallback to default make
     map <F5> <ESC>:w<CR>:make!<CR>
@@ -304,6 +301,16 @@ endif
 map <leader>m <F5>
 
 " }}}
+
+" <F6>: show/close quickfix window (scroll bottom)
+function! QuickfixToggle()
+  let nr = winnr("$")
+  :TheCopen
+  let nr2 = winnr("$")
+  if nr == nr2 | cclose | endif
+endfunction
+map  <silent> <F6> :call QuickfixToggle()<CR>
+imap <silent> <F6> <ESC>:call QuickfixToggle()<CR>G:wincmd w<CR>a
 
 
 " [F4] Next Error [Shift+F4] Previous Error
