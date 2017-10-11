@@ -23,19 +23,24 @@ endif
 
 " If using neomake, run callbacks after make is done
 function! s:OnNeomakeFinished(context)
+    let l:context = g:neomake_hook_context
     " the buffer on which Neomake was invoked
-    let l:bufnr = get(a:context, 'bufnr', -1)
+    let l:bufnr = get(l:context['options'], 'bufnr', -1)
 
     if l:bufnr != -1 && bufexists(l:bufnr)
-        " backup the current buffer (may different)
-        let l:curbuf = bufnr('%')
+        " backup the current buffer or window (may different to the invoker)
+        let l:cur_winid = win_getid()
+        let l:target_winid = bufwinid(l:bufnr)
 
-        " call VimtexView on the target buffer!!
-        silent execute printf("%d,%dbufdo!", l:bufnr, l:bufnr) 'VimtexView'
+        if l:target_winid != -1
+            " call VimtexView on the target window!
+            call win_gotoid(l:target_winid)
+            VimtexView
 
-        " re-jump to the current buffer
-        if l:curbuf != l:bufnr
-            silent execute 'buffer' l:curbuf
+            " jump back to the current buffer
+            if l:cur_winid != l:target_winid
+                call win_gotoid(l:cur_winid)
+            endif
         endif
     else
         " bufnr not available, just call VimtexView
