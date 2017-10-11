@@ -692,6 +692,37 @@ let g:airline#extensions#whitespace#mixed_indent_algo = 1
 " so that ':Neomake clean' invokes 'make clean'
 let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
 
+" General hook/callback on starting and finishing jobs {
+function! s:OnNeomakeStart(context)
+  " what will we do?
+endfunction
+
+function! s:OnNeomakeFinished(context)
+  let l:context = g:neomake_hook_context
+
+  " If there is any failed job (non-zero exit code), notify it.
+  let l:failure_message = ""
+  for job in l:context['finished_jobs']
+    if l:job['exit_code'] != 0
+      let l:failure_message = printf("%s%s ", l:failure_message, l:job['as_string']())
+    endif
+  endfor
+  if ! empty(l:failure_message)
+    echom "Job Finished, FAIL: " . l:failure_message
+    copen | wincmd p   " copen, but not move to the quickfix window
+  else
+    echom "Job Finished, Success."
+  endif
+endfunction
+
+augroup neomake_hooks_common
+  au!
+  autocmd User NeomakeJobInit  call s:OnNeomakeStart(g:neomake_hook_context)
+  autocmd User NeomakeFinished call s:OnNeomakeFinished(g:neomake_hook_context)
+augroup END
+" }
+
+
 " ---------------------------------------------------------------- }}}
 " FZF {{{
 
