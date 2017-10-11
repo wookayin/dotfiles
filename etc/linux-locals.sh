@@ -75,15 +75,18 @@ install_bazel() {
 
 install_anaconda3() {
     # installs Anaconda-python3.
+    # https://www.anaconda.com/download/#linux
     set -e
 
     # https://www.anaconda.com/download/
     TMP_DIR="/tmp/$USER/anaconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
-    wget -nc "https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh"
+    wget -nc "https://repo.continuum.io/archive/Anaconda3-5.0.0.1-Linux-x86_64.sh"
 
     # will install at $HOME/.anaconda3 (see zsh config for PATH)
     ANACONDA_PREFIX="$HOME/.anaconda3/"
-    bash "Anaconda3-4.4.0-Linux-x86_64.sh" -b -p ${ANACONDA_PREFIX}
+    bash "Anaconda3-5.0.0.1-Linux-x86_64.sh" -b -p ${ANACONDA_PREFIX}
+
+    $ANACONDA_PREFIX/bin/python --version
 }
 
 
