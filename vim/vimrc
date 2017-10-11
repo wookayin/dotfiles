@@ -256,7 +256,7 @@ nnoremap ]l :lnext<CR>
 " use Make (vim-dispatch) or Neomake (neomake)
 if has_key(g:plugs, 'neomake')
     " neomake; always use the bang version so that :copen can sync
-    command! -nargs=0 -bang TheMake Neomake!
+    command! -nargs=0 -bang TheMake cexpr [] | Neomake!
     command! -nargs=0 TheCopen copen
 else
     " vim-dispatch
