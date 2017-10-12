@@ -50,6 +50,7 @@ if v:version >= 800 || v:version == 704 && has('patch786')
 endif
 
 Plug 'scrooloose/nerdcommenter'
+Plug 'junegunn/vim-peekaboo'
 Plug 'sjl/gundo.vim'
 Plug 'SirVer/ultisnips'
 Plug 'vim-scripts/matchit.zip'
