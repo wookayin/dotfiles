@@ -890,14 +890,29 @@ let g:echodoc#enable_at_startup = 1
 let g:deoplete#enable_at_startup = 1
 
 " ---------------------------------------------------------------- }}}
+" ALE {{{
+
+" Specify linters.
+" You may find the configuration file for each linter engine useful.
+"  (e.g. ~/.pylintrc for pylint)
+let g:ale_linters = {
+      \ 'python': ['pylint', 'mypy', 'pycodestyle'],
+      \}
+
+" Show the number of errors/warnings in the airline statusbar
+let g:airline#extensions#ale#enabled = 1
+
+" Suppress a warning for the conflict with Neomake
+" Neomake is used for job execution, not a lint engine, so it would
+" be fine.
+let g:ale_emit_conflict_warnings = 0
+
+" ---------------------------------------------------------------- }}}
 " python (pymode, jedi) {{{
 
 " heavenshell/vim-pydocstring
 " Change default keymapping to <C-_> (default is <C-l>)
 nmap <silent> <C-_> <Plug>(pydocstring)
-
-" :Lint shortcut for :PymodeLint
-command! -nargs=0 Lint PymodeLint
 
 " disable code folding by default
 let g:pymode_folding = 0
@@ -912,6 +927,9 @@ let g:pymode_run = 0
 " Use ipython pdb for inserting breakpoints
 " one might need to run 'pip install ipdb'
 let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
+
+" lint (code checking) : disable in favor of ALE
+let g:pymode_lint = 0
 
 " Check code on every save (not on the fly)
 let g:pymode_lint_on_write = 1
