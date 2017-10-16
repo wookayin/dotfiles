@@ -903,6 +903,9 @@ let g:ale_type_map = {
       \ 'pycodestyle' : {'ES' : 'WS', 'E': 'W'}
       \}
 
+" linter-specific settings
+let g:ale_python_mypy_options = '--ignore-missing-imports'
+
 " Show which linter is showing the message
 let g:ale_echo_msg_format = '[%linter%] %s'
 
