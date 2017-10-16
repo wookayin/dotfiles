@@ -899,6 +899,10 @@ let g:ale_linters = {
       \ 'python': ['pylint', 'mypy', 'pycodestyle'],
       \}
 
+let g:ale_type_map = {
+      \ 'pycodestyle' : {'ES' : 'WS', 'E': 'W'}
+      \}
+
 " Show which linter is showing the message
 let g:ale_echo_msg_format = '[%linter%] %s'
 
