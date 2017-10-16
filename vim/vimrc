@@ -899,6 +899,9 @@ let g:ale_linters = {
       \ 'python': ['pylint', 'mypy', 'pycodestyle'],
       \}
 
+" Show which linter is showing the message
+let g:ale_echo_msg_format = '[%linter%] %s'
+
 " Show the number of errors/warnings in the airline statusbar
 let g:airline#extensions#ale#enabled = 1
 
