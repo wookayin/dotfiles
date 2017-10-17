@@ -11,6 +11,13 @@ Session.vim
 .LSOverride
 ._*
 
+# Linux
+.fuse_hidden*
+.nfs*
+
+# Windows
+Thumbs.db
+
 # IDE stuffs
 .idea/
 *.iml
@@ -19,8 +26,9 @@ Session.vim
 .settings/
 .ipynb_checkpoints/
 
-# Virtualenv
+# Python, Virtualenv
 .venv*
+.mypy_cache
 
 # Etc
 npm-debug.log
