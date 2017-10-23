@@ -889,6 +889,21 @@ let g:echodoc#enable_at_startup = 1
 " deoplete.nvim {{{
 let g:deoplete#enable_at_startup = 1
 
+
+" Register some default omnicomplete functions/patterns
+" to automatically trigger in deoplete {{
+let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
+let g:deoplete#omni#input_patterns = get(g:, 'deoplete#omni#input_patterns', {})
+
+let g:deoplete#omni#functions.tex = ['vimtex#complete#omnifunc']
+let g:deoplete#omni#input_patterns.tex =
+      \ '(?:'
+      \ . '\\\w*'
+      \ . ')'
+
+" }}
+
+
 " ---------------------------------------------------------------- }}}
 " python (pymode, jedi) {{{
 
