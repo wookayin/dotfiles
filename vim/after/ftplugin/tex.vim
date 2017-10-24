@@ -10,6 +10,16 @@ let g:tex_isk='48-57,_,a-z,A-Z,192-255,:'
 " configure default fold level
 setlocal foldlevel=1
 
+" More keymaps
+" ------------
+
+" wrap current word or selection with textbf/textit (need surround.vim)
+nmap <leader>b ysiw}i\textbf<ESC>
+nmap <leader>i ysiw}i\textit<ESC>
+nmap <leader>u ysiw}i\underline<ESC>
+vmap <leader>b S}i\textbf<ESC>
+vmap <leader>i S}i\textit<ESC>
+vmap <leader>u S}i\underline<ESC>
 
 
 " Make and build support
