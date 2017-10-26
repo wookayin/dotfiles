@@ -59,3 +59,5 @@ Troubleshooting
 * Powerline characters not displayed properly? Install [Powerline fonts](https://github.com/powerline/fonts).
 * Ruby version is shown unwantedly? A simple workaround might be to install [rvm](https://rvm.io/).
 * Does `tmux` look weird? Make sure that tmux version is [2.3](etc/ubuntu-setup.sh) or higher.
+* If you are using neovim, make sure that the [`neovim`](https://pypi.python.org/pypi/neovim/) pypi package is installed on [**local** python 3](https://github.com/wookayin/dotfiles/blob/master/nvim/init.vim);
+  e.g. `/usr/local/bin/pip3 install neovim` where the path to `pip` depends on your system.
