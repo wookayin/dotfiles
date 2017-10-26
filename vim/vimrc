@@ -151,6 +151,9 @@ if ! has('nvim')
     endif
 endif
 
+" When opening http urls using netrw, follow 302 redirects
+let g:netrw_http_cmd = 'curl -L -o'
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " 2. Key and Functional Mappings {{{
