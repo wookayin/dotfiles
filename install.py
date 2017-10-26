@@ -89,6 +89,18 @@ post_actions = [
         zplug install"             # install!
     ''',
 
+    # validate neovim package installation
+    '''# neovim package needs to be installed
+    if which nvim 2>/dev/null; then
+        /usr/local/bin/python3 -c 'import neovim' || /usr/bin/python3 -c 'import neovim'
+        rc=$?; if [[ $rc != 0 ]]; then
+        echo -e '\033[0;33mNeovim requires 'neovim' package on the system python3. Please try:'
+            echo -e '   /usr/local/bin/pip3 install neovim'
+            echo -e '\033[0m'
+        fi
+    fi
+    ''',
+
     # Run vim-plug installation
     {'install' : 'vim +PlugInstall +qall',
      'update'  : 'vim +PlugUpdate +qall',
