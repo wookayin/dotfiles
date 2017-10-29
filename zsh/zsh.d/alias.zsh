@@ -110,7 +110,8 @@ alias ipynb0='ipynb --ip=0.0.0.0'
 # pip install nose, rednose
 alias nt='NOSE_REDNOSE=1 nosetests -v'
 
-# green: in verbose mode
+# unit test: in verbose mode
+alias pytest='pytest -vv'
 alias green='green -vv'
 
 # }}}
