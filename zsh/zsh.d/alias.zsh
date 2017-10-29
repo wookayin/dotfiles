@@ -138,6 +138,8 @@ alias prettyxml='xmllint --format - | pygmentize -l xml'
 
 # Etc ======================================= {{{
 
+alias iterm-tab-color="noglob iterm-tab-color"
+
 # open some macOS applications
 if [[ "$(uname)" == "Darwin" ]]; then
 
