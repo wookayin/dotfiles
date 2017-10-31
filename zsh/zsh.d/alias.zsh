@@ -151,6 +151,8 @@ if [[ "$(uname)" == "Darwin" ]]; then
     function skim     { open -a Skim $@ }
     compdef '_files -g "*.pdf"' skim
 
+    # terminal-notifier
+    function notify   { terminal-notifier -message "$*" }
 fi
 
 
