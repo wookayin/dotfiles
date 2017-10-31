@@ -25,6 +25,7 @@ if has('nvim') || v:version >= 800
 endif
 Plug 'tpope/vim-tbone'
 Plug 'szw/vim-maximizer'    " zoom and unzoom!
+Plug 'junegunn/goyo.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'wookayin/vim-tmux-focus-events'   "A patched version of mine
 Plug 'tpope/vim-fugitive'
