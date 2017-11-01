@@ -124,6 +124,9 @@ snippet norm Define \norm command
 snippet tightlist Define \tightlist
 	\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 #
+snippet xspace Import xspace package and configure it
+	\usepackage{xspace}
+	\xspaceaddexceptions{]\\}}
 snippet deftodo
 	\newcommand{\\${1:todo}}[1]{\mbox{\color{red}{\small\bf\sf [${2:TODO: }#1]}}}
 snippet defabbr
