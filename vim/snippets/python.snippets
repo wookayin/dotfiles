@@ -118,3 +118,16 @@ snippet tfpdb
 	with tf.control_dependencies(tf.py_func(_breakpoint_func, [$2], [tf.bool]))
 	    ${1:t} = tf.identity($1, name='debug_identity')
 	# XXX DEBUG }}}
+#
+# Useful Snippets
+# ---------------
+snippet timer
+	from contextlib import contextmanager
+
+	@contextmanager
+	def timer(name=""):
+	    import time
+	    _start = time.time()
+	    yield
+	    _end = time.time()
+	    print("[%s] Elapsed time : %.3f sec" % (name, _end - _start))
