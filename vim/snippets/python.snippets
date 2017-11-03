@@ -58,6 +58,11 @@ snippet ipdb
 snippet pudb
 	import pudb; pudb.set_trace()  # XXX DEBUG
 
+snippet pylint
+	# pylint: disable=${1}
+	${0}
+	# pylint: enable=$1
+#
 snippet argparse
 	import argparse
 	parser = argparse.ArgumentParser(description=__doc__)
