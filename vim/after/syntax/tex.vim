@@ -1,9 +1,19 @@
 " additional and custom syntax for LaTeX documents
 
+" Additional regions {{{
+
 " treat \begin{comment}...\end{comment} region as comment
 syn region texCommentRegion     start="\\begin{comment}"  end="\\end{comment}\|%stopzone\>"
-syn cluster texFoldGroup        add=texCommentRegion
 hi! def link texCommentRegion   texComment
+" treat \iffalse ... \fi as comment
+syn region texIfFalseRegion     start="\\iffalse"  end="\\fi\|%stopzone\>"
+hi texIfFalseRegion             ctermfg=241 guifg=#626262
+
+" TODO: nested region currently does not work
+
+syn cluster texFoldGroup        add=texCommentRegion,texIfFalseRegion
+
+" }}}
 
 
 " more distinctive colors {{{
