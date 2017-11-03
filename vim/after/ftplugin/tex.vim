@@ -21,6 +21,12 @@ vmap <leader>b S}i\textbf<ESC>
 vmap <leader>i S}i\textit<ESC>
 vmap <leader>u S}i\underline<ESC>
 
+" easy-align of align/tables {{
+" (with block)
+vmap <leader>A ga*&
+" (inside current environment 'vie')
+nmap <leader>A viega*&
+" }}
 
 " Make and build support
 " ======================
