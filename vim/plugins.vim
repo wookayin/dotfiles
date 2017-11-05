@@ -44,6 +44,7 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'haya14busa/vim-asterisk'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
+Plug 't9md/vim-quickhl'
 
 if v:version >= 800 || v:version == 704 && has('patch786')
     " requires vim 7.4.786+ (see issue #23)

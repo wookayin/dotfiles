@@ -673,6 +673,14 @@ endif
 let g:highlightedyank_highlight_duration = 1000
 
 " ---------------------------------------------------------------- }}}
+" vim-quickhl {{{
+
+nmap <leader>* <Plug>(quickhl-manual-this)
+xmap <leader>* <Plug>(quickhl-manual-this)
+nmap <leader>8 <Plug>(quickhl-manual-reset)
+xmap <leader>8 <Plug>(quickhl-manual-reset)
+
+" ---------------------------------------------------------------- }}}
 " editorconfig {{{
 
 let g:EditorConfig_core_mode = 'python_external'
