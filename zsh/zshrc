@@ -95,5 +95,15 @@ if [[ "`uname`" == "Darwin" ]] && [[ -f ${HOME}/.iterm2_shell_integration.zsh ]]
     source ${HOME}/.iterm2_shell_integration.zsh
 fi
 
+if (( $+commands[iterm-tab-color] )); then
+    # set tab color, if it is a new connection to remote through SSH
+    function iterm_tab_color_auto() {
+        if [ -z "$TMUX" ] && [ -n "$SSH_CONNECTION" ] && [ -n $PROMPT_HOST_COLOR ]; then
+            iterm-tab-color $PROMPT_HOST_COLOR
+        fi
+    }
+    iterm_tab_color_auto
+fi
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
