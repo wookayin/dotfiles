@@ -681,6 +681,20 @@ nmap <leader>8 <Plug>(quickhl-manual-reset)
 xmap <leader>8 <Plug>(quickhl-manual-reset)
 
 " ---------------------------------------------------------------- }}}
+" vim-highlightedundo {{{
+
+if has_key(g:plugs, 'vim-highlightedundo')
+  nmap u     <Plug>(highlightedundo-undo)
+  nmap <C-r> <Plug>(highlightedundo-redo)
+  nmap U     <Plug>(highlightedundo-Undo)
+  nmap g-    <Plug>(highlightedundo-gminus)
+  nmap g+    <Plug>(highlightedundo-gplus)
+
+  let g:highlightedundo#highlight_duration_delete = 500
+  let g:highlightedundo#highlight_duration_add = 700
+endif
+
+" ---------------------------------------------------------------- }}}
 " editorconfig {{{
 
 let g:EditorConfig_core_mode = 'python_external'
