@@ -597,6 +597,12 @@ endif
 """""""""""""""""""""""""""""""""""""""""
 
 " ----------------------------------------------------------------
+" vim-localvimrc {{{
+
+" store and restore all decisions on whether to load lvimrc
+let g:localvimrc_persistent = 2
+
+" ---------------------------------------------------------------- }}}
 " vim-polyglot {{{
 
 " in favor of python-mode and vimtex ...
