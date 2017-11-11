@@ -11,6 +11,7 @@ Plug 'flazz/vim-colorschemes'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'embear/vim-localvimrc'
+Plug 'tweekmonster/helpful.vim', { 'on' : ['HelpfulVersion'] }
 
 " Integration and Interfaces
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
