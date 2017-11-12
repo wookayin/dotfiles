@@ -207,7 +207,8 @@ for target, source in sorted(tasks.items()):
 
     # if --force option is given, delete and override the previous symlink
     if os.path.lexists(target):
-        is_broken_link = not os.path.exists(os.readlink(target))
+        is_broken_link = os.path.islink(target) and not os.path.exists(os.readlink(target))
+
         if args.force or is_broken_link:
             if os.path.islink(target):
                 os.unlink(target)
