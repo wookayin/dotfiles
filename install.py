@@ -84,9 +84,9 @@ post_actions = [
     # zplug installation
     '''# Install zplug and clear cache
     zsh -c "
-        source ${HOME}/.zshrc      # source zplug and list plugins
-        zplug clear                # clear cache
-        zplug install"             # install!
+        source ${HOME}/.zshrc                   # source zplug and list plugins
+        zplug clear                             # clear cache
+        zplug install || zplug update "         # install or update
     ''',
 
     # validate neovim package installation
