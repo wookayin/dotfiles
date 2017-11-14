@@ -939,7 +939,9 @@ let g:pymode_run = 0
 let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
 
 " lint (code checking) : disable in favor of ALE
-let g:pymode_lint = 0
+if has_key(g:plugs, 'ale')
+    let g:pymode_lint = 0
+endif
 
 " Check code on every save (not on the fly)
 let g:pymode_lint_on_write = 1
