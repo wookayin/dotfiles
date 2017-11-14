@@ -74,9 +74,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'tmux-plugins/vim-tmux'
 
-" python-mode/python-mode#807 : originally it was { 'branch' : 'develop' }
-Plug 'klen/python-mode', { 'commit' : '70a39ab' }
-
+Plug 'klen/python-mode', { 'branch': 'develop' }
 Plug 'davidhalter/jedi-vim'
 Plug 'wookayin/vim-python-enhanced-syntax'
 
