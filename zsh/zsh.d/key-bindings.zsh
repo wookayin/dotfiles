@@ -10,6 +10,10 @@
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 
+# For Home and End key support
+bindkey "\033[1~" beginning-of-line
+bindkey "\033[4~" end-of-line
+
 bindkey '^B' backward-char
 bindkey '^F' forward-char
 
