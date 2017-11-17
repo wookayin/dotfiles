@@ -1,0 +1,4 @@
+snippet pdflatex
+	pdflatex -halt-on-error -interaction=nonstopmode -synctex=1 $<
+snippet latexmk
+	latexmk -pdf -pdflatex="pdflatex -halt-on-error -interaction=nonstopmode" --synctex=1 $(basename $@)
