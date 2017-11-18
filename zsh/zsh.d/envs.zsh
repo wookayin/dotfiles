@@ -24,6 +24,10 @@ export SAVEHIST=100000
 unsetopt SHARE_HISTORY
 setopt NO_SHARE_HISTORY
 
+# See zsh-autoswitch-virtualenv #19
+unsetopt AUTO_NAME_DIRS       # Do not auto add variable-stored paths
+
+
 # Anaconda3 {{{
 if [ -d $HOME/.anaconda3/bin/ ]; then
   path=( $path $HOME/.anaconda3/bin )
