@@ -1,38 +1,44 @@
 #!/bin/bash
 
+# imgcat for iTerm2 script, with a patch of tmux support
+# https://gist.github.com/krtx/533d33d6cc49ecbbb8fab0ae871059ec
+
 # tmux requires unrecognized OSC sequences to be wrapped with DCS tmux;
 # <sequence> ST, and for all ESCs in <sequence> to be replaced with ESC ESC. It
 # only accepts ESC backslash for ST.
 function print_osc() {
-    if [[ $TERM == screen* ]] ; then
+    if [[ -n $TMUX ]] ; then
         printf "\033Ptmux;\033\033]"
     else
         printf "\033]"
     fi
 }
 
+function print_csi() {
+    printf "\033["
+}
+
 # More of the tmux workaround described above.
 function print_st() {
-    if [[ $TERM == screen* ]] ; then
+    if [[ -n $TMUX ]] ; then
         printf "\a\033\\"
     else
         printf "\a"
     fi
 }
 
+# Return the height of the image, or 200 if imagemagick is unavailable.
+function get_height() {
+    identify -format "%h" - 2>/dev/null || echo 200
+}
+
 # print_image filename inline base64contents print_filename
 #   filename: Filename to convey to client
 #   inline: 0 or 1
 #   base64contents: Base64-encoded contents
-#   print_filename: If non-empty, print the filename 
+#   print_filename: If non-empty, print the filename
 #                   before outputting the image
 function print_image() {
-    print_osc
-    printf '1337;File='
-    if [[ -n "$1" ]]; then
-      printf 'name='`printf "%s" "$1" | base64`";"
-    fi
-
     VERSION=$(base64 --version 2>&1)
     if [[ "$VERSION" =~ fourmilab ]]; then
       BASE64ARG=-d
@@ -42,8 +48,26 @@ function print_image() {
       BASE64ARG=-D
     fi
 
+    local -i HEIGHT=$(printf "%s" "$3" | base64 $BASE64ARG | get_height)
+    HEIGHT=$(( (HEIGHT + 19) / 20 ))
+
+    for (( I = 0; I < $HEIGHT; I++ )); do
+      printf "\n"
+    done
+    print_csi
+    printf "?25l"
+    print_csi
+    printf "${HEIGHT}F"
+
+    print_osc
+    printf '1337;File='
+    if [[ -n "$1" ]]; then
+      printf 'name='`printf "%s" "$1" | base64`";"
+    fi
+
     printf "%s" "$3" | base64 $BASE64ARG | wc -c | awk '{printf "size=%d",$1}'
     printf ";inline=$2"
+    printf ";height=$HEIGHT"
     printf ":"
     printf "%s" "$3"
     print_st
@@ -51,6 +75,12 @@ function print_image() {
     if [[ -n "$4" ]]; then
       echo $1
     fi
+
+    print_csi
+    #printf "${HEIGHT}E"
+    printf "$((${HEIGHT} - 1))E"
+    print_csi
+    printf "?25h"
 }
 
 function error() {
@@ -90,7 +120,7 @@ while [ $# -gt 0 ]; do
         error "Unknown option flag: $1"
         show_help
         exit 1
-      ;;
+        ;;
     *)
         if [ -r "$1" ] ; then
             has_stdin=f
