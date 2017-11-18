@@ -18,6 +18,7 @@ parser.add_argument('-f', '--force', action="store_true", default=False,
                     help='If specified, it will override existing symbolic links')
 parser.add_argument('--vim-plug', default='update', choices=['update', 'install', 'none'],
                     help='vim plugins: update and install (default), install only, or do nothing')
+parser.add_argument('--skip-zplug', action='store_true')
 args = parser.parse_args()
 
 ################# BEGIN OF FIXME #################
@@ -87,7 +88,9 @@ post_actions = [
         source ${HOME}/.zshrc                   # source zplug and list plugins
         zplug clear                             # clear cache
         zplug install || zplug update "         # install or update
-    ''',
+    ''' \
+        if not args.skip_zplug \
+        else '',
 
     # validate neovim package installation
     '''# neovim package needs to be installed

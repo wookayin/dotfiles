@@ -15,7 +15,9 @@ https://dotfiles.wook.kr
 
 from __future__ import print_function
 
+import functools
 import subprocess
+import collections
 import os.path
 import sys
 
@@ -30,7 +32,22 @@ YELLOW = _wrap_colors("\033[0;33m")
 BLUE   = _wrap_colors("\033[0;34m")
 
 
-def update():
+_command_args = collections.defaultdict(list)
+
+def add_argument(*args, **kwargs):
+    def decorator(func):
+        _command_args[func.__name__].append((args, kwargs))
+
+        @functools.wraps(func)
+        def f(*args, **kwargs):
+            ret = func(*args, **kwargs)
+            return ret
+        return f
+    return decorator
+
+
+@add_argument('--skip-zplug', action='store_true', help='Skip zplug update')
+def update(skip_zplug=False):
     '''Update the dotfiles from github.'''
 
     dotfiles_dir = os.path.expanduser('~/.dotfiles')
@@ -42,14 +59,17 @@ def update():
 
     git_old_head = _git_head()
 
+    install_args = ""
+    if skip_zplug: install_args += "--skip-zplug "
+
     # TODO: check if current branch is master
     action = '''
         set -x
         cd ~/.dotfiles
         git stash
-        git pull --ff-only && python install.py
+        git pull --ff-only && python install.py {install_args}
         git stash pop
-    '''
+    '''.format(install_args=install_args)
     subprocess.call(['bash', '-c', action])
 
     git_new_head = _git_head()
@@ -84,7 +104,9 @@ def main():
                                        dest="command")
 
     for (cmd, action) in COMMANDS.items():
-        subparsers.add_parser(cmd, help=action.__doc__)
+        sp = subparsers.add_parser(cmd, help=action.__doc__)
+        for (args, kwargs) in _command_args.get(action.__name__, []):
+            sp.add_argument(*args, **kwargs)
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -92,7 +114,9 @@ def main():
     else:
         args = parser.parse_args()
 
-    COMMANDS[args.command]()
+    kwargs = vars(args)
+    command = kwargs.pop('command')
+    COMMANDS[command](**kwargs)
 
 
 if __name__ == '__main__':
