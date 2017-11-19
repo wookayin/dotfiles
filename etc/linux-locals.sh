@@ -140,6 +140,23 @@ install_neovim() {
 }
 
 
+install_ripgrep() {
+    # install ripgrep
+    set -e
+
+    TMP_RIPGREP_DIR="/tmp/$USER/ripgrep"; mkdir -p $TMP_RIPGREP_DIR
+    RIPGREP_DOWNLOAD_URL="https://github.com/BurntSushi/ripgrep/releases/download/0.7.1/ripgrep-0.7.1-x86_64-unknown-linux-musl.tar.gz"
+    echo $RIPGREP_DOWNLOAD_URL
+
+    cd $TMP_RIPGREP_DIR
+    curl -L $RIPGREP_DOWNLOAD_URL | tar -xvzf - "ripgrep-0.7.1-x86_64-unknown-linux-musl/rg" --strip-components 1
+    mv "./rg" $PREFIX/bin
+
+    $PREFIX/bin/rg --version
+    which rg
+}
+
+
 # entrypoint script
 if [ `uname` != "Linux" ]; then
     echo "Run on Linux (not on Mac OS X)"; exit 1
