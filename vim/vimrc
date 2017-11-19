@@ -971,7 +971,7 @@ let g:pymode_lint_cwindow = 0
 " Skip some errors and warnings
 "  E401 : multiple imports on one line
 "  E501 : line too long
-let g:pymode_lint_ignore = "E401,E501"
+let g:pymode_lint_ignore = ["E401", "E501"]
 
 
 " For neovim or vim8 (completor.vim),
