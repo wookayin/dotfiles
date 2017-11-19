@@ -140,6 +140,22 @@ install_neovim() {
 }
 
 
+install_fd() {
+    # install fd
+    set -e
+
+    TMP_FD_DIR="/tmp/$USER/fd"; mkdir -p $TMP_FD_DIR
+    FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/v6.0.0/fd-v6.0.0-x86_64-unknown-linux-musl.tar.gz"
+    echo $FD_DOWNLOAD_URL
+
+    cd $TMP_FD_DIR
+    curl -L $FD_DOWNLOAD_URL | tar -xvzf - --strip-components 1
+    cp "./fd" $PREFIX/bin
+
+    $PREFIX/bin/fd --version
+    which fd
+}
+
 install_ripgrep() {
     # install ripgrep
     set -e
@@ -150,7 +166,7 @@ install_ripgrep() {
 
     cd $TMP_RIPGREP_DIR
     curl -L $RIPGREP_DOWNLOAD_URL | tar -xvzf - "ripgrep-0.7.1-x86_64-unknown-linux-musl/rg" --strip-components 1
-    mv "./rg" $PREFIX/bin
+    cp "./rg" $PREFIX/bin
 
     $PREFIX/bin/rg --version
     which rg
