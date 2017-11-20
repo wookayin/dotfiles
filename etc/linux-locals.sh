@@ -5,6 +5,13 @@
 
 PREFIX="$HOME/.local/"
 
+COLOR_NONE="\033[0m"
+COLOR_RED="\033[0;31m"
+COLOR_GREEN="\033[0;32m"
+COLOR_YELLOW="\033[0;33m"
+COLOR_WHITE="\033[1;37m"
+
+
 install_zsh() {
     set -e
 
@@ -137,6 +144,23 @@ install_neovim() {
     cp -RTv "nvim-linux64/" "$PREFIX"
 
     $PREFIX/bin/nvim --version
+}
+
+
+install_exa() {
+    # https://github.com/ogham/exa/releases
+    EXA_DOWNLOAD_URL="https://github.com/ogham/exa/releases/download/v0.8.0/exa-linux-x86_64-0.8.0.zip"
+    EXA_BINARY_SHA1SUM="6d0ced225106bef2c3ec90d8ca6d23eefd73eee5"  # exa-linux-x86_64 v0.8.0
+    TMP_EXA_DIR="/tmp/$USER/exa/"
+
+    wget -nc ${EXA_DOWNLOAD_URL} -P ${TMP_EXA_DIR} || exit 1;
+    cd ${TMP_EXA_DIR} && unzip -o "exa-linux-x86_64-0.8.0.zip" || exit 1;
+    if [[ "$EXA_BINARY_SHA1SUM" != "$(sha1sum exa-linux-x86_64 | cut -d' ' -f1)" ]]; then
+        echo -e "${COLOR_RED}SHA1 checksum mismatch, aborting!${COLOR_NONE}"
+        exit 1;
+    fi
+    cp "exa-linux-x86_64" "$PREFIX/bin/exa" || exit 1;
+    echo "$(which exa) : $(exa --version)"
 }
 
 
