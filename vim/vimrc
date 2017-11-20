@@ -166,8 +166,8 @@ let maplocalleader=","      " comma : <LocalLeader>
 inoremap <C-k> <ESC>
 
 " navigation key mapping
-map k gk
-map j gj
+map <silent> k gk
+map <silent> j gj
 sunmap k
 sunmap j
 
