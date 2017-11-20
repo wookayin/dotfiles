@@ -19,6 +19,7 @@ install_essential_packages() {
         python-software-properties software-properties-common \
         cmake cmake-data ctags autoconf pkg-config \
         terminator htop iotop iftop \
+        unzip bzip2 gzip tar \
         silversearcher-ag \
         openssh-server mosh rdate \
         )
