@@ -175,9 +175,10 @@ install_fd() {
     cd $TMP_FD_DIR
     curl -L $FD_DOWNLOAD_URL | tar -xvzf - --strip-components 1
     cp "./fd" $PREFIX/bin
+    cp "./autocomplete/_fd" $PREFIX/share/zsh/site-functions
 
     $PREFIX/bin/fd --version
-    which fd
+    echo "$(which fd) : $(fd --version)"
 }
 
 install_ripgrep() {
@@ -189,11 +190,12 @@ install_ripgrep() {
     echo $RIPGREP_DOWNLOAD_URL
 
     cd $TMP_RIPGREP_DIR
-    curl -L $RIPGREP_DOWNLOAD_URL | tar -xvzf - "ripgrep-0.7.1-x86_64-unknown-linux-musl/rg" --strip-components 1
+    curl -L $RIPGREP_DOWNLOAD_URL | tar -xvzf - --strip-components 1
     cp "./rg" $PREFIX/bin
+    cp "./complete/_rg" $PREFIX/share/zsh/site-functions
 
     $PREFIX/bin/rg --version
-    which rg
+    echo "$(which exa) : $(rg --version)"
 }
 
 
