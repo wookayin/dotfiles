@@ -345,6 +345,11 @@ nmap <silent> <leader><space> :noh<CR>
 nnoremap <leader>ag :Ag! -i ""<Left>
 xnoremap <silent> <leader>ag y:Ag <C-R>"<CR>
 
+if executable("rg")
+  " Use ripgrep instead :)
+  let g:ag_prg="rg --no-heading --vimgrep"
+endif
+
 
 " <leader>cd : switch to the directory of the current buffer
 nmap <leader>cd :cd %:p:h<CR>
