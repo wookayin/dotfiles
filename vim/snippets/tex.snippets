@@ -138,6 +138,15 @@ snippet defabbr
 	    {\emph{etc}}%
 	    {\emph{etc.}\@\xspace}%
 	}\makeatother
+#
+snippet paragraph Redefine \paragraph to allow configuration of margins around
+	\makeatletter
+	\renewcommand{\paragraph}{%
+	  \@startsection{paragraph}{4}%
+	  {\z@}{${1:1.0ex} \@plus ${2:0.50ex} \@minus ${3:0.20ex}}{-1em}%
+	  {\normalfont\normalsize\bfseries}%
+	}
+	\makeatother
 
 
 # Figure, etc.
