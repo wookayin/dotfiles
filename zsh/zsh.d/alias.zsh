@@ -63,6 +63,9 @@ function tmuxp {
     fi
 }
 
+alias set-pane-title='set-window-title'
+alias tmux-pane-title='set-window-title'
+
 # }}}
 # SSH ========================================= {{{
 
