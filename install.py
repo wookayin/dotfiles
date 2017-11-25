@@ -78,7 +78,8 @@ tasks = {
 
     # pip and python
     #'~/.pip/pip.conf' : 'pip/pip.conf',
-    '~/.pythonrc.py' : 'pythonrc.py',
+    '~/.pythonrc.py' : 'python/pythonrc.py',
+    '~/.pylintrc' : 'python/pylintrc',
 }
 
 post_actions = [

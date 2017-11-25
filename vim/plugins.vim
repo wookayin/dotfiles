@@ -114,6 +114,11 @@ elseif v:version >= 800
 
 endif
 
+" Asynchronous Lint Engine (ALE)
+if has('nvim') || v:version >= 800
+    Plug 'w0rp/ale'
+endif
+
 " Additional, optional local plugins
 if filereadable(expand("\~/.vim/plugins.local.vim"))
     source \~/.vim/plugins.local.vim
