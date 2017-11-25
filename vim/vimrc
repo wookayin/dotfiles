@@ -938,8 +938,10 @@ let g:pymode_run = 0
 " one might need to run 'pip install ipdb'
 let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
 
-" lint (code checking) : disable in favor of ALE
-if has_key(g:plugs, 'ale')
+" lint (code checking):
+" disable in favor of ALE, but only if pylint/pycodestyle exists
+let s:py_linters_exists = executable("pylint") || executable("pycodestyle")
+if has_key(g:plugs, 'ale') && s:py_linters_exists
     let g:pymode_lint = 0
 endif
 
