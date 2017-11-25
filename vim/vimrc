@@ -400,7 +400,7 @@ map  <leader>s} ysiw}
 noremap <silent> <leader>z :silent exec "!tmux resize-pane -Z"<CR>
 
 " Prevent accidental <Ctrl-A> on Tmux
-if $TERM =~ 'screen'
+if !empty($TMUX)
     nnoremap <C-a> <nop>
     " To increase numbers, press <comma>, <c-a>, a ...?
     nnoremap <leader><C-a> <C-a>
