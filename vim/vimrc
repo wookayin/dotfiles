@@ -906,8 +906,8 @@ let g:ale_type_map = {
 " linter-specific settings
 let g:ale_python_mypy_options = '--ignore-missing-imports'
 
-" Show which linter is showing the message
-let g:ale_echo_msg_format = '[%linter%] %s'
+" Also show which linter is showing the message
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
 
 " Show the number of errors/warnings in the airline statusbar
 let g:airline#extensions#ale#enabled = 1
