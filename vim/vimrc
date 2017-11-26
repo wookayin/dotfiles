@@ -72,6 +72,12 @@ set smartcase               " case-sensitive if keyword contains both uppercase 
 set incsearch
 set hlsearch
 
+if has('nvim')
+  " live preview of substitute command, with a split window
+  " @seealso http://vimcasts.org/episodes/neovim-eyecandy/
+  set inccommand=split
+endif
+
 " use spaces for tabbing, by default
 set expandtab
 
