@@ -169,7 +169,7 @@ let g:netrw_http_cmd = 'curl -L -o'
 let mapleader=","           " comma is the <Leader> key.
 let maplocalleader=","      " comma : <LocalLeader>
 
-inoremap <C-k> <ESC>
+inoremap <silent> <C-k> <ESC>:update<CR>
 
 " navigation key mapping
 map <silent> k gk
