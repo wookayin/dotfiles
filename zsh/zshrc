@@ -58,6 +58,9 @@ zplug "wookayin/pure", use:pure.zsh, from:github, as:theme
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'MichaelAquilina/zsh-autoswitch-virtualenv'
 
+# fzf+fasd integration. Should be loaded after 'prezto:editor'
+zplug 'wookayin/fzf-fasd', defer:2
+
 # Additional zplug from ~/.zshrc.local
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
