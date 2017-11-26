@@ -47,7 +47,7 @@ Plug 'haya14busa/vim-asterisk'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
 Plug 't9md/vim-quickhl'
-if executable('diff')
+if executable('diff') && has('patch-7.4.1685')
     Plug 'machakann/vim-highlightedundo'
 endif
 
