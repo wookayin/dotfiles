@@ -968,6 +968,12 @@ let g:ale_python_mypy_options = '--ignore-missing-imports'
 " Also show which linter is showing the message
 let g:ale_echo_msg_format = '[%linter%] %code: %%s'
 
+" better error/warning sign
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=1#67
+hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
+
 " Show the number of errors/warnings in the airline statusbar
 let g:airline#extensions#ale#enabled = 1
 
