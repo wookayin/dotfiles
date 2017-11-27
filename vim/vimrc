@@ -323,6 +323,14 @@ endfunction
 map  <silent> <F6> :call QuickfixToggle()<CR>
 imap <silent> <F6> <ESC>:call QuickfixToggle()<CR>G:wincmd w<CR>a
 
+" <leader>L: show/close location list window
+function! LocListToggle()
+  let nr = winnr("$")
+  :lopen
+  let nr2 = winnr("$")
+  if nr == nr2 | lclose | endif
+endfunction
+map  <silent> <leader>L :call LocListToggle()<CR>
 
 " [F4] Next Error [Shift+F4] Previous Error
 map <F4> <ESC>:cn<CR>
