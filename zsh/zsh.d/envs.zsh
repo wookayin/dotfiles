@@ -9,6 +9,11 @@
 # @see https://github.com/junegunn/fzf/issues/526
 export FZF_CTRL_R_OPTS='--sort'
 
+# Setting fd as the default source for Ctrl-T fzf
+if (( $+commands[fd] )); then
+    export FZF_CTRL_T_COMMAND='fd --type f'
+fi
+
 # ALT-C: FASD_CD with preview
 export FZF_ALT_C_COMMAND='fasd_cd -d -l -R'
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
