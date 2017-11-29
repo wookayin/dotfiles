@@ -40,6 +40,7 @@ Plug 'junegunn/vim-easy-align'
 
 " Utilities
 Plug 'junegunn/vim-emoji'
+Plug 'cocopon/colorswatch.vim', { 'on' : ['ColorSwatchGenerate'] }
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'Lokaltog/vim-easymotion'
