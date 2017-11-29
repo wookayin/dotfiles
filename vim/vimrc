@@ -342,6 +342,9 @@ map [29~ <ESC>:cp<CR>
 imap <F2> <ESC>:w<CR>
 map <F2> <ESC><ESC>:w<CR>
 
+" save in the insert mode?
+inoremap <C-S> <ESC>:update<CR>a
+
 " Sudo Save (:Wsudo command)
 command! Wsudo w !sudo tee % > /dev/null
 
