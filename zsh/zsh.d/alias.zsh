@@ -156,6 +156,13 @@ if [[ "$(uname)" == "Darwin" ]]; then
 
     # terminal-notifier
     function notify   { terminal-notifier -message "$*" }
+
+    # some commands that needs to work correctly in tmux
+    if [ -n "$TMUX" ] && (( $+commands[reattach-to-user-namespace] )); then
+        alias pngpaste='reattach-to-user-namespace pngpaste'
+        alias pbcopy='reattach-to-user-namespace pbcopy'
+        alias pbpaste='reattach-to-user-namespace pbpaste'
+    fi
 fi
 
 
