@@ -55,7 +55,7 @@ zplug "mafredri/zsh-async", from:github
 zplug "wookayin/pure", use:pure.zsh, from:github, as:theme
 
 # More ZSH widgets and utilities
-zplug 'zsh-users/zsh-autosuggestions'
+zplug 'zsh-users/zsh-autosuggestions', at:'v0.4.0'
 zplug 'MichaelAquilina/zsh-autoswitch-virtualenv'
 
 # fzf+fasd integration. Should be loaded after 'prezto:editor'
