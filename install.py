@@ -80,6 +80,7 @@ tasks = {
     #'~/.pip/pip.conf' : 'pip/pip.conf',
     '~/.pythonrc.py' : 'python/pythonrc.py',
     '~/.pylintrc' : 'python/pylintrc',
+    '~/.condarc' : 'python/condarc',
 }
 
 post_actions = [
