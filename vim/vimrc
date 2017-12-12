@@ -358,9 +358,11 @@ nnoremap ; :
 nmap <silent> <leader><space> :noh<CR>
 
 " Plugin ag.vim
-" <leader>ag : Ag (search file contents)
+" <leader>ag (or rg): Ag (search file contents)
 nnoremap <leader>ag :Ag! -i ""<Left>
 xnoremap <silent> <leader>ag y:Ag <C-R>"<CR>
+nnoremap <leader>rg :Ag! -i ""<Left>
+xnoremap <silent> <leader>rg y:Ag <C-R>"<CR>
 
 if executable("rg")
   " Use ripgrep instead :)
@@ -371,12 +373,12 @@ endif
 " <leader>cd : switch to the directory of the current buffer
 nmap <leader>cd :cd %:p:h<CR>
 
-" <leader>r : screen sucks, redraw everything
+" <leader>R : screen sucks, redraw everything
 function! Redraw()
   redraw!
   call s:auto_termguicolors()   " re-detect true colors
 endfunction
-nnoremap <leader>r :call Redraw()<CR>
+nnoremap <leader>R :call Redraw()<CR>
 
 " <leader>src : source ~/.vimrc
 nnoremap <leader>src :source ~/.vimrc<CR>
