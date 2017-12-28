@@ -57,6 +57,7 @@ Troubleshooting
 ---------------
 
 * Powerline characters not displayed properly? Install [Powerline fonts](https://github.com/powerline/fonts).
+* Does vim color look weird (e.g. black-and-white)? Check your terminal emulator supports [24-bit color](https://github.com/wookayin/dotfiles/pull/9).
 * Ruby version is shown unwantedly? A simple workaround might be to install [rvm](https://rvm.io/).
 * Does `tmux` look weird? Make sure that tmux version is [2.3](etc/ubuntu-setup.sh) or higher.
 * If you are using neovim, make sure that the [`neovim`](https://pypi.python.org/pypi/neovim/) pypi package is installed on [**local** python 3](https://github.com/wookayin/dotfiles/blob/master/nvim/init.vim);
