@@ -40,8 +40,9 @@ fi
 # }}}
 
 # GO {{{
-export GOPATH=$HOME/.go
-path=( $path $GOPATH/bin )
+export GOROOT=$HOME/.go
+export GOPATH=$GOROOT/packages
+path=( $path $GOROOT/bin $GOPATH/bin )
 # }}}
 
 # Bazel {{{
