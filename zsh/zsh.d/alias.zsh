@@ -100,6 +100,9 @@ alias gva='gv --all'
 
 # Python ======================================= {{{
 
+# anaconda
+alias sa='source activate'
+
 # virtualenv
 alias wo='workon'
 
