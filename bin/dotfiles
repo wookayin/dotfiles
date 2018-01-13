@@ -16,6 +16,7 @@ https://dotfiles.wook.kr
 from __future__ import print_function
 
 import functools
+import platform
 import subprocess
 import collections
 import os.path
@@ -45,6 +46,7 @@ def add_argument(*args, **kwargs):
         return f
     return decorator
 
+###############################################################################################
 
 @add_argument('--skip-zplug', action='store_true', help='Skip zplug update')
 def update(skip_zplug=False):
@@ -91,10 +93,30 @@ def open_github():
     webbrowser.open("https://dotfiles.wook.kr", new=0)
 
 
+@add_argument('target')
+def install_local(target):
+    '''
+    Install local packages as specified in /etc/linux-locals.sh.
+    Available only in Linux.
+    '''
+
+    if platform.system() != 'Linux':
+        print("Error: only available on linux systems")
+        sys.exit(1)
+
+    dotfiles_dir = os.path.expanduser('~/.dotfiles')
+    ret = subprocess.call('./etc/linux-locals.sh install_{}'.format(target),
+                          shell=True, cwd=dotfiles_dir)
+    if ret:  # error
+        subprocess.call('./etc/linux-local.sh --help',
+                        shell=True, cwd=dotfiles_dir)
+
+
 def main():
     COMMANDS = {
         'update': update,
         'github': open_github,
+        'install' : install_local,
     }
 
     from argparse import ArgumentParser, RawTextHelpFormatter

@@ -203,7 +203,7 @@ install_ripgrep() {
 if [ `uname` != "Linux" ]; then
     echo "Run on Linux (not on Mac OS X)"; exit 1
 fi
-if [ -n "$1" ]; then
+if [[ -n "$1" && "$1" != "--help" ]]; then
     $1
 else
     echo "Usage: $0 [command], where command is one of the following:"
