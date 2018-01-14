@@ -28,12 +28,12 @@ hi texRefZone       ctermfg=142     guifg=#afaf00
 " math: use different (blue-ish) color than normal text
 hi texMath          ctermfg=80      guifg=#5fd7d7
 
-hi link texMathSymbol       texMath
-hi link texGreek            texMath
-hi link texMathDelim        texMath
-hi link texMathOper         texMath
+hi link     texMathSymbol       texMath
+hi def link texGreek            texMath   |  hi texGreek            guifg=#38a5a5
+hi link     texMathDelim        texMath
+hi link     texMathOper         texMath
 
-hi link texSuperscript      texMath
-hi link texSubscript        texMath
+hi link     texSuperscript      texMath
+hi link     texSubscript        texMath
 
 " }}}
