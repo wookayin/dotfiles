@@ -9,15 +9,19 @@
 " The locally installed python (e.g. homebrew) at /usr/local/bin precedes.
 
 let g:python_host_prog  = '/usr/local/bin/python'
-if empty(glob("/usr/local/bin/python"))
+if empty(glob(g:python_host_prog))
     " Fallback if not exists
     let g:python_host_prog = '/usr/bin/python'
 endif
 
 let g:python3_host_prog = '/usr/local/bin/python3'
-if empty(glob("/usr/local/bin/python3"))
+if empty(glob(g:python3_host_prog))
     " Fallback if not exists
     let g:python3_host_prog = '/usr/bin/python3'
+endif
+if empty(glob(g:python3_host_prog)) && executable("python3")
+    " Fallback to local/venv python3 if not exists
+    let g:python3_host_prog = substitute(system("which python3"), '\n\+$', '', '')
 endif
 
 " VimR support {{{
