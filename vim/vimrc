@@ -984,7 +984,7 @@ let g:ale_echo_msg_format = '[%linter%] %code: %%s'
 " better error/warning sign
 let g:ale_sign_error = '✘'
 let g:ale_sign_warning = '⚠'
-hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=1#67
+hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=167
 hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
 
 " no highlight (underline) on detected errors/warnings
