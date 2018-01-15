@@ -987,6 +987,9 @@ let g:ale_sign_warning = '⚠'
 hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=1#67
 hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
 
+" no highlight (underline) on detected errors/warnings
+let g:ale_set_highlights = 0
+
 " Show the number of errors/warnings in the airline statusbar
 let g:airline#extensions#ale#enabled = 1
 
