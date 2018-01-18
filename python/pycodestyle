@@ -1,0 +1,8 @@
+[pycodestyle]
+
+# E111: indentation is not a multiple of four
+#       (python indent is usually checked with pylint)
+ignore = E111
+
+
+# vim: set ft=config:

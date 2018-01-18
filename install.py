@@ -81,6 +81,7 @@ tasks = {
     '~/.pythonrc.py' : 'python/pythonrc.py',
     '~/.pylintrc' : 'python/pylintrc',
     '~/.condarc' : 'python/condarc',
+    '~/.config/pycodestyle' : 'python/pycodestyle',
 }
 
 post_actions = [
