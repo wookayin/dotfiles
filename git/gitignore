@@ -29,6 +29,8 @@ Thumbs.db
 # Python, Virtualenv
 .venv*
 .mypy_cache
+__pycache__
+*.py[cod]
 
 # Etc
 npm-debug.log
