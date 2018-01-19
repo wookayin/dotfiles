@@ -801,7 +801,7 @@ endif
 function! s:fzf_smart()
     let l:git_dir = fugitive#extract_git_dir(expand('%:p'))
     " in a git repo, invoke :GFiles (plus untracked files)
-    if ! empty(l:git_dir) | GFiles -o --exclude-standard
+    if ! empty(l:git_dir) | GFiles -c -o --exclude-standard
     " not in git repo, invoke :FZF by fallback
     else | FZF
     endif
