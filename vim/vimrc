@@ -847,6 +847,8 @@ nnoremap <leader>FG :Commits<CR>
 " History (recently opened files)
 nnoremap <leader>FH :History<CR>
 nnoremap <leader>H :History<CR>
+" :GS -> Git status (open modified file, etc.)
+command! GS GFiles?
 " :H goes to :History
 command! H History
 
