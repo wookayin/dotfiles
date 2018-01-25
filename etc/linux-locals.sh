@@ -198,6 +198,27 @@ install_ripgrep() {
     echo "$(which exa) : $(rg --version)"
 }
 
+install_go() {
+    # install go lang into ~/.go
+    # https://golang.org/dl/
+    set -e
+    if [[ -d $HOME/.go ]]; then
+        echo -e "${COLOR_RED}Error: $HOME/.go already exists.${COLOR_NONE}"
+        exit 1;
+    fi
+
+    GO_DOWNLOAD_URL="https://dl.google.com/go/go1.9.3.linux-amd64.tar.gz"
+    TMP_GO_DIR="/tmp/$USER/go/"
+
+    wget -nc ${GO_DOWNLOAD_URL} -P ${TMP_GO_DIR} || exit 1;
+    cd ${TMP_GO_DIR} && tar -xvzf "go1.9.3.linux-amd64.tar.gz" || exit 1;
+    mv go $HOME/.go
+
+    echo ""
+    echo -e "${COLOR_GREEN}Installed at $HOME/.go${COLOR_NONE}"
+    $HOME/.go/bin/go version
+}
+
 
 # entrypoint script
 if [ `uname` != "Linux" ]; then
