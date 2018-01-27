@@ -154,11 +154,11 @@ snippet defparagraph Redefine \paragraph to allow configuration of margins aroun
 # Figure, etc.
 # ============
 snippet includegraphics
-	\includegraphics[width=\textwidth]{${1:filename.png}}
+	\includegraphics[width=\linewidth]{${1:filename.png}}
 #
 snippet figure
 	\begin{figure}[htb] \begin{center}
-	    \includegraphics[width=\textwidth]{${1:filename.png}}
+	    \includegraphics[width=\linewidth]{${1:filename.png}}
 	    \caption{${2:Caption here}}
 	    \label{fig:${3:figure1}}
 	\end{center} \end{figure}
@@ -166,13 +166,13 @@ snippet figure
 snippet subfigure
 	\begin{figure}[h!]
 	\centering
-	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{subfigure}[b]{0.45\linewidth}
 	    \centering
 	    ${2:% includegraphics Here}
 	    \caption{First Subfigure}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{subfigure}[b]{0.45\linewidth}
 	    \centering
 	    ${3:% Figure Here}
 	    \caption{Second Subfigure}
