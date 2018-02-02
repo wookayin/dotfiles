@@ -140,6 +140,11 @@ alias awklast="awk '{print \$\(NF\)}'"
 
 alias prettyxml='xmllint --format - | pygmentize -l xml'
 
+if (( $+commands[cdiff] )); then
+    # cdiff, side-by-side with full width
+    alias sdiff="cdiff -s -w0"
+fi
+
 # }}}
 
 
