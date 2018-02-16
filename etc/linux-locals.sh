@@ -11,6 +11,23 @@ COLOR_GREEN="\033[0;32m"
 COLOR_YELLOW="\033[0;33m"
 COLOR_WHITE="\033[1;37m"
 
+install_ncurses() {
+    # installs ncurses (shared libraries and headers) into local namespaces.
+    set -e
+
+    TMP_NCURSES_DIR="/tmp/$USER/ncurses/"; mkdir -p $TMP_NCURSES_DIR
+    NCURSES_DOWNLOAD_URL="https://invisible-mirror.net/archives/ncurses/ncurses-5.9.tar.gz";
+
+    wget -nc -O $TMP_NCURSES_DIR/ncurses-5.9.tar.gz $NCURSES_DOWNLOAD_URL
+    tar -xvzf $TMP_NCURSES_DIR/ncurses-5.9.tar.gz -C $TMP_NCURSES_DIR --strip-components 1
+    cd $TMP_NCURSES_DIR
+
+    # compile as shared library, at ~/.local/lib/libncurses.so (as well as static lib)
+    export CPPFLAGS="-P"
+    ./configure --prefix="$PREFIX" --with-shared
+
+    make clean && make -j4 && make install
+}
 
 install_zsh() {
     set -e
@@ -21,6 +38,11 @@ install_zsh() {
     wget -nc -O $TMP_ZSH_DIR/zsh.tar.gz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.gz/download"
     tar -xvzf $TMP_ZSH_DIR/zsh.tar.gz -C $TMP_ZSH_DIR --strip-components 1
     cd $TMP_ZSH_DIR
+
+    if [[ -d "$PREFIX/include/ncurses" ]]; then
+        export CFLAGS="-I$PREFIX/include/"
+        export LDFLAGS="-L$PREFIX/lib/"
+    fi
 
     ./configure --prefix="$PREFIX"
     make clean && make -j8 && make install
