@@ -11,6 +11,10 @@
 [submodule "zsh/zplug"]
 	path = zsh/zplug
 	url = https://github.com/zplug/zplug
+[submodule "zsh/zgen"]
+	path = zsh/zgen
+	url = https://github.com/tarjoilija/zgen
+
 [submodule "zsh/is_mosh"]
 	path = zsh/is_mosh
 	url = https://github.com/wookayin/is_mosh

@@ -44,7 +44,7 @@ tasks = {
     '~/.gitignore' : 'git/gitignore',
 
     # ZSH
-    '~/.zplug'    : 'zsh/zplug',
+    '~/.zgen'     : 'zsh/zgen',
     '~/.zsh'      : 'zsh',
     '~/.zlogin'   : 'zsh/zlogin',
     '~/.zlogout'  : 'zsh/zlogout',
@@ -85,15 +85,14 @@ tasks = {
 }
 
 post_actions = [
-    # zplug installation
-    '''# Install zplug and clear cache
+    # zgen installation
+    '''# Update zgen modules and cache (the init file)
     zsh -c "
         source ${HOME}/.zshrc                   # source zplug and list plugins
-        zplug clear                             # clear cache
-        zplug install || zplug update "         # install or update
-    ''' \
-        if not args.skip_zplug \
-        else '',
+        zgen reset
+        zgen update
+    "
+    '''
 
     # validate neovim package installation
     '''# neovim package needs to be installed

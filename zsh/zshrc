@@ -1,47 +1,27 @@
 # .zshrc
 # ======
+# vim: set sts=2 sw=2 ts=2
 
-# zplug           {{{
+
+# zgen           {{{
 # ===================
-if [[ ! -s "${ZDOTDIR:-$HOME}/.zplug/init.zsh" ]]; then
-  echo -e "\033[0;31m zplug is not installed; please update dotfiles !"
+if [[ ! -s "${ZDOTDIR:-$HOME}/.zgen/zgen.zsh" ]]; then
+  echo -e "\033[0;31m zgen is not installed; please update dotfiles !"
   echo -e "\033[0;33m  e.g. $ dotfiles update\n\
        $ cd ~/.dotfiles && python install.py"
   echo -e "\033[0m"
   return
 fi
 
-source "${ZDOTDIR:-$HOME}/.zplug/init.zsh";
+source "${ZDOTDIR:-$HOME}/.zgen/zgen.zsh"
+
 
 # Source the Prezto configuration file.
 if [[ -s "${ZDOTDIR:-$HOME}/.zpreztorc" ]]; then
   source "${ZDOTDIR:-$HOME}/.zpreztorc"
 fi
 
-# ------------------------------------------------------
-# zplug plugin definition {{{
-
-# Use legacy prezto modules until I complete migration.
-zplug "modules/environment", from:prezto
-zplug "modules/terminal", from:prezto
-zplug "modules/editor", from:prezto
-zplug "modules/history", from:prezto
-zplug "modules/directory", from:prezto
-zplug "modules/spectrum", from:prezto
-zplug "modules/utility", from:prezto
-zplug "modules/archive", from:prezto
-#zplug "modules/prompt", from:prezto
-zplug "modules/rsync", from:prezto
-zplug "modules/completion", from:prezto
-zplug "modules/syntax-highlighting", from:prezto
-zplug "modules/fasd", from:prezto, defer:2
-zplug "modules/git", from:prezto
-
-zplug "modules/ruby", from:prezto, if:"(( $+commands[ruby] ))"
-zplug "modules/node", from:prezto, if:"(( $+commands[node] )) || [[ -s $HOME/.nvm/nvm.sh ]]"
-
-
-# Dirty hacks for Prezto:
+# Dirty hacks for Prezto+zplug
 # @see https://github.com/zplug/zplug/issues/373
 zstyle ":prezto:module:completion" loaded 'yes'
 
@@ -50,17 +30,6 @@ if (( $+commands[virtualenvwrapper_lazy.sh] )); then
     source "$commands[virtualenvwrapper_lazy.sh]"
 fi
 
-# ZSH theme
-zplug "mafredri/zsh-async", from:github
-zplug "wookayin/pure", use:pure.zsh, from:github, as:theme
-
-# More ZSH widgets and utilities
-zplug 'zsh-users/zsh-autosuggestions', at:'v0.4.0'
-zplug 'MichaelAquilina/zsh-autoswitch-virtualenv'
-
-# fzf+fasd integration. Should be loaded after 'prezto:editor'
-zplug 'wookayin/fzf-fasd', defer:3
-
 # Additional zplug from ~/.zshrc.local
 if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
@@ -68,24 +37,30 @@ fi
 
 # ------------------------------------------------------ }}}
 
-# Install plugins if there are plugins that have not been installed
-if [[ -o interactive ]] && ! zplug check; then
-    # show the list of plugins whose installation are incomplete
-    zplug check --verbose
+# zgen plugin specifications
+# NOTE: To reflect the added/updated plugins, try 'zgen reset'
+if ! zgen saved; then
+  echo "Initializing zgen plugins ..."
 
-    printf "Install zplug plugins? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
+  # load prezto. see ~/.zpreztorc for plugin configurations
+  zgen prezto
+
+  # additional modules/plugins
+  zgen load mafredri/zsh-async
+  zgen load wookayin/pure
+
+  zgen load zsh-users/zsh-autosuggestions
+  zgen load MichaelAquilina/zsh-autoswitch-virtualenv
+  zgen load wookayin/fzf-fasd
+
+  zgen save
+
 fi
-
-# Then, source plugins and add commands to $PATH
-zplug load #--verbose
 
 # }}} ===================
 
 
-# Source after-zplug zsh script files.
+# Source after-{zplug,zgen} zsh script files.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
 # Terminal
