@@ -43,6 +43,8 @@ alias tmuxnew='tmux new -s'
 alias tmuxl='tmux list-sessions'
 # tmuxa <session> : attach to <session> (force 256color and detach others)
 alias tmuxa='tmux -2 attach-session -d -t'
+# tmux kill-session -t
+alias tmuxkill='tmux kill-session -t'
 
 # I am lazy, yeah
 alias t='tmuxa'
