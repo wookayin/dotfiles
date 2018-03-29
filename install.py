@@ -60,7 +60,6 @@ tasks = {
     '~/.local/bin/imgcat' : 'bin/imgcat',
     '~/.local/bin/imgls' : 'bin/imgls',
     '~/.local/bin/fzf' : '~/.fzf/bin/fzf', # fzf is at $HOME/.fzf
-    '~/.local/bin/tb' : 'bin/tb',
 
     # X
     '~/.Xmodmap' : 'Xmodmap',
