@@ -108,7 +108,7 @@ def install_local(target):
     ret = subprocess.call('./etc/linux-locals.sh install_{}'.format(target),
                           shell=True, cwd=dotfiles_dir)
     if ret:  # error
-        subprocess.call('./etc/linux-local.sh --help',
+        subprocess.call('./etc/linux-locals.sh --help',
                         shell=True, cwd=dotfiles_dir)
 
 
