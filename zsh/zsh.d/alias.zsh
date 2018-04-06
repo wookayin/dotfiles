@@ -48,6 +48,7 @@ alias tmuxkill='tmux kill-session -t'
 
 # I am lazy, yeah
 alias t='tmuxa'
+alias T='TMUX= tmuxa'
 
 # tmuxp
 function tmuxp {
