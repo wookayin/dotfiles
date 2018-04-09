@@ -57,6 +57,8 @@ def update(skip_zplug=False):
     def _git_head():
         ret = subprocess.check_output('git rev-parse --short HEAD',
                                       shell=True, cwd=dotfiles_dir)
+        if sys.version_info[0] >= 3 and isinstance(ret, bytes):
+            ret = ret.decode('utf-8')
         return ret.strip()
 
     git_old_head = _git_head()
@@ -77,7 +79,7 @@ def update(skip_zplug=False):
     git_new_head = _git_head()
 
     if git_old_head == git_new_head:
-        print(YELLOW('[*] dotfiles is up-to-date.'))
+        print(YELLOW('[*] dotfiles is up-to-date ({}).'.format(git_new_head)))
     else:
         print(GREEN('[*] Update complete!'))
         print(WHITE('Changelog: {}..{}'.format(git_old_head, git_new_head)))
