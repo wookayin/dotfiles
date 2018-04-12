@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# https://unix.stackexchange.com/questions/69185/getting-cpu-usage-same-every-time/
+# CAVEAT: it is not realtime, and takes ~1 second
+
+cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | \
+    awk -v RS="" '{printf "%.2f", ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5) "%"}'
