@@ -33,6 +33,11 @@ setopt NO_SHARE_HISTORY
 unsetopt AUTO_NAME_DIRS       # Do not auto add variable-stored paths
 
 
+# dotfiles-populated bin.
+if [ -d $HOME/.dotfiles/bin/ ]; then
+  path=( $path $HOME/.dotfiles/bin )
+fi
+
 # Anaconda3 {{{
 if [ -d $HOME/.anaconda3/bin/ ]; then
   path=( $path $HOME/.anaconda3/bin )
