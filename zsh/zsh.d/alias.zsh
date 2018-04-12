@@ -185,6 +185,10 @@ alias watch='watch --color -n1'
 alias watchgpu='watch --color -n0.2 "gpustat --color || gpustat"'
 alias smi='watchgpu'
 
+function watchgpucpu {
+    watch --color -n0.2 "gpustat --color; echo -n 'CPU '; cpu-usage | ascii-bar;"
+}
+
 function usegpu {
     gpu_id="$1"
     if [[ "$1" == "none" ]]; then
