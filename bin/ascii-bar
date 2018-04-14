@@ -10,4 +10,4 @@ width=${1:-20}
 if [[ ! $width =~ [0-9]+ ]]; then
     echo "Invalid width: $width;"; return 1;
 fi
-awk "{PERCENT=\$1; printf \"[\"; for(i=0;i<$width;++i) if(i/$width < PERCENT/100.0) printf \"|\"; else printf \" \"; printf \"] \" PERCENT \" %\";}"
+awk "{PERCENT=\$1; printf \"[\"; for(i=0;i<$width;++i) if(i/$width < PERCENT/100.0) printf \"|\"; else printf \" \"; print \"] \" PERCENT \" %\";}"
