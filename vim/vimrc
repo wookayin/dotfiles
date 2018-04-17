@@ -160,6 +160,11 @@ endif
 " When opening http urls using netrw, follow 302 redirects
 let g:netrw_http_cmd = 'curl -L -o'
 
+" terminal mode (neovim)
+if has('nvim')
+  au TermOpen * setlocal nonumber norelativenumber
+endif
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " 2. Key and Functional Mappings {{{
