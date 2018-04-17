@@ -22,10 +22,17 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
 # Save more history entries
 # @see history/init.zsh
-export HISTSIZE=100000
-export SAVEHIST=100000
+export HISTSIZE=10000000
+export SAVEHIST=10000000
 
-# No, I don't want share command history.
+# Save timestamp and the duration as well into the history file.
+setopt EXTENDED_HISTORY
+
+# new history lines are added incrementally as soon as they are entered,
+# rather than waiting until the shell exits
+setopt INC_APPEND_HISTORY
+
+# No, I don't wan't share command history.
 unsetopt SHARE_HISTORY
 setopt NO_SHARE_HISTORY
 
