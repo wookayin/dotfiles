@@ -100,9 +100,10 @@ if has('nvim')
 
     Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 
-    " in neovim, deoplete-jedi replaces jedi-vim
+    " Python
     Plug 'zchee/deoplete-jedi'
-    " C/C++ completion
+    Plug 'numirias/semshi', { 'do': function('DoRemote') }
+    " C/C++
     Plug 'zchee/deoplete-clang'
     " vimscript
     Plug 'machakann/vim-Verdin', { 'for': ['vim'] }

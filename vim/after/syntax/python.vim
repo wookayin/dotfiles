@@ -10,6 +10,11 @@ hi pythonClass          ctermfg=45      guifg=#00d7ff
 
 " self: more distinctive color
 hi pythonSelf           ctermfg=174     guifg=#d78787
+hi semshiSelf           ctermfg=174     guifg=#d78787
+
+" attribute (self.xxx)
+hi semshiAttribute      ctermfg=157     guifg=#afffaf
+
 
 " docstring: gray-ish?
 hi SpecialComment       ctermfg=250     guifg=#99a899
