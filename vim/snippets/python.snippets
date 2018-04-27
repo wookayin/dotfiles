@@ -123,7 +123,7 @@ snippet tfpdb
 	def _breakpoint_func(${2}):
 	    import pudb; pudb.set_trace()
 	    return False
-	with tf.control_dependencies(tf.py_func(_breakpoint_func, [$2], [tf.bool]))
+	with tf.control_dependencies(tf.py_func(_breakpoint_func, [$2], [tf.bool])):
 	    ${1:t} = tf.identity($1, name='debug_identity')
 	# XXX DEBUG }}}
 #
