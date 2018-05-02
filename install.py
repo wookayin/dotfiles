@@ -84,24 +84,46 @@ tasks = {
 }
 
 post_actions = [
+    '''# Check whether ~/.vim and ~/.zsh are well-configured
+    for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
+        if ! readlink $f >/dev/null; then
+            echo -e "\033[0;33m\
+WARNING: $f is not a symbolic link to ~/.dotfiles. \
+You may want to remove your local file and try again?\033[0m"
+        else
+            echo "$f --> $(readlink $f)"
+        fi
+    done
+    ''',
+
     # zgen installation
     '''# Update zgen modules and cache (the init file)
     zsh -c "
         source ${HOME}/.zshrc                   # source zplug and list plugins
+        if ! which zgen > /dev/null; then
+            echo -e '\033[0;31m\
+ERROR: zgen not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
+            ls -alh ~/.zsh/zgen/
+            ls -alh ~/.zshrc
+            exit 1;
+        fi
         zgen reset
         zgen update
     "
-    '''
+    ''',
 
     # validate neovim package installation
     '''# neovim package needs to be installed
-    if which nvim 2>/dev/null; then
+    if which nvim >/dev/null; then
+        echo "neovim found at $(which nvim)"
         /usr/local/bin/python3 -c 'import neovim' || /usr/bin/python3 -c 'import neovim'
         rc=$?; if [[ $rc != 0 ]]; then
         echo -e '\033[0;33mNeovim requires 'neovim' package on the system python3. Please try:'
             echo -e '   /usr/local/bin/pip3 install neovim'
             echo -e '\033[0m'
         fi
+    else
+        echo "neovim not found, skipped"
     fi
     ''',
 
@@ -118,6 +140,8 @@ post_actions = [
     if [[ ! "$SHELL" = *zsh ]]; then
         echo -e '\033[0;33mPlease type your password if you wish to change the default shell to ZSH\e[m'
         chsh -s /bin/zsh && echo -e 'Successfully changed the default shell, please re-login'
+    else
+        echo '$SHELL is already zsh'
     fi
     ''',
 
@@ -244,9 +268,10 @@ for target, source in sorted(tasks.items()):
 for action in post_actions:
     if not action:
         continue
-    log(CYAN('Executing: ') + action.strip().split('\n')[0])
+    log(CYAN('\nExecuting: ') + WHITE(action.strip().split('\n')[0]))
     subprocess.call(['bash', '-c', action],
-                    preexec_fn=lambda: signal(SIGPIPE, SIG_DFL))
+                          preexec_fn=lambda: signal(SIGPIPE, SIG_DFL))
 
-log("\n" + GREEN("Done! "), cr=False)
-log(GRAY("Please restart shell (e.g. `exec zsh`) if necessary\n"))
+log("\n" + GREEN("You are all set! "))
+log("- Please restart shell (e.g. `exec zsh`) if necessary.")
+log("- To install some packages locally (e.g. neovim, tmux), try `dotfiles install`")

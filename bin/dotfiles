@@ -95,7 +95,7 @@ def open_github():
     webbrowser.open("https://dotfiles.wook.kr", new=0)
 
 
-@add_argument('target')
+@add_argument('target', help='target package to install, see ~/.dotfiles/etc/linux-locals.sh for list')
 def install_local(target):
     '''
     Install local packages as specified in /etc/linux-locals.sh.
