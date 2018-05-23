@@ -77,7 +77,7 @@ install_tmux() {
     cd "tmux-2.5"
 
     ./configure --prefix="$PREFIX" \
-        CFLAGS="-I$PREFIX/include/" \
+        CFLAGS="-I$PREFIX/include/ -I$PREFIX/include/ncurses/" \
         LDFLAGS="-L$PREFIX/lib/" \
         PKG_CONFIG="/bin/false"
 
