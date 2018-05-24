@@ -40,7 +40,7 @@ install_zsh() {
     cd $TMP_ZSH_DIR
 
     if [[ -d "$PREFIX/include/ncurses" ]]; then
-        export CFLAGS="-I$PREFIX/include/"
+        export CFLAGS="-I$PREFIX/include -I$PREFIX/include/ncurses"
         export LDFLAGS="-L$PREFIX/lib/"
     fi
 
