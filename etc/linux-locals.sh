@@ -40,7 +40,7 @@ install_zsh() {
     cd $TMP_ZSH_DIR
 
     if [[ -d "$PREFIX/include/ncurses" ]]; then
-        export CFLAGS="-I$PREFIX/include/"
+        export CFLAGS="-I$PREFIX/include -I$PREFIX/include/ncurses"
         export LDFLAGS="-L$PREFIX/lib/"
     fi
 
@@ -77,7 +77,7 @@ install_tmux() {
     cd "tmux-2.5"
 
     ./configure --prefix="$PREFIX" \
-        CFLAGS="-I$PREFIX/include/" \
+        CFLAGS="-I$PREFIX/include/ -I$PREFIX/include/ncurses/" \
         LDFLAGS="-L$PREFIX/lib/" \
         PKG_CONFIG="/bin/false"
 
