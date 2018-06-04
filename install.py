@@ -83,6 +83,10 @@ tasks = {
     '~/.config/pycodestyle' : 'python/pycodestyle',
 }
 
+
+from distutils.spawn import find_executable
+
+
 post_actions = [
     '''# Check whether ~/.vim and ~/.zsh are well-configured
     for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
@@ -128,8 +132,8 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
     ''',
 
     # Run vim-plug installation
-    {'install' : 'vim +PlugInstall +qall',
-     'update'  : 'vim +PlugUpdate +qall',
+    {'install' : '{vim} +PlugInstall +qall'.format(vim='nvim' if find_executable('nvim') else 'vim'),
+     'update'  : '{vim} +PlugUpdate  +qall'.format(vim='nvim' if find_executable('nvim') else 'vim'),
      'none'    : ''}[args.vim_plug],
 
     # Install tmux plugins via tpm
