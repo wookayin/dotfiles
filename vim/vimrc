@@ -17,6 +17,13 @@ if filereadable(expand("\~/.vim/plugins.vim"))
     source \~/.vim/plugins.vim
 endif
 
+" Automatically install missing plugins on startup
+autocmd VimEnter *
+  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \|   PlugInstall --sync | q
+  \| endif
+
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " 1. General Settings {{{
