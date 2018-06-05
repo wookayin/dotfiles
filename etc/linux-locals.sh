@@ -96,6 +96,11 @@ install_bazel() {
     mkdir -p $TMP_BAZEL_DIR
     wget -O $TMP_BAZEL_DIR/bazel-installer.sh $BAZEL_URL
 
+    # zsh completion
+    mkdir -p $HOME/.local/share/zsh/site-functions
+    wget -O $HOME/.local/share/zsh/site-functions/_bazel https://raw.githubusercontent.com/bazelbuild/bazel/master/scripts/zsh_completion/_bazel
+
+    # install bazel
     bash $TMP_BAZEL_DIR/bazel-installer.sh \
         --bin=$HOME/.local/bin \
         --base=$HOME/.bazel
