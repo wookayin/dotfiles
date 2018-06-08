@@ -68,6 +68,7 @@ Troubleshooting
 * [Powerline characters](https://github.com/powerline/powerline#screenshots) are not displayed properly? Install [Powerline fonts](https://github.com/powerline/fonts).
 * Does vim color look weird (e.g. black-and-white)? Check your terminal emulator supports [24-bit color](https://github.com/wookayin/dotfiles/pull/9).
 * Does tmux look weird? Make sure that tmux version is [2.3](etc/ubuntu-setup.sh) or higher.
+    * If you don't have sudo, you can install it locally by `$ dotfiles install tmux`.
 * Ruby version is shown unwantedly? A simple workaround might be to install [rvm](https://rvm.io/).
 
 
