@@ -182,6 +182,7 @@ import os
 import sys
 import subprocess
 
+from builtins import input
 from signal import signal, SIGPIPE, SIG_DFL
 from optparse import OptionParser
 from sys import stderr
@@ -211,7 +212,7 @@ if submodule_issues:
 
     log("")
     log(YELLOW("Do you want to update submodules? (y/n) "), cr=False)
-    shall_we = (raw_input().lower() == 'y')
+    shall_we = (input().lower() == 'y')
     if shall_we:
         git_submodule_update_cmd = 'git submodule update --init --recursive'
         # git 2.8+ supports parallel submodule fetching
