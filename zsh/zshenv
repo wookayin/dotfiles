@@ -1,6 +1,9 @@
 #
 # Defines environment variables.
 #
+# See also: ~/.zsh/zsh.d/envs.zsh
+#
+#
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #   Jongwook Choi <wookayin@gmail.com>
@@ -47,6 +50,19 @@ path=(
   $path
   /usr/local/{bin,sbin}
 )
+
+# Additional $PATH configuration:
+
+# dotfiles-populated bin.
+if [ -d $HOME/.dotfiles/bin/ ]; then
+  path=( $path $HOME/.dotfiles/bin )
+fi
+
+# Anaconda3
+if [ -d $HOME/.anaconda3/bin/ ]; then
+  path=( $path $HOME/.anaconda3/bin )
+fi
+
 
 #
 # Less

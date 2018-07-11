@@ -40,16 +40,12 @@ setopt NO_SHARE_HISTORY
 unsetopt AUTO_NAME_DIRS       # Do not auto add variable-stored paths
 
 
-# dotfiles-populated bin.
-if [ -d $HOME/.dotfiles/bin/ ]; then
-  path=( $path $HOME/.dotfiles/bin )
-fi
-
-# Anaconda3 {{{
-if [ -d $HOME/.anaconda3/bin/ ]; then
-  path=( $path $HOME/.anaconda3/bin )
-fi
-# }}}
+#
+# Path Configurations.
+#
+# Note: Configuring $PATH should be done preferably in ~/.zshenv,
+# in order that zsh plugins are also provisioned with exectuables from $PATH.
+# Entries listed here may not be visible from zsh plugins and source scripts.
 
 # GO {{{
 export GOROOT=$HOME/.go
