@@ -182,7 +182,10 @@ import os
 import sys
 import subprocess
 
-from builtins import input
+try:
+    from builtins import input   # python3
+except ImportError:
+    input = raw_input     # python2
 from signal import signal, SIGPIPE, SIG_DFL
 from optparse import OptionParser
 from sys import stderr
