@@ -89,7 +89,7 @@ install_tmux() {
 install_bazel() {
     set -e
 
-    BAZEL_VER="0.5.4"
+    BAZEL_VER="0.15.0"
     BAZEL_URL="https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/bazel-${BAZEL_VER}-installer-linux-x86_64.sh"
 
     TMP_BAZEL_DIR="/tmp/$USER/bazel/"
