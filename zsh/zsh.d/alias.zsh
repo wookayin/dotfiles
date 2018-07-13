@@ -32,8 +32,9 @@ if command -v nvim 2>&1 >/dev/null; then
 fi
 alias vi='vim'
 
-# Just open ~/.vimrc
+# Just open ~/.vimrc, ~/.zshrc, etc.
 alias vimrc='vim +cd\ ~/.vim -O ~/.vim/vimrc ~/.vim/plugins.vim'
+alias zshrc='vim +cd\ ~/.zsh -O ~/.zsh/zshrc ~/.zpreztorc'
 
 # Tmux ========================================= {{{
 
