@@ -35,12 +35,13 @@ zstyle ':prezto:load' pmodule \
   'rsync' \
   'completion' \
   'prompt' \
-  'syntax-highlighting' \
   'fasd' \
   'ruby' \
   'python' \
   'node' \
   'git'
+
+  #'syntax-highlighting' \
 
 #
 # Editor
@@ -136,6 +137,9 @@ zstyle ':prezto:module:editor' key-bindings 'vi'
 #   'cursor' \
 #   'root'
 #
+
+# {!!!!!!!} NOT USED ANYMORE !!!
+#           ---------------- in favor of fast-syntax-highlighting
 # Set syntax highlighting styles.
 # @see https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/highlighters/main/main-highlighter.zsh
 zstyle ':prezto:module:syntax-highlighting' styles \

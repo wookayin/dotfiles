@@ -71,9 +71,10 @@ tasks = {
     '~/.tmux'     : 'tmux',
     '~/.tmux.conf' : 'tmux/tmux.conf',
 
-    # .config
+    # .config (XDG-style)
     '~/.config/terminator' : 'config/terminator',
     '~/.config/pudb/pudb.cfg' : 'config/pudb/pudb.cfg',
+    '~/.config/fsh/wook.ini' : 'config/fsh/wook.ini',
 
     # pip and python
     #'~/.pip/pip.conf' : 'pip/pip.conf',

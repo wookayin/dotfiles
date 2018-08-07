@@ -46,12 +46,22 @@ if ! zgen saved; then
   zgen prezto
 
   # additional modules/plugins
+  # --------------------------
+
+  # zsh theme: pure (forked ver)
   zgen load mafredri/zsh-async
   zgen load wookayin/pure
 
+  # zsh syntax: FSH
+  # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
+  zgen load zdharma/fast-syntax-highlighting
+  fast-theme "XDG:wook"
+
+  # misc.
   zgen load zsh-users/zsh-autosuggestions
   zgen load MichaelAquilina/zsh-autoswitch-virtualenv
   zgen load wookayin/fzf-fasd
+
 
   zgen save
 
