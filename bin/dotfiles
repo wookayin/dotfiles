@@ -113,6 +113,11 @@ def install_local(target):
         subprocess.call('./etc/linux-locals.sh --help',
                         shell=True, cwd=dotfiles_dir)
 
+    else:
+        print(GREEN("[*] Installation successful. You may need to run ") + \
+              WHITE("`exec zsh`") + \
+              GREEN(" to reflect changes in PATH."))
+
 
 def main():
     COMMANDS = {
