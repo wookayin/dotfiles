@@ -156,6 +156,12 @@ fi
 
 alias iterm-tab-color="noglob iterm-tab-color"
 
+if (( $+commands[pydf] )); then
+    # pip install --user pydf
+    # pydf: a colorized df
+    alias df="pydf"
+fi
+
 # open some macOS applications
 if [[ "$(uname)" == "Darwin" ]]; then
 
