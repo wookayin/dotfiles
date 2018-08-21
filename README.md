@@ -61,6 +61,7 @@ Troubleshooting
       In such cases you may want to delete those files *manually*.
 
 * If you are using **neovim** and seeing any startup errors (e.g. `no module named neovim`):
+    * We require python3 version not less than 3.4; check your python version is >= 3.5 (semshi requires 3.5+).
     * Make sure that the [`neovim`](https://pypi.python.org/pypi/neovim/) pypi package is installed on [**local** python 3 (see `g:python3_host_prog`)](https://github.com/wookayin/dotfiles/blob/master/nvim/init.vim).
     * e.g. `/usr/local/bin/pip3 install neovim` where the path to `pip` (or `pip3`) depends on your system.
     * If you are not sure, `python3 -m pip install --user neovim` will work in any case.
