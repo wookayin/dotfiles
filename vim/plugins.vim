@@ -109,6 +109,8 @@ if has('nvim')
     Plug 'zchee/deoplete-clang'
     " vimscript
     Plug 'machakann/vim-Verdin', { 'for': ['vim'] }
+    " zsh
+    Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }
 
 elseif v:version >= 800
 
