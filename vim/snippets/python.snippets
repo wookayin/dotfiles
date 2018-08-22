@@ -108,7 +108,10 @@ snippet tflayers
 	import tensorflow.contrib.layers as layers
 snippet tfslim
 	import tensorflow.contrib.slim as slim
-
+snippet tfdbg
+	from tensorflow.python import debug as tf_debug
+	sess = tf_debug.LocalCLIDebugWrapperSession(sess)
+#
 snippet tfsession
 	session = tf.Session(config=tf.ConfigProto(
 	    gpu_options=tf.GPUOptions(allow_growth=True),
@@ -123,7 +126,9 @@ snippet tfpdb
 	def _breakpoint_func(${2}):
 	    import pudb; pudb.set_trace()
 	    return False
-	with tf.control_dependencies(tf.py_func(_breakpoint_func, [$2], [tf.bool])):
+	with tf.control_dependencies(tf.py_func(_breakpoint_func, [
+	    $2
+	], [tf.bool])):
 	    ${1:t} = tf.identity($1, name='debug_identity')
 	# XXX DEBUG }}}
 #
