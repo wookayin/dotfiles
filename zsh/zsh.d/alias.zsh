@@ -209,5 +209,8 @@ function usegpu {
     export CUDA_VISIBLE_DEVICES=$gpu_id
 }
 
+if (( ! $+commands[tb] )); then
+    alias tb='python -m tbtools.tb'
+fi
 
 # }}}
