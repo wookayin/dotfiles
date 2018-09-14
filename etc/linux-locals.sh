@@ -226,6 +226,15 @@ install_ripgrep() {
     echo "$(which exa) : $(rg --version)"
 }
 
+install_xsv() {
+    XSV_VERSION="0.13.0"
+
+    set -e; set -x
+    mkdir -p $PREFIX/bin && cd $PREFIX/bin
+    curl -L "https://github.com/BurntSushi/xsv/releases/download/${XSV_VERSION}/xsv-${XSV_VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar zxf -
+    $PREFIX/bin/xsv
+}
+
 install_go() {
     # install go lang into ~/.go
     # https://golang.org/dl/
