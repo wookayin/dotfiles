@@ -261,9 +261,10 @@ install_go() {
 if [ `uname` != "Linux" ]; then
     echo "Run on Linux (not on Mac OS X)"; exit 1
 fi
-if [[ -n "$1" && "$1" != "--help" ]]; then
+if [[ -n "$1" && "$1" != "--help" ]] && declare -f "$1"; then
     $1
 else
     echo "Usage: $0 [command], where command is one of the following:"
     declare -F | cut -d" " -f3 | grep -v '^_'
+    exit 1;
 fi
