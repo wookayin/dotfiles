@@ -120,15 +120,20 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
     # validate neovim package installation
     '''# neovim package needs to be installed
     if which nvim >/dev/null; then
-        echo "neovim found at $(which nvim)"
-        /usr/local/bin/python3 -c 'import neovim' || /usr/bin/python3 -c 'import neovim'
+        echo -e "neovim found at \033[0;32m$(which nvim)\033[0m"
+        host_python3=""
+        [[ -z "$host_python3" ]] && [[ -f "/usr/local/bin/python3" ]] && host_python3="/usr/local/bin/python3"
+        [[ -z "$host_python3" ]] && [[ -f "/usr/bin/python3" ]]       && host_python3="/usr/bin/python3"
+        echo "Checking neovim package for the host python: \033[0;32m${host_python3}\033[0m"
+        $host_python3 -c 'import neovim'
         rc=$?; if [[ $rc != 0 ]]; then
-        echo -e '\033[0;33mNeovim requires 'neovim' package on the system python3. Please try:'
-            echo -e '   /usr/local/bin/pip3 install neovim'
+        echo -e '\033[0;33m[!!!] Neovim requires 'neovim' package on the host python3. Please try:'
+            echo -e "   $host_python3 -m pip install --user neovim"
             echo -e '\033[0m'
+            exit 1;
         fi
     else
-        echo "neovim not found, skipped"
+        echo -e "\033[0;33mNeovim not found. Please install using `dotfiles install neovim`\033[0m."
     fi
     ''',
 
@@ -146,7 +151,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         echo -e '\033[0;33mPlease type your password if you wish to change the default shell to ZSH\e[m'
         chsh -s /bin/zsh && echo -e 'Successfully changed the default shell, please re-login'
     else
-        echo '$SHELL is already zsh'
+        echo -e '\033[0;32m$SHELL is already zsh.\033[0m'
     fi
     ''',
 
@@ -158,10 +163,11 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
 EOL
     fi
     if ! git config --file ~/.gitconfig.secret user.name 2>&1 > /dev/null; then echo -ne '
-    \033[1;33m[!] Please configure git user name and email:
+    \033[1;33m[!!!] Please configure git user name and email:
         git config --file ~/.gitconfig.secret user.name "(YOUR NAME)"
         git config --file ~/.gitconfig.secret user.email "(YOUR EMAIL)"
 \033[0m'
+        exit 1;
     fi
     ''',
 ]
@@ -274,13 +280,32 @@ for target, source in sorted(tasks.items()):
             GREEN("symlink created from '%s'" % source)
         ))
 
+errors = []
 for action in post_actions:
     if not action:
         continue
-    log(CYAN('\nExecuting: ') + WHITE(action.strip().split('\n')[0]))
-    subprocess.call(['bash', '-c', action],
+
+    action_title = action.strip().split('\n')[0]
+    log(CYAN('\nExecuting: ') + WHITE(action_title))
+    ret = subprocess.call(['bash', '-c', action],
                           preexec_fn=lambda: signal(SIGPIPE, SIG_DFL))
 
-log("\n" + GREEN("You are all set! "))
-log("- Please restart shell (e.g. `exec zsh`) if necessary.")
-log("- To install some packages locally (e.g. neovim, tmux), try `dotfiles install`")
+    if ret:
+        errors.append(action_title)
+
+log("\n")
+if errors:
+    log(YELLOW("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n"
+               "┃ You have %2d warnings or errors --- check the logs!   ┃\n"
+               "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n" % len(errors)
+            ), cr=False)
+    for e in errors:
+        log("   " + YELLOW(e))
+    log("\n")
+else:
+    log(GREEN("┏━━━━━━━━━━━━━━━━━━━━━━━┓\n"
+              "┃ ✔︎  You are all set!   ┃\n"
+              "┗━━━━━━━━━━━━━━━━━━━━━━━┛\n"), cr=False)
+
+log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
+log("- To install some packages locally (e.g. neovim, tmux), try " + CYAN("`dotfiles install`"))
