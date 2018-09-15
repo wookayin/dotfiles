@@ -974,7 +974,28 @@ let g:deoplete#omni#input_patterns.tex =
       \ . '\\\w*'
       \ . ')'
 
+let g:deoplete#omni#functions.lua = 'xolox#lua#omnifunc'
+let g:deoplete#omni#input_patterns.lua = '\w+|[^. *\t][.:]\w*'
+
 " }}
+
+" ---------------------------------------------------------------- }}}
+" Lua {{{
+" https://github.com/xolox/vim-lua-ftplugin
+"
+" See also:
+" https://github.com/Shougo/deoplete.nvim/issues/458      compatibility with deoplete
+" https://github.com/xolox/vim-lua-ftplugin/issues/40     if not working with Torch
+
+let g:lua_check_syntax = 1
+
+let g:lua_complete_omni = 1
+
+if has_key(g:plugs, 'deoplete.nvim')
+  let g:lua_complete_dynamic = 0    " deoplete will take care of this instead
+endif
+
+let g:lua_define_completion_mappings = 0
 
 
 " ---------------------------------------------------------------- }}}

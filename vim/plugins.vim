@@ -94,6 +94,9 @@ Plug 'rdolgushin/groovy.vim'
 
 Plug 'Shougo/echodoc.vim'
 
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
+
 
 if has('nvim')
     function! DoRemote(arg)
