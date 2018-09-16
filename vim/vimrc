@@ -227,6 +227,7 @@ if has('nvim')
 
     " Automatically enter insert mode when entering neovim terminal buffer
     autocmd BufWinEnter,WinEnter term://* startinsert
+    autocmd TermOpen * startinsert
 
     " Mapping for <c-hjkl> in terminal mode
     " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
