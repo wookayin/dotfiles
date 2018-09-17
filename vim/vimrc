@@ -178,6 +178,7 @@ endif
 """""""""""""""""""""""""""""""""""""""""
 
 " the leader key
+" (NOTE) leader key is mapped to vim-which-key, see sections below
 let mapleader=","           " comma is the <Leader> key.
 let maplocalleader=","      " comma : <LocalLeader>
 
@@ -740,6 +741,18 @@ if has_key(g:plugs, 'vim-highlightedundo')
 
   let g:highlightedundo#highlight_duration_delete = 500
   let g:highlightedundo#highlight_duration_add = 700
+endif
+
+" ---------------------------------------------------------------- }}}
+" vim-which-key {{{
+
+" which-key buffer will appear vertically on the right
+let g:which_key_vertical = 1
+
+" Remap <leader> key to vim-which-key version.
+" The following mapping assumes <leader> key is ',' (comma)
+if has_key(g:plugs, 'vim-which-key')
+  nnoremap <silent> <leader> :<c-u>WhichKey ','<CR>
 endif
 
 " ---------------------------------------------------------------- }}}
