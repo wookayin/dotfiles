@@ -221,9 +221,10 @@ inoremap <C-C> <ESC>
 " in terminal mode (neovim)
 if has('nvim')
     " <C-\><C-n> is the key sequence for escaping form terminal mode
-    " <c-[> and double <C-\> also goes for escaping from terminal
-    tnoremap <C-[> <C-\><C-n>
-    tnoremap <C-\><C-\> <C-\><C-n>
+    " double <ESC> and double <C-\> also goes for escaping from terminal,
+    " whereas single <ESC> would be directly passed inside the terminal.
+    tnoremap <silent> <C-[><C-[> <C-\><C-n>
+    tnoremap <silent> <C-\><C-\> <C-\><C-n>
 
     " Automatically enter insert mode when entering neovim terminal buffer
     autocmd BufWinEnter,WinEnter term://* startinsert
