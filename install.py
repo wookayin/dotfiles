@@ -124,14 +124,20 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         host_python3=""
         [[ -z "$host_python3" ]] && [[ -f "/usr/local/bin/python3" ]] && host_python3="/usr/local/bin/python3"
         [[ -z "$host_python3" ]] && [[ -f "/usr/bin/python3" ]]       && host_python3="/usr/bin/python3"
-        echo "Checking neovim package for the host python: \033[0;32m${host_python3}\033[0m"
-        $host_python3 -c 'import neovim'
-        rc=$?; if [[ $rc != 0 ]]; then
-        echo -e '\033[0;33m[!!!] Neovim requires 'neovim' package on the host python3. Please try:'
-            echo -e "   $host_python3 -m pip install --user neovim"
-            echo -e '\033[0m'
-            exit 1;
+        [[ -z "$host_python3" ]] && host_python3="$(which python3)"
+        if [[ -z "$host_python3" ]]; then
+            echo "\033[0;31m  Python3 not found -- please have it installed in the system! \033[0m"; exit 1;
         fi
+        for py_bin in "$host_python3" "/usr/bin/python"; do
+            echo "Checking neovim package for the host python: \033[0;32m${py_bin}\033[0m"
+            $py_bin -c 'import neovim'
+            rc=$?; if [[ $rc != 0 ]]; then
+                echo -e '\033[0;33m[!!!] Neovim requires `neovim` package on the host python. Please try:'
+                echo -e "   $py_bin -m pip install --user neovim"
+                echo -e '\033[0m'
+                exit 1;
+            fi
+        done
     else
         echo -e "\033[0;33mNeovim not found. Please install using 'dotfiles install neovim'\033[0m."
     fi
