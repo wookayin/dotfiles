@@ -749,6 +749,9 @@ endif
 " which-key buffer will appear vertically on the right
 let g:which_key_vertical = 1
 
+" Make timeout delay to be 300ms (before popup appears), default is 1000ms
+set timeoutlen=300
+
 " Remap <leader> key to vim-which-key version.
 " The following mapping assumes <leader> key is ',' (comma)
 if has_key(g:plugs, 'vim-which-key')
