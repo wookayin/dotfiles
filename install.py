@@ -133,7 +133,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
             exit 1;
         fi
     else
-        echo -e "\033[0;33mNeovim not found. Please install using `dotfiles install neovim`\033[0m."
+        echo -e "\033[0;33mNeovim not found. Please install using 'dotfiles install neovim'\033[0m."
     fi
     ''',
 
