@@ -388,7 +388,15 @@ endif
 
 
 " <leader>cd : switch to the directory of the current buffer
-nmap <leader>cd :cd %:p:h<CR>
+function! s:cd()
+  cd %:p:h
+
+  " if NERDTree is open, chdir NERDTree as well
+  if exists("g:NERDTree") && g:NERDTree.IsOpen()
+    :NERDTreeCWD | wincmd w
+  endif
+endfunction
+nmap <silent> <leader>cd :call <SID>cd()<CR>
 
 " <leader>R : screen sucks, redraw everything
 function! Redraw()
