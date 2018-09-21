@@ -500,7 +500,7 @@ function! s:is_mosh()
   return !empty(l:output)
 endfunction
 
-function s:auto_termguicolors()
+function! s:auto_termguicolors()
   if !(has("termguicolors"))
     return
   endif
