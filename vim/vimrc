@@ -257,6 +257,10 @@ nnoremap ]b  :bnext<CR>
 " Tab navigations
 nnoremap [t  :tabprevious<CR>
 nnoremap ]t  :tabnext<CR>
+if has('nvim')
+  tnoremap [t <C-\><C-n>:tabprevious<CR>
+  tnoremap ]t <C-\><C-n>:tabnext<CR>
+endif
 
 nnoremap <C-t>     :tabnew<CR>
 nnoremap <C-S-tab> :tabprevious<CR>
