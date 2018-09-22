@@ -231,6 +231,10 @@ if has('nvim')
     autocmd BufWinEnter,WinEnter term://* startinsert
     autocmd TermOpen * startinsert
 
+    " terminal in a new tab or vsplit buffer
+    command! -nargs=* Term :tabnew | :term <args>
+    command! -nargs=* STerm :split | :term <args>
+
     " Mapping for <c-hjkl> in terminal mode
     " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
     tmap <C-h> <C-\><C-n><C-h>
