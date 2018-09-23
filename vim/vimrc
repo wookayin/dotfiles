@@ -263,8 +263,13 @@ if has('nvim')
 endif
 
 nnoremap <C-t>     :tabnew<CR>
-nnoremap <C-S-tab> :tabprevious<CR>
-nnoremap <C-tab>   :tabnext<CR>
+
+nnoremap <silent>   <C-S-tab> :tabprevious<CR>
+nnoremap <silent>   <C-tab>   :tabnext<CR>
+if has('nvim')
+  tnoremap <silent> <C-S-tab> <C-\><C-n>:tabprevious<CR>
+  tnoremap <silent> <C-tab>   <C-\><C-n>:tabnext<CR>
+endif
 
 " Handy tab navigations: <Alt-num>
 nnoremap 1 1gt
