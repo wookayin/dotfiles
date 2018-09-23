@@ -24,6 +24,10 @@ set completeopt-=longest
 " https://stackoverflow.com/questions/2360249/
 inoremap # X<BS>#
 
+if system("python --version") =~ "Python 3"
+  setlocal omnifunc=python3complete#Complete
+endif
+
 
 " shortcuts
 " =========
