@@ -866,6 +866,41 @@ nmap <C-P> :F<CR>
 
 
 " custom commands using fzf
+" -------------------------
+
+" :Rg --- Easily grep
+" brought from https://github.com/junegunn/fzf.vim
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg -i --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \ <bang>0)
+
+" :Def, Rgdef -- Easily find definition/declaration (requires ripgrep)
+" e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
+command! -bang -nargs=* Rgdef   call s:fzf_rgdef(<q-args>, <bang>0)
+command! -bang -nargs=* Def     call s:fzf_rgdef(<q-args>, 1 - <bang>0)
+
+function! s:fzf_rgdef(args, bang0)
+    " TODO: currently, only python is supported.
+    let l:rgdef_type = '--type "py"'
+    let l:rgdef_prefix = '^\s*(def|class)'
+    let l:rgdef_pattern = l:rgdef_prefix.' \w*'.a:args.'\w*'
+
+    " if the query itself starts with prefix patterns, let itself be the regex pattern
+    if a:args =~ ('\v'.l:rgdef_prefix.'($|\s+)')
+      let l:rgdef_pattern = '^\s*'.a:args
+    endif
+
+    call fzf#vim#grep(
+  \   'rg -i --column --line-number --no-heading --color=always '.l:rgdef_type.' '.shellescape(l:rgdef_pattern), 1,
+  \   a:bang0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \ a:bang0)
+endfunction
+
+
 
 " :Z -- cd to recent working directories using fasd
 command! -nargs=* Z call fzf#run
