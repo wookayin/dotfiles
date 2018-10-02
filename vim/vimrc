@@ -1244,8 +1244,10 @@ au FileType gitcommit nnoremap <buffer> <silent>
 " ---------------------------------------------------------------- }}}
 " gitgutter {{{
 
-" another alias for adding or staging hunk (same as <leader>ga)
+" another alias for adding or staging hunk (similar as <leader>ga)
 nmap <leader>ha  <Plug>GitGutterStageHunk
+
+nmap <leader>hh  :GitGutterLineHighlightsToggle<CR>
 
 " ---------------------------------------------------------------- }}}
 " gundo key mappings and options {{{
