@@ -9,8 +9,10 @@
 # @see https://github.com/junegunn/fzf/issues/526
 export FZF_CTRL_R_OPTS='--sort'
 
-# Setting fd as the default source for Ctrl-T fzf
-if (( $+commands[fd] )); then
+# Setting ripgrep or fd as the default source for Ctrl-T fzf
+if (( $+commands[rg] )); then
+    export FZF_CTRL_T_COMMAND='rg --files --hidden --follow --glob "!.git/"'
+elif (( $+commands[fd] )); then
     export FZF_CTRL_T_COMMAND='fd --type f'
 fi
 
