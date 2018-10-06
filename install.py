@@ -120,7 +120,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
 
     '''#!/bin/bash
     # validate neovim package installation on python2/3 and automatically install if missing
-    RED="\033[0;31m"; GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m"
+    RED="\033[0;31m"; GREEN="\033[0;32m"; YELLOW="\033[0;33m"; WHITE="\033[1;37m"; RESET="\033[0m";
     if which nvim >/dev/null; then
         echo -e "neovim found at ${GREEN}$(which nvim)${RESET}"
         host_python3=""
@@ -131,15 +131,20 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
             echo "${RED}  Python3 not found -- please have it installed in the system! ${RESET}";
             exit 1;
         fi
+        suggest_cmds=()
         for py_bin in "$host_python3" "/usr/bin/python"; do
             echo "Checking neovim package for the host python: ${GREEN}${py_bin}${RESET}"
             $py_bin -c 'import neovim'
             rc=$?; if [[ $rc != 0 ]]; then
                 echo -e "${YELLOW}[!!!] Neovim requires 'neovim' package on the host python. Try:"
-                echo -e "   $py_bin -m pip install --user neovim"
+                echo -e "   $py_bin -m pip install --user --upgrade neovim"
+                suggest_cmds+=("$py_bin -m pip install --user --upgrade neovim")
                 echo -e "${RESET}"
-                exit 1;
             fi
+        done
+        for cmd in "${suggest_cmds[@]}"; do
+            echo "${WHITE}Executing: $cmd ${RESET}"
+            $cmd;
         done
     else
         echo -e "${RED}Neovim not found. Please install using 'dotfiles install neovim'.${RESET}"
