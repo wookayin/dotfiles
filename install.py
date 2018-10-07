@@ -16,9 +16,8 @@ import argparse
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('-f', '--force', action="store_true", default=False,
                     help='If specified, it will override existing symbolic links')
-parser.add_argument('--vim-plug', default='update', choices=['update', 'install', 'none'],
-                    help='vim plugins: update and install (default), install only, or do nothing')
-parser.add_argument('--skip-zplug', action='store_true')
+parser.add_argument('--skip-vimplug', action='store_true')
+parser.add_argument('--skip-zgen', '--skip-zplug', action='store_true')
 args = parser.parse_args()
 
 ################# BEGIN OF FIXME #################
@@ -116,7 +115,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         zgen reset
         zgen update
     "
-    ''',
+    ''' if not args.skip_zgen else '',
 
     '''#!/bin/bash
     # validate neovim package installation on python2/3 and automatically install if missing
@@ -154,7 +153,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
     # Run vim-plug installation
     {'install' : '{vim} +PlugInstall +qall'.format(vim='nvim' if find_executable('nvim') else 'vim'),
      'update'  : '{vim} +PlugUpdate  +qall'.format(vim='nvim' if find_executable('nvim') else 'vim'),
-     'none'    : ''}[args.vim_plug],
+     'none'    : ''}['update' if not args.skip_vimplug else 'none'],
 
     # Install tmux plugins via tpm
     '~/.tmux/plugins/tpm/bin/install_plugins',
