@@ -92,9 +92,10 @@ post_actions = [
     # Check whether ~/.vim and ~/.zsh are well-configured
     for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
         if ! readlink $f >/dev/null; then
-            echo -e "\033[0;33m\
-WARNING: $f is not a symbolic link to ~/.dotfiles. \
-You may want to remove your local file and try again?\033[0m"
+            echo -e "\033[0;31m\
+WARNING: $f is not a symbolic link to ~/.dotfiles.
+You may want to remove your local folder (~/.vim) and try again?\033[0m"
+            exit 1;
         else
             echo "$f --> $(readlink $f)"
         fi
@@ -159,12 +160,28 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
     '~/.tmux/plugins/tpm/bin/install_plugins',
 
     r'''#!/bin/bash
+    # Check tmux version >= 2.3 (or use `dotfiles install tmux`)
+    _version_check() {    # target_ver current_ver
+        [ "$1" = "$(echo -e "$1\n$2" | sort -s -t- -k 2,2n | sort -t. -s -k 1,1n -k 2,2n | head -n1)" ]
+    }
+    if ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
+        echo -en "\033[0;33m"
+        echo -e "$(tmux -V) is too old. Contact system administrator, or:"
+        echo -e "  $ dotfiles install tmux  \033[0m (installs to ~/.local/, if you don't have sudo)"
+        exit 1;
+    else
+        echo "$(which tmux): $(tmux -V)"
+    fi
+    ''',
+
+    r'''#!/bin/bash
     # Change default shell to zsh
+    /bin/zsh --version >/dev/null || (echo -e "Error: /bin/zsh not found. Please install zsh"; exit 1)
     if [[ ! "$SHELL" = *zsh ]]; then
         echo -e '\033[0;33mPlease type your password if you wish to change the default shell to ZSH\e[m'
         chsh -s /bin/zsh && echo -e 'Successfully changed the default shell, please re-login'
     else
-        echo -e '\033[0;32m$SHELL is already zsh.\033[0m'
+        echo -e "\033[0;32m\$SHELL is already zsh.\033[0m $(zsh --version)"
     fi
     ''',
 
@@ -294,7 +311,8 @@ for target, source in sorted(tasks.items()):
         else:
             log("{:50s} : {}".format(
                 BLUE(target),
-                GRAY("already exists, skipped")
+                GRAY("already exists, skipped") if os.path.islink(target) \
+                    else YELLOW("exists, but not a symbolic link. Check by yourself!!")
             ))
 
     # make a symbolic link if available
@@ -339,4 +357,6 @@ else:
               color_fn=GREEN, use_bold=True)
 
 log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
-log("- To install some packages locally (e.g. neovim, tmux), try " + CYAN("`dotfiles install`"))
+log("- To install some packages locally (e.g. neovim, tmux), try " + CYAN("`dotfiles install <package>`"))
+log("- If you want to update dotfiles (or have any errors), try " + CYAN("`dotfiles update`"))
+log("\n\n", cr=False)
