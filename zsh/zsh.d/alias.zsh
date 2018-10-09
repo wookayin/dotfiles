@@ -7,6 +7,9 @@ alias cp='nocorrect cp -iv'
 alias mv='nocorrect mv -iv'
 alias rm='nocorrect rm -iv'
 
+# sudo, but inherits $PATH from the current shell
+alias sudoenv='sudo env PATH=$PATH'
+
 if (( $+commands[htop] )); then
     alias top='htop'
     alias topc='htop -s PERCENT_CPU'
