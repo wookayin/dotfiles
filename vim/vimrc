@@ -885,13 +885,13 @@ command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg -i --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \           : fzf#vim#with_preview('right:50%', '?'),
   \ <bang>0)
 
 " :Def, Rgdef -- Easily find definition/declaration (requires ripgrep)
 " e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
 command! -bang -nargs=* Rgdef   call s:fzf_rgdef(<q-args>, <bang>0)
-command! -bang -nargs=* Def     call s:fzf_rgdef(<q-args>, 1 - <bang>0)
+command! -bang -nargs=* Def     call s:fzf_rgdef(<q-args>, <bang>0)
 
 function! s:fzf_rgdef(args, bang0)
     " TODO: currently, only python is supported.
@@ -907,7 +907,7 @@ function! s:fzf_rgdef(args, bang0)
     call fzf#vim#grep(
   \   'rg -i --column --line-number --no-heading --color=always '.l:rgdef_type.' '.shellescape(l:rgdef_pattern), 1,
   \   a:bang0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \           : fzf#vim#with_preview('right:50%', '?'),
   \ a:bang0)
 endfunction
 
