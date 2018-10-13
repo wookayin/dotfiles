@@ -58,9 +58,11 @@ if ! zgen saved; then
   fast-theme "XDG:wook"
 
   # misc.
-  zgen load zsh-users/zsh-autosuggestions
-  zgen load MichaelAquilina/zsh-autoswitch-virtualenv
   zgen load wookayin/fzf-fasd
+  zgen load zsh-users/zsh-autosuggestions
+  if (( $+commands[virtualenvwrapper_lazy.sh] )); then
+    zgen load MichaelAquilina/zsh-autoswitch-virtualenv
+  fi
 
 
   zgen save
