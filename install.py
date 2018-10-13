@@ -120,7 +120,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
 
     '''#!/bin/bash
     # validate neovim package installation on python2/3 and automatically install if missing
-    RED="\033[0;31m"; GREEN="\033[0;32m"; YELLOW="\033[0;33m"; WHITE="\033[1;37m"; RESET="\033[0m";
+    RED="\033[0;31m"; GREEN="\033[0;32m"; YELLOW="\033[0;33m"; WHITE="\033[1;37m"; CYAN="\033[0;36m"; RESET="\033[0m";
     if which nvim >/dev/null; then
         echo -e "neovim found at ${GREEN}$(which nvim)${RESET}"
         host_python3=""
@@ -134,16 +134,24 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         suggest_cmds=()
         for py_bin in "$host_python3" "/usr/bin/python"; do
             echo "Checking neovim package for the host python: ${GREEN}${py_bin}${RESET}"
-            $py_bin -c 'import neovim'
+            neovim_ver=$($py_bin -c 'import neovim; print("{major}.{minor}.{patch}".format(**neovim.VERSION.__dict__))')
+            neovim_install_cmd="$py_bin -m pip install --user --upgrade neovim"
             rc=$?; if [[ $rc != 0 ]]; then
-                echo -e "${YELLOW}[!!!] Neovim requires 'neovim' package on the host python. Try:"
-                echo -e "   $py_bin -m pip install --user --upgrade neovim"
-                suggest_cmds+=("$py_bin -m pip install --user --upgrade neovim")
-                echo -e "${RESET}"
+                echo -e "${YELLOW}[!!!] Neovim requires 'neovim' package on the host python. Try:${RESET}"
+                echo -e "${YELLOW}  $neovim_install_cmd${RESET}"; suggest_cmds+=("$neovim_install_cmd")
+            else  # check neovim is up-to-date
+                neovim_latest=$(python2 -c 'from xmlrpclib import ServerProxy; print(\
+                    ServerProxy("http://pypi.python.org/pypi").package_releases("neovim")[0])')
+                if [[ "$neovim_ver" != "$neovim_latest" ]]; then
+                    echo -e "${YELLOW}  [!!] Neovim ($neovim_ver) is outdated (latest = $neovim_latest). Needs upgrade!${RESET}"
+                    echo -e "${YELLOW}  $neovim_install_cmd${RESET}"; suggest_cmds+=("$neovim_install_cmd")
+                else
+                    echo -e "${GREEN}  [OK] neovim $neovim_ver${RESET}"
+                fi
             fi
         done
         for cmd in "${suggest_cmds[@]}"; do
-            echo "${WHITE}Executing: $cmd ${RESET}"
+            echo "\n${CYAN}Executing:${WHITE} $cmd ${RESET}"
             $cmd;
         done
     else
