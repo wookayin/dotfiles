@@ -29,7 +29,7 @@ function print_st() {
 
 # Return the height of the image, or 200 if imagemagick is unavailable.
 function get_height() {
-    identify -format "%h" - 2>/dev/null || echo 200
+    (identify -format "%h\n" - | head -n 1) 2>/dev/null || echo 200
 }
 
 # print_image filename inline base64contents print_filename
@@ -47,17 +47,18 @@ function print_image() {
     else
       BASE64ARG=-D
     fi
-
     local -i HEIGHT=$(printf "%s" "$3" | base64 $BASE64ARG | get_height)
     HEIGHT=$(( (HEIGHT + 19) / 20 ))
 
-    for (( I = 0; I < $HEIGHT; I++ )); do
-      printf "\n"
-    done
-    print_csi
-    printf "?25l"
-    print_csi
-    printf "${HEIGHT}F"
+    if [[ -n $TMUX ]]; then
+        for (( I = 0; I < $HEIGHT; I++ )); do
+          printf "\n"
+        done
+        print_csi
+        printf "?25l"
+        print_csi
+        printf "${HEIGHT}F"
+    fi
 
     print_osc
     printf '1337;File='
@@ -76,11 +77,13 @@ function print_image() {
       echo $1
     fi
 
-    print_csi
-    #printf "${HEIGHT}E"
-    printf "$((${HEIGHT} - 1))E"
-    print_csi
-    printf "?25h"
+    if [[ -n $TMUX ]]; then
+        print_csi
+        #printf "${HEIGHT}E"
+        printf "$((${HEIGHT} - 1))E"
+        print_csi
+        printf "?25h"
+    fi
 }
 
 function error() {
