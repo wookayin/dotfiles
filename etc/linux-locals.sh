@@ -53,6 +53,8 @@ install_zsh() {
 install_tmux() {
     # install tmux (and its dependencies such as libevent) locally
     set -e
+    TMUX_VER="2.4"
+
     TMP_TMUX_DIR="/tmp/$USER/tmux/"; mkdir -p $TMP_TMUX_DIR
 
     # libevent
@@ -69,12 +71,12 @@ install_tmux() {
     # TODO: assuming that ncurses is available?
 
     # tmux
-    TMUX_TGZ_FILE="tmux-2.5.tar.gz"
-    TMUX_DOWNLOAD_URL="https://github.com/tmux/tmux/releases/download/2.5/${TMUX_TGZ_FILE}"
+    TMUX_TGZ_FILE="tmux-${TMUX_VER}.tar.gz"
+    TMUX_DOWNLOAD_URL="https://github.com/tmux/tmux/releases/download/${TMUX_VER}/${TMUX_TGZ_FILE}"
 
     wget -nc ${TMUX_DOWNLOAD_URL} -P ${TMP_TMUX_DIR}
     cd ${TMP_TMUX_DIR} && tar -xvzf ${TMUX_TGZ_FILE}
-    cd "tmux-2.5"
+    cd "tmux-${TMUX_VER}"
 
     ./configure --prefix="$PREFIX" \
         CFLAGS="-I$PREFIX/include/ -I$PREFIX/include/ncurses/" \
