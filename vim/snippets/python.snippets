@@ -84,6 +84,33 @@ snippet main
 snippet PATH
 	__PATH__ = os.path.abspath(os.path.dirname(__file__))
 #
+snippet logging
+	import logging
+	formatter = logging.Formatter('[%(levelname)s %(asctime)s] %(message)s')   # colorlog?
+	ch = logging.StreamHandler()
+	ch.setFormatter(formatter)
+	ch.setLevel(logging.DEBUG)
+
+	log = logging.getLogger(__name__)
+	log.setLevel(logging.DEBUG)
+	log.handlers = []       # No duplicated handlers
+	log.propagate = False   # workaround for duplicated logs in ipython
+	log.addHandler(ch)
+
+snippet colorlog
+	from colorlog import ColoredFormatter   # pip install colorlog
+	formatter = ColoredFormatter(
+	    "%(log_color)s[%(asctime)s] %(message)s",
+	    datefmt=None, reset=True, style='%',
+	    log_colors={
+	        'DEBUG':    'cyan',
+	        'INFO':     'white,bold',
+	        'INFOV':    'cyan,bold',
+	        'WARNING':  'yellow',
+	        'ERROR':    'red,bold',
+	        'CRITICAL': 'red,bg_white',
+	    })
+
 snippet jsondump
 	json.dumps(${1:object}, sort_keys=True, indent=4, separators=(',', ': '))
 #
