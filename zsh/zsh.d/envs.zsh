@@ -9,11 +9,15 @@
 # @see https://github.com/junegunn/fzf/issues/526
 export FZF_CTRL_R_OPTS='--sort'
 
-# Setting ripgrep or fd as the default source for Ctrl-T fzf
+# Ctrl-T: Setting ripgrep or fd as the default source for Ctrl-T fzf
 if (( $+commands[rg] )); then
     export FZF_CTRL_T_COMMAND='rg --files --hidden --follow --glob "!.git/"'
 elif (( $+commands[fd] )); then
     export FZF_CTRL_T_COMMAND='fd --type f'
+fi
+if (( $+commands[bat] )); then
+    # if bat is available, use it as a preview tool
+    export FZF_CTRL_T_OPTS="--preview 'bat {} --color=always'"
 fi
 
 # ALT-C: FASD_CD with preview
