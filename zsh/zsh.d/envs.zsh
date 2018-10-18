@@ -17,7 +17,7 @@ elif (( $+commands[fd] )); then
 fi
 if (( $+commands[bat] )); then
     # if bat is available, use it as a preview tool
-    export FZF_CTRL_T_OPTS="--preview 'bat {} --color=always'"
+    export FZF_CTRL_T_OPTS="--preview 'bat {} --color=always --line-range :30'"
 fi
 
 # ALT-C: FASD_CD with preview
