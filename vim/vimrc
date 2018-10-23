@@ -875,6 +875,9 @@ command! -nargs=0 F call s:fzf_smart()
 " Invoke F (FZF) Using Ctrl-P
 nmap <C-P> :F<CR>
 
+" insert mode completion
+imap <c-x><c-k>   <plug>(fzf-complete-word)
+
 
 " custom commands using fzf
 " -------------------------
