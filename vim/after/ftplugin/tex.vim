@@ -39,6 +39,10 @@ endif
 
 " If using neomake, run callbacks after make is done
 function! s:OnNeomakeFinished(context)
+    if ! exists(':VimtexView')
+      return
+    endif
+
     let l:context = g:neomake_hook_context
     " the buffer on which Neomake was invoked
     let l:bufnr = get(l:context['options'], 'bufnr', -1)
