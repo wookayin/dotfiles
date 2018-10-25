@@ -20,13 +20,25 @@ let g:python3_host_prog = ''
 if executable("python3")
     " get local python from $PATH (virtualenv/anaconda or system python)
     let s:python3_local = substitute(system("which python3"), '\n\+$', '', '')
-    " detect whether neovim package is installed
+
+    " detect whether neovim package is installed; if not, automatically install it
     let s:python3_neovim_path = substitute(system("python3 -c 'import neovim; print(neovim.__path__)' 2>/dev/null"), '\n\+$', '', '')
-    if !empty(s:python3_neovim_path)
-        " neovim available, use it as a host python3
-        let g:python3_host_prog = s:python3_local
+    if empty(s:python3_neovim_path)
+        " auto-install 'neovim' python package for the current python3 (virtualenv, anaconda, or system-wide)
+        let s:pip_options = '--user --upgrade'
+        if empty(substitute(system("python3 -c 'import site; print(site.getusersitepackages())' 2>/dev/null"), '\n\+$', '', ''))
+            " virtualenv pythons may not have site-packages, hence no 'pip -user'
+            let s:pip_options = '--upgrade'
+        endif
+        execute ("!" . s:python3_local . " -m pip install " . s:pip_options . " neovim")
+    endif
+
+    " Assuming that neovim available, use it as a host python3
+    if v:shell_error == 0
+       let g:python3_host_prog = s:python3_local
     endif
 else
+    echoerr "python3 is not found on your system."
     let s:python3_local = ''
 endif
 
