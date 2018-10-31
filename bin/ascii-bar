@@ -6,8 +6,13 @@
 #    [||||                ] 17.73 %
 #
 
+if [ "$1" == "--width" ]; then
+    shift
+fi
 width=${1:-20}
 if [[ ! $width =~ [0-9]+ ]]; then
-    echo "Invalid width: $width;"; return 1;
+    echo "Invalid width: $width;"; exit 1;
 fi
-awk "{PERCENT=\$1; printf \"[\"; for(i=0;i<$width;++i) if(i/$width < PERCENT/100.0) printf \"|\"; else printf \" \"; print \"] \" PERCENT \" %\";}"
+awk "{PERCENT=\$1; printf \"[\"; \
+    for(i=0;i<$width;++i) if(i/$width < PERCENT/100.0) printf \"|\"; else printf \" \"; \
+    printf \"] %5.2f %\", PERCENT; print \"\" }"
