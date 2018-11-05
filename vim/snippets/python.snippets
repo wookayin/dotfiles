@@ -50,7 +50,7 @@ snippet repr
 	    return ${1:str(self)}
 #
 snippet embed
-	from IPython import embed; embed()  # XXX DEBUG
+	from IPython import start_ipython as embed; embed(argv=[])  # XXX DEBUG
 
 snippet pdb
 	import pdb; pdb.set_trace()  # XXX DEBUG
