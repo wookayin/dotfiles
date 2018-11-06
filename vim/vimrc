@@ -378,9 +378,6 @@ inoremap <C-S> <ESC>:update<CR>a
 " Sudo Save (:Wsudo command)
 command! Wsudo w !sudo tee % > /dev/null
 
-" handy command-line mode
-nnoremap ; :
-
 
 " Useful leader key combinations {{{
 
