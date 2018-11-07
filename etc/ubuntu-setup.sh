@@ -30,10 +30,6 @@ install_essential_packages() {
 install_python_packages() {
     sudo apt-get install -y python-dev virtualenv virtualenvwrapper
     sudo apt-get install -y python-pip python3-pip
-
-    # install recent versions (9+) of pip at /usr/local/bin
-    sudo /usr/bin/pip install --upgrade pip         # pip
-    sudo /usr/bin/pip3 install --upgrade pip        # pip3
 }
 
 install_ppa_git() {
@@ -57,11 +53,6 @@ install_neovim() {
     sudo add-apt-repository -y ppa:neovim-ppa/unstable
     sudo apt-get update
     sudo apt-get install -y neovim
-
-    command -v /usr/bin/pip 2>&1 > /dev/null || sudo apt-get install -y python-pip
-    command -v /usr/bin/pip3 2>&1 > /dev/null || sudo apt-get install -y python3-pip
-    sudo /usr/bin/pip install --upgrade neovim
-    sudo /usr/bin/pip3 install --upgrade neovim
 }
 
 install_latest_tmux() {
