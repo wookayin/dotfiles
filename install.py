@@ -78,6 +78,7 @@ tasks = {
     '~/.pylintrc' : 'python/pylintrc',
     '~/.condarc' : 'python/condarc',
     '~/.config/pycodestyle' : 'python/pycodestyle',
+    '~/.config/ptpython/config.py' : 'python/ptpython.config.py',
 }
 
 
