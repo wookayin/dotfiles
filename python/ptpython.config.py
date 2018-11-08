@@ -1,8 +1,10 @@
 """
-Configuration example for ``ptpython``.
+~/.ptpython/config.py -- ptpython config used by @wookayin.
 
-Copy this file to ~/.ptpython/config.py
+Copied from:
+https://github.com/prompt-toolkit/ptpython/blob/master/examples/ptpython_config/config.py
 """
+
 from __future__ import unicode_literals
 from prompt_toolkit.filters import ViInsertMode
 from prompt_toolkit.key_binding.key_processor import KeyPress
@@ -23,10 +25,10 @@ def configure(repl):
     :param repl: `PythonRepl` instance.
     """
     # Show function signature (bool).
-    repl.show_signature = True
+    repl.show_signature = False
 
     # Show docstring (bool).
-    repl.show_docstring = False
+    repl.show_docstring = True
 
     # Show the "[Meta+Enter] Execute" message when pressing [Enter] only
     # inserts a newline instead of executing the code.
@@ -62,7 +64,7 @@ def configure(repl):
     repl.complete_while_typing = True
 
     # Vi mode.
-    repl.vi_mode = False
+    repl.vi_mode = True
 
     # Paste mode. (When True, don't insert whitespace after new line.)
     repl.paste_mode = False
@@ -83,7 +85,7 @@ def configure(repl):
 
     # Enable auto suggestions. (Pressing right arrow will complete the input,
     # based on the history.)
-    repl.enable_auto_suggest = False
+    repl.enable_auto_suggest = True
 
     # Enable open-in-editor. Pressing C-X C-E in emacs mode or 'v' in
     # Vi navigation mode will open the input in the current editor.
@@ -94,7 +96,7 @@ def configure(repl):
     repl.enable_system_bindings = True
 
     # Ask for confirmation on exit.
-    repl.confirm_exit = True
+    repl.confirm_exit = False
 
     # Enable input validation. (Don't try to execute when the input contains
     # syntax errors.)
