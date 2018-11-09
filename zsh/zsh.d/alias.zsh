@@ -120,6 +120,9 @@ alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
 alias ipynb='jupyter notebook'
 alias ipynb0='ipynb --ip=0.0.0.0'
 
+# ptpython
+alias ptpy='ptipython'
+
 # pip install nose, rednose
 alias nt='NOSE_REDNOSE=1 nosetests -v'
 
