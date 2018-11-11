@@ -32,7 +32,7 @@ nmap <leader>A viega*&
 " ======================
 
 " default makeprg
-if filereadable('Makefile')
+if filereadable('Makefile') || filereadable(expand("%:p:h") . "/Makefile")
     let &l:makeprg = 'make'
 else
     let &l:makeprg = '(latexmk -pdf -pdflatex="pdflatex -halt-on-error -interaction=nonstopmode -file-line-error -synctex=1" "%:r" && latexmk -c "%:r")'
