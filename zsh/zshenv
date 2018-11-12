@@ -63,6 +63,11 @@ if [ -d $HOME/.anaconda3/bin/ ]; then
   path=( $path $HOME/.anaconda3/bin )
 fi
 
+# rust (cargo)
+if [ -d $HOME/.cargo/bin/ ]; then
+  path=( $path $HOME/.cargo/bin )
+fi
+
 
 #
 # Less
