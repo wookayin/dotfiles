@@ -214,14 +214,17 @@ install_fd() {
 install_ripgrep() {
     # install ripgrep
     set -e
+    RIPGREP_VERSION="0.10.0"
 
     TMP_RIPGREP_DIR="/tmp/$USER/ripgrep"; mkdir -p $TMP_RIPGREP_DIR
-    RIPGREP_DOWNLOAD_URL="https://github.com/BurntSushi/ripgrep/releases/download/0.7.1/ripgrep-0.7.1-x86_64-unknown-linux-musl.tar.gz"
+    RIPGREP_DOWNLOAD_URL="https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/ripgrep-${RIPGREP_VERSION}-x86_64-unknown-linux-musl.tar.gz"
     echo $RIPGREP_DOWNLOAD_URL
 
     cd $TMP_RIPGREP_DIR
     curl -L $RIPGREP_DOWNLOAD_URL | tar -xvzf - --strip-components 1
     cp "./rg" $PREFIX/bin
+
+    mkdir -p $HOME/.local/share/zsh/site-functions
     cp "./complete/_rg" $PREFIX/share/zsh/site-functions
 
     $PREFIX/bin/rg --version
