@@ -1150,6 +1150,10 @@ let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
 let s:py_linters_exists = executable("pylint") || executable("pycodestyle")
 if has_key(g:plugs, 'ale') && s:py_linters_exists
     let g:pymode_lint = 0
+else
+    autocmd VimEnter *.py echomsg
+          \ '[Warning] Please install `pylint` and/or `pycodestyle` using pip.' .
+          \ ' As a fallback, pymode linter (slow and outdated) will be used for linting.'
 endif
 
 " Check code on every save (not on the fly)
