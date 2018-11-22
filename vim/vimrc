@@ -824,8 +824,15 @@ function! s:OnNeomakeFinished(context)
   if ! empty(l:failure_message)
     echom "Job Finished, FAIL: " . l:failure_message
     copen | wincmd p   " copen, but not move to the quickfix window
+    let b:neomake_auto_copen = 1
   else
     echom "Job Finished, Success."
+    if get(b:, 'neomake_auto_copen', 0) == 1
+      " if quickfix list is opened automatically by neomake callback,
+      " we should automatically close it upon the success of neomake job.
+      silent cclose
+      let b:neomake_auto_copen = 0
+    endif
   endif
 endfunction
 
