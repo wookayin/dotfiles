@@ -22,7 +22,7 @@ if which nvim >/dev/null; then
     for py_bin in "$host_python3" "/usr/bin/python"; do
         echo -e "Checking neovim package for the host python: ${GREEN}${py_bin}${RESET}"
         neovim_ver=$($py_bin -c 'import neovim; print("{major}.{minor}.{patch}".format(**neovim.VERSION.__dict__))')
-        neovim_install_cmd="$py_bin -m pip install --user --upgrade neovim"
+        neovim_install_cmd="$py_bin -m pip install --user --upgrade pynvim"
         rc=$?; if [[ $rc != 0 ]]; then
             echo -e "${YELLOW}[!!!] Neovim requires 'neovim' package on the host python. Try:${RESET}"
             echo -e "${YELLOW}  $neovim_install_cmd${RESET}";
