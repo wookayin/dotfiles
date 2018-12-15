@@ -1209,12 +1209,20 @@ let g:jedi#use_tabs_not_buffers = 0
 " ---------------------------------------------------------------- }}}
 " deoplete-clang {{{
 
-if filereadable('/usr/lib/llvm-3.4/lib/libclang.so')
-    let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.4/lib/libclang.so'
-elseif filereadable('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
-    let g:deoplete#sources#clang#libclang_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
-endif
+function! s:detect_libclang_path()
+  " linux: detect the latest version
+  let l:linux_clang = sort(glob('/usr/lib/llvm-*/lib/libclang.so', 1, 1), 'n')   " numeric sort
+  if ! empty(l:linux_clang) | return l:linux_clang[-1] | endif
 
+  " darwin
+  let l:darwin_clang = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
+  if filereadable(l:darwin_clang) | return l:darwin_clang | endif
+endfunction
+
+let s:libclang_path = s:detect_libclang_path()
+if ! empty(s:libclang_path)
+  let g:deoplete#sources#clang#libclang_path = s:libclang_path
+endif
 
 if isdirectory('/usr/include/clang')
     let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
