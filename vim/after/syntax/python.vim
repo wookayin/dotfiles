@@ -23,7 +23,7 @@ hi SpecialComment       ctermfg=250     guifg=#99a899
 " nested syntax for inline snippets
 " e.g. bash script, etc.
 let csyn = b:current_syntax | unlet b:current_syntax
-syntax include @SH syntax/sh.vim
+syntax include @SH syntax/zsh.vim
 let b:current_syntax = csyn | unlet csyn
 
 syntax region pythonDocstringSnippetSh  matchgroup=pythonDocstringSnip
