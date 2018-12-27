@@ -130,6 +130,27 @@ install_anaconda3() {
     $ANACONDA_PREFIX/bin/python --version
 }
 
+install_miniconda() {
+    # installs Miniconda3
+    # https://conda.io/miniconda.html
+    set -e
+    MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+
+    TMP_DIR="/tmp/$USER/miniconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
+    wget -nc $MINICONDA_URL
+
+    MINICONDA_PREFIX="$HOME/.miniconda3/"
+    bash "Miniconda3-latest-Linux-x86_64.sh" -b -p ${MINICONDA_PREFIX}
+
+    $MINICONDA_PREFIX/bin/python --version
+
+    echo "${COLOR_YELLOW}Will downgrade python from 3.7 to 3.6.${COLOR_NONE}"
+    $MINICONDA_PREFIX/bin/conda install -y 'python==3.6.*'
+
+    $MINICONDA_PREFIX/bin/python --version
+    echo "${COLOR_GREEN}All set!${COLOR_NONE}"
+}
+
 
 install_vim() {
     # install latest vim
