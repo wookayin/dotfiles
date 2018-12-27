@@ -96,7 +96,8 @@ def open_github():
 
 
 @add_argument('target', help='target package to install, see ~/.dotfiles/etc/linux-locals.sh for list')
-def install_local(target):
+@add_argument('--force', action='store_true')
+def install_local(target, force):
     '''
     Install local packages as specified in /etc/linux-locals.sh.
     Available only in Linux.
@@ -107,8 +108,11 @@ def install_local(target):
         sys.exit(1)
 
     dotfiles_dir = os.path.expanduser('~/.dotfiles')
-    ret = subprocess.call('./etc/linux-locals.sh install_{}'.format(target),
-                          shell=True, cwd=dotfiles_dir)
+    ret = subprocess.call(
+        './etc/linux-locals.sh install_{} {}'.format(
+            target, '--force' if force else ''),
+        shell=True, cwd=dotfiles_dir
+    )
 
     if ret == 0:
         print(GREEN("[*] Installation successful. You may need to run ") + \

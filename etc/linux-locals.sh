@@ -110,10 +110,14 @@ install_bazel() {
 
 
 install_anaconda3() {
-    # installs Anaconda-python3.
+    # installs Anaconda-python3. (Deprecated: Use miniconda)
     # https://www.anaconda.com/download/#linux
     set -e
     ANACONDA_VERSION="5.2.0"
+
+    if [ "$1" != "--force" ]; then
+        echo "Please use miniconda instead. Use --force option to proceed." && exit 1;
+    fi
 
     # https://www.anaconda.com/download/
     TMP_DIR="/tmp/$USER/anaconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
@@ -278,7 +282,7 @@ if [ `uname` != "Linux" ]; then
     echo "Run on Linux (not on Mac OS X)"; exit 1
 fi
 if [[ -n "$1" && "$1" != "--help" ]] && declare -f "$1"; then
-    $1
+    $@
 else
     echo "Usage: $0 [command], where command is one of the following:"
     declare -F | cut -d" " -f3 | grep -v '^_'
