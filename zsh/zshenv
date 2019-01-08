@@ -45,11 +45,16 @@ typeset -gU cdpath fpath mailpath path
 # )
 
 # Set the list of directories that Zsh searches for programs.
+# see ~/.zprofile as well
 path=(
-  $HOME/.local/bin
   $path
   /usr/local/{bin,sbin}
 )
+
+# Let ~/.local/bin take precedence
+if ! (( ${path[(I)$HOME/.local/bin]} )); then
+  path=( $HOME/.local/bin $path )
+fi
 
 # Additional $PATH configuration:
 

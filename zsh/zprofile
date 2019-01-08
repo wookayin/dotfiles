@@ -5,7 +5,11 @@ umask 022
 # $PATH is overriden by path_helper in /etc/zprofile,
 # after ~/.zshenv.
 path=(
-  $HOME/.local/bin
   $path
   /usr/local/{bin,sbin}
 )
+
+# Let ~/.local/bin take precedence
+if ! (( ${path[(I)$HOME/.local/bin]} )); then
+  path=( $HOME/.local/bin $path )
+fi
