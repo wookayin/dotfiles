@@ -6,20 +6,22 @@ from __future__ import print_function
 import subprocess
 
 GREEN = '\033[0;32m'
-YELLOW = '\033[0;34m'
+YELLOW = '\033[0;33m'
 RESET = '\033[0m'
 
 def ascii_bar(value, max_value, color=GREEN, width=27, unit='', end='\n'):
     width = int(width)
-    ratio = float(value) / max_value
-    print(RESET, end='')
-    print('[', end='')
-    print(color, end='')
-    print('|' * int(ratio * width), end='')
-    print(' ' * (width - int(ratio * width)), end='')
-    print(RESET, end='')
-    print('] ', end='')
-    print('%5.1f / %5.1f%s' % (value, max_value, unit), end=end)
+    if max_value > 0:
+        ratio = float(value) / max_value
+        print(RESET, end='')
+        print('[', end='')
+        print(color, end='')
+        print('|' * int(ratio * width), end='')
+        print(' ' * (width - int(ratio * width)), end='')
+        print(RESET, end='')
+        print('] ', end='')
+        print('%5.1f / %5.1f%s' % (value, max_value, unit), end='')
+    print('', end=end)
 
 
 def main(width=27):
