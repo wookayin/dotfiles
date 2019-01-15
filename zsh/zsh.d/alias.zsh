@@ -80,7 +80,8 @@ function ssh-tmuxa {
     host="$1"
     ssh $host -t tmux attach -d -t "$2"
 }
-alias sshta=ssh-tmuxa
+alias sshta='ssh-tmuxa'
+alias ssh-ta='ssh-tmuxa'
 compdef '_hosts' ssh-tmuxa
 # }}}
 
