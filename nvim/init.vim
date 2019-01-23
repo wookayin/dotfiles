@@ -22,7 +22,7 @@ if executable("python3")
     let s:python3_local = substitute(system("which python3"), '\n\+$', '', '')
 
     " detect whether neovim package is installed; if not, automatically install it
-    let s:python3_neovim_path = substitute(system("python3 -c 'import neovim; print(neovim.__path__)' 2>/dev/null"), '\n\+$', '', '')
+    let s:python3_neovim_path = substitute(system("python3 -c 'import pynvim; print(pynvim.__path__)' 2>/dev/null"), '\n\+$', '', '')
     if empty(s:python3_neovim_path)
         " auto-install 'neovim' python package for the current python3 (virtualenv, anaconda, or system-wide)
         let s:pip_options = '--user --upgrade'
@@ -30,7 +30,7 @@ if executable("python3")
             " virtualenv pythons may not have site-packages, hence no 'pip -user'
             let s:pip_options = '--upgrade'
         endif
-        execute ("!" . s:python3_local . " -m pip install " . s:pip_options . " neovim")
+        execute ("!" . s:python3_local . " -m pip install " . s:pip_options . " pynvim")
     endif
 
     " Assuming that neovim available, use it as a host python3

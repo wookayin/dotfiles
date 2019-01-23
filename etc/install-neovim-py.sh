@@ -21,21 +21,21 @@ if which nvim >/dev/null; then
     suggest_cmds=()
     for py_bin in "$host_python3" "/usr/bin/python"; do
         echo -e "Checking neovim package for the host python: ${GREEN}${py_bin}${RESET}"
-        neovim_ver=$($py_bin -c 'import neovim; print("{major}.{minor}.{patch}".format(**neovim.VERSION.__dict__))')
+        neovim_ver=$($py_bin -c 'import pynvim; print("{major}.{minor}.{patch}".format(**pynvim.VERSION.__dict__))')
         neovim_install_cmd="$py_bin -m pip install --user --upgrade pynvim"
         rc=$?; if [[ $rc != 0 ]]; then
-            echo -e "${YELLOW}[!!!] Neovim requires 'neovim' package on the host python. Try:${RESET}"
+            echo -e "${YELLOW}[!!!] Neovim requires 'pynvim' package on the host python. Try:${RESET}"
             echo -e "${YELLOW}  $neovim_install_cmd${RESET}";
             suggest_cmds+=("$neovim_install_cmd")
         else  # check neovim is up-to-date
             neovim_latest=$(python2 -c 'from xmlrpclib import ServerProxy; print(\
-                ServerProxy("http://pypi.python.org/pypi").package_releases("neovim")[0])')
+                ServerProxy("http://pypi.python.org/pypi").package_releases("pynvim")[0])')
             if [[ "$neovim_ver" != "$neovim_latest" ]]; then
                 echo -e "${YELLOW}  [!!] Neovim ($neovim_ver) is outdated (latest = $neovim_latest). Needs upgrade!${RESET}"
                 echo -e "${YELLOW}  $neovim_install_cmd${RESET}"
                 suggest_cmds+=("$neovim_install_cmd")
             else
-                echo -e "${GREEN}  [OK] neovim $neovim_ver${RESET}"
+                echo -e "${GREEN}  [OK] pynvim $neovim_ver${RESET}"
             fi
         fi
     done
