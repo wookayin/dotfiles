@@ -71,6 +71,8 @@ fi
 # Miniconda3
 if [ -d $HOME/.miniconda3/bin/ ]; then
   path=( $path $HOME/.miniconda3/bin )
+elif [ -d "/usr/local/miniconda3/" ]; then
+  path=( $path "/usr/local/miniconda3/bin" )
 fi
 
 # rust (cargo)
