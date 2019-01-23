@@ -78,7 +78,11 @@ alias tmux-pane-title='set-window-title'
 
 function ssh-tmuxa {
     host="$1"
-    ssh $host -t tmux attach -d -t "$2"
+    if [[ -z "$2" ]]; then
+       ssh $host -t tmux attach -d
+    else;
+       ssh $host -t tmux attach -d -t "$2"
+    fi
 }
 alias sshta='ssh-tmuxa'
 alias ssh-ta='ssh-tmuxa'
