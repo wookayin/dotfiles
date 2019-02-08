@@ -25,5 +25,10 @@ disable=blacklisted-name,invalid-name,
         bad-continuation,
         fixme
 
+[TYPECHECK]
+
+# List of classes names for which member attributes should not be checked
+# (useful for classes with attributes dynamically set).
+ignored-classes=EasyDict
 
 # vim: set ft=config:
