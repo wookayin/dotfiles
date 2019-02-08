@@ -60,8 +60,9 @@ if ! zgen saved; then
   # misc.
   zgen load wookayin/fzf-fasd
   zgen load zsh-users/zsh-autosuggestions
-  if (( $+commands[virtualenvwrapper_lazy.sh] )); then
-    zgen load MichaelAquilina/zsh-autoswitch-virtualenv
+  if (( $+commands[virtualenvwrapper_lazy.sh] || $+commands[conda] )); then
+    # Use my own fork for a while, to support autoswitch into anaconda envs
+    zgen load wookayin/zsh-autoswitch-virtualenv
   fi
 
 
