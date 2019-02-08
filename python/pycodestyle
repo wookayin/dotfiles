@@ -1,8 +1,11 @@
 [pycodestyle]
 
+# Error codes: http://pycodestyle.pycqa.org/en/latest/intro.html
+
 # E111: indentation is not a multiple of four
 #       (python indent is usually checked with pylint)
-ignore = E111
+# E501: line too long
+ignore = E111,E501
 
 
 # vim: set ft=config:
