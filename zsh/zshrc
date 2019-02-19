@@ -64,7 +64,9 @@ if ! zgen saved; then
     # Use my own fork for a while, to support autoswitch into anaconda envs
     zgen load wookayin/zsh-autoswitch-virtualenv
   fi
-
+  if [[ "`uname`" == "Darwin" ]]; then
+    zgen load wookayin/anybar-zsh
+  fi
 
   zgen save
 
