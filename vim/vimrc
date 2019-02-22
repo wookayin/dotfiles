@@ -608,6 +608,11 @@ autocmd InsertLeave * silent! set nopaste
 highlight Pmenu ctermfg=black ctermbg=yellow guifg=black guibg=#ffec99
 highlight PmenuSel ctermfg=red ctermbg=white guifg=red guibg=white gui=bold
 
+" neovim 0.4.0+ : semi-transparent popup menu
+if has('nvim') && has('termguicolors')
+  silent! set pumblend=20
+endif
+
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 function! ShowSyntaxGroup()
     echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
