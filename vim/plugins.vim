@@ -141,7 +141,7 @@ endif
 
 " Asynchronous Lint Engine (ALE)
 if has('nvim') || v:version >= 800
-    Plug 'w0rp/ale', { 'tag': 'v2.1.1' }
+    Plug 'w0rp/ale'
 endif
 
 " Additional, optional local plugins
