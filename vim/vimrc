@@ -253,13 +253,17 @@ endif
 " Buffer navigations
 nnoremap [b  :bprevious<CR>
 nnoremap ]b  :bnext<CR>
+if has('nvim')
+  nnoremap <silent> [b <C-\><C-n>:bprevious<CR>
+  nnoremap <silent> ]b <C-\><C-n>:bnext<CR>
+endif
 
 " Tab navigations
-nnoremap [t  :tabprevious<CR>
-nnoremap ]t  :tabnext<CR>
+nnoremap <silent> [t  :tabprevious<CR>
+nnoremap <silent> ]t  :tabnext<CR>
 if has('nvim')
-  tnoremap [t <C-\><C-n>:tabprevious<CR>
-  tnoremap ]t <C-\><C-n>:tabnext<CR>
+  tnoremap <silent> [t <C-\><C-n>:tabprevious<CR>
+  tnoremap <silent> ]t <C-\><C-n>:tabnext<CR>
 endif
 
 nnoremap <C-t>     :tabnew<CR>
