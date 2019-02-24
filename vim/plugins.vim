@@ -60,6 +60,7 @@ Plug 'cocopon/colorswatch.vim', { 'on' : ['ColorSwatchGenerate'] }
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'Lokaltog/vim-easymotion'
+Plug 'unblevable/quick-scope'
 Plug 'haya14busa/vim-asterisk'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
