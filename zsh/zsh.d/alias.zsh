@@ -76,6 +76,13 @@ alias tmux-pane-title='set-window-title'
 # }}}
 # SSH ========================================= {{{
 
+if [[ "$(uname)" == "Darwin" ]] && (( $+commands[iterm-tab-color] )); then
+  ssh() {
+    command ssh $@
+    iterm-tab-color reset 2>/dev/null
+  }
+fi
+
 function ssh-tmuxa {
     host="$1"
     if [[ -z "$2" ]]; then
