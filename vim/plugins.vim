@@ -125,10 +125,6 @@ Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
 
 
 if has('nvim')
-    function! DoRemote(arg)
-        UpdateRemotePlugins
-    endfunction
-
     Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 
     " Python
