@@ -162,15 +162,28 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
 # vim: set ft=gitconfig:
 EOL
     fi
-    if ! git config --file ~/.gitconfig.secret user.name 2>&1 > /dev/null; then echo -ne '
+    if ! git config --file ~/.gitconfig.secret user.name 2>&1 > /dev/null || \
+       ! git config --file ~/.gitconfig.secret user.email 2>&1 > /dev/null; then echo -ne '
     \033[1;33m[!!!] Please configure git user name and email:
         git config --file ~/.gitconfig.secret user.name "(YOUR NAME)"
         git config --file ~/.gitconfig.secret user.email "(YOUR EMAIL)"
 \033[0m'
-        exit 1;
-    else
-        git config --file ~/.gitconfig.secret --get-regexp user
+        echo -en '\n'
+        echo -en "(git config user.name) \033[0;33m Please input your name  : \033[0m"; read git_username
+        echo -en "(git config user.email)\033[0;33m Please input your email : \033[0m"; read git_useremail
+        if [[ -n "$git_username" ]] && [[ -n "$git_useremail" ]]; then
+            git config --file ~/.gitconfig.secret user.name "$git_username"
+            git config --file ~/.gitconfig.secret user.email "$git_useremail"
+        else
+            exit 1;   # error
+        fi
     fi
+
+    # get the current config
+    echo -en '\033[0;32m';
+    echo -en 'user.name  : '; git config --file ~/.gitconfig.secret user.name
+    echo -en 'user.email : '; git config --file ~/.gitconfig.secret user.email
+    echo -en '\033[0m';
     ''',
 ]
 
