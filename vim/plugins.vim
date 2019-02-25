@@ -14,6 +14,13 @@ function! s:deregister(repo)
 endfunction
 command! -nargs=1 -bar UnPlug call s:deregister(<args>)
 
+" for neovim plugins (rplugin)
+if has('nvim')
+    function! DoRemote(arg)
+        UpdateRemotePlugins
+    endfunction
+endif
+
 
 call plug#begin('~/.vim/plugged')
 
@@ -96,6 +103,9 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'klen/python-mode', { 'branch': 'develop' } |
   \ Plug 'wookayin/vim-python-enhanced-syntax'
 Plug 'davidhalter/jedi-vim'
+if has('nvim')
+    Plug 'stsewd/isort.nvim', { 'do': function('DoRemote') }
+endif
 
 Plug 'artur-shaik/vim-javacomplete2'
 
