@@ -152,7 +152,7 @@ endif
 "    (ii) 'node' and 'yarn' are installed
 "    (ii) ~/.config/nvim/coc-settings.json file exists
 if has('nvim') && executable('yarn') &&
-            \ filereadable(expand("\~/.config/nvim/coc-settings.json"))
+            \ isdirectory(expand("\~/.config/coc/"))
 
     " supercedes deoplete :)
     UnPlug 'Shougo/deoplete.nvim'

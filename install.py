@@ -150,11 +150,11 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
     ''',
 
     r'''#!/bin/bash
-    # create ~/.config/nvim/coc-settings.json if not exists
-    coc_settings_json="$HOME/.config/nvim/coc-settings.json"
-    if [ ! -f "$coc_settings_json" ]; then
-        echo '{}' > "$coc_settings_json" || exit 1;
-        echo "Created: $coc_settings_json"
+    # create directory ~/.config/coc if not exists
+    coc_dir="$HOME/.config/coc/"
+    if [ ! -d "$coc_dir" ]; then
+        mkdir -p "$coc_dir" || exit 1;
+        echo "Created: $coc_dir"
     fi
     ''' if args.enable_coc else ''
 
