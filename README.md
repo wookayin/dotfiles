@@ -53,6 +53,15 @@ Every file is accessible through `dotfiles.wook.kr` (via `curl -L` or `wget`), e
 * https://dotfiles.wook.kr/bin/tb
 
 
+Experimental Features
+--------------------
+
+* Neovim: Better completion with Language Server ([coc.nvim]) ([#14])
+
+[#14]: https://github.com/wookayin/dotfiles/issues/14
+[coc.nvim]: https://github.com/neoclide/coc.nvim
+
+
 Troubleshooting
 ---------------
 

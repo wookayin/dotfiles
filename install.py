@@ -15,9 +15,14 @@ print('''
 import argparse
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('-f', '--force', action="store_true", default=False,
-                    help='If specified, it will override existing symbolic links')
-parser.add_argument('--skip-vimplug', action='store_true')
-parser.add_argument('--skip-zgen', '--skip-zplug', action='store_true')
+                    help='If set, it will override existing symbolic links')
+parser.add_argument('--skip-vimplug', action='store_true',
+                    help='If set, do not update vim plugins.')
+parser.add_argument('--skip-zgen', '--skip-zplug', action='store_true',
+                    help='If set, skip zgen updates.')
+parser.add_argument('--enable-coc', action='store_true',
+                    help='Install coc.nvim (highly experimental)')
+
 args = parser.parse_args()
 
 ################# BEGIN OF FIXME #################
@@ -143,6 +148,15 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         echo "$(which tmux): $(tmux -V)"
     fi
     ''',
+
+    r'''#!/bin/bash
+    # create ~/.config/nvim/coc-settings.json if not exists
+    coc_settings_json="$HOME/.config/nvim/coc-settings.json"
+    if [ ! -f "$coc_settings_json" ]; then
+        echo '{}' > "$coc_settings_json" || exit 1;
+        echo "Created: $coc_settings_json"
+    fi
+    ''' if args.enable_coc else ''
 
     r'''#!/bin/bash
     # Change default shell to zsh

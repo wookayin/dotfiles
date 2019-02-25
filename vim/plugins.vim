@@ -104,6 +104,7 @@ Plug 'klen/python-mode', { 'branch': 'develop' } |
   \ Plug 'wookayin/vim-python-enhanced-syntax'
 Plug 'davidhalter/jedi-vim'
 if has('nvim')
+    Plug 'numirias/semshi', { 'do': function('DoRemote') }
     Plug 'stsewd/isort.nvim', { 'do': function('DoRemote') }
 endif
 
@@ -124,18 +125,13 @@ Plug 'xolox/vim-misc'
 Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
 
 
+" Completion engine for neovim (deoplete or language server)
 if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-
-    " Python
-    Plug 'zchee/deoplete-jedi'
-    Plug 'numirias/semshi', { 'do': function('DoRemote') }
-    " C/C++
-    Plug 'zchee/deoplete-clang'
-    " vimscript
-    Plug 'machakann/vim-Verdin', { 'for': ['vim'] }
-    " zsh
-    Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }
+    Plug 'zchee/deoplete-jedi'    " Python
+    Plug 'zchee/deoplete-clang'   " C/C++
+    Plug 'machakann/vim-Verdin', { 'for': ['vim'] }   " vimscript
+    Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }     " zsh
 
 elseif v:version >= 800
 
@@ -149,6 +145,22 @@ endif
 if has('nvim') || v:version >= 800
     Plug 'w0rp/ale'
 endif
+
+" *EXPERIMENTAL* language-server support (coc.nvim)
+" Activated if the following conditions are met:
+"    (i) Proper neovim version.
+"    (ii) 'node' and 'yarn' are installed
+"    (ii) ~/.config/nvim/coc-settings.json file exists
+if has('nvim') && executable('yarn') &&
+            \ filereadable(expand("\~/.config/nvim/coc-settings.json"))
+
+    " supercedes deoplete :)
+    UnPlug 'Shougo/deoplete.nvim'
+    Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }
+endif
+
+
+
 
 " Additional, optional local plugins
 if filereadable(expand("\~/.vim/plugins.local.vim"))
