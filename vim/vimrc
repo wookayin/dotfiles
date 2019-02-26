@@ -1309,6 +1309,19 @@ nnoremap <leader>G :GundoToggle<CR>
 nnoremap <leader>T :TagbarToggle<CR>
 
 " ---------------------------------------------------------------- }}}
+" coc.nvim (languag server completion) {{{
+
+if has_key(g:plugs, 'coc.nvim')
+
+  " Use <c-space> for trigger coc completion (rather than omnicomplete)
+  inoremap <silent><expr> <c-space> coc#refresh()
+
+   command! -nargs=0 CocExtensions :<C-u>CocList extensions<cr>
+
+endif
+
+
+" ---------------------------------------------------------------- }}}
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
