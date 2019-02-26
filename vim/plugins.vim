@@ -148,11 +148,11 @@ endif
 
 " *EXPERIMENTAL* language-server support (coc.nvim)
 " Activated if the following conditions are met:
-"    (i) Proper neovim version.
+"    (i) Proper neovim version and python3
 "    (ii) 'node' and 'yarn' are installed
 "    (iii) Directory ~/.config/coc exists
 function s:configure_coc_nvim()
-    if has('nvim') && executable('yarn') &&
+    if has('nvim') && executable('yarn') && executable('python3') &&
             \ isdirectory(expand("\~/.config/coc/"))
     else | return | endif   " do nothing if conditions are not met
 
@@ -182,9 +182,11 @@ function s:configure_coc_nvim()
 
     " Additional dependencies for the coc extensions
     " [coc-pyls] install pyls into the 'current' python
-    let pyls_output = system("python -c 'import pyls' 2> /dev/null")
+    let pyls_output = system("python3 -c 'import pyls' 2> /dev/null")
     if v:shell_error
-        execute 'autocmd VimEnter *.py !python -m pip install "python-language-server"'
+        let s:pip_options = Python3_determine_pip_options()
+        execute 'autocmd VimEnter *.py !python3 -m pip install '
+                    \ . s:pip_options . ' "python-language-server"'
     endif
 endfunction
 call s:configure_coc_nvim()
