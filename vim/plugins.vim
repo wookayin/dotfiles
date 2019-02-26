@@ -166,10 +166,28 @@ function s:configure_coc_nvim()
     " supercedes deoplete :)
     UnPlug 'Shougo/deoplete.nvim'
     Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }
+
+    " automatically install CocExtensions by default
+    let s:coc_plugins_required = ['coc-json', 'coc-pyls']
+    let s:coc_extensions = expand('~/.config/coc/extensions/node_modules/')
+    let s:coc_plugins_to_install = []
+    for ext_name in ['coc-json', 'coc-pyls']
+        if ! isdirectory(s:coc_extensions . ext_name)   " if extensions not installed?
+            call add(s:coc_plugins_to_install, ext_name)
+        endif
+    endfor
+    if ! empty(s:coc_plugins_to_install)
+        execute 'autocmd VimEnter * CocInstall ' . join(s:coc_plugins_to_install)
+    endif
+
+    " Additional dependencies for the coc extensions
+    " [coc-pyls] install pyls into the 'current' python
+    let pyls_output = system("python -c 'import pyls' 2> /dev/null")
+    if v:shell_error
+        execute 'autocmd VimEnter *.py !python -m pip install "python-language-server"'
+    endif
 endfunction
 call s:configure_coc_nvim()
-
-
 
 
 " Additional, optional local plugins
