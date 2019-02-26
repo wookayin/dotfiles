@@ -150,14 +150,24 @@ endif
 " Activated if the following conditions are met:
 "    (i) Proper neovim version.
 "    (ii) 'node' and 'yarn' are installed
-"    (ii) ~/.config/nvim/coc-settings.json file exists
-if has('nvim') && executable('yarn') &&
+"    (iii) Directory ~/.config/coc exists
+function s:configure_coc_nvim()
+    if has('nvim') && executable('yarn') &&
             \ isdirectory(expand("\~/.config/coc/"))
+    else | return | endif   " do nothing if conditions are not met
+
+    if ! has('nvim-0.3.1')
+        autocmd VimEnter * echohl WarningMsg | echon
+                    \ 'WARNING: Neovim 0.3.1+ is required for coc.nvim. '
+                    \ . '(Try: dotfiles install neovim)'
+        return
+    endif
 
     " supercedes deoplete :)
     UnPlug 'Shougo/deoplete.nvim'
     Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }
-endif
+endfunction
+call s:configure_coc_nvim()
 
 
 
