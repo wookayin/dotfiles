@@ -35,7 +35,7 @@ def main(width=27):
     swap_total, swap_used, swap_free = map(int, swap.split()[1:])
 
     print("Mem : ", end='')
-    ascii_bar((mem_used + mem_buffcache) / 1024., mem_total / 1024.,
+    ascii_bar((mem_used) / 1024., mem_total / 1024.,
               unit=' G', width=width, end='')
     print("      ", end = '')
     print("Swap: ", end='')
