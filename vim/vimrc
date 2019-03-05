@@ -546,6 +546,13 @@ highlight ColorColumn   ctermbg=52 guibg=#5f0000
 highlight LineNr        ctermfg=248 ctermbg=233 guifg=#a8a8a8 guibg=#121212
 highlight SignColumn    ctermfg=248 ctermbg=233 guifg=#a8a8a8 guibg=#121212
 
+" gitgutter sign column (see afa4f2dd)
+"  guibg=<X> and ctermbg=<Y> should match that of "SignColumn"
+highlight GitGutterAdd    guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=233
+highlight GitGutterChange guifg=#bbbb00 guibg=#121212 ctermfg=3 ctermbg=233
+highlight GitGutterDelete guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233
+
+" some primitive colors customized on top of xoria256
 highlight Normal        ctermfg=255 guifg=white
 highlight Comment       ctermfg=035 guifg=#38B04A
 highlight Constant      ctermfg=204 guifg=#ff5f87
@@ -1294,7 +1301,12 @@ au FileType gitcommit nnoremap <buffer> <silent>
 " ---------------------------------------------------------------- }}}
 " gitgutter {{{
 
-" another alias for adding or staging hunk (similar as <leader>ga)
+" For colors for gitgutter signs (see afa4f2dd),
+" please see above (search for "/SignColumn")
+
+" Another alias for adding or staging hunk (similar as <leader>ga).
+" for other keys (e.g <leader>hu, <leader>hp), please see
+"  :help gitgutter-<Leader>
 nmap <leader>ha  <Plug>GitGutterStageHunk
 
 nmap <leader>hh  :GitGutterLineHighlightsToggle<CR>
