@@ -119,7 +119,9 @@ Plug 'tfnico/vim-gradle'
 Plug 'Tyilo/applescript.vim'
 Plug 'rdolgushin/groovy.vim'
 
-Plug 'Shougo/echodoc.vim'
+if has('nvim')
+  Plug 'Shougo/echodoc.vim'
+endif
 
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
