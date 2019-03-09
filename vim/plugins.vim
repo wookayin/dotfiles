@@ -56,6 +56,10 @@ Plug 'wookayin/vim-tmux-focus-events'   "A patched version of mine
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'airblade/vim-gitgutter'
+if has('nvim-0.4.0') && exists('*nvim_open_win')
+  " git blame with floating window (requires nvim 0.4.0+)
+  Plug 'rhysd/git-messenger.vim'
+endif
 Plug 'majutsushi/tagbar'
 Plug 'rking/ag.vim'
 Plug 'kshenoy/vim-signature'
