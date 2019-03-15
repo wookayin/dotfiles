@@ -174,17 +174,10 @@ function s:configure_coc_nvim()
     Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }
 
     " automatically install CocExtensions by default
-    let s:coc_plugins_required = ['coc-json', 'coc-pyls']
-    let s:coc_extensions = expand('~/.config/coc/extensions/node_modules/')
-    let s:coc_plugins_to_install = []
-    for ext_name in ['coc-json', 'coc-pyls']
-        if ! isdirectory(s:coc_extensions . ext_name)   " if extensions not installed?
-            call add(s:coc_plugins_to_install, ext_name)
-        endif
-    endfor
-    if ! empty(s:coc_plugins_to_install)
-        execute 'autocmd VimEnter * CocInstall ' . join(s:coc_plugins_to_install)
-    endif
+    let g:coc_global_extensions = [
+                \ 'coc-json', 'coc-highlight', 'coc-snippets',
+                \ 'coc-pyls'
+                \ ]
 
     " Additional dependencies for the coc extensions
     " [coc-pyls] install pyls into the 'current' python
