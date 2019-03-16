@@ -171,6 +171,7 @@ function s:configure_coc_nvim()
 
     " supercedes deoplete :)
     UnPlug 'Shougo/deoplete.nvim'
+    UnPlug 'davidhalter/jedi-vim'
     Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }
 
     " automatically install CocExtensions by default
