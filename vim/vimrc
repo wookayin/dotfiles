@@ -1330,6 +1330,12 @@ nnoremap <leader>T :TagbarToggle<CR>
 
 if has_key(g:plugs, 'coc.nvim')
 
+  if has('nvim-0.4.0')
+    " coc.nvim is being actively developed and changing;
+    " Prefer a compiled code instead of a prebuilt binary
+    let g:coc_force_debug = 1
+  endif
+
   " Use <c-space> for trigger coc completion (rather than omnicomplete)
   inoremap <silent><expr> <c-space> coc#refresh()
 

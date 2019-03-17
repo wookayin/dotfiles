@@ -157,7 +157,7 @@ endif
 "    (i) Proper neovim version and python3
 "    (ii) 'node' and 'yarn' are installed
 "    (iii) Directory ~/.config/coc exists
-function s:configure_coc_nvim()
+function! s:configure_coc_nvim()
     if has('nvim') && executable('yarn') && executable('python3') &&
             \ isdirectory(expand("\~/.config/coc/"))
     else | return | endif   " do nothing if conditions are not met
