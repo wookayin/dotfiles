@@ -214,6 +214,7 @@ noremap <C-l> <C-w>l
 
 " zoom and unzoom (like tmux) -- by 'vim-maximizer'
 nnoremap <C-w>z :MaximizerToggle<CR>
+let g:maximizer_set_default_mapping = 0         " do not map <F3>
 
 " well...?
 inoremap <C-C> <ESC>
@@ -1338,6 +1339,14 @@ if has_key(g:plugs, 'coc.nvim')
 
   " Use <c-space> for trigger coc completion (rather than omnicomplete)
   inoremap <silent><expr> <c-space> coc#refresh()
+
+  " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
+  " Coc only does snippet and additional edit on confirm.
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+  " Go to definitions
+  noremap <silent> <F3> :<C-u>call CocActionAsync('jumpDefinition')<CR>
+  command! -nargs=0 CocJumpDefinition :CocActionAsync('jumpDefinition')
 
   " Map 'K' for showing documentation in preview window
   " Use command ':verbose map K' to make sure it does not have conflict
