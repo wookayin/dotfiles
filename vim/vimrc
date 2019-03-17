@@ -1179,6 +1179,11 @@ let g:pymode_run = 0
 " one might need to run 'pip install ipdb'
 let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
 
+" show documentation: disable default keymap (K) if better plugins are present
+if has_key(g:plugs, 'coc.nvim')
+    let g:pymode_doc_bind = '<leader>PK'
+endif
+
 " lint (code checking):
 " disable in favor of ALE, but only if pylint/pycodestyle exists
 let s:py_linters_exists = executable("pylint") || executable("pycodestyle")
@@ -1327,6 +1332,18 @@ if has_key(g:plugs, 'coc.nvim')
 
   " Use <c-space> for trigger coc completion (rather than omnicomplete)
   inoremap <silent><expr> <c-space> coc#refresh()
+
+  " Map 'K' for showing documentation in preview window
+  " Use command ':verbose map K' to make sure it does not have conflict
+  " with other plugins (e.g. python-mode, jedi-vim)
+  nnoremap <silent> K :call <SID>show_documentation()<CR>
+  function! s:show_documentation()
+    if &filetype == 'vim'
+      execute 'h '.expand('<cword>')
+    else
+      call CocActionAsync('doHover')
+    endif
+  endfunction
 
   " additional coc-featured commands
   command! -nargs=0 CocExtensions :CocList extensions
