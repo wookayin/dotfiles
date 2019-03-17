@@ -1328,7 +1328,9 @@ if has_key(g:plugs, 'coc.nvim')
   " Use <c-space> for trigger coc completion (rather than omnicomplete)
   inoremap <silent><expr> <c-space> coc#refresh()
 
-   command! -nargs=0 CocExtensions :<C-u>CocList extensions<cr>
+  " additional coc-featured commands
+  command! -nargs=0 CocExtensions :CocList extensions
+  command! -nargs=0 CocSnippets :CocList snippets
 
 endif
 
