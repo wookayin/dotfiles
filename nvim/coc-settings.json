@@ -1,0 +1,13 @@
+{
+    // References:
+    //  :help coc#config()
+    //  https://github.com/neoclide/coc.nvim/blob/master/data/schema.json
+    //  https://github.com/neoclide/coc.nvim/blob/master/doc/coc.txt
+    //  https://github.com/neoclide/coc.nvim/wiki/Using-configuration-file
+
+    // Enable preview (signatures, etc.) during completion
+    "suggest.enablePreview": true,
+
+    // Maxmium width of floating preview window
+    "suggest.maxPreviewWidth": 80
+}

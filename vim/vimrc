@@ -1331,6 +1331,10 @@ nnoremap <leader>T :TagbarToggle<CR>
 
 if has_key(g:plugs, 'coc.nvim')
 
+  " For general settings, try :CocConfig
+  " (or ~/.config/nvim/coc-settings.json)
+  au BufRead coc-settings.json    syntax match Comment +\/\/.\+$+
+
   if has('nvim-0.4.0')
     " coc.nvim is being actively developed and changing;
     " Prefer a compiled code instead of a prebuilt binary
