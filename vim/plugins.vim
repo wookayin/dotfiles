@@ -174,6 +174,12 @@ function! s:configure_coc_nvim()
     UnPlug 'davidhalter/jedi-vim'
     Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }
 
+    let s:floating_available = exists('##MenuPopupChanged') && exists('*nvim_open_win')
+    if s:floating_available
+      " disable vim-which-key if floating windows are used (have some conflicts)
+      UnPlug 'liuchengxu/vim-which-key'
+    endif
+
     " automatically install CocExtensions by default
     let g:coc_global_extensions = [
                 \ 'coc-json', 'coc-highlight', 'coc-snippets',
