@@ -33,10 +33,13 @@ endif
 " shortcuts
 " =========
 
-" goto definition
-map  <F3> :call jedi#goto_assignments()<CR>
-imap <F3> <ESC>:call jedi#goto_assignments()<CR>
-
-" show usages
-map <F7> :call jedi#usages()<CR>
-imap <F7> <ESC>:call jedi#usages()<CR>
+" if coc.nvim is available, use the global shortcut
+" (see ~/.vimrc for the global mapping of <F3> key)
+if ! has_key(g:plugs, 'coc.nvim')
+    " goto definition
+    map  <F3> :call jedi#goto_assignments()<CR>
+    imap <F3> <ESC>:call jedi#goto_assignments()<CR>
+    " show usages
+    map <F7> :call jedi#usages()<CR>
+    imap <F7> <ESC>:call jedi#usages()<CR>
+endif
