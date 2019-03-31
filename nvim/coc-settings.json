@@ -9,5 +9,8 @@
     "suggest.enablePreview": true,
 
     // Maxmium width of floating preview window
-    "suggest.maxPreviewWidth": 80
+    "suggest.maxPreviewWidth": 80,
+
+    // Use Microsoft Python Language Server (LSP) instead of jedi
+    "python.jediEnabled": false
 }

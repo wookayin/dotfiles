@@ -183,16 +183,18 @@ function! s:configure_coc_nvim()
     " automatically install CocExtensions by default
     let g:coc_global_extensions = [
                 \ 'coc-json', 'coc-highlight', 'coc-snippets',
-                \ 'coc-pyls'
+                \ 'coc-python'
                 \ ]
 
     " Additional dependencies for the coc extensions
-    " [coc-pyls] install pyls into the 'current' python
-    let pyls_output = system("python3 -c 'import pyls' 2> /dev/null")
-    if v:shell_error
-        let s:pip_options = Python3_determine_pip_options()
-        execute 'autocmd VimEnter *.py !python3 -m pip install '
-                    \ . s:pip_options . ' "python-language-server"'
+    if index(g:coc_global_extensions, 'coc-pyls')
+        " [coc-pyls] install pyls into the 'current' python
+        let pyls_output = system("python3 -c 'import pyls' 2> /dev/null")
+        if v:shell_error
+            let s:pip_options = Python3_determine_pip_options()
+            execute 'autocmd VimEnter *.py !python3 -m pip install '
+                        \ . s:pip_options . ' "python-language-server"'
+        endif
     endif
 endfunction
 call s:configure_coc_nvim()
