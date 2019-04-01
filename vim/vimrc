@@ -1341,6 +1341,9 @@ if has_key(g:plugs, 'coc.nvim')
     let g:coc_force_debug = 1
   endif
 
+  " Appearance
+  highlight CocFloating     ctermbg=236 guibg=#292c3a
+
   " Use <c-space> for trigger coc completion (rather than omnicomplete)
   inoremap <silent><expr> <c-space> coc#refresh()
 
