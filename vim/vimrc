@@ -235,6 +235,9 @@ if has('nvim')
     " terminal in a new tab or vsplit buffer
     command! -nargs=* Term :tabnew | :term <args>
     command! -nargs=* STerm :split | :term <args>
+    command! -nargs=* VTerm :split | :term <args>
+    command! -nargs=* TermSplit :split | :term <args>
+    command! -nargs=* TermVSplit :vsplit | :term <args>
 
     " Mapping for <c-hjkl> in terminal mode
     " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
