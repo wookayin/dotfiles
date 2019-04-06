@@ -1266,6 +1266,9 @@ endif
 " ---------------------------------------------------------------- }}}
 " LaTeX {{{
 
+" Always prefer latex instead of plain, etc.
+let g:tex_flavor = "latex"
+
 let g:LatexBox_Folding = 1
 
 " suppress version warning
