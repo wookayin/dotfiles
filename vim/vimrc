@@ -750,7 +750,7 @@ map zg/ <Plug>(incsearch-fuzzy-stay)
 
 " ---------------------------------------------------------------- }}}
 " vim-highlightedyank {{{
-if ! has("nvim") && has_key(g:plugs, 'vim-highlightedyank')
+if has_key(g:plugs, 'vim-highlightedyank') && !exists('##TextYankPost')
     map y <Plug>(highlightedyank)
 endif
 
