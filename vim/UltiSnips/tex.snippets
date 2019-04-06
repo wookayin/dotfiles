@@ -1,0 +1,27 @@
+# Advanced TeX snippets powered by ultisnip
+# vim: set expandtab:
+
+global !p
+def slugify(text):
+    import unidecode, re
+    text = unidecode.unidecode(text).lower()
+    return re.sub(r'[\W_]+', '-', text)
+endglobal
+
+# Common environments
+# ===================
+
+# section and subsection
+# \sec, \section, sec, section, etc.
+
+snippet "\\?sec(tion)?" "\section{}" rb
+\section{$1}
+\label{sec:`!p snip.rv = slugify(t[1])`}
+$0
+endsnippet
+
+snippet "\\?subsec(tion)?" "\subsection{}" rb
+\subsection{$1}
+\label{sec:`!p snip.rv = slugify(t[1])`}
+$0
+endsnippet
