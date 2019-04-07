@@ -174,7 +174,8 @@ function! s:configure_coc_nvim()
     UnPlug 'davidhalter/jedi-vim'
     Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }
 
-    let s:floating_available = exists('##MenuPopupChanged') && exists('*nvim_open_win')
+    let s:floating_available = exists('*nvim_open_win') &&
+                \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))
     if s:floating_available
       " disable vim-which-key if floating windows are used (have some conflicts)
       UnPlug 'liuchengxu/vim-which-key'
