@@ -1,0 +1,40 @@
+# An UltiSnip that can be used everywhere.
+
+# ┏━━━━━━━┓
+# ┃ Boxes ┃
+# ┗━━━━━━━┛
+
+snippet box "Box (uses unicode)"
+`!p snip.rv = '┌' + '─' * (len(t[1]) + 2) + '┐'`
+│ $1 │
+`!p snip.rv = '└' + '─' * (len(t[1]) + 2) + '┘'`
+$0
+endsnippet
+
+snippet Box "Box (uses thicker unicode)"
+`!p snip.rv = '┏' + '━' * (len(t[1]) + 2) + '┓'`
+┃ $1 ┃
+`!p snip.rv = '┗' + '━' * (len(t[1]) + 2) + '┛'`
+$0
+endsnippet
+
+snippet %box "Box (with %)"
+`!p snip.rv = '%' + '%' * (len(t[1]) + 2) + '%'`
+% $1 %
+`!p snip.rv = '%' + '%' * (len(t[1]) + 2) + '%'`
+$0
+endsnippet
+
+snippet #box "Box (with #)"
+`!p snip.rv = '#' + '#' * (len(t[1]) + 2) + '#'`
+# $1 #
+`!p snip.rv = '#' + '#' * (len(t[1]) + 2) + '#'`
+$0
+endsnippet
+
+snippet #Box "Box (uses thicker unicode, but with #comments)"
+`!p snip.rv = '# ┏' + '━' * (len(t[1]) + 2) + '┓'`
+# ┃ $1 ┃
+`!p snip.rv = '# ┗' + '━' * (len(t[1]) + 2) + '┛'`
+$0
+endsnippet
