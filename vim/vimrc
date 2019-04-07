@@ -29,7 +29,10 @@ autocmd VimEnter *
 " 1. General Settings {{{
 """""""""""""""""""""""""""""""""""""""""
 
+filetype plugin on
+filetype indent on
 syntax on
+
 set nocompatible
 
 if filereadable('/bin/zsh')
@@ -584,10 +587,6 @@ augroup NrHighlight
     autocmd BufEnter * setlocal cursorline
     autocmd BufLeave * setlocal nocursorline
 augroup END
-
-" IDE settings
-filetype plugin on
-filetype indent on
 
 " filetype detections
 au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
@@ -1268,6 +1267,8 @@ endif
 
 " ---------------------------------------------------------------- }}}
 " LaTeX {{{
+
+let g:vimtex_syntax_enabled = 1
 
 " Always prefer latex instead of plain, etc.
 let g:tex_flavor = "latex"
