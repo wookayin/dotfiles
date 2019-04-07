@@ -409,7 +409,7 @@ endif
 
 
 " <leader>cd : switch to the directory of the current buffer
-function! s:cd()
+function! CD_to_file()
   cd %:p:h
 
   " if NERDTree is open, chdir NERDTree as well
@@ -417,7 +417,7 @@ function! s:cd()
     :NERDTreeCWD | wincmd w
   endif
 endfunction
-nmap <silent> <leader>cd :call <SID>cd()<CR>
+nmap <silent> <leader>cd :call CD_to_file()<CR>
 
 " <leader>R : screen sucks, redraw everything
 function! Redraw()
