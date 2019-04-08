@@ -192,11 +192,13 @@ install_neovim() {
     NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
 
     cd $TMP_NVIM_DIR
-    wget -nc $NVIM_DOWNLOAD_URL || true;
+    wget --backups=1 $NVIM_DOWNLOAD_URL      # always overwrite, having only one backup
     tar -xvzf "nvim-linux64.tar.gz"
 
     # copy and merge into ~/.local/bin
-    cp -RTv "nvim-linux64/" "$PREFIX"
+    echo "[*] Copying to $PREFIX ..."
+    cp -RT "nvim-linux64/" "$PREFIX" >/dev/null \
+        || (echo "Copy failed, please kill all nvim instances"; exit 1)
 
     $PREFIX/bin/nvim --version
 }
