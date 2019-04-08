@@ -1325,6 +1325,14 @@ nmap <leader>ha  <Plug>GitGutterStageHunk
 nmap <leader>hh  :GitGutterLineHighlightsToggle<CR>
 
 " ---------------------------------------------------------------- }}}
+" git-messenger {{{
+
+" map <C-O>/<C-I> to jumping to older and Older(recent) commits,
+" respectively (see git-messenger#3)
+au FileType gitmessengerpopup nmap <buffer> <C-O> o
+au FileType gitmessengerpopup nmap <buffer> <C-I> O
+
+" ---------------------------------------------------------------- }}}
 " gundo key mappings and options {{{
 let g:gundo_right = 1   " show at right
 nnoremap <leader>G :GundoToggle<CR>
