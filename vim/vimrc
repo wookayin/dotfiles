@@ -608,7 +608,7 @@ autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
 
 " highlight trailing whitespaces
 highlight ExtraWhitespace ctermbg=red guibg=red
-autocmd FileType GV highlight clear ExtraWhitespace
+autocmd FileType GV,gitmessengerpopup highlight clear ExtraWhitespace
 
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
@@ -1331,6 +1331,9 @@ nmap <leader>hh  :GitGutterLineHighlightsToggle<CR>
 " respectively (see git-messenger#3)
 au FileType gitmessengerpopup nmap <buffer> <C-O> o
 au FileType gitmessengerpopup nmap <buffer> <C-I> O
+
+" Display content diff as well in the popup window
+let g:git_messenger_include_diff = 1
 
 " ---------------------------------------------------------------- }}}
 " gundo key mappings and options {{{
