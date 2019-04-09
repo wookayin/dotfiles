@@ -620,13 +620,19 @@ autocmd BufWinLeave * call clearmatches()
 autocmd InsertLeave * silent! set nopaste
 
 " better popup menu colors (instead of dark black)
-highlight Pmenu ctermfg=black ctermbg=yellow guifg=black guibg=#ffec99
-highlight PmenuSel ctermfg=red ctermbg=white guifg=red guibg=white gui=bold
+highlight Pmenu             ctermfg=black guifg=black ctermbg=yellow guibg=#ffec99
+highlight PmenuSel          ctermfg=red guifg=red ctermbg=white guibg=white gui=bold
 
 " neovim 0.4.0+ : semi-transparent popup menu
 if has('nvim') && has('termguicolors')
   silent! set pumblend=20
 endif
+
+" neovim 0.4.0+ : Default background for floating windows (should be dark, not Pmenu)
+if hlexists('NormalFloat')
+  highlight NormalFloat     ctermbg=233 guibg=#121212
+endif
+
 
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 function! ShowSyntaxGroup()
@@ -1361,8 +1367,8 @@ if has_key(g:plugs, 'coc.nvim')
     let g:coc_force_debug = 1
   endif
 
-  " Appearance
-  highlight CocFloating     ctermbg=236 guibg=#292c3a
+  " Appearance and highlight groups  (see also: NormalFloat)
+  highlight CocFloating       ctermbg=236 guibg=#292c3a
 
   " Use <c-space> for trigger coc completion (rather than omnicomplete)
   inoremap <silent><expr> <c-space> coc#refresh()
