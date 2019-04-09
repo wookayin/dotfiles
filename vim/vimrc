@@ -726,11 +726,13 @@ xnoremap <leader>emoji :Emoji<CR>
 " ---------------------------------------------------------------- }}}
 " vim-asterisk (enhanced *) {{{
 
-"' Use z (stay) behavior as default
-map *  <Plug>(asterisk-z*)
-map #  <Plug>(asterisk-z#)
-map g* <Plug>(asterisk-gz*)
-map g# <Plug>(asterisk-gz#)
+" Use z (stay) behavior as default
+if has_key(g:plugs, 'vim-asterisk')
+  map *  <Plug>(asterisk-z*)
+  map #  <Plug>(asterisk-z#)
+  map g* <Plug>(asterisk-gz*)
+  map g# <Plug>(asterisk-gz#)
+endif
 
 " Keep cursor position across matches
 let g:asterisk#keeppos = 1
