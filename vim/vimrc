@@ -175,6 +175,17 @@ if has('nvim')
   au TermOpen * setlocal nonumber norelativenumber
 endif
 
+" For debugging
+function! ToggleVerbose()
+    if !&verbose
+        set verbosefile=~/.vim/verbose.log
+        set verbose=15
+    else
+        set verbose=0
+        set verbosefile=
+    endif
+endfunction
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " 2. Key and Functional Mappings {{{
