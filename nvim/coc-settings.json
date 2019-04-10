@@ -11,6 +11,12 @@
     // Maxmium width of floating preview window
     "suggest.maxPreviewWidth": 80,
 
+    // Show signature below of the cursor rather than above
+    "signature.preferShownAbove": false,
+
+    // Maxmium height of floating signature help window (defaults 8)
+    "signature.maxWindowHeight": 16,
+
     // Use Microsoft Python Language Server (LSP) instead of jedi
     "python.jediEnabled": false
 }
