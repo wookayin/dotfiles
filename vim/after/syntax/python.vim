@@ -26,6 +26,11 @@ let csyn = b:current_syntax | unlet b:current_syntax
 syntax include @SH syntax/zsh.vim
 let b:current_syntax = csyn | unlet csyn
 
+" Make sure that you have enough lines of context for correct highlighting (:help syn-sync),
+" the zsh syntax file sets this to very small number, but we want larger context.
+syn sync minlines=5000
+
+
 syntax region pythonDocstringSnippetSh  matchgroup=pythonDocstringSnip
     \ start=+'''#!/bin/bash+ end=+'''+
     \ containedin=pythonDocString contained contains=@SH
