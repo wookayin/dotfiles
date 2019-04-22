@@ -183,7 +183,7 @@ fi
 function site-packages() {
     # print the path to the site packages from current python environment,
     # e.g. ~/.anaconda3/envs/XXX/lib/python3.6/site-packages/
-    python -c "import site; print(site.getsitepackages()[0])"
+    python -c "import site; print('\n'.join(site.getsitepackages()))"
 }
 
 # open some macOS applications
