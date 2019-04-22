@@ -978,6 +978,17 @@ command! -nargs=* Plugs call fzf#run
             \ 'sink':    'NERDTree'
             \})
 
+" :SitePackages -- quickly jump to the site-packages directory for the current python
+command! -nargs=* SitePackages call fzf#run
+            \({
+            \ 'source':  ('python -c "import site; print(\"\n\".join(site.getsitepackages()))" ' .
+            \             ' | xargs -i{} find {} -maxdepth 1 -type d ' .
+            \             ' | grep -v "\(dist\|egg\)-info$" '),
+            \ 'options': '+m ' . printf(' --query "%s"', <q-args>),
+            \ 'down':    '~33%',
+            \ 'sink':    'NERDTree',
+            \})
+
 " Leader key mappings for vim-fzf commands
 
 " List all open buffers
