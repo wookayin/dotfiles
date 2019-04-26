@@ -40,6 +40,9 @@
 	wdiff = diff --color-words
 	wshow = show --color-words
 
+	# side-by-side diff, requires cdiff
+	sdiff = "! git diff $@ | cdiff -s -w0 "
+
 [color "decorate"]
 	# With git 1.8+, %C(auto)%d will assign different color to each refspec.
 	HEAD = cyan
