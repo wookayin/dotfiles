@@ -983,8 +983,8 @@ command! -nargs=* SitePackages call fzf#run
             \({
             \ 'source':  ('python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())" ' .
             \             ' | xargs -I{} find {}/ -maxdepth 1 -type d ' .
-            \             ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" '),
-            \ 'options': '+m ' . printf(' --query "%s"', <q-args>),
+            \             ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" | sort'),
+            \ 'options': '--delimiter "/" --nth -1 +m ' . printf(' --query "%s"', <q-args>),
             \ 'down':    '~33%',
             \ 'sink':    'NERDTree',
             \})
