@@ -1432,6 +1432,14 @@ endif
 " Extra Settings {{{
 """""""""""""""""""""""""""""""""""""""""
 
+" Work around neovim 0.4.0+ bug
+" https://github.com/neovim/neovim/issues/9881
+" https://github.com/neoclide/coc.nvim/issues/668
+augroup secure_modeline_conflict_workaround
+  autocmd!
+  autocmd FileType help setlocal nomodeline
+augroup END
+
 " Use local vimrc if available
 if filereadable(expand("\~/.vimrc.local"))
     source \~/.vimrc.local
