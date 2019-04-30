@@ -12,3 +12,22 @@ try:
     import pdir
 except ImportError:
     pass
+
+# Auto-load common packages that are frequently used
+# For instant startup, non-builtins should be imported lazily
+import os, sys, re
+
+try:
+    import lazy_import
+    try:
+        np = lazy_import.lazy_module("numpy")
+        pd = lazy_import.lazy_module("pandas")
+        tf = lazy_import.lazy_module("tensorflow")
+        plt = lazy_import.lazy_module("matplotlib.pyplot")
+    except Exception as e:
+        # lazy_import doesn't work with ptipython, ignore the error
+        print("Error: lazy_import startup failed.")
+        import traceback; traceback.print_exc()
+        print("")
+except ImportError:
+    print("Automatic lazy-import has been disabled. (to enable: pip install lazy_import)")
