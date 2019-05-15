@@ -175,6 +175,12 @@ if has('nvim')
   au TermOpen * setlocal nonumber norelativenumber
 endif
 
+" Use nvr as git editor (inside neovim terminal)
+if has('nvim') && executable('nvr')
+  let $GIT_EDITOR = 'nvr -cc split --remote-wait'
+  autocmd FileType gitcommit set bufhidden=delete
+endif
+
 " For debugging
 function! ToggleVerbose()
     if !&verbose
