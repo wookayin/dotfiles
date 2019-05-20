@@ -594,6 +594,7 @@ highlight DiffChange    guibg=#471515 guifg=NONE
 highlight DiffText      guibg=#721b1b guifg=NONE
 " }}
 
+highlight SpellBad guifg=NONE ctermfg=NONE
 
 " no underline, current cursor line
 highlight CursorLine    cterm=none
