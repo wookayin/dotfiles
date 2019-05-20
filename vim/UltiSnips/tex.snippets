@@ -6,6 +6,12 @@ def slugify(text):
     import unidecode, re
     text = unidecode.unidecode(text).lower()
     return re.sub(r'[\W_]+', '-', text)
+
+def get_matching_pair(query):
+    pairs = ['()', '{}', '<>', '[]' ]
+    d = dict(sum([[(l, r), (r, l)] for (l, r) in pairs], []))
+    # find a matching pair based on the first character.
+    return d.get(query[0], "") if query else ""
 endglobal
 
 
@@ -49,6 +55,14 @@ snippet "\\?subsec(tion)?" "\subsection{}" rb
 \subsection{$1}
 \label{sec:`!p snip.rv = slugify(t[1])`}
 $0
+endsnippet
+
+snippet "\\?para(graph)?" "\paragraph{}" r
+\paragraph{${1}} $0
+endsnippet
+
+snippet "\\?left" "\left..\right" r
+\left${1:}\right`!p snip.rv = get_matching_pair(t[1])`
 endsnippet
 
 context "is_math()"
