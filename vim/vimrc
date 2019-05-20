@@ -1098,6 +1098,10 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 command! -nargs=0 UltiSnipsRefreshSnippets :call UltiSnips#RefreshSnippets()
 
+augroup UltiSnipsAutoReload
+  autocmd!
+  autocmd BufWritePost *.snippets :UltiSnipsRefreshSnippets
+augroup END
 
 " ---------------------------------------------------------------- }}}
 " vim-pandoc {{{
