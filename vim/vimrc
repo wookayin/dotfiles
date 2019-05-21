@@ -142,6 +142,9 @@ set history=1000
 set undolevels=1000
 set lazyredraw              " no redrawing during macro execution
 
+" Make gitgutter signs, etc. be more responsive (default is 4000ms)
+set updatetime=200
+
 set mps+=<:>
 
 " when launching files via quickfix, FZF, or something else,
