@@ -7,3 +7,8 @@ keycode 108 = Hangul
 
 remove control = Hangul_Hanja
 keycode 105 = Hangul_Hanja
+
+
+! [Note] Xmodmap is deprecated in favor of setxkbmap.
+! To use CapsLock as Ctrl, try:
+!   setxkbmap -option caps:ctrl_modifier
