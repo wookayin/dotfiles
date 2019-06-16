@@ -188,6 +188,18 @@ function site-packages() {
     # python -c "import site; print('\n'.join(site.getsitepackages()))"
 }
 
+function vimpy() {
+    # Open a corresponding file of specified python module.
+    # e.g. $ vimpy numpy.core    --> opens $(site-package)/numpy/core/__init__.py
+    if [[ -z "$1" ]]; then; echo "Argument required"; return 1; fi
+
+    module_path=$(python -c "import $1; print($1.__file__)")
+    if [[ -n "$module_path" ]]; then
+      echo $module_path
+      vim "$module_path"
+    fi
+}
+
 # open some macOS applications
 if [[ "$(uname)" == "Darwin" ]]; then
 
