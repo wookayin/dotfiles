@@ -1,0 +1,13 @@
+#!/bin/bash
+
+OV_DATE="$1"
+if [[ -z $OV_DATE ]]; then
+    echo "Usage: $0 DATE_STRING git ..."
+    exit 1;
+fi
+
+shift
+
+export GIT_COMMITTER_DATE="$OV_DATE"
+export GIT_AUTHOR_DATE="$OV_DATE"
+exec $@;
