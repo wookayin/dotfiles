@@ -1,0 +1,31 @@
+# vim: set expandtab:
+
+global !p
+def collect_ale_lint_codes(linter_name):
+    if not vim.eval('get(g:, "ale_enabled", 0)'):
+        # works only if ALE is installed and enabled
+        return ''
+
+    # find all relevant linting (e.g. pylint) codes for the current line
+    # TODO: ALE does not expose an API for getting all loclist items for the current line
+    all_lints = vim.eval('get(ale#util#FindItemAtCursor(bufnr(""))[0], "loclist")')
+    current_line = vim.current.window.cursor[0]
+
+    codes = set()
+    for lint in all_lints:
+        lnum = int(lint['lnum'])
+        if lnum == current_line:
+            if lint['linter_name'] == linter_name:
+                codes.add(lint['code'])
+        elif lnum > current_line:
+            # loclist is in an ascending order of line number
+            break
+
+    return ",".join(codes)
+
+endglobal
+
+# Add 'pylint: disable=...' marker
+snippet pylint
+# pylint: disable=${1:`!p snip.rv = collect_ale_lint_codes("pylint")`}
+endsnippet
