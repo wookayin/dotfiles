@@ -1416,9 +1416,12 @@ if has_key(g:plugs, 'coc.nvim')
   " Coc only does snippet and additional edit on confirm.
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
+  " [Custom keymappings] see plugin/coc.vim
+
   " Go to definitions
-  noremap <silent> <F3> :<C-u>call CocActionAsync('jumpDefinition')<CR>
-  command! -nargs=0 CocJumpDefinition :CocActionAsync('jumpDefinition')
+  noremap <F3> :<C-u>call CocAction('jumpDefinition')<CR>
+  command! -nargs=0 CocJumpDefinition :call CocAction('jumpDefinition')
+  command! -nargs=0 JumpDefinition :call CocAction('jumpDefinition')
 
   " Map 'K' for showing documentation in preview window
   " Use command ':verbose map K' to make sure it does not have conflict
