@@ -417,10 +417,8 @@ nmap <silent> <leader><space> :noh<CR>
 
 " Plugin ag.vim
 " <leader>ag (or rg): Ag (search file contents)
-nnoremap <leader>ag :Ag! -i ""<Left>
-xnoremap <silent> <leader>ag y:Ag <C-R>"<CR>
-nnoremap <leader>rg :Ag! -i ""<Left>
-xnoremap <silent> <leader>rg y:Ag <C-R>"<CR>
+nnoremap <leader>ag           :Ag! -i ""<Left>
+xnoremap <silent> <leader>ag  y:Ag <C-R>"<CR>
 
 if executable("rg")
   " Use ripgrep instead :)
@@ -943,6 +941,9 @@ command! -bang -nargs=* Rg
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%', '?'),
   \ <bang>0)
+
+nnoremap <leader>rg   :Rg ''<Left>
+xnoremap <leader>rg   "gy:Rg <C-R>g<CR>
 
 " :Def, Rgdef -- Easily find definition/declaration (requires ripgrep)
 " e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
