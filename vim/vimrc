@@ -1392,7 +1392,7 @@ nnoremap <leader>G :GundoToggle<CR>
 nnoremap <leader>T :TagbarToggle<CR>
 
 " ---------------------------------------------------------------- }}}
-" coc.nvim (languag server completion) {{{
+" coc.nvim (language server completion) {{{
 
 if has_key(g:plugs, 'coc.nvim')
 
@@ -1409,8 +1409,12 @@ if has_key(g:plugs, 'coc.nvim')
   " Appearance and highlight groups  (see also: NormalFloat)
   highlight CocFloating       ctermbg=236 guibg=#292c3a
 
-  " Use <c-space> for trigger coc completion (rather than omnicomplete)
-  inoremap <silent><expr> <c-space> coc#refresh()
+  " <C-space> trigger/refresh completion popup menu, or show again signature help window
+  inoremap <expr><silent> <c-space>
+        \ pumvisible() ? coc#refresh() :
+        \ "<c-\><c-o>:call CocActionAsync('showSignatureHelp')<CR>"
+  nnoremap <silent> <c-space>
+        \ :call CocActionAsync('showSignatureHelp')<CR>
 
   " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
   " Coc only does snippet and additional edit on confirm.
