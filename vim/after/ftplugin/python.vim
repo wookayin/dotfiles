@@ -35,7 +35,7 @@ endif
 
 " if coc.nvim is available, use the global shortcut
 " (see ~/.vimrc for the global mapping of <F3> key)
-if ! has_key(g:plugs, 'coc.nvim')
+if !has_key(g:, 'plugs') || !has_key(g:plugs, 'coc.nvim')
     " goto definition
     map  <F3> :call jedi#goto_assignments()<CR>
     imap <F3> <ESC>:call jedi#goto_assignments()<CR>
