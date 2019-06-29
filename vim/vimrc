@@ -1401,12 +1401,6 @@ if has_key(g:plugs, 'coc.nvim')
   " (or ~/.config/nvim/coc-settings.json)
   au BufRead coc-settings.json    syntax match Comment +\/\/.\+$+
 
-  if has('nvim-0.4.0')
-    " coc.nvim is being actively developed and changing;
-    " Prefer a compiled code instead of a prebuilt binary
-    let g:coc_force_debug = 1
-  endif
-
   " Appearance and highlight groups  (see also: NormalFloat)
   highlight CocFloating       ctermbg=236 guibg=#292c3a
 

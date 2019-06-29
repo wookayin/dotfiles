@@ -20,8 +20,6 @@ parser.add_argument('--skip-vimplug', action='store_true',
                     help='If set, do not update vim plugins.')
 parser.add_argument('--skip-zgen', '--skip-zplug', action='store_true',
                     help='If set, skip zgen updates.')
-parser.add_argument('--enable-coc', action='store_true',
-                    help='Install coc.nvim (highly experimental)')
 
 args = parser.parse_args()
 
@@ -150,13 +148,34 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
     ''',
 
     r'''#!/bin/bash
-    # create directory ~/.config/coc if not exists
+    # Setting up for coc.nvim (~/.config/coc, node.js)
+
+    # (i) create ~/.config/coc directory if not exists
+    GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m";
     coc_dir="$HOME/.config/coc/"
     if [ ! -d "$coc_dir" ]; then
         mkdir -p "$coc_dir" || exit 1;
         echo "Created: $coc_dir"
+    else
+        echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
     fi
-    ''' if args.enable_coc else ''
+
+    # (ii) node.js
+    node_version=$(node --version 2>/dev/null)
+    if [[ -n "$node_version" ]]; then
+    echo -e "${GREEN}node.js $node_version:${RESET} $(which node)"
+    else
+        echo -e "${YELLOW}Node.js not found. Please install node.js v10.0+ by either:
+
+  (a) Install node on the system (apt-get install nodejs, or brew install nodejs)
+  (b) Install node using nvm (https://github.com/nvm-sh/nvm#installation-and-update)
+  (c) Install locally (i.e. on ~/.local/),
+      $ dotfiles install node           # or,
+      $ curl -sL install-node.now.sh | bash -s -- --prefix=\$HOME/.local --verbose
+${RESET}"
+       exit 1;
+    fi
+    '''
 
     r'''#!/bin/bash
     # Change default shell to zsh

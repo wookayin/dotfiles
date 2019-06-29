@@ -156,10 +156,10 @@ endif
 " *EXPERIMENTAL* language-server support (coc.nvim)
 " Activated if the following conditions are met:
 "    (i) Proper neovim version and python3
-"    (ii) 'node' and 'yarn' are installed
+"    (ii) 'node' and 'npm' are installed
 "    (iii) Directory ~/.config/coc exists
 function! s:configure_coc_nvim()
-    if has('nvim') && executable('yarn') && executable('python3') &&
+    if has('nvim') && executable('npm') && executable('python3') &&
             \ isdirectory(expand("\~/.config/coc/"))
     else | return | endif   " do nothing if conditions are not met
 
@@ -174,7 +174,8 @@ function! s:configure_coc_nvim()
     " supercedes deoplete :)
     UnPlug 'Shougo/deoplete.nvim'
     UnPlug 'davidhalter/jedi-vim'
-    Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }
+    "Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }   " from source
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}                    " released binary
 
     let s:floating_available = exists('*nvim_open_win') &&
                 \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))

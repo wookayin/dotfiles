@@ -45,4 +45,5 @@ if which nvim >/dev/null; then
     done
 else
     echo -e "${RED}Neovim not found. Please install using 'dotfiles install neovim'.${RESET}"
+    exit 1;
 fi
