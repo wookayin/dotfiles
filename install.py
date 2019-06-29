@@ -175,7 +175,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
 ${RESET}"
        exit 1;
     fi
-    '''
+    ''',
 
     r'''#!/bin/bash
     # Change default shell to zsh

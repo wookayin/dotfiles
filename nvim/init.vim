@@ -54,14 +54,19 @@ if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = s:python3_local 
 
 " Get and validate python version
 try
-    let g:python3_host_version = split(system("python3 --version 2>/dev/null"))[1]   " e.g. Python 3.7.0 :: Anaconda, Inc.
+    if executable('python3')
+        let g:python3_host_version = split(system("python3 --version 2>&1"))[1]   " e.g. Python 3.7.0 :: Anaconda, Inc.
+    else | let g:python3_host_version = ''
+    endif
 catch
     let g:python3_host_version = ''
+endtry
+
+if empty(g:python3_host_version)
     autocmd VimEnter * echohl Error | echon
                 \ "ERROR: You don't have python3 on your $PATH. Most features are disabled."
                 \ | echohl None
-endtry
-if !empty(g:python3_host_version) && g:python3_host_version < '3.6'
+elseif g:python3_host_version < '3.6'
     autocmd VimEnter * echohl WarningMsg | echon
                 \ printf("Warning: Please use python 3.6+ to enable intellisense features. (Current: %s)", g:python3_host_version)
                 \ | echohl None
