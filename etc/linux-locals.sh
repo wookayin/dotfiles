@@ -50,6 +50,15 @@ install_zsh() {
     ~/.local/bin/zsh --version
 }
 
+install_node() {
+    # Install node.js LTS at ~/.local
+    set -e
+    curl -sL install-node.now.sh | bash -s -- --prefix=$HOME/.local --verbose
+
+    echo -e "\n$(which node) : $(node --version)"
+    node --version
+}
+
 install_tmux() {
     # install tmux (and its dependencies such as libevent) locally
     set -e
@@ -255,7 +264,7 @@ install_ripgrep() {
     cp "./complete/_rg" $PREFIX/share/zsh/site-functions
 
     $PREFIX/bin/rg --version
-    echo "$(which exa) : $(rg --version)"
+    echo "$(which rg) : $(rg --version)"
 }
 
 install_xsv() {
