@@ -132,7 +132,8 @@ Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
 
 
 " Completion engine for neovim (deoplete or language server)
-if has('nvim')
+" Requires python 3.6.1+
+if has('nvim') && g:python3_host_version >= '3.6.1'
     Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
     Plug 'zchee/deoplete-jedi'    " Python
     Plug 'zchee/deoplete-clang'   " C/C++
@@ -166,6 +167,7 @@ function! s:configure_coc_nvim()
         autocmd VimEnter * echohl WarningMsg | echon
                     \ 'WARNING: Neovim 0.3.1+ is required for coc.nvim. '
                     \ . '(Try: dotfiles install neovim)'
+                    \ | echohl None
         return
     endif
 

@@ -52,6 +52,22 @@ if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = '/usr/local/bin/
 if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = '/usr/bin/python3'       | endif
 if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = s:python3_local          | endif
 
+" Get and validate python version
+try
+    let g:python3_host_version = split(system("python3 --version 2>/dev/null"))[1]   " e.g. Python 3.7.0 :: Anaconda, Inc.
+catch
+    let g:python3_host_version = ''
+    autocmd VimEnter * echohl Error | echon
+                \ "ERROR: You don't have python3 on your $PATH. Most features are disabled."
+                \ | echohl None
+endtry
+if !empty(g:python3_host_version) && g:python3_host_version < '3.6'
+    autocmd VimEnter * echohl WarningMsg | echon
+                \ printf("Warning: Please use python 3.6+ to enable intellisense features. (Current: %s)", g:python3_host_version)
+                \ | echohl None
+endif
+
+
 " VimR support {{{
 " @see https://github.com/qvacua/vimr/wiki#initvim
 if has('gui_vimr')
