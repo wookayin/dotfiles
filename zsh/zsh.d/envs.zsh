@@ -45,6 +45,9 @@ setopt NO_SHARE_HISTORY
 # See zsh-autoswitch-virtualenv #19
 unsetopt AUTO_NAME_DIRS       # Do not auto add variable-stored paths
 
+# If globs do not match a file, just run the command rather than throwing a no-matches error.
+# This is especially useful for some commands with '^', '~', '#', e.g. 'git show HEAD^1'
+unsetopt NOMATCH
 
 #
 # Path Configurations.
