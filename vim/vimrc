@@ -613,6 +613,7 @@ au BufRead,BufNewFile *.prototxt if &ft == '' | setfiletype yaml | endif
 au BufRead,BufNewFile *.ipynb if &ft == '' | setfiletype json | endif
 
 autocmd FileType git setlocal foldlevel=1
+autocmd FileType gitcommit setlocal cc=72 textwidth=72
 
 " remove trailing whitespaces on save
 fun! StripTrailingWhitespaces()
