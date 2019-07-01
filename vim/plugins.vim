@@ -1,18 +1,9 @@
+runtime autoload/plug_addon.vim
+
 let s:darwin = has('mac')
 
 " Plug buffers appear in a new tab
 let g:plug_window = '-tabnew'
-
-
-" UnPlug: deregister plugin, must be called before plug#end()
-" https://github.com/junegunn/vim-plug/issues/469
-function! s:deregister(repo)
-  let repo = substitute(a:repo, '[\/]\+$', '', '')
-  let name = fnamemodify(repo, ':t:s?\.git$??')
-  call remove(g:plugs, name)
-  call remove(g:plugs_order, index(g:plugs_order, name))
-endfunction
-command! -nargs=1 -bar UnPlug call s:deregister(<args>)
 
 " for neovim plugins (rplugin)
 if has('nvim')
@@ -21,8 +12,9 @@ if has('nvim')
     endfunction
 endif
 
-
+"==============================================
 call plug#begin('~/.vim/plugged')
+"==============================================
 
 " General and Behaviour
 Plug 'flazz/vim-colorschemes'
@@ -210,4 +202,6 @@ if filereadable(expand("\~/.vim/plugins.local.vim"))
 endif
 
 call plug#end()
+
 delcom UnPlug
+delcom ForcePlugURI
