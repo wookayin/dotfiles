@@ -950,6 +950,8 @@ xnoremap <leader>rg   "gy:Rg <C-R>g<CR>
 " e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
 command! -bang -nargs=* Rgdef   call s:fzf_rgdef(<q-args>, <bang>0)
 command! -bang -nargs=* Def     call s:fzf_rgdef(<q-args>, <bang>0)
+command! -bang -nargs=* D       call s:fzf_rgdef(<q-args>, <bang>0)
+nnoremap <leader>def  :<C-U>Def<CR>
 
 function! s:fzf_rgdef(args, bang0)
     " TODO: currently, only python is supported.
