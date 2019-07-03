@@ -36,3 +36,18 @@ function! s:force_plug_uri(plug_name)
   endif
 endfunction
 command! -nargs=1 -bar ForcePlugURI call s:force_plug_uri(<args>)
+
+
+" util for version comparison (e.g. 'v11.1.0' < 'v8.10')
+function! plug_addon#version_lessthan(ver_given, ver_required)
+    let ver_given    = split(substitute(a:ver_given, '^v', '', ''), "\\.")
+    let ver_required = split(substitute(a:ver_required, '^v', '', ''), "\\.")
+    let ver_given = map(ver_given, 'v:val + 0')
+    let ver_required = map(ver_required, 'v:val + 0')
+    for i in range(max([len(ver_given), len(ver_required)]))
+      let lhs = get(ver_given, i, '')
+      let rhs = get(ver_required, i, '')
+      if lhs != rhs | return lhs < rhs | endif
+    endfor
+    return 0
+endfunction

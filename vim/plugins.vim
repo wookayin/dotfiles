@@ -164,7 +164,7 @@ function! s:configure_coc_nvim()
     endif
 
     let node_version = system('node --version')
-    if node_version < 'v8.10'
+    if plug_addon#version_lessthan(node_version, 'v8.10')
         autocmd VimEnter * echohl WarningMsg | echom
                     \ 'WARNING: Node v8.10.0+ is required for coc.nvim. '
                     \ . '(Try: dotfiles install node)' | echohl None
