@@ -5,8 +5,10 @@
 function! s:unplug(repo)
   let repo = substitute(a:repo, '[\/]\+$', '', '')
   let name = fnamemodify(repo, ':t:s?\.git$??')
-  call remove(g:plugs, name)
-  call remove(g:plugs_order, index(g:plugs_order, name))
+  if has_key(g:plugs, name)
+    call remove(g:plugs, name)
+    call remove(g:plugs_order, index(g:plugs_order, name))
+  endif
 endfunction
 command! -nargs=1 -bar UnPlug call s:unplug(<args>)
 
