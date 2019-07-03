@@ -111,6 +111,7 @@ Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 "Plug 'LaTeX-Box-Team/LaTeX-Box'
 Plug 'lervag/vimtex', { 'for' : ['tex', 'plaintex'] }
+Plug 'machakann/vim-Verdin', { 'for': ['vim'] }   " vimscript omnifunc
 Plug 'gisraptor/vim-lilypond-integrator'
 Plug 'tfnico/vim-gradle'
 Plug 'Tyilo/applescript.vim'
@@ -130,7 +131,6 @@ if has('nvim') && g:python3_host_version >= '3.6.1'
     Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
     Plug 'zchee/deoplete-jedi'    " Python
     Plug 'zchee/deoplete-clang'   " C/C++
-    Plug 'machakann/vim-Verdin', { 'for': ['vim'] }   " vimscript
     Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }     " zsh
 
 elseif v:version >= 800
@@ -187,7 +187,7 @@ function! s:configure_coc_nvim()
 
     " automatically install CocExtensions by default
     let g:coc_global_extensions = [
-                \ 'coc-json', 'coc-highlight', 'coc-snippets',
+                \ 'coc-json', 'coc-highlight', 'coc-snippets', 'coc-omni',
                 \ 'coc-python'
                 \ ]
 

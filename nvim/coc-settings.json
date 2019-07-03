@@ -27,6 +27,11 @@
     // Formtting provider (yapf, black, autopep8)
     "python.formatting.provider": "yapf",
 
+    /************
+     * coc-omni
+     ************/
+    "coc.source.omni.filetypes": ["vim"],
+
     /**************************
      * custom language servers
      **************************/

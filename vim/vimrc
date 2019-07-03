@@ -1128,6 +1128,12 @@ let g:pandoc#spell#enabled = 0
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 
 " ---------------------------------------------------------------- }}}
+" vim-verdict {{{
+
+" cooperative mode required to make it work with coc.nvim, YCM, etc.
+let g:Verdin#cooperativemode = 1
+
+" ---------------------------------------------------------------- }}}
 " echodoc.vim {{{
 let g:echodoc#enable_at_startup = 1
 
