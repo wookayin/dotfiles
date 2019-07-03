@@ -24,6 +24,10 @@ fi
 export FZF_ALT_C_COMMAND='fasd_cd -d -l -R'
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
+# Color and appearances
+# use brighter and more visible background color.
+export FZF_DEFAULT_OPTS="--color 'bg+:239'"
+
 # }}}
 
 # Save more history entries
