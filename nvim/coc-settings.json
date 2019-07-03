@@ -17,6 +17,16 @@
     // Maxmium height of floating signature help window (defaults 8)
     "signature.maxWindowHeight": 16,
 
+    /*************
+     * coc-python
+     *************/
+
     // Use Microsoft Python Language Server (LSP) instead of jedi
-    "python.jediEnabled": false
+    "python.jediEnabled": false,
+
+    /**************************
+     * custom language servers
+     **************************/
+    "languageserver": {
+    }
 }

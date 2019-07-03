@@ -1402,7 +1402,7 @@ if has_key(g:plugs, 'coc.nvim')
 
   " For general settings, try :CocConfig
   " (or ~/.config/nvim/coc-settings.json)
-  au BufRead coc-settings.json    syntax match Comment +\/\/.\+$+
+  au BufRead coc-settings.json    set ft=jsonc
 
   " Appearance and highlight groups  (see also: NormalFloat)
   highlight CocFloating       ctermbg=236 guibg=#292c3a
