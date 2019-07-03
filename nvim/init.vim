@@ -63,11 +63,11 @@ catch
 endtry
 
 if empty(g:python3_host_version)
-    autocmd VimEnter * echohl Error | echon
+    autocmd VimEnter * echohl Error | echom
                 \ "ERROR: You don't have python3 on your $PATH. Most features are disabled."
                 \ | echohl None
-elseif g:python3_host_version < '3.6'
-    autocmd VimEnter * echohl WarningMsg | echon
+elseif g:python3_host_version < '3.6.1'
+    autocmd VimEnter * echohl WarningMsg | echom
                 \ printf("Warning: Please use python 3.6+ to enable intellisense features. (Current: %s)", g:python3_host_version)
                 \ | echohl None
 endif

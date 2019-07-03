@@ -157,10 +157,17 @@ function! s:configure_coc_nvim()
     else | return | endif   " do nothing if conditions are not met
 
     if ! has('nvim-0.3.1')
-        autocmd VimEnter * echohl WarningMsg | echon
+        autocmd VimEnter * echohl WarningMsg | echom
                     \ 'WARNING: Neovim 0.3.1+ is required for coc.nvim. '
-                    \ . '(Try: dotfiles install neovim)'
-                    \ | echohl None
+                    \ . '(Try: dotfiles install neovim)' | echohl None
+        return
+    endif
+
+    let node_version = system('node --version')
+    if node_version < 'v8.10'
+        autocmd VimEnter * echohl WarningMsg | echom
+                    \ 'WARNING: Node v8.10.0+ is required for coc.nvim. '
+                    \ . '(Try: dotfiles install node)' | echohl None
         return
     endif
 
@@ -183,16 +190,6 @@ function! s:configure_coc_nvim()
                 \ 'coc-python'
                 \ ]
 
-    " Additional dependencies for the coc extensions
-    if index(g:coc_global_extensions, 'coc-pyls')
-        " [coc-pyls] install pyls into the 'current' python
-        let pyls_output = system("python3 -c 'import pyls' 2> /dev/null")
-        if v:shell_error
-            let s:pip_options = Python3_determine_pip_options()
-            execute 'autocmd VimEnter *.py !python3 -m pip install '
-                        \ . s:pip_options . ' "python-language-server"'
-        endif
-    endif
 endfunction
 call s:configure_coc_nvim()
 
