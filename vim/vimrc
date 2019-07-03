@@ -1447,6 +1447,11 @@ if has_key(g:plugs, 'coc.nvim')
   command! -nargs=0 CocExtensions :CocList extensions
   command! -nargs=0 CocSnippets :CocList snippets
 
+  " Automatic formatting (selected range or entire buffer)
+  command! -range=% CocFormat    :call CocActionAsync('formatSelected', visualmode())
+  command! -range=% Format       :<line1>,<line2>CocFormat
+  xmap <silent> <leader>f        <Plug>(coc-format-selected)
+
 endif
 
 

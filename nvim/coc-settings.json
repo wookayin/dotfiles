@@ -24,6 +24,9 @@
     // Use Microsoft Python Language Server (LSP) instead of jedi
     "python.jediEnabled": false,
 
+    // Formtting provider (yapf, black, autopep8)
+    "python.formatting.provider": "yapf",
+
     /**************************
      * custom language servers
      **************************/
