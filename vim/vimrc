@@ -838,6 +838,9 @@ let g:EditorConfig_core_mode = 'python_external'
 " use airline, with powerline-ish theme
 let g:airline_powerline_fonts=1
 
+" section z: current position, but more concisely
+let g:airline_section_z = 'L%3l:%v'
+
 " enable tabline feature
 let g:airline#extensions#tabline#enabled = 1
 
@@ -1210,12 +1213,13 @@ hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
 " no highlight (underline) on detected errors/warnings
 let g:ale_set_highlights = 0
 
-" Show the number of errors/warnings in the airline statusbar
+" :h airline-ale
 let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#ale#show_line_numbers = 0
 
-" Suppress a warning for the conflict with Neomake
-" Neomake is used for job execution, not a lint engine, so it would
-" be fine.
+" Suppress a warning for the conflict with Neomake.
+" Neomake is used for job execution, not as a lint engine,
+" so it would be fine.
 let g:ale_emit_conflict_warnings = 0
 
 " ---------------------------------------------------------------- }}}
