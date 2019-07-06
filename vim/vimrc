@@ -838,8 +838,16 @@ let g:EditorConfig_core_mode = 'python_external'
 " use airline, with powerline-ish theme
 let g:airline_powerline_fonts=1
 
+" [section customization] (:h airline-sections) {{{
+" -----------------------
+
+" section y (ffenc): skip if utf-8[unix]
+let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
+
 " section z: current position, but more concisely
 let g:airline_section_z = 'L%3l:%v'
+
+" }}
 
 " enable tabline feature
 let g:airline#extensions#tabline#enabled = 1
