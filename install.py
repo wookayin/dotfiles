@@ -238,14 +238,13 @@ import sys
 import subprocess
 
 if sys.version_info[0] >= 3:  # python3
-    from builtins import input
     unicode = lambda s, _: str(s)
-else:
-    input = raw_input         # python2
 
 from signal import signal, SIGPIPE, SIG_DFL
 from optparse import OptionParser
 from sys import stderr
+from builtins import input
+
 
 def log(msg, cr=True):
     stderr.write(msg)
@@ -292,7 +291,7 @@ if submodule_issues:
         try:
             git_version = str(subprocess.check_output("""git --version | awk '{print $3}'""", shell=True))
             if git_version >= '2.8': git_submodule_update_cmd += ' --jobs 8'
-        except Exception as e:
+        except Exception as ex:
             pass
         log("Running: %s" % BLUE(git_submodule_update_cmd))
         subprocess.call(git_submodule_update_cmd, shell=True)
@@ -351,7 +350,8 @@ for action in post_actions:
         continue
 
     action_title = action.strip().split('\n')[0].strip()
-    if action_title == '#!/bin/bash': action_title = action.strip().split('\n')[1].strip()
+    if action_title == '#!/bin/bash':
+        action_title = action.strip().split('\n')[1].strip()
 
     log("\n", cr=False)
     log_boxed("Executing: " + action_title, color_fn=CYAN)
