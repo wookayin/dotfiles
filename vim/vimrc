@@ -1470,6 +1470,22 @@ if has_key(g:plugs, 'coc.nvim')
   command! -range=% Format       :<line1>,<line2>CocFormat
   xmap <silent> <leader>f        <Plug>(coc-format-selected)
 
+  " Display coc.nvim status message in the command line
+  augroup coc_status_change
+    autocmd!
+    autocmd User CocStatusChange call s:coc_show_status_commandline()
+  augroup END
+
+  let s:carriage_return = nr2char(13)  " 0x13 (^M)
+  function! s:coc_show_status_commandline()
+    let l:status = trim(get(g:, 'coc_status', ''))
+    if empty(l:status) | echon '' | return | endif
+    echohl CocStatusCommandLine
+    echon  s:carriage_return . '[coc.nvim] ' . l:status
+    echohl NONE
+  endfunction
+  hi CocStatusCommandLine  ctermfg=240 guifg=#585858
+
 endif
 
 
