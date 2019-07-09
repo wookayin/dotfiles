@@ -23,7 +23,9 @@ try:
         np = lazy_import.lazy_module("numpy")
         pd = lazy_import.lazy_module("pandas")
         tf = lazy_import.lazy_module("tensorflow")
+        matplotlib = lazy_import.lazy_module("matplotlib")
         plt = lazy_import.lazy_module("matplotlib.pyplot")
+        scipy = lazy_import.lazy_module("scipy")
     except Exception as e:
         # lazy_import doesn't work with ptipython, ignore the error
         print("Error: lazy_import startup failed.")
