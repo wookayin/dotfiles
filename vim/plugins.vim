@@ -171,12 +171,14 @@ function! s:configure_coc_nvim()
         return
     endif
 
-    " supercedes deoplete :)
-    UnPlug 'Shougo/deoplete.nvim'
-    UnPlug 'davidhalter/jedi-vim'
     "Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }   " from source
     Plug 'neoclide/coc.nvim', {'branch': 'release'}                    " released binary
     Plug 'neoclide/jsonc.vim'
+
+    " coc supercedes deoplete and supertab
+    UnPlug 'Shougo/deoplete.nvim'
+    UnPlug 'davidhalter/jedi-vim'
+    UnPlug 'ervandew/supertab'         " Custom <TAB> mapping supercedes supertab
 
     let s:floating_available = exists('*nvim_open_win') &&
                 \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))
