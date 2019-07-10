@@ -131,6 +131,7 @@ alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
 
 alias ipynb='jupyter notebook'
 alias ipynb0='ipynb --ip=0.0.0.0'
+alias jupyter-lab='jupyter-lab --no-browser --ip=0.0.0.0'
 
 # ptpython
 alias ptpy='ptipython'
