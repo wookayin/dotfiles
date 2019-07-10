@@ -1402,7 +1402,7 @@ au FileType gitmessengerpopup nmap <buffer> <C-O> o
 au FileType gitmessengerpopup nmap <buffer> <C-I> O
 
 " Display content diff as well in the popup window
-let g:git_messenger_include_diff = 1
+let g:git_messenger_include_diff = 'current'
 
 " ---------------------------------------------------------------- }}}
 " gundo key mappings and options {{{
