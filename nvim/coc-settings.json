@@ -17,6 +17,11 @@
     // Maxmium height of floating signature help window (defaults 8)
     "signature.maxWindowHeight": 16,
 
+    // keymaps for coc-list
+    "list.insertMappings": {
+        "<C-c>": "do:exit",   // CTRL-C: close window
+    },
+
     /*************
      * coc-python
      *************/
