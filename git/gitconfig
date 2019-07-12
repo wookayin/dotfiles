@@ -8,7 +8,7 @@
 
 [core]
 	excludesfile = ~/.gitignore
-	pager = less -F
+	pager = "(diff-so-fancy 2>/dev/null || cat) | less --tabs=4 -RFX"
 
 	# do not quote non-ascii characters; display unicodes as-is
 	quotepath = false
@@ -43,18 +43,32 @@
 	# side-by-side diff, requires cdiff
 	sdiff = "! git diff $@ | cdiff -s -w0 "
 
-[color "decorate"]
-	# With git 1.8+, %C(auto)%d will assign different color to each refspec.
-	HEAD = cyan
-	branch = yellow
-	tag = magenta
-
 [color]
 	status = auto
 	diff = auto
 	branch = auto
 	interactive = auto
 	ui = auto
+
+[color "decorate"]
+	# With git 1.8+, %C(auto)%d will assign different color to each refspec.
+	HEAD = cyan
+	branch = yellow
+	tag = magenta
+
+[color "diff-highlight"]
+	oldNormal = red
+	oldHighlight = red bold 52
+	newNormal = green
+	newHighlight = green bold 22
+
+[color "diff"]
+	frag = magenta bold
+	commit = yellow
+	old = red
+	new = green
+	whitespace = red reverse
+	meta = yellow bold
 
 [diff]
 	# --no-prefix (for git diff, git show) such as 'a/' 'b/' blah
@@ -65,6 +79,11 @@
 
 	# smarter diff on splits around blank lines (Git 2.9.0+)
 	compactionHeuristic = true
+
+[diff-so-fancy]
+	markEmptyLines = false
+	changeHunkIndicators = true
+	stripLeadingSymbols = false
 
 [diff "sqlite3"]
 	binary = true
