@@ -29,3 +29,18 @@ endglobal
 snippet pylint
 # pylint: disable=${1:`!p snip.rv = collect_ale_lint_codes("pylint")`}
 endsnippet
+
+# Add a typecheck if-raise statement.
+# TODO: auto-retrieve type annotation from the current python context.
+snippet typecheck
+if not isinstance(${1}, ${2:object}):
+	raise TypeError("\`$1\` must be a $2, but given {}".format($2, type($1)))
+endsnippet
+snippet TypeError(
+TypeError("\`$1\` must be a ${2:object}, but given {}".format($2, type($1)))
+endsnippet
+
+snippet rangecheck
+if not ${3:0} <= ${1} < ${2:n}:
+	raise IndexError("Index out of range [{}, {}), but given {}".format($3, $2, $1))
+endsnippet
