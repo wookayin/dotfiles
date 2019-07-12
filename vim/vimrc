@@ -95,6 +95,11 @@ set expandtab
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<
 
+augroup listchars_filetype
+  autocmd!
+  autocmd FileType GV setlocal listchars-=trail:·
+augroup END
+
 " wildmenu settings
 set wildmenu
 set wildmode=list:longest,full
