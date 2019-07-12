@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-print('''
+'''
    @wookayin's              ███████╗██╗██╗     ███████╗███████╗
    ██████╗  █████╗ ████████╗██╔════╝██║██║     ██╔════╝██╔════╝
    ██╔══██╗██╔══██╗╚══██╔══╝█████╗  ██║██║     █████╗  ███████╗
@@ -10,10 +10,12 @@ print('''
    ╚═════╝  ╚════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
 
    https://dotfiles.wook.kr/
-''')
+'''
+print(__doc__)  # print logo.
+
 
 import argparse
-parser = argparse.ArgumentParser(description=__doc__)
+parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--force', action="store_true", default=False,
                     help='If set, it will override existing symbolic links')
 parser.add_argument('--skip-vimplug', action='store_true',
@@ -67,7 +69,7 @@ tasks = {
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
 
     # tmux
-    '~/.tmux'     : 'tmux',
+    '~/.tmux'      : 'tmux',
     '~/.tmux.conf' : 'tmux/tmux.conf',
 
     # .config (XDG-style)
@@ -95,7 +97,8 @@ post_actions = [
         if ! readlink $f >/dev/null; then
             echo -e "\033[0;31m\
 WARNING: $f is not a symbolic link to ~/.dotfiles.
-You may want to remove your local folder (~/.vim) and try again?\033[0m"
+Please remove your local folder/file $f and try again.\033[0m"
+            echo -n "(Press any key to continue) "; read user_confirm
             exit 1;
         else
             echo "$f --> $(readlink $f)"
@@ -222,6 +225,7 @@ EOL
 
 ################# END OF FIXME #################
 
+
 def _wrap_colors(ansicode):
     return (lambda msg: ansicode + str(msg) + '\033[0m')
 GRAY   = _wrap_colors("\033[0;37m")
@@ -237,13 +241,13 @@ import os
 import sys
 import subprocess
 
-if sys.version_info[0] >= 3:  # python3
-    unicode = lambda s, _: str(s)
-
 from signal import signal, SIGPIPE, SIG_DFL
 from optparse import OptionParser
 from sys import stderr
 from builtins import input
+
+if sys.version_info[0] >= 3:  # python3
+    unicode = lambda s, _: str(s)
 
 
 def log(msg, cr=True):
@@ -369,10 +373,12 @@ if errors:
         log("   " + YELLOW(e))
     log("\n")
 else:
-    log_boxed("✔︎  You are all set! ", len_adjust=-1,
+    log_boxed("✔  You are all set! ",
               color_fn=GREEN, use_bold=True)
 
 log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
 log("- To install some packages locally (e.g. neovim, tmux), try " + CYAN("`dotfiles install <package>`"))
 log("- If you want to update dotfiles (or have any errors), try " + CYAN("`dotfiles update`"))
 log("\n\n", cr=False)
+
+sys.exit(len(errors))
