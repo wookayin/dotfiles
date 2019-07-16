@@ -462,6 +462,9 @@ noremap <leader>p "*p
 " <leader>w : save
 nnoremap <leader>w :w!<CR>
 
+" <leader>q : quit/close window
+nnoremap <silent> <leader>q :q<CR>
+
 " <leader>S : Strip trailing whitespaces
 command! -nargs=0 Strip call StripTrailingWhitespaces()
 nnoremap <leader>S :Strip<CR>
