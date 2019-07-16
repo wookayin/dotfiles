@@ -1484,23 +1484,41 @@ if has_key(g:plugs, 'coc.nvim')
   xmap <silent> <leader>f        <Plug>(coc-format-selected)
 
   " Display coc.nvim status message in the command line
+  let g:coc_suppress_status_delay = 2000
+  hi CocStatusCommandLine  ctermfg=240 guifg=#585858
   augroup coc_status_change
     autocmd!
     autocmd User CocStatusChange call s:coc_show_status_commandline()
+    if exists('##CmdlineLeave')
+      " if user enters a command line, suppress coc status for a short moment
+      autocmd CmdlineEnter * call s:coc_suppress_status_switch(1)
+      autocmd CmdlineLeave * call s:coc_suppress_status_switch(1)
+    endif
   augroup END
 
   let s:carriage_return = nr2char(13)  " 0x13 (^M)
   function! s:coc_show_status_commandline()
+    if get(s:, 'coc_suppress_status_commandline', 0)
+      return
+    endif
     let l:status = trim(get(g:, 'coc_status', ''))
     if empty(l:status) | echon '' | return | endif
     echohl CocStatusCommandLine
     echon  s:carriage_return . '[coc.nvim] ' . l:status
     echohl NONE
   endfunction
-  hi CocStatusCommandLine  ctermfg=240 guifg=#585858
+  function! s:coc_suppress_status_switch(value)
+    let s:coc_suppress_status_commandline = a:value
+    if a:value
+      " when turning on, set a timer to automatically turn off in few seconds
+      if get(s:, 'coc_cmdline_timer', -1) >= 0
+        call timer_stop(s:coc_cmdline_timer)
+      endif
+      let s:coc_cmdline_timer = timer_start(g:coc_suppress_status_delay, {-> s:coc_suppress_status_switch(0)})
+    endif
+  endfunction
 
 endif
-
 
 " ---------------------------------------------------------------- }}}
 
