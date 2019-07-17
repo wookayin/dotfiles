@@ -56,6 +56,13 @@
 	branch = yellow
 	tag = magenta
 
+[color "status"]
+	branch = cyan
+	added = green
+	changed = red
+	nobranch = red bold
+	untracked = yellow
+
 [color "diff-highlight"]
 	oldNormal = red
 	oldHighlight = red bold 52
