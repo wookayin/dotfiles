@@ -244,10 +244,10 @@ import subprocess
 from signal import signal, SIGPIPE, SIG_DFL
 from optparse import OptionParser
 from sys import stderr
-from builtins import input
 
 if sys.version_info[0] >= 3:  # python3
     unicode = lambda s, _: str(s)
+    from builtins import input
 
 
 def log(msg, cr=True):
