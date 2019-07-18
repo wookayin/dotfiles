@@ -860,7 +860,7 @@ let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
 " section z: current position, but more concisely
 let g:airline_section_z = 'L%3l:%v'
 
-" }}
+" }}}
 
 " enable tabline feature
 let g:airline#extensions#tabline#enabled = 1
@@ -1545,4 +1545,4 @@ endif
 
 " }}}
 
-" vim: set ts=2 sts=2 sw=2:
+" vim: set ts=2 sts=2 sw=2 foldmethod=marker foldlevel=1:
