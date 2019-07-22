@@ -100,7 +100,7 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'klen/python-mode', { 'branch': 'develop' } |
   \ Plug 'wookayin/vim-python-enhanced-syntax'
 Plug 'davidhalter/jedi-vim'
-if has('nvim')
+if has('nvim') && g:python3_host_version >= '3.5'
     Plug 'numirias/semshi', { 'do': function('DoRemote') }
     Plug 'stsewd/isort.nvim', { 'do': function('DoRemote') }
 endif

@@ -52,6 +52,11 @@ if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = '/usr/local/bin/
 if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = '/usr/bin/python3'       | endif
 if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = s:python3_local          | endif
 
+function! s:show_warning_message(hlgroup, msg)
+    execute 'echohl ' . a:hlgroup
+    echom a:msg | echohl None
+endfunction
+
 " Get and validate python version
 try
     if executable('python3')
@@ -62,14 +67,16 @@ catch
     let g:python3_host_version = ''
 endtry
 
+" Warn users if modern python3 is not found.
+" (with timer, make it shown frontmost over other warning messages)
 if empty(g:python3_host_version)
-    autocmd VimEnter * echohl Error | echom
-                \ "ERROR: You don't have python3 on your $PATH. Most features are disabled."
-                \ | echohl None
+    autocmd VimEnter * call timer_start(0, { -> s:show_warning_message('ErrorMsg',
+          \ "ERROR: You don't have python3 on your $PATH. Most features are disabled.")
+          \ })
 elseif g:python3_host_version < '3.6.1'
-    autocmd VimEnter * echohl WarningMsg | echom
-                \ printf("Warning: Please use python 3.6+ to enable intellisense features. (Current: %s)", g:python3_host_version)
-                \ | echohl None
+    autocmd VimEnter * call timer_start(0, { -> s:show_warning_message('WarningMsg',
+          \ printf("Warning: Please use python 3.6+ to enable intellisense features. (Current: %s)", g:python3_host_version))
+          \ })
 endif
 
 
