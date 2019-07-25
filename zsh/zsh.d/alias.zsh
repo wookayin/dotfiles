@@ -34,6 +34,7 @@ if command -v nvim 2>&1 >/dev/null; then
     alias vim='nvim'
 fi
 alias vi='vim'
+alias v='vim'
 
 # Just open ~/.vimrc, ~/.zshrc, etc.
 alias vimrc='vim +cd\ ~/.vim -O ~/.vim/vimrc ~/.vim/plugins.vim'
