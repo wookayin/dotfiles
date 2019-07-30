@@ -20,6 +20,9 @@
 	# Make sure the pager terminates when it hits on the end of log
 	log = less -FE
 
+[log]
+	mailmap = true
+
 [alias]
 	history = log --graph --decorate \
 		--pretty=format:'%C(yellow)%h%Creset  %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
