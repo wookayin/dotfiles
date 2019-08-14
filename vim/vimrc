@@ -104,7 +104,18 @@ augroup END
 
 " wildmenu settings
 set wildmenu
-set wildmode=list:longest,full
+try
+  " neovim 0.4.0+: popupmenu completion in the cmdline mode
+  set wildoptions+=pum
+  set wildmode=longest:full,full
+
+  " make <up>, <down>, <tab>, <shift-tab> work well with popupmenu in cmdline
+  cnoremap <expr> <up>   pumvisible() ? "<C-p>" : "<up>"
+  cnoremap <expr> <down> pumvisible() ? "<C-n>" : "<down>"
+catch
+  " old wildmenu heavior (vanilla vim)
+  set wildmode=list,longest:full
+endtry
 set wildignore=*.swp,*.swo,*.class
 
 " status line
