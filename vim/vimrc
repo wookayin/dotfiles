@@ -851,7 +851,8 @@ endif
 " ---------------------------------------------------------------- }}}
 " editorconfig {{{
 
-let g:EditorConfig_core_mode = 'python_external'
+let g:EditorConfig_core_mode = 'vim_core'
+"let g:EditorConfig_core_mode = 'python_external'
 "let g:EditorConfig_core_mode = 'external_command'
 
 
