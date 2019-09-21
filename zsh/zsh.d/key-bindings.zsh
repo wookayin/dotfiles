@@ -14,9 +14,6 @@ bindkey '^E' end-of-line
 bindkey "\033[1~" beginning-of-line
 bindkey "\033[4~" end-of-line
 
-bindkey '^B' backward-char
-bindkey '^F' forward-char
-
 bindkey '^D' delete-char
 bindkey '^H' backward-delete-char
 

@@ -35,6 +35,14 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
   source "${ZDOTDIR:-$HOME}/.zshrc.local"
 fi
 
+# Misc plugin configs {{{
+# -----------------------
+
+# fzf-marks
+export FZF_MARKS_JUMP='^b'
+
+# }}}
+
 # ------------------------------------------------------ }}}
 
 # zgen plugin specifications
@@ -58,7 +66,10 @@ if ! zgen saved; then
   fast-theme "XDG:wook"
 
   # misc.
+  # #see ~/.zsh/zsh.d/envs.zsh for configs
   zgen load wookayin/fzf-fasd
+
+  # fzf-marks
   zgen load urbainvaes/fzf-marks
 
   zgen load zsh-users/zsh-autosuggestions
