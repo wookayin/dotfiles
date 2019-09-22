@@ -293,6 +293,9 @@ if has('nvim')
     " workaround for <c-h> mapping bug in neovim
     " @see https://github.com/neovim/neovim/issues/2048
     nmap <BS> <C-W>h
+
+    " ignore erroneous key input on scrolling, <ffffffff>
+    tnoremap <ScrollWheelLeft> <nop>
 endif
 
 " Buffer navigations
