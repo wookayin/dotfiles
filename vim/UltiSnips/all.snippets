@@ -45,3 +45,24 @@ snippet #Box "Box (uses thicker unicode, but with #comments)"
 `!p snip.rv = '# ┗' + '━' * (len(t[1]) + 2) + '┛'`
 $0
 endsnippet
+
+
+# ┏━━━━━━━━━━━━━━━━┓
+# ┃ Splitter Lines ┃
+# ┗━━━━━━━━━━━━━━━━┛
+
+snippet %%
+`!p snip.rv = '%' * 100`
+endsnippet
+
+snippet ##
+`!p snip.rv = '#' * 100`
+endsnippet
+
+snippet %-
+`!p snip.rv = '%' + '-' * 99`
+endsnippet
+
+snippet #-
+`!p snip.rv = '#' + '-' * 99`
+endsnippet
