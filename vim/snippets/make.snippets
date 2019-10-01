@@ -1,9 +1,0 @@
-# LaTeX -------------------------------------------- {
-snippet pdflatex
-	pdflatex -halt-on-error -interaction=nonstopmode -file-line-error -synctex=1 $<
-snippet latexmk
-	latexmk -pdf -pdflatex="pdflatex -halt-on-error -interaction=nonstopmode -file-line-error -synctex=1" $(basename $@)
-snippet tex
-	${1:filename}.pdf: $1.tex
-		latexmk
-# }

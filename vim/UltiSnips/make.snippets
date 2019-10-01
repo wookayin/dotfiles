@@ -1,0 +1,18 @@
+# Makefile template for LaTeX files
+snippet latex
+.PHONY: all clean
+
+TARGET  := ${1:document}.pdf
+BIBS    := $(wildcard *.bib)
+
+all: $(TARGET)
+
+%.pdf: %.tex $(BIBS)
+	latexmk -pdf -pdflatex="pdflatex -halt-on-error -interaction=nonstopmode -file-line-error -synctex=1" $(basename $@)
+
+clean:
+	latexmk -f -c $(TARGET)
+	rm -f $(TARGET)
+	rm -rf *.log *.aux *.fdb_latexmk *.bbl *.dvi *.thm *.brf
+	rm -rf *.synctex.gz
+endsnippet
