@@ -25,6 +25,13 @@ snippet %box "Box (with %)"
 $0
 endsnippet
 
+snippet %Box "Box (use thicker unicode, but with %comments)"
+`!p snip.rv = '% ┏' + '━' * (len(t[1]) + 2) + '┓'`
+% ┃ $1 ┃
+`!p snip.rv = '% ┗' + '━' * (len(t[1]) + 2) + '┛'`
+$0
+endsnippet
+
 snippet #box "Box (with #)"
 `!p snip.rv = '#' + '#' * (len(t[1]) + 2) + '#'`
 # $1 #
