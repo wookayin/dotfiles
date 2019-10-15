@@ -1420,7 +1420,7 @@ au FileType gitcommit nnoremap <buffer> <silent>
 " Another alias for adding or staging hunk (similar as <leader>ga).
 " for other keys (e.g <leader>hu, <leader>hp), please see
 "  :help gitgutter-<Leader>
-nmap <leader>ha  <Plug>GitGutterStageHunk
+nmap <leader>ha  <Plug>(GitGutterStageHunk)
 
 nmap <leader>hh  :GitGutterLineHighlightsToggle<CR>
 
