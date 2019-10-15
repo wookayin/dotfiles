@@ -953,10 +953,12 @@ command! -bang -nargs=? GFiles     call fzf#vim#gitfiles(<q-args>, <q-args> != '
 " }}}
 
 " :F is a shortcut for :GFiles or :FZF
+function! s:get_git_dir()
+  return fugitive#extract_git_dir(expand('%:p'))
+endfunction
 function! s:fzf_smart()
-  let l:git_dir = fugitive#extract_git_dir(expand('%:p'))
   " in a git repo, invoke :GFiles (plus untracked files)
-  if ! empty(l:git_dir) | GFiles -c -o --exclude-standard
+  if ! empty(s:get_git_dir()) | GFiles -c -o --exclude-standard
   " not in git repo, invoke :FZF by fallback
   else | FZF
   endif
@@ -1068,6 +1070,36 @@ if has_key(g:plugs, 'vim-clap')
 " better background color for clap dialogs
 hi ClapDisplay   ctermbg=236 guibg=#292c3a
 hi ClapMatches   cterm=bold ctermfg=170 gui=bold guifg=#bc6ec5
+
+" keymapping: Use <C-P> as was in FZF
+" However, a subsequent hit of <C-P> will switch back to FZF
+nnoremap <silent> <C-P> :ClapAuto<CR>
+command! -nargs=0 ClapAuto call s:clap_auto()
+function! s:clap_auto()
+  if !empty(s:get_git_dir())
+    echon ":Clap git_files"
+    echohl Comment | echon "   (Press <C-P> again to launch FZF)" | echohl NONE
+    Clap git_files
+  else
+    :F   " fall back to fzf
+  endif
+endfunction
+
+" custom keymapping for clap input windows (see vim-clap/ftplugin/clap_input.vim)
+augroup clap_custom_keymap
+  autocmd!
+  autocmd filetype clap_input inoremap <silent> <buffer> <c-p>
+        \ <ESC>:call Clap_close_and_switch_to_fzf()<CR>
+  autocmd User ClapOnExit    call timer_start(0, {-> Clap_clear_status()})
+augroup END
+
+function! Clap_close_and_switch_to_fzf()
+  call clap#handler#exit()
+  :F    " launch FZF
+endfunction
+function! Clap_clear_status()
+  echon ''
+endfunction
 
 endif
 
