@@ -1062,6 +1062,16 @@ command! GS GFiles?
 command! H History
 
 " ---------------------------------------------------------------- }}}
+" vim-clap {{{
+if has_key(g:plugs, 'vim-clap')
+
+" better background color for clap dialogs
+hi ClapDisplay   ctermbg=236 guibg=#292c3a
+hi ClapMatches   cterm=bold ctermfg=170 gui=bold guifg=#bc6ec5
+
+endif
+
+" ---------------------------------------------------------------- }}}
 " Dash {{{
 
 " ----------------------------------------------------------------------------
