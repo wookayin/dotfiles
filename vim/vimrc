@@ -467,6 +467,7 @@ nnoremap <leader>R :call Redraw()<CR>
 
 " <leader>src : source ~/.vimrc
 nnoremap <leader>src :source ~/.vimrc<CR>
+command! -nargs=0 Vimrc tabnew ~/.vimrc
 
 " <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
 map <leader>y "*y
