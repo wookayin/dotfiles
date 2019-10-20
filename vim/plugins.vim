@@ -30,6 +30,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
 Plug 'junegunn/fzf.vim'
 if has('nvim-0.4.0')
   Plug 'liuchengxu/vim-clap'
+  Plug 'voldikss/vim-floaterm'
 endif
 Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
