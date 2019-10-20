@@ -935,6 +935,35 @@ augroup END
 " ---------------------------------------------------------------- }}}
 " FZF {{{
 
+" neovim 0.4+: FZF + floating window.
+if has('nvim-0.4')
+  " On floating windows, we use reverse layout, i.e. prompt is at the above.
+  let $FZF_DEFAULT_OPTS = $FZF_DEFAULT_OPTS . ' --layout=reverse  --margin=1,2'
+  let g:fzf_layout = { 'window': 'call FloatingFZF()'}
+
+  function! FloatingFZF()
+    let buf = nvim_create_buf(v:false, v:true)
+    call setbufvar(buf, '&signcolumn', 'no')
+
+    let height = float2nr(0.6 * &lines)
+    let width = float2nr(0.9 * &columns)
+    let horizontal = float2nr((&columns - width) / 2)
+    let vertical = (&lines - height) / 2
+
+    let opts = {
+          \ 'relative': 'editor',
+          \ 'row': vertical,
+          \ 'col': horizontal,
+          \ 'width': width,
+          \ 'height': height,
+          \ 'style': 'minimal'
+          \ }
+    let fwinnr = nvim_open_win(buf, v:true, opts)
+    call setwinvar(fwinnr, '&winhl', 'Normal:FZFFloatNormal')
+  endfunction
+  hi FZFFloatNormal term=None guibg=#1a2a31
+endif
+
 " Inside vim, set environment variable FZF_DEFAULT_COMMAND
 " so that it can list the files by 'git ls-files' or 'ag'.
 if executable('ag')
@@ -1072,9 +1101,6 @@ if has_key(g:plugs, 'vim-clap')
 hi ClapDisplay   ctermbg=236 guibg=#292c3a
 hi ClapMatches   cterm=bold ctermfg=170 gui=bold guifg=#bc6ec5
 
-" keymapping: Use <C-P> as was in FZF
-" However, a subsequent hit of <C-P> will switch back to FZF
-nnoremap <silent> <C-P> :ClapAuto<CR>
 command! -nargs=0 ClapAuto call s:clap_auto()
 function! s:clap_auto()
   if !empty(s:get_git_dir())
