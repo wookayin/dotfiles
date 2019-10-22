@@ -1101,35 +1101,12 @@ if has_key(g:plugs, 'vim-clap')
 hi ClapDisplay   ctermbg=236 guibg=#292c3a
 hi ClapMatches   cterm=bold ctermfg=170 gui=bold guifg=#bc6ec5
 
-command! -nargs=0 ClapAuto call s:clap_auto()
-function! s:clap_auto()
-  if !empty(s:get_git_dir())
-    echon ":Clap git_files"
-    echohl Comment | echon "   (Press <C-P> again to launch FZF)" | echohl NONE
-    Clap git_files
-  else
-    :F   " fall back to fzf
-  endif
-endfunction
+" keymappings and command aliases
+nnoremap <silent> <C-G>   :Clap<CR>
 
-" custom keymapping for clap input windows (see vim-clap/ftplugin/clap_input.vim)
-augroup clap_custom_keymap
-  autocmd!
-  autocmd filetype clap_input inoremap <silent> <buffer> <c-p>
-        \ <ESC>:call Clap_close_and_switch_to_fzf()<CR>
-  autocmd User ClapOnExit    call timer_start(0, {-> Clap_clear_status()})
-augroup END
-
-function! Clap_close_and_switch_to_fzf()
-  call clap#handler#exit()
-  :F    " launch FZF
-endfunction
-function! Clap_clear_status()
-  echon ''
-endfunction
+command! -nargs=0 Grep     Clap grep
 
 endif
-
 " ---------------------------------------------------------------- }}}
 " vim-floaterm {{{
 
