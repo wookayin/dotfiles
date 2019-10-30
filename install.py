@@ -87,7 +87,13 @@ tasks = {
 }
 
 
-from distutils.spawn import find_executable
+try:
+    from distutils.spawn import find_executable
+except ImportError:
+    # In some environments, distutils might not be available.
+    import sys
+    sys.stderr.write("WARNING: distutils not available\n")
+    find_executable = lambda _: False   # type: ignore
 
 
 post_actions = [
