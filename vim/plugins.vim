@@ -85,7 +85,9 @@ endif
 Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/vim-peekaboo'
 Plug 'sjl/gundo.vim'
-Plug 'SirVer/ultisnips'
+if has('python3')
+    Plug 'SirVer/ultisnips'
+endif
 Plug 'vim-scripts/matchit.zip'
 Plug 'tomtom/tlib_vim'
 Plug 'junegunn/vader.vim'
