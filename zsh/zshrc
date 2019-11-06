@@ -25,6 +25,10 @@ fi
 # @see https://github.com/zplug/zplug/issues/373
 zstyle ":prezto:module:completion" loaded 'yes'
 
+# Do not put all usernames as possible candidates for tab completion.
+zstyle ':completion:*' users root $USER
+
+
 # virtualenvwrapper -- use lazy load now (see prezto#669)
 if (( $+commands[virtualenvwrapper_lazy.sh] )); then
     source "$commands[virtualenvwrapper_lazy.sh]"
