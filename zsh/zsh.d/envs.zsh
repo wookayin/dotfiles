@@ -53,6 +53,11 @@ unsetopt AUTO_NAME_DIRS       # Do not auto add variable-stored paths
 # This is especially useful for some commands with '^', '~', '#', e.g. 'git show HEAD^1'
 unsetopt NOMATCH
 
+# Editor
+if (( $+commands[nvim] )); then
+  export GIT_EDITOR="nvim"
+fi
+
 #
 # Path Configurations.
 #
