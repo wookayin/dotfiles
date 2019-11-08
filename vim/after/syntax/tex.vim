@@ -6,7 +6,7 @@
 syn region texCommentRegion     start="\\begin{comment}"  end="\\end{comment}\|%stopzone\>"
 hi! def link texCommentRegion   texComment
 " treat \iffalse ... \fi as comment
-syn region texIfFalseRegion     start="\\iffalse"  end="\\fi\|%stopzone\>"
+syn region texIfFalseRegion     start="\\iffalse"  end="\\else\|\\fi\|%stopzone\>"
 hi texIfFalseRegion             ctermfg=241 guifg=#626262
 
 " TODO: nested region currently does not work
