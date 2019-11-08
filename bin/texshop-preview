@@ -1,0 +1,31 @@
+#!/bin/bash
+# texshop-preview: Open a PDF file in TexShop's PDF preview window.
+
+# Tip: You may want to turn off automatic focusing:
+# $ defaults write TeXShop BringPdfFrontOnAutomaticUpdate NO
+
+
+if [ `uname` != "Darwin" ]; then
+    echo "Run on macOS only!"; exit 1
+fi
+
+get_abs_path() {
+  echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+}
+
+if [[ ! -f "$1" ]]; then
+    # file not exists
+    echo "Not exists: $1"
+    exit 1;
+fi
+
+ret=$(osascript 2>&1 <<EOF
+tell application "TeXShop"
+  open_for_externaleditor at "$(get_abs_path "$1")"
+end tell
+EOF
+)
+
+if [[ "$ret" != "true" ]]; then
+    exit 1
+fi
