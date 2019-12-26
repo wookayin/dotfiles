@@ -278,7 +278,7 @@ install_xsv() {
 }
 
 install_bat() {
-    BAT_VERSION="0.8.0"
+    BAT_VERSION="0.12.1"
 
     set -e; set -x
     mkdir -p $PREFIX/bin && cd $PREFIX/bin
