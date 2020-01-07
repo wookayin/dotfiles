@@ -48,8 +48,10 @@ def add_argument(*args, **kwargs):
 
 ###############################################################################################
 
-@add_argument('--skip-zplug', action='store_true', help='Skip zplug update')
-def update(skip_zplug=False):
+@add_argument('--skip-zplug', action='store_true', help='Skip zplug/zgen update')
+@add_argument('--skip-vimplug', action='store_true', help='Skip vim-plug update')
+def update(skip_zplug=False,
+           skip_vimplug=False):
     '''Update the dotfiles from github.'''
 
     dotfiles_dir = os.path.expanduser('~/.dotfiles')
@@ -65,6 +67,7 @@ def update(skip_zplug=False):
 
     install_args = ""
     if skip_zplug: install_args += "--skip-zplug "
+    if skip_vimplug: install_args += "--skip-vimplug "
 
     # TODO: check if current branch is master
     action = '''
