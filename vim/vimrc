@@ -1549,7 +1549,8 @@ if has_key(g:plugs, 'coc.nvim')
   " [Custom keymappings] see plugin/coc.vim
 
   " Go to definitions
-  noremap <F3> :<C-u>call CocAction('jumpDefinition')<CR>
+  noremap <silent> <F3> :CocJumpDefinition<CR>
+  noremap <silent> <F12> :CocJumpDefinition<CR>
   command! -nargs=0 CocJumpDefinition :call CocAction('jumpDefinition')
   command! -nargs=0 JumpDefinition :call CocAction('jumpDefinition')
 
