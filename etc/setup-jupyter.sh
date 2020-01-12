@@ -13,25 +13,34 @@ install_jupyter_basic() {
 
     jupyter nbextension enable --py --sys-prefix 'widgetsnbextension'
 
-    jupyter labextension install '@jupyterlab/toc'
+    jupyter labextension install '@jupyterlab/toc' --no-build
 
-    jupyter labextension install '@jupyter-widgets/jupyterlab-manager'
-    jupyter labextension install 'jupyter-matplotlib'
+    jupyter labextension install '@jupyter-widgets/jupyterlab-manager' --no-build
+    jupyter labextension install 'jupyter-matplotlib' --no-build
+
+    jupyter lab build
 }
 
 install_jupyter_extra() {
     # pyviz (hvplot, etc.)
     pip install --upgrade 'hvplot'
-    jupyter labextension install '@pyviz/jupyterlab_pyviz'
+    jupyter labextension install '@pyviz/jupyterlab_pyviz' --no-build
+
+    # plotly
+    jupyter labextension install 'jupyterlab-plotly' --no-build
+    jupyter labextension install 'plotlywidget' --no-build
 
     # ipyveutify
     pip install --upgrade 'ipyvuetify'
     jupyter nbextension enable --py --sys-prefix 'ipyvuetify'
-    jupyter labextension install 'jupyter-vuetify'
+    jupyter labextension install 'jupyter-vuetify' --no-build
 
     # ipyaggrid
     pip install --upgrade 'ipyaggrid'
-    jupyter labextension install 'ipyaggrid'
+    jupyter labextension install 'ipyaggrid' --no-build
+
+    # build all extensions
+    jupyter lab build
 }
 
 # ----------------------------------------------
