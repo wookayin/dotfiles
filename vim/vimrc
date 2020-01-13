@@ -1115,6 +1115,13 @@ let g:floaterm_background = '#1a2a31'
 
 command! -nargs=0 FT FloatermToggle
 
+" custom keymappings and stylization on floaterm windows
+augroup FloatermCustom
+  " <C-h>: Hide the floating terminal window
+  autocmd FileType floaterm tmap <silent> <C-h>
+        \ <C-\><C-n>:hide<CR>
+augroup END
+
 " ---------------------------------------------------------------- }}}
 " Dash {{{
 
