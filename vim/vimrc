@@ -1117,8 +1117,10 @@ command! -nargs=0 FT FloatermToggle
 
 " custom keymappings and stylization on floaterm windows
 augroup FloatermCustom
-  " <C-h>: Hide the floating terminal window
+  " <C-h>, <C-z>: Hide the floating terminal window
   autocmd FileType floaterm tmap <silent> <C-h>
+        \ <C-\><C-n>:hide<CR>
+  autocmd FileType floaterm tmap <silent> <C-z>
         \ <C-\><C-n>:hide<CR>
 augroup END
 
