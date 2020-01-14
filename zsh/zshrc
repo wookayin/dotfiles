@@ -115,5 +115,17 @@ if (( $+commands[iterm-tab-color] )); then
     iterm_tab_color_auto
 fi
 
+# Anaconda3
+# see ~/.zshenv for $CONDA_EXE detection
+# >>> conda initialize >>>
+if [ -n "${CONDA_EXE}" ]; then
+  __conda_setup="$(${CONDA_EXE} 'shell.zsh' 'hook' 2> /dev/null)"
+  if [ $? -eq 0 ]; then
+      eval "$__conda_setup"
+  fi
+  unset __conda_setup
+fi
+# <<< conda initialize <<<
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

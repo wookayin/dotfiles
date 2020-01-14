@@ -63,16 +63,19 @@ if [ -d $HOME/.dotfiles/bin/ ]; then
   path=( $path $HOME/.dotfiles/bin )
 fi
 
-# Anaconda3
-if [ -d $HOME/.anaconda3/bin/ ]; then
-  path=( $path $HOME/.anaconda3/bin )
-fi
-
 # Miniconda3
 if [ -d $HOME/.miniconda3/bin/ ]; then
   path=( $path $HOME/.miniconda3/bin )
+  export CONDA_EXE=$HOME/.miniconda3/bin/conda
 elif [ -d "/usr/local/miniconda3/" ]; then
   path=( $path "/usr/local/miniconda3/bin" )
+  export CONDA_EXE="/usr/local/miniconda3/bin/conda"
+fi
+
+# Anaconda3 (deprecated, should prefer miniconda3
+if [ -d $HOME/.anaconda3/bin/ ]; then
+  path=( $path $HOME/.anaconda3/bin )
+  export CONDA_EXE=$HOME/.anaconda3/bin/conda
 fi
 
 # rust (cargo)
