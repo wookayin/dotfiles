@@ -121,7 +121,8 @@ alias gva='gv --all'
 # Python ======================================= {{{
 
 # anaconda
-alias sa='source activate'
+alias sa='conda activate'   # source activate is deprecated.
+alias ca='conda activate'
 
 # virtualenv
 alias wo='workon'
