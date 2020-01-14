@@ -69,6 +69,9 @@ if ! zgen saved; then
   zgen load zdharma/fast-syntax-highlighting
   fast-theme "XDG:wook"
 
+  # More completion support
+  zgen load esc/conda-zsh-completion
+
   # misc.
   # #see ~/.zsh/zsh.d/envs.zsh for configs
   zgen load wookayin/fzf-fasd
