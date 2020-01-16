@@ -17,6 +17,8 @@ except ImportError:
 # For instant startup, non-builtins should be imported lazily
 import os, sys, re
 
+# disable lazy_import because lazy-loaded numpy causes many problem
+'''
 try:
     import lazy_import
     try:
@@ -33,3 +35,4 @@ try:
         print("")
 except ImportError:
     print("Automatic lazy-import has been disabled. (to enable: pip install lazy_import)")
+'''
