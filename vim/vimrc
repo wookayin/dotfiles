@@ -984,7 +984,11 @@ command! -bang -nargs=? GFiles     call fzf#vim#gitfiles(<q-args>, <q-args> != '
 
 " :F is a shortcut for :GFiles or :FZF
 function! s:get_git_dir()
-  return fugitive#extract_git_dir(expand('%:p'))
+  let curr = expand('%:p')
+  if empty(curr)   " empty buffer, etc.: fall back to current dir
+    let curr = getcwd()
+  endif
+  return fugitive#extract_git_dir(curr)
 endfunction
 function! s:fzf_smart()
   " in a git repo, invoke :GFiles (plus untracked files)
