@@ -67,6 +67,18 @@ configure_skim() {
 
 
 ################################################################
+# VS Code
+################################################################
+
+configure_vscode() {
+    # Enable key-repeating (https://github.com/VSCodeVim/Vim#mac)
+    defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
+    defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
+    defaults delete -g ApplePressAndHoldEnabled || true
+}
+
+
+################################################################
 
 all() {
     configure_general
@@ -74,6 +86,7 @@ all() {
     configure_finder
     configure_safari
     configure_skim
+    configure_vscode
 }
 
 if [ -n "$1" ]; then
