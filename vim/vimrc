@@ -1171,7 +1171,7 @@ let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
 
 let g:voom_ft_modes = {'pandoc': 'markdown', 'tex': 'latex'}
 
-nnoremap <leader>V :VoomToggle<CR>
+"nnoremap <leader>V :VoomToggle<CR>
 
 " ---------------------------------------------------------------- }}}
 " Easymotion {{{
@@ -1465,6 +1465,8 @@ if has('mac')
     let g:vimtex_view_general_options = '-r -g @line @pdf @tex'
   endif
 endif
+
+nnoremap <leader>V :VimtexTocOpen<CR>
 
 " ---------------------------------------------------------------- }}}
 " fugitive {{{
