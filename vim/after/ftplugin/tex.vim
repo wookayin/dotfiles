@@ -10,6 +10,10 @@ let g:tex_isk='48-57,_,a-z,A-Z,192-255,:'
 " configure default fold level
 setlocal foldlevel=1
 
+" tex-specific settings
+setlocal colorcolumn=100
+
+
 " More keymaps
 " ------------
 
