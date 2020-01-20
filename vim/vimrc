@@ -274,6 +274,7 @@ if has('nvim')
     autocmd TermOpen * startinsert
 
     " terminal in a new tab or vsplit buffer
+    command! -nargs=* T :Term <args>
     command! -nargs=* Term :tabnew | :term <args>
     command! -nargs=* STerm :split | :term <args>
     command! -nargs=* VTerm :split | :term <args>
