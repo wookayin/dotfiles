@@ -209,17 +209,36 @@ install_neovim() {
     # install neovim nightly
     set -e
 
+    NEOVIM_VERSION="v0.4.3"
+    VERBOSE=""
+    for arg in "$@"; do
+      if [ "$arg" == "--nightly" ]; then
+        NEOVIM_VERSION="nightly";
+      elif [ "$arg" == "-v" ] || [ "$arg" == "--verbose" ]; then
+        VERBOSE="--verbose"
+      fi
+    done
+
+    if [ "${NEOVIM_VERSION}" == "nightly" ]; then
+      echo -e "${COLOR_YELLOW}Installing neovim nightly. ${COLOR_NONE}"
+    else
+      echo -e "${COLOR_YELLOW}Installing neovim stable ${NEOVIM_VERSION}. ${COLOR_NONE}"
+      echo -e "${COLOR_YELLOW}To install a nightly version, add flag: --nightly ${COLOR_NONE}"
+    fi
+    sleep 1;  # allow users to read above comments
+
     TMP_NVIM_DIR="/tmp/$USER/neovim"; mkdir -p $TMP_NVIM_DIR
-    NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
+    NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim-linux64.tar.gz"
 
     cd $TMP_NVIM_DIR
     wget --backups=1 $NVIM_DOWNLOAD_URL      # always overwrite, having only one backup
-    tar -xvzf "nvim-linux64.tar.gz"
+    tar $VERBOSE -xzf "nvim-linux64.tar.gz"
+    ls --color -d $TMP_NVIM_DIR/nvim-linux64
 
     # copy and merge into ~/.local/bin
-    echo "[*] Copying to $PREFIX ..."
-    cp -RT "nvim-linux64/" "$PREFIX" >/dev/null \
-        || (echo "Copy failed, please kill all nvim instances"; exit 1)
+    echo -e "${COLOR_GREEN}[*] Copying to $PREFIX ... ${COLOR_NONE}"
+    cp -RT $VERBOSE "nvim-linux64/" "$PREFIX" >/dev/null \
+        || (echo -e "${COLOR_RED}Copy failed, please kill all nvim instances.${COLOR_NONE}"; exit 1)
 
     $PREFIX/bin/nvim --version
 }

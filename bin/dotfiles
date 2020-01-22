@@ -100,7 +100,7 @@ def open_github():
 
 @add_argument('target', nargs='+', help='target package to install, see ~/.dotfiles/etc/linux-locals.sh for list')
 @add_argument('--force', action='store_true')
-def install_local(target, force):
+def install_local(target, force, argv=[]):
     '''
     Install local packages as specified in /etc/linux-locals.sh.
     Available only in Linux.
@@ -117,8 +117,11 @@ def install_local(target, force):
 
     for t in target:
         ret = subprocess.call(
-            './etc/linux-locals.sh install_{} {}'.format(
-                t, '--force' if force else ''),
+            './etc/linux-locals.sh install_{target} {force_flag} {flag}'.format(
+                target=t,
+                force_flag='--force' if force else '',
+                flag=' '.join(argv)   # TODO: shlex (python 3+)
+            ),
             shell=True, cwd=dotfiles_dir
         )
 
@@ -153,10 +156,12 @@ def main():
         parser.print_help()
         sys.exit(1)
     else:
-        args = parser.parse_args()
+        args, unknown = parser.parse_known_args()
 
     kwargs = vars(args)
     command = kwargs.pop('command')
+    if unknown:
+        kwargs['argv'] = unknown
     ret = COMMANDS[command](**kwargs)
 
     if ret:  # non-zero exit code
