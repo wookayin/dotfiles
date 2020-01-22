@@ -1571,8 +1571,8 @@ if has_key(g:plugs, 'coc.nvim')
   " Go to definitions
   noremap <silent> <F3> :CocJumpDefinition<CR>
   noremap <silent> <F12> :CocJumpDefinition<CR>
-  command! -nargs=0 CocJumpDefinition :call CocAction('jumpDefinition')
-  command! -nargs=0 JumpDefinition :call CocAction('jumpDefinition')
+  command! -nargs=0 CocJumpDefinition :call CocActionAsync('jumpDefinition')
+  command! -nargs=0 JumpDefinition :call CocActionAsync('jumpDefinition')
 
   " Remap keys for gotos
   nmap <silent> gd <Plug>(coc-definition)
