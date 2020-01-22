@@ -992,6 +992,11 @@ function! s:get_git_dir()
   return fugitive#extract_git_dir(curr)
 endfunction
 function! s:fzf_smart()
+  " if a FZF tree/explorer is shown, invoke :Files (with preview) rather than :GFiles
+  if &filetype == 'nerdtree'
+    let l:target_path = b:NERDTree.root.path._str()
+    call fzf#vim#files(l:target_path, fzf#vim#with_preview()) | return
+  endif
   " in a git repo, invoke :GFiles (plus untracked files)
   if ! empty(s:get_git_dir()) | GFiles -c -o --exclude-standard
   " not in git repo, invoke :FZF by fallback
