@@ -995,6 +995,11 @@ function! s:fzf_smart()
   " if a FZF tree/explorer is shown, invoke :Files (with preview) rather than :GFiles
   if &filetype == 'nerdtree'
     let l:target_path = b:NERDTree.root.path._str()
+    " if the current buffer is the pinned on in the tab (vim-nerdtree-tabs),
+    " let fzf open files in another window. Otherwise, open in the current window.
+    if exists('t:NERDTreeBufName') && bufname('%') == t:NERDTreeBufName
+      wincmd w   " we need to move the focus outside nerdtree
+    endif
     call fzf#vim#files(l:target_path, fzf#vim#with_preview()) | return
   endif
   " in a git repo, invoke :GFiles (plus untracked files)
