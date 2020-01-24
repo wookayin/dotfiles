@@ -1665,6 +1665,7 @@ endif
 augroup secure_modeline_conflict_workaround
   autocmd!
   autocmd FileType help setlocal nomodeline
+  autocmd FileType GV setlocal nomodeline
 augroup END
 
 " Use local vimrc if available
