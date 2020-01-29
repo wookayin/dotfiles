@@ -1433,6 +1433,9 @@ function! s:detect_libclang_path()
   let l:linux_clang = sort(glob('/usr/lib/llvm-*/lib/libclang.so', 1, 1), 'n')   " numeric sort
   if ! empty(l:linux_clang) | return l:linux_clang[-1] | endif
 
+  let l:linux_clang = sort(glob('/usr/lib/llvm-*/lib/libclang.so.1', 1, 1), 'n')   " numeric sort
+  if ! empty(l:linux_clang) | return l:linux_clang[-1] | endif
+
   " darwin
   let l:darwin_clang = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
   if filereadable(l:darwin_clang) | return l:darwin_clang | endif
