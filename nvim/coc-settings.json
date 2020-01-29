@@ -41,5 +41,7 @@
      * custom language servers
      **************************/
     "languageserver": {
+      /* see [Optional language servers] section in ~/.vimrc  (dynamic LSP registration)
+         References: https://github.com/neoclide/coc.nvim/wiki/Language-servers  */
     }
 }

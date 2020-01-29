@@ -1581,9 +1581,22 @@ if has_key(g:plugs, 'coc.nvim')
     endfunction
   endif
 
+  " [Optional language servers]
+  " See ~/.config/nvim/coc-settings.json
+  " ------------------------------------
 
+  " clangd: C/C++
+  if executable('clangd')
+    call coc#config('languageserver.clangd', {
+          \ "command": "clangd",
+          \ "args": ["--background-index"],
+          \ "rootPatterns": ["compile_flags.txt", "compile_commands.json", ".vim/", ".git/", ".hg/"],
+          \ "filetypes": ["c", "cpp", "objc", "objcpp"]
+          \ })
+  endif
 
   " [Custom keymappings] see plugin/coc.vim
+  " ---------------------------------------
 
   " Go to definitions
   noremap <silent> <F3> :CocJumpDefinition<CR>
