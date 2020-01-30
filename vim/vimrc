@@ -936,6 +936,9 @@ augroup END
 " ---------------------------------------------------------------- }}}
 " FZF {{{
 
+" If floating window is not available, use 33%-bottom layout
+let g:fzf_layout = { 'down' : '~33%' }
+
 " neovim 0.4+: FZF + floating window.
 if has('nvim-0.4')
   " On floating windows, we use reverse layout, i.e. prompt is at the above.
@@ -975,6 +978,7 @@ endif
 " For full list, @see https://github.com/junegunn/fzf.vim/blob/master/plugin/fzf.vim#L42
 
 " :GFiles (with preview), :GFiles? (git diff + preview)
+" Pressing '?' when FZF is shown would toggle preview
 command! -bang -nargs=? GFiles     call fzf#vim#gitfiles(<q-args>, <q-args> != '?' ? (
       \ <bang>0 ? fzf#vim#with_preview('up:90%')
       \         : fzf#vim#with_preview('right:50%', '?')
@@ -1062,36 +1066,62 @@ function! s:fzf_rgdef(args, bang0)
 endfunction
 
 
+" FZF-based finder commands
+" -------------------------
 
 " :Z -- cd to recent working directories using fasd
 command! -nargs=* Z call fzf#run
-      \({
+      \(fzf#wrap({
       \ 'source':  printf('fasd -Rdl "%s"',
       \                   escape(empty(<q-args>) ? '' : <q-args>, '"\')),
-      \ 'options': '-1 -0 --no-sort +m',
-      \ 'down':    '~33%',
+      \ 'options': ['-1', '-0', '--no-sort', '--no-multi',
+      \             '--prompt', 'Z> '],
       \ 'sink':    'NERDTree'
-      \})
+      \}))
 
 " :Plugs -- list all vim plugins and open the directory of the selected
 command! -nargs=* Plugs call fzf#run
-      \({
-      \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home . "/" . v:val'),
-      \ 'options': '--delimiter "/" --nth -1' . printf(' --query "%s"', <q-args>),
-      \ 'down':    '~33%',
+      \(fzf#wrap({
+      \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home . "/" . s:ansi_yellow(v:val)'),
+      \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
+      \             '--query', <q-args>, '--prompt', 'Plugs> ',
+      \             ] + s:fzf_preview_directory_if_applicable(),
       \ 'sink':    'NERDTree'
-      \})
+      \}))
 
 " :SitePackages -- quickly jump to the site-packages directory for the current python
 command! -nargs=* SitePackages call fzf#run
-      \({
+      \(fzf#wrap({
       \ 'source':  ('python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())" ' .
       \             ' | xargs -I{} find {}/ -maxdepth 1 -type d ' .
-      \             ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" | sort'),
-      \ 'options': '--delimiter "/" --nth -1 +m ' . printf(' --query "%s"', <q-args>),
-      \ 'down':    '~33%',
-      \ 'sink':    'NERDTree',
-      \})
+      \             ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" | sort ' .
+      \             ' | ' . s:sed_highlight_path_last_segment
+      \ ),
+      \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
+      \             '--query', <q-args>, '--prompt', 'SitePackages> ',
+      \             ] + s:fzf_preview_directory_if_applicable(),
+      \ 'sink':    'NERDTree'
+      \}))
+
+function! s:fzf_preview_directory_if_applicable()
+  let l:fzf_options = []
+  if &columns >= 100 && executable("tree")
+    " enable directory preview if width is sufficient; max depth 2.
+    let l:fzf_options += [
+          \ '--preview-window', 'right:25%',
+          \ '--preview', 'tree -I "node_modules|.git|*.pyc" -L 2 -x {}',
+          \ '--bind', '?:toggle-preview',
+          \ '--header', ':: Press "?" to toggle preview'
+          \ ]
+  endif
+  return l:fzf_options
+endfunction
+
+let s:sed_highlight_path_last_segment = 'sed -e "s#\(.*\)/\(.*\)#\1/$(tput setaf 3)\2$(tput sgr0)#"'
+function! s:ansi_yellow(str)
+  return printf("\x1b[33m%s\x1b[m", a:str)
+endfunction
+
 
 " Leader key mappings for vim-fzf commands
 
