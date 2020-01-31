@@ -61,6 +61,7 @@ Plug 'majutsushi/tagbar'
 Plug 'rking/ag.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'junegunn/vim-easy-align'
+Plug 'Yggdroot/indentLine'
 
 " Utilities
 Plug 'junegunn/vim-emoji'

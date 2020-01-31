@@ -1255,6 +1255,12 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " ---------------------------------------------------------------- }}}
+" indentLine {{{
+
+" command alias
+command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
+
+" ---------------------------------------------------------------- }}}
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:UltiSnipsJumpForwardTrigger = '<c-j>'
