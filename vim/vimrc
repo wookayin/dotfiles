@@ -1266,7 +1266,12 @@ let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:UltiSnipsJumpForwardTrigger = '<c-j>'
 let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
 
+" edit snippets: split the window vertically or horizontally
+let g:UltiSnipsEditSplit = 'context'
+let g:UltiSnipsSnippetDirectories = [$HOME . '/.vim/UltiSnips']
+
 command! -nargs=0 UltiSnipsRefreshSnippets :call UltiSnips#RefreshSnippets()
+command! -nargs=0 RefreshUltiSnips         :UltiSnipsRefreshSnippets
 
 augroup UltiSnipsAutoReload
   autocmd!
