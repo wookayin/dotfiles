@@ -13,6 +13,9 @@ setlocal foldlevel=1
 " tex-specific settings
 setlocal colorcolumn=100
 
+" Do not use conceal for LaTeX (e.g. indentLine)
+setlocal conceallevel=0
+
 
 " More keymaps
 " ------------

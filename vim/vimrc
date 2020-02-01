@@ -1257,6 +1257,13 @@ nmap ga <Plug>(EasyAlign)
 " ---------------------------------------------------------------- }}}
 " indentLine {{{
 
+" conceal might break latex/json/markdown syntax, etc.
+" see also after/ftplugin/*.vim settings for conceal level configuration.
+let g:indentLine_conceallevel = 1
+
+" conceal values might not work well for tex files (hides some characters)
+let g:indentLine_fileTypeExclude = ['tex', 'markdown']
+
 " command alias
 command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
 
