@@ -90,6 +90,9 @@ if has('nvim')
   set inccommand=split
 endif
 
+" When jumping to line, folds on the line should be opened (:help 'foldopen')
+set foldopen+=jump
+
 " use spaces for tabbing, by default
 set expandtab
 
