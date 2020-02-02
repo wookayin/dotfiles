@@ -37,12 +37,8 @@ alias vi='vim'
 alias v='vim'
 
 # Just open ~/.vimrc, ~/.zshrc, etc.
-alias vimrc='vim +cd\ ~/.vim -O ~/.vim/vimrc ~/.vim/plugins.vim'
-if [[ -f "$HOME/.vim/plugins.local.vim" ]]; then
-  # if plugins.local.vim exists, open it as well in the below right
-  alias vimrc='vim +cd\ ~/.vim -O ~/.vim/vimrc ~/.vim/plugins.vim \
-    +"wincmd w | 10sp ~/.vim/plugins.local.vim | wincmd t" '
-fi
+alias vimrc='vim +Vimrc'
+#alias vimrc='vim +cd\ ~/.vim -O ~/.vim/vimrc ~/.vim/plugins.vim'
 
 alias zshrc='vim +cd\ ~/.zsh -O ~/.zsh/zshrc ~/.zpreztorc'
 
