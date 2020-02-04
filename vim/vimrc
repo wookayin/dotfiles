@@ -772,6 +772,20 @@ let g:startify_skiplist = [
     \ 'plugged/.*/doc',
     \ 'bundle/.*/doc',
     \ ]
+
+" ---------------------------------------------------------------- }}}
+" vim-eunuch {{{
+
+" remove all rm-like commands, which are too dangerous (even no confirm...)
+if has_key(g:plugs, 'vim-eunuch')
+  autocmd VimEnter * call s:remove_eunuch_commands()
+  function! s:remove_eunuch_commands()
+    if exists('g:loaded_eunuch')
+      delcommand Remove | delcommand Delete | delcommand Unlink
+    endif
+  endfunction
+endif
+
 " ---------------------------------------------------------------- }}}
 " vim-emoji {{{
 
