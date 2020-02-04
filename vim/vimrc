@@ -464,10 +464,10 @@ nmap <silent> <leader>cd :call CD_to_file()<CR>
 
 " <leader>R : screen sucks, redraw everything
 function! Redraw()
-  redraw!
+  :mode
   call s:auto_termguicolors()   " re-detect true colors
 endfunction
-nnoremap <leader>R :call Redraw()<CR>
+nnoremap <silent> <leader>R :call Redraw()<CR>
 
 " <leader>src : source ~/.vimrc
 nnoremap <leader>src :source ~/.vimrc<CR>
