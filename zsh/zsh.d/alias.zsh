@@ -125,6 +125,7 @@ alias gva='gv --all'
 # anaconda
 alias sa='conda activate'   # source activate is deprecated.
 alias ca='conda activate'
+alias deactivate='[[ -n "$CONDA_DEFAULT_ENV" ]] && conda deactivate || deactivate'
 
 # virtualenv
 alias wo='workon'
