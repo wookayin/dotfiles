@@ -1771,4 +1771,4 @@ endif
 
 " }}}
 
-" vim: set ts=2 sts=2 sw=2 foldmethod=marker foldlevel=2:
+" vim: set ts=2 sts=2 sw=2 foldmethod=marker foldlevel=1:
