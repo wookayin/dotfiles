@@ -14,9 +14,9 @@ scriptencoding utf-8
 " It is for making this vimrc could also work out-of-box
 " even if not managed by dotfiles.
 if filereadable(expand('~/.vim/plugins.vim'))
-    source \~/.vim/plugins.vim
+  source \~/.vim/plugins.vim
 else
-    let g:plugs = {}
+  let g:plugs = {}
 endif
 
 " Automatically install missing plugins on startup
@@ -49,8 +49,8 @@ let $PATH .= ':' . expand('~/.local/bin')
 
 " load plugins with pathogen
 try
-    runtime bundle/vim-pathogen/autoload/pathogen.vim
-    call pathogen#infect()
+  runtime bundle/vim-pathogen/autoload/pathogen.vim
+  call pathogen#infect()
 catch
 endtry
 
@@ -133,17 +133,17 @@ set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
 
 " mouse behaviour
 if has('mouse')
-    set mouse=nvc
+  set mouse=nvc
 endif
 if ! has('nvim')
-    " vim only (not in neovim)
-    set ttymouse=xterm2
+  " vim only (not in neovim)
+  set ttymouse=xterm2
 endif
 
 
 " encoding and line ending settings
 if !has('nvim')
-    set encoding=utf-8
+  set encoding=utf-8
 endif
 set fileencodings=utf-8,cp949,latin1
 set fileformats=unix,dos
@@ -184,11 +184,11 @@ endif
 
 " use strong encryption
 if ! has('nvim')
-    if v:version >= 800 || v:version == 704 && has('patch399')
-        set cryptmethod=blowfish2 " Requires >= 7.4.399
-    else
-        set cryptmethod=blowfish
-    endif
+  if v:version >= 800 || v:version == 704 && has('patch399')
+    set cryptmethod=blowfish2 " Requires >= 7.4.399
+  else
+    set cryptmethod=blowfish
+  endif
 endif
 
 " When opening http urls using netrw, follow 302 redirects
@@ -207,13 +207,13 @@ endif
 
 " For debugging
 function! ToggleVerbose()
-    if !&verbose
-        set verbosefile=~/.vim/verbose.log
-        set verbose=15
-    else
-        set verbose=0
-        set verbosefile=
-    endif
+  if !&verbose
+    set verbosefile=~/.vim/verbose.log
+    set verbose=15
+  else
+    set verbose=0
+    set verbosefile=
+  endif
 endfunction
 
 " }}}
@@ -266,40 +266,40 @@ inoremap <C-C> <ESC>
 
 " in terminal mode (neovim)
 if has('nvim')
-    " <C-\><C-n> is the key sequence for escaping form terminal mode
-    " double <ESC> and double <C-\> also goes for escaping from terminal,
-    " whereas single <ESC> would be directly passed inside the terminal.
-    tnoremap <silent> <C-[><C-[> <C-\><C-n>
-    tnoremap <silent> <C-\><C-\> <C-\><C-n>
+  " <C-\><C-n> is the key sequence for escaping form terminal mode
+  " double <ESC> and double <C-\> also goes for escaping from terminal,
+  " whereas single <ESC> would be directly passed inside the terminal.
+  tnoremap <silent> <C-[><C-[> <C-\><C-n>
+  tnoremap <silent> <C-\><C-\> <C-\><C-n>
 
-    " Automatically enter insert mode when entering neovim terminal buffer
-    autocmd BufWinEnter,WinEnter term://* startinsert
-    autocmd TermOpen * startinsert
+  " Automatically enter insert mode when entering neovim terminal buffer
+  autocmd BufWinEnter,WinEnter term://* startinsert
+  autocmd TermOpen * startinsert
 
-    " terminal in a new tab or vsplit buffer
-    command! -nargs=* T :Term <args>
-    command! -nargs=* Term :tabnew | :term <args>
-    command! -nargs=* STerm :split | :term <args>
-    command! -nargs=* VTerm :split | :term <args>
-    command! -nargs=* TermSplit :split | :term <args>
-    command! -nargs=* TermVSplit :vsplit | :term <args>
+  " terminal in a new tab or vsplit buffer
+  command! -nargs=* T :Term <args>
+  command! -nargs=* Term :tabnew | :term <args>
+  command! -nargs=* STerm :split | :term <args>
+  command! -nargs=* VTerm :split | :term <args>
+  command! -nargs=* TermSplit :split | :term <args>
+  command! -nargs=* TermVSplit :vsplit | :term <args>
 
-    " Mapping for <c-hjkl> in terminal mode
-    " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
-    tmap <C-h> <C-\><C-n><C-h>
-    tmap <C-j> <C-\><C-n><C-j>
-    tmap <C-k> <C-\><C-n><C-k>
-    "tmap <C-l> <C-\><C-n><C-l>
-    " TODO: <c-l> is for clear screen...?
+  " Mapping for <c-hjkl> in terminal mode
+  " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
+  tmap <C-h> <C-\><C-n><C-h>
+  tmap <C-j> <C-\><C-n><C-j>
+  tmap <C-k> <C-\><C-n><C-k>
+  "tmap <C-l> <C-\><C-n><C-l>
+  " TODO: <c-l> is for clear screen...?
 endif
 
 if has('nvim')
-    " workaround for <c-h> mapping bug in neovim
-    " @see https://github.com/neovim/neovim/issues/2048
-    nmap <BS> <C-W>h
+  " workaround for <c-h> mapping bug in neovim
+  " @see https://github.com/neovim/neovim/issues/2048
+  nmap <BS> <C-W>h
 
-    " ignore erroneous key input on scrolling, <ffffffff>
-    tnoremap <ScrollWheelLeft> <nop>
+  " ignore erroneous key input on scrolling, <ffffffff>
+  tnoremap <ScrollWheelLeft> <nop>
 endif
 
 " Buffer navigations
@@ -523,9 +523,9 @@ noremap <silent> <leader>z :silent exec "!tmux resize-pane -Z"<CR>
 
 " Prevent accidental <Ctrl-A> on Tmux
 if !empty($TMUX)
-    nnoremap <C-a> <nop>
-    " To increase numbers, press <comma>, <c-a>, a ...?
-    nnoremap <leader><C-a> <C-a>
+  nnoremap <C-a> <nop>
+  " To increase numbers, press <comma>, <c-a>, a ...?
+  nnoremap <leader><C-a> <C-a>
 endif
 
 " }}}
@@ -542,9 +542,9 @@ endif
 function! s:goog(pat, lucky)
   let q = '"'.substitute(a:pat, '["\n]', ' ', 'g').'"'
   let q = substitute(q, '[[:punct:] ]',
-       \ '\=printf("%%%02X", char2nr(submatch(0)))', 'g')
+        \ '\=printf("%%%02X", char2nr(submatch(0)))', 'g')
   call system(printf('open "https://www.google.com/search?%sq=%s"',
-                   \ a:lucky ? 'btnI&' : '', q))
+        \ a:lucky ? 'btnI&' : '', q))
 endfunction
 
 nnoremap <leader>? :call <SID>goog(expand("<cword>"), 0)<cr>
@@ -563,9 +563,9 @@ set t_Co=256                 " use 256 color
 set background=dark
 
 if &term =~ '256color'
-    " Disable Background Color Erase (BCE) so that color schemes
-    " work properly when Vim is used inside tmux and GNU screen.
-    set t_ut=
+  " Disable Background Color Erase (BCE) so that color schemes
+  " work properly when Vim is used inside tmux and GNU screen.
+  set t_ut=
 endif
 
 " 24-bit true color: neovim 0.1.5+ / vim 7.4.1799+
@@ -642,9 +642,9 @@ highlight CursorLine    cterm=none
 
 " show cursorline for active window only
 augroup NrHighlight
-    autocmd!
-    autocmd BufEnter * setlocal cursorline
-    autocmd BufLeave * setlocal nocursorline
+  autocmd!
+  autocmd BufEnter * setlocal cursorline
+  autocmd BufLeave * setlocal nocursorline
 augroup END
 
 " filetype detections
@@ -657,14 +657,14 @@ autocmd FileType gitcommit setlocal cc=72 textwidth=72
 
 " remove trailing whitespaces on save
 fun! StripTrailingWhitespaces()
-    let l = line('.')
-    let c = col('.')
-    %s/\s\+$//e
-    call cursor(l, c)
+  let l = line('.')
+  let c = col('.')
+  %s/\s\+$//e
+  call cursor(l, c)
 endfun
 
 autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
-    \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
+      \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 
 " highlight trailing whitespaces
 highlight ExtraWhitespace ctermbg=red guibg=red
@@ -699,7 +699,7 @@ endif
 
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 function! ShowSyntaxGroup()
-    echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<'
+  echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<'
         \ . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<'
         \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 endfunction
@@ -792,15 +792,15 @@ endif
 " replace emoji in selected lines
 " (snippet brought from @junegunn/dotfiles)
 function! s:replace_emojis() range
-    for lnum in range(a:firstline, a:lastline)
-        let line = getline(lnum)
-        let subs = substitute(line,
-                    \ ':\([^:]\+\):', '\=emoji#for(submatch(1), submatch(0))', 'g')
-        if line != subs
-            call setline(lnum, subs)
-        endif
-    endfor
-    redraw!
+  for lnum in range(a:firstline, a:lastline)
+    let line = getline(lnum)
+    let subs = substitute(line,
+          \ ':\([^:]\+\):', '\=emoji#for(submatch(1), submatch(0))', 'g')
+    if line != subs
+      call setline(lnum, subs)
+    endif
+  endfor
+  redraw!
 endfunction
 
 command! -range EmojiReplace <line1>,<line2>call s:replace_emojis()
@@ -838,7 +838,7 @@ map zg/ <Plug>(incsearch-fuzzy-stay)
 " ---------------------------------------------------------------- }}}
 " vim-highlightedyank {{{
 if has_key(g:plugs, 'vim-highlightedyank') && !exists('##TextYankPost')
-    map y <Plug>(highlightedyank)
+  map y <Plug>(highlightedyank)
 endif
 
 "hi HighlightedyankRegion cterm=reverse gui=reverse
@@ -1451,11 +1451,11 @@ endif
 " disable in favor of ALE, but only if pylint/pycodestyle exists
 let s:py_linters_exists = executable('pylint') || executable('pycodestyle')
 if has_key(g:plugs, 'ale') && s:py_linters_exists
-    let g:pymode_lint = 0
+  let g:pymode_lint = 0
 else
-    autocmd VimEnter *.py echomsg
-          \ '[Warning] Please install `pylint` and/or `pycodestyle` using pip.' .
-          \ ' As a fallback, pymode linter (slow and outdated) will be used for linting.'
+  autocmd VimEnter *.py echomsg
+        \ '[Warning] Please install `pylint` and/or `pycodestyle` using pip.' .
+        \ ' As a fallback, pymode linter (slow and outdated) will be used for linting.'
 endif
 
 " Check code on every save (not on the fly)
@@ -1475,10 +1475,11 @@ let g:pymode_lint_ignore = ['E401', 'E501']
 " For neovim or vim8 (completor.vim),
 " disable jedi's autocompletion behavior but enable all the other features (e.g. goto, or refactoring)
 " The autocompletion is supported by deoplete-jedi or completor.vim.
-if has_key(g:plugs, 'deoplete-jedi') || has_key(g:plugs, 'completor.vim')
-            \ || has_key(g:plugs, 'coc.nvim')
-    " @see https://github.com/zchee/deoplete-jedi/issues/35
-    let g:jedi#completions_enabled = 0
+if has_key(g:plugs, 'deoplete-jedi')
+      \ || has_key(g:plugs, 'completor.vim')
+      \ || has_key(g:plugs, 'coc.nvim')
+  " @see https://github.com/zchee/deoplete-jedi/issues/35
+  let g:jedi#completions_enabled = 0
 endif
 
 " Make jedi's completeopt not to include 'longest',
