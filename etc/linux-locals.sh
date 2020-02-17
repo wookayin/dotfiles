@@ -273,6 +273,7 @@ install_fd() {
     cd $TMP_FD_DIR
     curl -L $FD_DOWNLOAD_URL | tar -xvzf - --strip-components 1
     cp "./fd" $PREFIX/bin
+    mkdir -p $HOME/.local/share/zsh/site-functions
     cp "./autocomplete/_fd" $PREFIX/share/zsh/site-functions
 
     $PREFIX/bin/fd --version
