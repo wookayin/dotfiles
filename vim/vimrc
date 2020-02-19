@@ -1190,6 +1190,10 @@ endif
 let g:floaterm_position = 'center'
 let g:floaterm_background = '#1a2a31'
 
+hi FloatermNF       guibg=#1a2a31
+hi FloatermBorderNF guibg=#1a2a31 guifg=white
+
+
 command! -nargs=0 FT FloatermToggle
 
 " Use 90% width for floaterm. If error occurs, update the plugin
