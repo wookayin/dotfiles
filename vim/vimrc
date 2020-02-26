@@ -1056,13 +1056,20 @@ imap <c-x><c-k>   <plug>(fzf-complete-word)
 " custom commands using fzf
 " -------------------------
 
+function! s:rg_star_to_cword(args) abort
+  if a:args == '*'   " * is designated to word under cursor
+    return '\b' . expand("<cword>") . '\b'   " \b for word boundaries
+  else
+    return a:args
+  endif
+endfunction
 " :Rg --- Easily grep
 " brought from https://github.com/junegunn/fzf.vim
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg -i --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%', '?'),
+  \   'rg -i --column --line-number --no-heading --color=always '.shellescape(s:rg_star_to_cword(<q-args>)), 1,
+  \   <bang>0 ? fzf#vim#with_preview({'options': []}, 'up:60%')
+  \           : fzf#vim#with_preview({'options': []}, 'right:50%', '?'),
   \ <bang>0)
 
 nnoremap <leader>rg   :Rg<space>
@@ -1075,21 +1082,23 @@ command! -bang -nargs=* Def     call s:fzf_rgdef(<q-args>, <bang>0)
 command! -bang -nargs=* D       call s:fzf_rgdef(<q-args>, <bang>0)
 nnoremap <leader>def  :<C-U>Def<CR>
 
-function! s:fzf_rgdef(args, bang0)
+function! s:fzf_rgdef(args, bang0) abort
   " TODO: currently, only python is supported.
+  let l:query = s:rg_star_to_cword(a:args)
   let l:rgdef_type = '--type "py"'
   let l:rgdef_prefix = '^\s*(def|class)'
-  let l:rgdef_pattern = l:rgdef_prefix.' \w*'.a:args.'\w*'
+  let l:rgdef_pattern = l:rgdef_prefix.' \w*'.l:query.'\w*'
 
   " if the query itself starts with prefix patterns, let itself be the regex pattern
   if a:args =~ ('\v'.l:rgdef_prefix.'($|\s+)')
     let l:rgdef_pattern = '^\s*'.a:args
   endif
 
+  let l:prompt_rgdef = printf('RgDef%s> ', empty(a:args) ? '' : (' ('.a:args.')'))
   call fzf#vim#grep(
   \   'rg -i --column --line-number --no-heading --color=always '.l:rgdef_type.' '.shellescape(l:rgdef_pattern), 1,
-  \   a:bang0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%', '?'),
+  \   a:bang0 ? fzf#vim#with_preview({'options': ['--prompt', l:prompt_rgdef]}, 'up:60%')
+  \           : fzf#vim#with_preview({'options': ['--prompt', l:prompt_rgdef]}, 'right:50%', '?'),
   \ a:bang0)
 endfunction
 
