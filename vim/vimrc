@@ -1719,6 +1719,7 @@ if has_key(g:plugs, 'coc.nvim')
   " Quickfix (Alt-Enter)
   command! -nargs=0 CocQuickfix :call CocActionAsync('doQuickfix', ':update')
   nmap <silent> <M-CR>  <Plug>(coc-fix-current)
+  imap <silent> <M-CR>  <Esc>:update<CR><plug>(coc-fix-current)a
 
   " Automatic formatting (selected range or entire buffer)
   command! -range=% CocFormat    :call CocActionAsync('formatSelected', visualmode())
