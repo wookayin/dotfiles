@@ -283,7 +283,13 @@ install_fd() {
 install_ripgrep() {
     # install ripgrep
     set -e
-    RIPGREP_VERSION="0.10.0"
+    RIPGREP_LATEST_VERSION=$(\
+        curl -L https://api.github.com/repos/BurntSushi/ripgrep/releases 2>/dev/null | \
+        python -c 'import json, sys; J = json.load(sys.stdin); assert J[0]["assets"][0]["name"].startswith("ripgrep"); print(J[0]["name"])'\
+    )
+    test -n $RIPGREP_LATEST_VERSION
+    echo -e "${COLOR_YELLOW}Installing ripgrep ${RIPGREP_LATEST_VERSION} ...${COLOR_NONE}"
+    RIPGREP_VERSION="${RIPGREP_LATEST_VERSION}"
 
     TMP_RIPGREP_DIR="/tmp/$USER/ripgrep"; mkdir -p $TMP_RIPGREP_DIR
     RIPGREP_DOWNLOAD_URL="https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/ripgrep-${RIPGREP_VERSION}-x86_64-unknown-linux-musl.tar.gz"
