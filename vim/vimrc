@@ -1212,9 +1212,9 @@ let g:floaterm_height = 0.7
 augroup FloatermCustom
   autocmd!
   " <C-h>, <C-z>: Hide the floating terminal window
-  autocmd FileType floaterm tmap <silent> <C-h>
+  autocmd FileType floaterm tmap <buffer> <silent> <C-h>
         \ <C-\><C-n>:hide<CR>
-  autocmd FileType floaterm tmap <silent> <C-z>
+  autocmd FileType floaterm tmap <buffer> <silent> <C-z>
         \ <C-\><C-n>:hide<CR>
 augroup END
 
