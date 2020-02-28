@@ -1202,8 +1202,22 @@ let g:floaterm_background = '#1a2a31'
 hi FloatermNF       guibg=#1a2a31
 hi FloatermBorderNF guibg=#1a2a31 guifg=white
 
-
-command! -nargs=0 FT FloatermToggle
+command! -nargs=? -complete=shellcmd  FT                   call FloatermToggleOrNew(<f-args>)
+command! -nargs=? -complete=shellcmd  FloatermToggleOrNew  call FloatermToggleOrNew(<f-args>)
+function! FloatermToggleOrNew(...) abort
+  let ft_bufnr = floaterm#buflist#find_curr()
+  if ft_bufnr == -1
+    if a:0 > 0
+      " when there is no existing floaterm window and an argument is given,
+      " use it as the command line to execute (e.g. :FT git status)
+      return floaterm#new(a:1)
+    else
+      return floaterm#new()
+    endif
+  else
+    FloatermToggle
+  endif
+endfunction
 
 " Use 90% width for floaterm. If error occurs, update the plugin
 let g:floaterm_width = 0.9
