@@ -1072,6 +1072,46 @@ imap <c-x><c-k>   <plug>(fzf-complete-word)
 " custom commands using fzf
 " -------------------------
 
+" Utility functions brought from @junegunn/fzf.vim {{{
+" Copyright (c) Junegunn Choi, under MIT License
+function! s:get_color(attr, ...)
+  let gui = has('termguicolors') && &termguicolors
+  let fam = gui ? 'gui' : 'cterm'
+  let pat = gui ? '^#[a-f0-9]\+' : '^[0-9]\+$'
+  for group in a:000
+    let code = synIDattr(synIDtrans(hlID(group)), a:attr, fam)
+    if code =~? pat
+      return code
+    endif
+  endfor
+  return ''
+endfunction
+
+let s:ansi = {'black': 30, 'red': 31, 'green': 32, 'yellow': 33, 'blue': 34, 'magenta': 35, 'cyan': 36}
+
+function! s:csi(color, fg)
+  let prefix = a:fg ? '38;' : '48;'
+  if a:color[0] == '#'
+    return prefix.'2;'.join(map([a:color[1:2], a:color[3:4], a:color[5:6]], 'str2nr(v:val, 16)'), ';')
+  endif
+  return prefix.'5;'.a:color
+endfunction
+
+function! s:ansi(str, group, default, ...)
+  let fg = s:get_color('fg', a:group)
+  let bg = s:get_color('bg', a:group)
+  let color = (empty(fg) ? s:ansi[a:default] : s:csi(fg, 1)) .
+        \ (empty(bg) ? '' : ';'.s:csi(bg, 0))
+  return printf("\x1b[%s%sm%s\x1b[m", color, a:0 ? ';1' : '', a:str)
+endfunction
+
+for s:color_name in keys(s:ansi)
+  execute "function! s:".s:color_name."(str, ...)\n"
+        \ "  return s:ansi(a:str, get(a:, 1, ''), '".s:color_name."')\n"
+        \ "endfunction"
+endfor
+" }}}
+" Misc utility functions for fzf {{{
 function! s:rg_star_to_cword(args) abort
   if a:args == '*'   " * is designated to word under cursor
     return '\b' . expand("<cword>") . '\b'   " \b for word boundaries
@@ -1079,6 +1119,8 @@ function! s:rg_star_to_cword(args) abort
     return a:args
   endif
 endfunction
+" }}}
+
 " :Rg --- Easily grep
 " brought from https://github.com/junegunn/fzf.vim
 command! -bang -nargs=* Rg
@@ -1135,7 +1177,7 @@ command! -nargs=* Z call fzf#run
 " :Plugs -- list all vim plugins and open the directory of the selected
 command! -nargs=* Plugs call fzf#run
       \(fzf#wrap({
-      \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home . "/" . s:ansi_yellow(v:val)'),
+      \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home . "/" . s:yellow(v:val)'),
       \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
       \             '--query', <q-args>, '--prompt', 'Plugs> ',
       \             ] + s:fzf_preview_directory_if_applicable(),
@@ -1171,9 +1213,6 @@ function! s:fzf_preview_directory_if_applicable()
 endfunction
 
 let s:sed_highlight_path_last_segment = 'sed -e "s#\(.*\)/\(.*\)#\1/$(tput setaf 3)\2$(tput sgr0)#"'
-function! s:ansi_yellow(str)
-  return printf("\x1b[33m%s\x1b[m", a:str)
-endfunction
 
 
 " Leader key mappings for vim-fzf commands
