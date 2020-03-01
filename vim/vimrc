@@ -1742,6 +1742,31 @@ if has_key(g:plugs, 'coc.nvim')
     endif
   endfunction
 
+  " Experimental feature (preview definition): gp, `<leader>K`, or <Shift-F12>:
+  " Peek into the definition in a floating window.
+  " TODO: If there are 2+ definitions, it does not work with floating windows (coc.nvim problem)
+  command! -nargs=0 PreviewDefinition :call CocActionAsync('jumpDefinition', ':OpenAsPreview')
+  command! -nargs=* OpenAsPreview :call s:open_as_preview("<args>")
+  function! s:open_as_preview(callstr)
+    " e.g. the string should look like: +call cursor(<line>,<col>) <filename>
+    let m = matchlist(a:callstr, '^+call cursor(\(\d\+\),\s*\(\d\+\))\s\+\(.*\)')
+    if len(m) < 4   " TODO: more robust error handling
+      echohl WarningMsg | echom "ERROR: Invalid callstr format" | echohl None
+      return
+    endif
+    let linenr = m[1]
+    let filename = expand(m[3])
+    call quickui#preview#open(filename, {
+          \ 'cursor': linenr,
+          \ 'number' : 1,
+          \ 'persist': 0,
+          \ })
+  endfunction
+  " <F24> = <Shift-F12>
+  nmap <F24>         :<C-U>PreviewDefinition<CR>
+  nmap <leader>K     :<C-U>PreviewDefinition<CR>
+  nmap <silent> gp   :<C-U>PreviewDefinition<CR>
+
   " additional coc-featured commands
   command! -nargs=0 CocExtensions :CocList extensions
   command! -nargs=0 CocSnippets :CocList snippets
