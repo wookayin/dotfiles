@@ -32,6 +32,9 @@ if has('nvim-0.4.0')
   Plug 'liuchengxu/vim-clap'
   Plug 'voldikss/vim-floaterm'
 endif
+if has('nvim-0.4.0') || has('popup')
+  Plug 'skywind3000/vim-quickui'
+endif
 Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'

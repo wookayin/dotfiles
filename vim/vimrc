@@ -1233,6 +1233,22 @@ augroup FloatermCustom
 augroup END
 
 " ---------------------------------------------------------------- }}}
+" quickui (floating windows) {{{
+
+
+" Use unicode-style border (┌─┐) which is more pretty
+let g:quickui_border_style = 2
+
+" Default preview window size (more lines and width)
+let g:quickui_preview_w = 100
+let g:quickui_preview_h = 25
+
+" Customize color scheme
+let g:quickui_color_scheme = 'papercol light'
+hi QuickPreview guibg=#262d2d
+
+
+" ---------------------------------------------------------------- }}}
 " Dash {{{
 
 " ----------------------------------------------------------------------------
