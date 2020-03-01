@@ -48,8 +48,12 @@ Plug 'tpope/vim-tbone'
 Plug 'szw/vim-maximizer'    " zoom and unzoom!
 Plug 'junegunn/goyo.vim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'tmux-plugins/vim-tmux-focus-events'
-      \ | ForcePlugURI 'vim-tmux-focus-events'
+if !has('nvim')
+  " focus-events work by default in Neovim (see issue #1), so
+  " this plugin is not needed for neovim. Don't reserve <F24>
+  Plug 'tmux-plugins/vim-tmux-focus-events'
+        \ | ForcePlugURI 'vim-tmux-focus-events'
+endif
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'airblade/vim-gitgutter'
