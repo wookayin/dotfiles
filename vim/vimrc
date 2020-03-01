@@ -1742,7 +1742,7 @@ if has_key(g:plugs, 'coc.nvim')
     endif
   endfunction
 
-  " Experimental feature (preview definition): gp, `<leader>K`, or <Shift-F12>:
+  " Experimental feature (preview definition): gp, `<leader>K`, <Alt-F12> or <Shift-F12>:
   " Peek into the definition in a floating window.
   " TODO: If there are 2+ definitions, it does not work with floating windows (coc.nvim problem)
   command! -nargs=0 PreviewDefinition :call CocActionAsync('jumpDefinition', ':OpenAsPreview')
@@ -1764,6 +1764,8 @@ if has_key(g:plugs, 'coc.nvim')
   endfunction
   " <F24> = <Shift-F12>
   nmap <F24>         :<C-U>PreviewDefinition<CR>
+  nmap <S-F12>       :<C-U>PreviewDefinition<CR>
+  nmap <D-F12>       :<C-U>PreviewDefinition<CR>
   nmap <leader>K     :<C-U>PreviewDefinition<CR>
   nmap <silent> gp   :<C-U>PreviewDefinition<CR>
 
