@@ -1121,8 +1121,7 @@ function! s:rg_star_to_cword(args) abort
 endfunction
 " }}}
 
-" :Rg --- Easily grep
-" brought from https://github.com/junegunn/fzf.vim
+" :Rg -- Ripgrep + fzf (grep then fuzzy-filter)
 command! -bang -nargs=* Rg call FzfRg(<q-args>, <bang>0)
 nnoremap <leader>rg   :Rg<space>
 xnoremap <leader>rg   "gy:Rg <C-R>g<CR>
@@ -1130,8 +1129,8 @@ xnoremap <leader>rg   "gy:Rg <C-R>g<CR>
 function! FzfRg(args, fullscreen) abort
   let fzf_opts_prompt = ['--prompt', printf('Rg'.'%s> ', empty(a:args) ? '' : (' ('.a:args.')'))]
   let fzf_opts_header = ['--ansi', '--header',
-        \ s:yellow('(Tip)').' Press '.s:magenta('?', 'Special').' to toggle preview, '
-        \ . s:magenta('<C-w>+[HJKL]', 'Special').' to move windows.'
+        \ s:yellow('(Tip)').' Press '.s:magenta('?', 'Special').' to toggle preview, ' . s:magenta('<C-w>+[HJKL]', 'Special').' to move windows.'
+        \ .nr2char(10). 'To refresh ripgrep results rather than fuzzy-filtering, try '.s:magenta(':RG', 'Special').' instead.'
         \ ]
   let fzf_opts_contentsonly = ['--delimiter', ':', '--nth', '4..']   " fzf.vim#346
   let fzf_opts = fzf_opts_prompt + fzf_opts_header + fzf_opts_contentsonly
@@ -1140,6 +1139,20 @@ function! FzfRg(args, fullscreen) abort
         \ a:fullscreen ? fzf#vim#with_preview({'options': fzf_opts}, 'up:60%')
         \              : fzf#vim#with_preview({'options': fzf_opts}, 'right:50%', '?'),
         \ a:fullscreen)
+endfunction
+
+" :RG, :Grep -- Ripgrep + fzf (but refreshs ripgrep result upon updating query)
+command! -nargs=* -bang RG      call FzfRG(<q-args>, <bang>0)
+command! -nargs=*       Grep    :RG <args>
+" fzf 0.19+ "reload' magic: https://github.com/junegunn/fzf/issues/1750
+function! FzfRG(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let fzf_opts = [
+        \ '--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command,
+        \ '--prompt', 'RG> ']
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview({'options': fzf_opts}), a:fullscreen)
 endfunction
 
 
@@ -1259,8 +1272,6 @@ hi ClapMatches   cterm=bold ctermfg=170 gui=bold guifg=#bc6ec5
 
 " keymappings and command aliases
 nnoremap <silent> <C-G>   :Clap<CR>
-
-command! -nargs=0 Grep     Clap grep
 
 endif
 " ---------------------------------------------------------------- }}}
