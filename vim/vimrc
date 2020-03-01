@@ -1123,24 +1123,34 @@ endfunction
 
 " :Rg --- Easily grep
 " brought from https://github.com/junegunn/fzf.vim
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg -i --column --line-number --no-heading --color=always '.shellescape(s:rg_star_to_cword(<q-args>)), 1,
-  \   <bang>0 ? fzf#vim#with_preview({'options': []}, 'up:60%')
-  \           : fzf#vim#with_preview({'options': []}, 'right:50%', '?'),
-  \ <bang>0)
-
+command! -bang -nargs=* Rg call FzfRg(<q-args>, <bang>0)
 nnoremap <leader>rg   :Rg<space>
 xnoremap <leader>rg   "gy:Rg <C-R>g<CR>
 
+function! FzfRg(args, fullscreen) abort
+  let fzf_opts_prompt = ['--prompt', printf('Rg'.'%s> ', empty(a:args) ? '' : (' ('.a:args.')'))]
+  let fzf_opts_header = ['--ansi', '--header',
+        \ s:yellow('(Tip)').' Press '.s:magenta('?', 'Special').' to toggle preview, '
+        \ . s:magenta('<C-w>+[HJKL]', 'Special').' to move windows.'
+        \ ]
+  let fzf_opts_contentsonly = ['--delimiter', ':', '--nth', '4..']   " fzf.vim#346
+  let fzf_opts = fzf_opts_prompt + fzf_opts_header + fzf_opts_contentsonly
+  call fzf#vim#grep(
+        \ 'rg -i --column --line-number --no-heading --color=always '.shellescape(s:rg_star_to_cword(a:args)), 1,
+        \ a:fullscreen ? fzf#vim#with_preview({'options': fzf_opts}, 'up:60%')
+        \              : fzf#vim#with_preview({'options': fzf_opts}, 'right:50%', '?'),
+        \ a:fullscreen)
+endfunction
+
+
 " :Def, Rgdef -- Easily find definition/declaration (requires ripgrep)
 " e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
-command! -bang -nargs=* Rgdef   call s:fzf_rgdef(<q-args>, <bang>0)
-command! -bang -nargs=* Def     call s:fzf_rgdef(<q-args>, <bang>0)
-command! -bang -nargs=* D       call s:fzf_rgdef(<q-args>, <bang>0)
+command! -bang -nargs=* Rgdef   call FzfRgDef(<q-args>, <bang>0)
+command! -bang -nargs=* Def     call FzfRgDef(<q-args>, <bang>0)
+command! -bang -nargs=* D       call FzfRgDef(<q-args>, <bang>0)
 nnoremap <leader>def  :<C-U>Def<CR>
 
-function! s:fzf_rgdef(args, bang0) abort
+function! FzfRgDef(args, fullscreen) abort
   " TODO: currently, only python is supported.
   let l:query = s:rg_star_to_cword(a:args)
   let l:rgdef_type = '--type "py"'
@@ -1152,12 +1162,17 @@ function! s:fzf_rgdef(args, bang0) abort
     let l:rgdef_pattern = '^\s*'.a:args
   endif
 
-  let l:prompt_rgdef = printf('RgDef%s> ', empty(a:args) ? '' : (' ('.a:args.')'))
+  let fzf_opts_prompt = ['--prompt', printf('RgDef'.'%s> ', empty(a:args) ? '' : (' ('.a:args.')'))]
+  let fzf_opts_header = ['--ansi', '--header',
+        \ s:yellow('(Tip)').' Press '.s:magenta('?', 'Special').' to toggle preview. '
+        \ ]
+  let fzf_opts_contentsonly = ['--delimiter', ':', '--nth', '4..']   " fzf.vim#346
+  let fzf_opts = fzf_opts_prompt + fzf_opts_header + fzf_opts_contentsonly
   call fzf#vim#grep(
-  \   'rg -i --column --line-number --no-heading --color=always '.l:rgdef_type.' '.shellescape(l:rgdef_pattern), 1,
-  \   a:bang0 ? fzf#vim#with_preview({'options': ['--prompt', l:prompt_rgdef]}, 'up:60%')
-  \           : fzf#vim#with_preview({'options': ['--prompt', l:prompt_rgdef]}, 'right:50%', '?'),
-  \ a:bang0)
+        \ 'rg -i --column --line-number --no-heading --color=always '.l:rgdef_type.' '.shellescape(l:rgdef_pattern), 1,
+        \ a:fullscreen ? fzf#vim#with_preview({'options': fzf_opts}, 'up:60%')
+        \              : fzf#vim#with_preview({'options': fzf_opts}, 'right:50%', '?'),
+        \ a:fullscreen)
 endfunction
 
 
