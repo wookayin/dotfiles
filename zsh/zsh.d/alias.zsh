@@ -125,7 +125,12 @@ alias gva='gv --all'
 # anaconda
 alias sa='conda activate'   # source activate is deprecated.
 alias ca='conda activate'
-alias deactivate='[[ -n "$CONDA_DEFAULT_ENV" ]] && conda deactivate || deactivate'
+function deactivate() {
+  # In anaconda/miniconda, use `conda deactivate`. In virtualenvs, `source deactivate`.
+  # Note: deactivate could have been an alias, but legacy virtualenvs' shell scripts
+  # are written wrong (i.e. missing `function`) as they have a conflict with the alias.
+  [[ -n "$CONDA_DEFAULT_ENV" ]] && conda deactivate || source deactivate
+}
 
 # virtualenv
 alias wo='workon'
