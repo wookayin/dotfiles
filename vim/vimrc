@@ -286,9 +286,9 @@ if has('nvim')
 
   " Mapping for <c-hjkl> in terminal mode
   " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
-  tmap <C-h> <C-\><C-n><C-h>
-  tmap <C-j> <C-\><C-n><C-j>
-  tmap <C-k> <C-\><C-n><C-k>
+  tmap <silent> <C-h> <C-\><C-n>:wincmd h<CR>
+  tmap <silent> <C-j> <C-\><C-n>:wincmd j<CR>
+  tmap <silent> <C-k> <C-\><C-n>:wincmd k<CR>
   "tmap <C-l> <C-\><C-n><C-l>
   " TODO: <c-l> is for clear screen...?
 endif
@@ -991,7 +991,23 @@ if has('nvim-0.4')
           \ }
     let fwinnr = nvim_open_win(buf, v:true, opts)
     call setwinvar(fwinnr, '&winhl', 'Normal:FZFFloatNormal')
+
+    " Additional keymappings on the floating terminal buffer for fzf
+    " e.g. make <C-W>{H, J, K, L} work as if it were normal vim windows
+    tnoremap <buffer> <silent> <C-w>H       <C-\><C-n>:wincmd H<CR>:startinsert<CR>
+    tnoremap <buffer> <silent> <C-w>J       <C-\><C-n>:wincmd J<CR>:20wincmd _<CR>:startinsert<CR>
+    tnoremap <buffer> <silent> <C-w>K       <C-\><C-n>:wincmd K<CR>:20wincmd _<CR>:startinsert<CR>
+    tnoremap <buffer> <silent> <C-w>L       <C-\><C-n>:wincmd L<CR>:startinsert<CR>
+    " remap wincmd commands so that the window can work without the <C-\><C-n> prefix
+    tnoremap <buffer> <silent> <C-l>        <C-\><C-n>:wincmd l<CR>
+    tnoremap <buffer> <silent> <C-w>h       <C-\><C-n>:wincmd h<CR>
+    tnoremap <buffer> <silent> <C-w>j       <C-\><C-n>:wincmd j<CR>
+    tnoremap <buffer> <silent> <C-w>k       <C-\><C-n>:wincmd k<CR>
+    tnoremap <buffer> <silent> <C-w>l       <C-\><C-n>:wincmd l<CR>
+    tnoremap <buffer> <silent> <C-w>w       <C-\><C-n>:wincmd w<CR>
+
   endfunction
+
   hi FZFFloatNormal term=None guibg=#1a2a31
 endif
 
