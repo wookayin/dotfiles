@@ -143,6 +143,8 @@ def main():
         'github': open_github,
         'install' : install_local,
     }
+    for fn in COMMANDS.values():
+        fn.__doc__ = fn.__doc__.strip()
 
     from argparse import ArgumentParser, RawTextHelpFormatter
     parser = ArgumentParser(description=__doc__,
