@@ -25,6 +25,7 @@ Thumbs.db
 .classpath
 .settings/
 .ipynb_checkpoints/
+tags
 
 # Python, Virtualenv
 .venv*
