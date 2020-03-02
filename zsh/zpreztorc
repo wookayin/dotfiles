@@ -37,8 +37,9 @@ zstyle ':prezto:load' pmodule \
   'prompt' \
   'fasd' \
   'ruby' \
-  'node' \
   'git'
+  # Disabled:
+  # 'node' \
 
 #
 # Editor

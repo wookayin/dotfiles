@@ -2,6 +2,12 @@
 # ======
 # vim: set sts=2 sw=2 ts=2
 
+# To profile zsh startup, use the following:
+# In ~/.zshrc,
+#  (BEGIN) zmodload zsh/zprof
+#  (END)   zprof >! ~/.zsh.startup.log
+# % repeat 3 {time zsh -i -c exit}
+
 
 # zgen           {{{
 # ===================
@@ -29,9 +35,17 @@ zstyle ":prezto:module:completion" loaded 'yes'
 zstyle ':completion:*' users root $USER
 
 
-# virtualenvwrapper -- use lazy load now (see prezto#669)
+# virtualenvwrapper -- use lazy load (see prezto#669)
 if (( $+commands[virtualenvwrapper_lazy.sh] )); then
     source "$commands[virtualenvwrapper_lazy.sh]"
+fi
+
+# nvm -- sourcing is very slow, use lazy load
+if [[ -f "$HOME/.nvm/nvm.sh" ]]; then
+  function nvm() {
+    source "$HOME/.nvm/nvm.sh"
+    nvm "$@"
+  }
 fi
 
 # Additional zplug from ~/.zshrc.local
