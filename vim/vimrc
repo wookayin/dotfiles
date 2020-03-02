@@ -1119,6 +1119,21 @@ function! s:rg_star_to_cword(args) abort
     return a:args
   endif
 endfunction
+
+function! s:fzfrg_bind_keymappings(query, rg_options) abort
+  " additional keymappings on the fzf window (e.g. move to quickfix)
+  " Args:
+  " - query: the rg pattern string (will be escaped inside)
+  " - rg_options: additional flags passed to rg (passed to shell as-is)
+  let t:FzfRg_last_query = a:query
+  let t:FzfRg_last_options = a:rg_options
+  if !empty(t:FzfRg_last_query)
+    " CTRL-Q (unless query is empty) -> call rg again into the quickfix
+    tnoremap <silent> <buffer> <C-q>    <C-\><C-n>:call timer_start(0, {
+          \ -> ag#Ag('grep!', shellescape(t:FzfRg_last_query) . " " . t:FzfRg_last_options)
+          \ })<CR>:q<CR>
+  endif
+endfunction
 " }}}
 
 " :Rg -- Ripgrep + fzf (grep then fuzzy-filter)
@@ -1129,8 +1144,9 @@ xnoremap <leader>rg   "gy:Rg <C-R>g<CR>
 function! FzfRg(args, fullscreen) abort
   let fzf_opts_prompt = ['--prompt', printf('Rg'.'%s> ', empty(a:args) ? '' : (' ('.a:args.')'))]
   let fzf_opts_header = ['--ansi', '--header',
-        \ s:yellow('(Tip)').' Press '.s:magenta('?', 'Special').' to toggle preview, ' . s:magenta('<C-w>+[HJKL]', 'Special').' to move windows.'
-        \ .nr2char(10). 'To refresh ripgrep results rather than fuzzy-filtering, try '.s:magenta(':RG', 'Special').' instead.'
+        \ ':: Press '.s:magenta('?', 'Special').' to toggle preview, '
+        \ . (!empty(a:args) ? s:magenta('CTRL-Q', 'Special').' to switch to quickfix' : '')
+        \ .nr2char(10). '   To refresh ripgrep results rather than fuzzy-filtering, try '.s:magenta(':RG', 'Special').' instead.'
         \ ]
   let fzf_opts_contentsonly = ['--delimiter', ':', '--nth', '4..']   " fzf.vim#346
   let fzf_opts = fzf_opts_prompt + fzf_opts_header + fzf_opts_contentsonly
@@ -1139,6 +1155,7 @@ function! FzfRg(args, fullscreen) abort
         \ a:fullscreen ? fzf#vim#with_preview({'options': fzf_opts}, 'up:60%')
         \              : fzf#vim#with_preview({'options': fzf_opts}, 'right:50%', '?'),
         \ a:fullscreen)
+  call s:fzfrg_bind_keymappings(s:rg_star_to_cword(a:args), '')
 endfunction
 
 " :RG, :Grep -- Ripgrep + fzf (but refreshs ripgrep result upon updating query)
@@ -1177,7 +1194,8 @@ function! FzfRgDef(args, fullscreen) abort
 
   let fzf_opts_prompt = ['--prompt', printf('RgDef'.'%s> ', empty(a:args) ? '' : (' ('.a:args.')'))]
   let fzf_opts_header = ['--ansi', '--header',
-        \ s:yellow('(Tip)').' Press '.s:magenta('?', 'Special').' to toggle preview. '
+        \ s:yellow('(Tip)').' Press '.s:magenta('?', 'Special').' to toggle preview, '
+        \ . s:magenta('CTRL-Q', 'Special').' to switch to quickfix'
         \ ]
   let fzf_opts_contentsonly = ['--delimiter', ':', '--nth', '4..']   " fzf.vim#346
   let fzf_opts = fzf_opts_prompt + fzf_opts_header + fzf_opts_contentsonly
@@ -1186,6 +1204,7 @@ function! FzfRgDef(args, fullscreen) abort
         \ a:fullscreen ? fzf#vim#with_preview({'options': fzf_opts}, 'up:60%')
         \              : fzf#vim#with_preview({'options': fzf_opts}, 'right:50%', '?'),
         \ a:fullscreen)
+  call s:fzfrg_bind_keymappings(l:rgdef_pattern, l:rgdef_type)
 endfunction
 
 
