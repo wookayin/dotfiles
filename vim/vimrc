@@ -453,7 +453,8 @@ endif
 
 " <leader>cd : switch to the directory of the current buffer
 function! CD_to_file()
-  cd %:p:h
+  silent cd %:p:h
+  :pwd
 
   " if NERDTree is open, chdir NERDTree as well
   if exists('g:NERDTree') && g:NERDTree.IsOpen()
