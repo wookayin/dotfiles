@@ -277,12 +277,11 @@ if has('nvim')
   autocmd TermOpen * startinsert
 
   " terminal in a new tab or vsplit buffer
-  command! -nargs=* T :Term <args>
-  command! -nargs=* Term :tabnew | :term <args>
-  command! -nargs=* STerm :split | :term <args>
-  command! -nargs=* VTerm :split | :term <args>
-  command! -nargs=* TermSplit :split | :term <args>
-  command! -nargs=* TermVSplit :vsplit | :term <args>
+  command! -nargs=* -complete=shellcmd Term         :tabnew | :term <args>
+  command! -nargs=* -complete=shellcmd STerm        :split  | :term <args>
+  command! -nargs=* -complete=shellcmd VTerm        :split  | :term <args>
+  command! -nargs=* -complete=shellcmd TermSplit    :split  | :term <args>
+  command! -nargs=* -complete=shellcmd TermVSplit   :vsplit | :term <args>
 
   " Mapping for <c-hjkl> in terminal mode
   " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
@@ -1242,8 +1241,11 @@ let g:floaterm_background = '#1a2a31'
 hi FloatermNF       guibg=#1a2a31
 hi FloatermBorderNF guibg=#1a2a31 guifg=white
 
-command! -nargs=? -complete=shellcmd  FT                   call FloatermToggleOrNew(<f-args>)
+command! -nargs=? -complete=shellcmd  T                    :FloatermToggleOrNew <args>
+command! -nargs=? -complete=shellcmd  FT                   :FloatermToggleOrNew <args>
 command! -nargs=? -complete=shellcmd  FloatermToggleOrNew  call FloatermToggleOrNew(<f-args>)
+nnoremap <leader>tt  :FloatermToggle<CR>
+"
 function! FloatermToggleOrNew(...) abort
   let ft_bufnr = floaterm#buflist#find_curr()
   if ft_bufnr == -1
