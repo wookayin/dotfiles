@@ -46,7 +46,11 @@ snippet init
 	    ${1:pass}
 #
 snippet self._
-	self._${1} = $1
+	self._$1 = ${1}
+snippet @property
+	@property
+	def ${1}(self):
+		return self._$1
 #
 snippet repr
 	def __repr__(self):
