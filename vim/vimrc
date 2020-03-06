@@ -1126,15 +1126,16 @@ endfunction
 " fzf-ripgrep.vim
 " [@migrated] :Rg, :RgFzf are defined in ~/.vim/plugged/fzf-ripgrep.vim/plugin/fzf_ripgrep.vim
 "
-" :RgFzf, :RF -- Ripgrep + fzf (grep then fuzzy-filter)
+" :RgFzf, :RF, :RGF -- Ripgrep + fzf (grep then fuzzy-filter)
 command! -nargs=*     RF      :RgFzf <args>
+command! -nargs=*     RGF     :RgFzf <args>
 
 " :Rg, :Grep -- Ripgrep + fzf (but refreshs ripgrep result upon updating query)
 command! -nargs=*     Grep    :Rg <args>
 
-" rg-this (current cursor or visual selection)
-nnoremap <leader>rg   :<c-u>Rg*<CR>
-xnoremap <leader>rg   "gy:Rg <C-R>g<CR>
+" rg-this (current word or visual selection)
+nnoremap <leader>rg   :<c-u>RgF*<CR>
+xnoremap <leader>rg   "gy:RgF <C-R>g<CR>
 
 " :Def, :RgDef -- Easily find definition/declaration (requires ripgrep)
 " e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
