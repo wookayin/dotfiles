@@ -1411,6 +1411,9 @@ let g:pandoc#syntax#conceal#use = 0
 " disable spell check
 let g:pandoc#spell#enabled = 0
 
+" Do not map <leader>{nr, rg, rb} by default
+let g:pandoc#keyboard#use_default_mappings = 0
+
 " ---------------------------------------------------------------- }}}
 " vim-javacomplete2 {{{
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
