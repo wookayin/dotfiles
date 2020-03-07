@@ -63,6 +63,11 @@ export FZF_MARKS_JUMP='^b'
 
 # ------------------------------------------------------ }}}
 
+# Cleanup obsolete zgen plugins (zgen reset doesn't ignore)
+if [[ -n "${DOTFILES_UPDATE}" ]]; then
+  rm -rf ~/.zgen/zdharma/fast-syntax-highlighting-master
+fi
+
 # zgen plugin specifications
 # NOTE: To reflect the added/updated plugins, try 'zgen reset'
 if ! zgen saved; then
@@ -81,7 +86,6 @@ if ! zgen saved; then
   # zsh syntax: FSH
   # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
   # For some reason, @zdharma's repo is gone -- workaround by using its fork
-  rm -rf ~/.zgen/zdharma/fast-syntax-highlighting-master
   zgen load wookayin/fast-syntax-highlighting
   fast-theme "XDG:wook"
 

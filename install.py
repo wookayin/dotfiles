@@ -115,7 +115,7 @@ Please remove your local folder/file $f and try again.\033[0m"
     '''#!/bin/bash
     # Update zgen modules and cache (the init file)
     zsh -c "
-        source ${HOME}/.zshrc                   # source zplug and list plugins
+        DOTFILES_UPDATE=1 source ${HOME}/.zshrc       # source zplug and list plugins
         if ! which zgen > /dev/null; then
             echo -e '\033[0;31m\
 ERROR: zgen not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
