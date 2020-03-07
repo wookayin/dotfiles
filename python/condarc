@@ -1,2 +1,3 @@
 changeps1: false
 auto_activate_base: false
+report_errors: false
