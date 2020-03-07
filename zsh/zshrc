@@ -80,7 +80,9 @@ if ! zgen saved; then
 
   # zsh syntax: FSH
   # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
-  zgen load zdharma/fast-syntax-highlighting
+  # For some reason, @zdharma's repo is gone -- workaround by using its fork
+  rm -rf ~/.zgen/zdharma/fast-syntax-highlighting-master
+  zgen load wookayin/fast-syntax-highlighting
   fast-theme "XDG:wook"
 
   # More completion support
