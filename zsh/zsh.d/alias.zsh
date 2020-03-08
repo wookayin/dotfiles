@@ -151,6 +151,8 @@ alias nt='NOSE_REDNOSE=1 nosetests -v'
 
 # unit test: in verbose mode
 alias pytest='pytest -vv'
+alias pytest-pudb='pytest -s --pudb'
+alias pytest-html='pytest --self-contained-html --html'
 alias green='green -vv'
 
 # }}}
