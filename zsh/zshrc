@@ -140,6 +140,7 @@ fi
 
 # Anaconda3
 # see ~/.zshenv for $CONDA_EXE detection
+function _conda_initialize() {
 # >>> conda initialize >>>
 if [ -n "${CONDA_EXE}" ]; then
   ${CONDA_EXE} config --set auto_activate_base false
@@ -150,6 +151,9 @@ if [ -n "${CONDA_EXE}" ]; then
   unset __conda_setup
 fi
 # <<< conda initialize <<<
+}
+# Note: conda initialize is slow (0.3 sec), so execute lazily
+alias conda='unalias conda; _conda_initialize; conda'
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
