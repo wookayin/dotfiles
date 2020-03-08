@@ -1025,11 +1025,17 @@ endif
 
 " :GFiles (with preview), :GFiles? (git diff + preview)
 " Pressing '?' when FZF is shown would toggle preview
-command! -bang -nargs=? GFiles     call fzf#vim#gitfiles(<q-args>, <q-args> != '?' ? (
-      \ <bang>0 ? fzf#vim#with_preview('up:90%')
-      \         : fzf#vim#with_preview('right:50%', '?')
+command! -bang -nargs=? GFiles     call s:fzf_gfiles_helpmsg(<q-args>) | call fzf#vim#gitfiles(<q-args>,
+      \ <q-args> != '?' ? (
+      \ <bang>0 ? fzf#vim#with_preview(s:fzf_gfiles_spec, 'up:90%')
+      \         : fzf#vim#with_preview(s:fzf_gfiles_spec, 'right:50%', 'CTRL-/')
       \) : <bang>0
       \)
+let s:fzf_gfiles_spec = {'options': []}
+function! s:fzf_gfiles_helpmsg(args)
+  if a:args == '?' | return | endif
+  echon ':GFiles    ' | echohl Special | echon 'Press CTRL-/ for toggle preview.' | echohl NONE
+endfunction
 " }}}
 
 " :F is a shortcut for :GFiles or :FZF
