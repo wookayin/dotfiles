@@ -43,6 +43,7 @@ fi
 # nvm -- sourcing is very slow, use lazy load
 if [[ -f "$HOME/.nvm/nvm.sh" ]]; then
   function nvm() {
+    unfunction nvm
     source "$HOME/.nvm/nvm.sh"
     nvm "$@"
   }
@@ -153,7 +154,11 @@ fi
 # <<< conda initialize <<<
 }
 # Note: conda initialize is slow (0.3 sec), so execute lazily
-alias conda='unalias conda; _conda_initialize; conda'
+conda() {
+  unfunction conda
+  _conda_initialize
+  conda "$@"
+}
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
