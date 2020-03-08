@@ -407,6 +407,7 @@ function! QuickfixToggle()
 endfunction
 map  <silent> <F6> :call QuickfixToggle()<CR>
 imap <silent> <F6> <ESC>:call QuickfixToggle()<CR>G:wincmd w<CR>a
+nmap  <silent> <C-Q> :call QuickfixToggle()<CR>
 
 " <leader>L: show/close location list window
 function! LocListToggle()
