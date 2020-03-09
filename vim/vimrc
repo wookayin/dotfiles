@@ -1090,8 +1090,14 @@ command! -nargs=0 F call s:fzf_smart()
 " Invoke F (FZF) Using Ctrl-P
 nmap <C-P> :F<CR>
 
-" insert mode completion
-imap <c-x><c-k>   <plug>(fzf-complete-word)
+" insert mode completion using fzf  (:h fzf-vim-mappings)
+"   --> ~/.vim/plugged/fzf.vim/autoload/fzf/vim/complete.vim
+" (similar to vim's insert mode completions, :h ins-completion)
+imap <C-x><C-k>   <plug>(fzf-complete-word)
+imap <C-x><C-f>   <plug>(fzf-complete-path)
+imap <C-x><C-l>   <plug>(fzf-complete-line)
+
+" <C-x><C-e>   (fzf-complete-emoji, vim-emoji)
 
 
 " custom commands using fzf
