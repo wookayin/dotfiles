@@ -256,6 +256,12 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
+" window resize (simply)
+nnoremap - <C-W>-
+nnoremap + <C-W>+
+nnoremap < <C-w><
+nnoremap > <C-w>>
+
 " zoom and unzoom (like tmux) -- by 'vim-maximizer'
 nnoremap <C-w>z :MaximizerToggle<CR>
 let g:maximizer_set_default_mapping = 0         " do not map <F3>
