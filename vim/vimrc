@@ -1013,7 +1013,6 @@ let g:fzf_layout = { 'down' : '~33%' }
 if has('nvim-0.4')
   " On floating windows, we use reverse layout, i.e. prompt is at the above.
   let $FZF_DEFAULT_OPTS = $FZF_DEFAULT_OPTS . ' --layout=reverse  --margin=1,2'
-  let g:fzf_layout = { 'window': 'call FloatingFZF()'}
   let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 
   function! FloatingFZF()
@@ -1089,7 +1088,6 @@ function! s:get_git_dir()
   catch /E117/  " Unknown function: maybe incompatible fugitive
     return fugitive#extract_git_dir(curr)
   endtry
-
 endfunction
 
 function! s:fzf_smart(qargs) abort
