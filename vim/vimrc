@@ -578,7 +578,7 @@ endif
 
 " 24-bit true color: neovim 0.1.5+ / vim 7.4.1799+
 " enable ONLY if TERM is set valid and it is NOT under mosh
-function! s:is_mosh()
+function! IsMosh()
   let output = system('is_mosh -v')
   if v:shell_error
     return 0
@@ -586,19 +586,27 @@ function! s:is_mosh()
   return !empty(l:output)
 endfunction
 
-function! s:auto_termguicolors()
+function! s:auto_termguicolors(...)
   if !(has('termguicolors'))
     return
   endif
 
-  if (&term == 'xterm-256color' || &term == 'nvim') && !s:is_mosh()
+  if (&term == 'xterm-256color' || &term == 'nvim') && !IsMosh()
     set termguicolors
   else
     set notermguicolors
   endif
 endfunction
-call s:auto_termguicolors()
+if has('termguicolors')
+  " by default, enable 24-bit color, but lazily disable if under mosh
+  set termguicolors
 
+  if exists('*timer_start')
+    call timer_start(0, function('s:auto_termguicolors'))
+  else
+    call s:auto_termguicolors()
+  endif
+endif
 
 " apply base theme
 silent! colorscheme xoria256
