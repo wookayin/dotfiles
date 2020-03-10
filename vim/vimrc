@@ -33,7 +33,10 @@ autocmd VimEnter *
 
 filetype plugin on
 filetype indent on
-syntax on
+if !exists('g:syntax_on')
+  syntax on
+  let g:syntax_on = 1
+end
 
 set nocompatible
 
@@ -568,7 +571,9 @@ xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
 " color settings
 " @see http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
 set t_Co=256                 " use 256 color
-set background=dark
+if &background != 'dark'
+  set background=dark
+endif
 
 if &term =~ '256color'
   " Disable Background Color Erase (BCE) so that color schemes
@@ -599,7 +604,9 @@ function! s:auto_termguicolors(...)
 endfunction
 if has('termguicolors')
   " by default, enable 24-bit color, but lazily disable if under mosh
-  set termguicolors
+  if !&termguicolors
+    set termguicolors
+  endif
 
   if exists('*timer_start')
     call timer_start(0, function('s:auto_termguicolors'))
@@ -609,7 +616,9 @@ if has('termguicolors')
 endif
 
 " apply base theme
-silent! colorscheme xoria256
+if !exists('g:colors_name')
+  silent! colorscheme xoria256
+endif
 
 " airline theme: status line and tab line
 if has('termguicolors') && &termguicolors
