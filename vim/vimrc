@@ -1014,6 +1014,7 @@ if has('nvim-0.4')
   " On floating windows, we use reverse layout, i.e. prompt is at the above.
   let $FZF_DEFAULT_OPTS = $FZF_DEFAULT_OPTS . ' --layout=reverse  --margin=1,2'
   let g:fzf_layout = { 'window': 'call FloatingFZF()'}
+  let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 
   function! FloatingFZF()
     let buf = nvim_create_buf(v:false, v:true)
@@ -1078,7 +1079,6 @@ function! s:fzf_gfiles_helpmsg(args)
 endfunction
 " }}}
 
-" :F is a shortcut for :GFiles or :FZF
 function! s:get_git_dir()
   let curr = expand('%:p')
   if empty(curr)   " empty buffer, etc.: fall back to current dir
@@ -1091,8 +1091,16 @@ function! s:get_git_dir()
   endtry
 
 endfunction
-function! s:fzf_smart()
-  " if a FZF tree/explorer is shown, invoke :Files (with preview) rather than :GFiles
+
+function! s:fzf_smart(qargs) abort
+  " If args are given (e.g. :F <args>), run :Files <args>
+  if !empty(a:qargs)
+    execute ':Files ' . a:qargs
+    return
+  endif
+
+  " No argument -- Automatic dispatching:
+  " (1) If a FZF tree/explorer is shown, invoke :Files (with preview) rather than :GFiles
   if &filetype == 'nerdtree'
     let l:target_path = b:NERDTree.root.path._str()
     " if the current buffer is the pinned on in the tab (vim-nerdtree-tabs),
@@ -1102,13 +1110,22 @@ function! s:fzf_smart()
     endif
     call fzf#vim#files(l:target_path, fzf#vim#with_preview()) | return
   endif
-  " in a git repo, invoke :GFiles (plus untracked files)
-  if ! empty(s:get_git_dir()) | GFiles -c -o --exclude-standard
-  " not in git repo, invoke :FZF by fallback
-  else | FZF
+  " (2) in a git repo, invoke :GFiles (plus untracked files)
+  let l:git_dir = s:get_git_dir()
+  if ! empty(l:git_dir)
+    let l:old_cwd = getcwd()
+    execute ':cd ' . l:git_dir . '/..'
+    GFiles -c -o --exclude-standard
+    execute ':cd ' . l:old_cwd
+  " (3) not in git repo, invoke :Files <args> by fallback
+  else
+    execute ':Files ' . a:qargs
+    return
   endif
 endfunction
-command! -nargs=0 F call s:fzf_smart()
+
+" :F is a shortcut for :GFiles or :FZF
+command! -complete=dir -nargs=* F call s:fzf_smart(<q-args>)
 
 " Invoke F (FZF) Using Ctrl-P
 nmap <C-P> :F<CR>
