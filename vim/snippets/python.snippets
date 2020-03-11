@@ -1,3 +1,5 @@
+# This is LEGACY snipmate snippets. See also: ~/.vim/UltiSnips/python.snippets
+
 snippet utf8
 	# -*- coding: utf-8 -*-
 
@@ -9,6 +11,13 @@ snippet future
 	from __future__ import absolute_import
 	from __future__ import division
 	from __future__ import print_function
+
+snippet rich
+	from rich.console import Console
+	console = Console(markup=False)
+	print = Console.print
+snippet rich.traceback
+	import rich.traceback; rich.traceback.install(width=None)
 
 snippet print
 	print(${1})
@@ -86,6 +95,18 @@ snippet main
 snippet PATH
 	__PATH__ = os.path.abspath(os.path.dirname(__file__))
 #
+snippet loguru
+	from loguru import logger
+snippet loguru.configure
+	logger.configure(handlers=[])
+	LOG_FORMAT = (   # see loguru._defaults.LOG_FORMAT
+	  "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
+	  "<level>{level: <8}</level> | "
+	  #"<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+	  "<level>{message}</level>"
+	)
+	logger.add(sink=sys.stdout, format=LOG_FORMAT)
+
 snippet logging
 	import logging
 	formatter = logging.Formatter('[%(levelname)s %(asctime)s] %(message)s')   # colorlog?
@@ -143,8 +164,15 @@ snippet OrderedDict
 snippet namedtuple
 	from collections import namedtuple
 #
-snippet tf
-	import tensorflow as tf
+# matplotlib
+snippet mpl_colorbar
+	from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
+	from mpl_toolkits.axes_grid1.colorbar import colorbar
+	cax = make_axes_locatable(${1:ax}).append_axes("right", size="5%", pad=0.05)
+	colorbar(${2:im}, cax=cax)
+#
+# tensorflow
+# see also: ~/.vim/UltiSnips/python_tensorflow.snippets
 snippet tflayers
 	import tensorflow.contrib.layers as layers
 snippet tfslim

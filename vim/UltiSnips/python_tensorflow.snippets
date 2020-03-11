@@ -1,0 +1,22 @@
+# Python snippets but tensorflow-related one.
+
+# TF Imports
+snippet tf
+import tensorflow as tf
+endsnippet
+snippet tfd
+from tensorflow_probability import distributions as tfd
+endsnippet
+snippet tfp
+import tensorflow_probability as tfp
+endsnippet
+snippet TF_CPP_MIN_LOG_LEVEL
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '${1:2}'   # 0: >=INFO, 1: >=WARNING, 2: >=ERROR, 3: >=FATAL
+endsnippet
+
+# TF 2.0
+snippet gpu_growth "Let GPU do not allocate a full memory at once."
+gpu_devices = tf.config.experimental.list_physical_devices('GPU')
+for device in gpu_devices:
+	tf.config.experimental.set_memory_growth(device, True)
+endsnippet

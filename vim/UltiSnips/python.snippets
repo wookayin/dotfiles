@@ -1,4 +1,3 @@
-# vim: set expandtab:
 # This is Ultisnip. See also: ~/.vim/snippets/python.snippets
 
 global !p
@@ -26,8 +25,7 @@ def collect_ale_lint_codes(linter_name):
 
 endglobal
 
-# Add 'pylint: disable=...' marker
-snippet pylint
+snippet pylint  "pylint: disable=...' marker"
 # pylint: disable=${1:`!p snip.rv = collect_ale_lint_codes("pylint")`}
 endsnippet
 
@@ -51,3 +49,6 @@ snippet ipython.system "Import system from ipython (same as !shell execute magic
 from IPython.utils._process_posix import system, getoutput
 endsnippet
 # }}}
+
+# Include ./python_tensorflow.snippets
+extends python_tensorflow
