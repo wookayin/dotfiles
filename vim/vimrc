@@ -759,8 +759,10 @@ if has('gui_running')
 
   elseif has('unix') && s:uname ==? 'Darwin'
     " font setting for Mac OS X (Darwin)
-    set guifont=Monaco\ for\ Powerline:h12
-    set guifontwide=Apple\ SD\ Gothic\ Neo\ UltraLight:h12
+    if !has('gui_vimr')
+      set guifont=Monaco\ for\ Powerline:h12
+      set guifontwide=Apple\ SD\ Gothic\ Neo\ UltraLight:h12
+    endif
   endif
 
 endif
