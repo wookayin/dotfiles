@@ -1744,7 +1744,10 @@ if has('mac')
   endif
 endif
 
-nnoremap <leader>V :VimtexTocOpen<CR>
+augroup VimtexMappings
+  autocmd!
+  autocmd FileType tex nnoremap <buffer> <leader>V :VimtexTocOpen<CR>
+augroup END
 
 " ---------------------------------------------------------------- }}}
 " fugitive {{{
