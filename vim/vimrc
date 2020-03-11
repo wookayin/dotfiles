@@ -1133,9 +1133,29 @@ nmap <C-P> :F<CR>
 " (similar to vim's insert mode completions, :h ins-completion)
 imap <C-x><C-k>   <plug>(fzf-complete-word)
 imap <C-x><C-f>   <plug>(fzf-complete-path)
-imap <C-x><C-l>   <plug>(fzf-complete-line)
+imap <C-x><C-l>   <plug>(fzf-complete-line-allfiles)
+"imap <C-x><C-e>   (fzf-complete-emoji, vim-emoji)
 
-" <C-x><C-e>   (fzf-complete-emoji, vim-emoji)
+" More advanced combinations on insert-mode line completion (CTRL-X CTRL-L)
+imap <C-x><C-l><c-l>   <plug>(fzf-complete-line-allfiles)
+imap <C-x><C-l><c-b>   <plug>(fzf-complete-line-buffers)
+imap <C-x><C-l><c-.>   <plug>(fzf-complete-line-allfiles)
+imap <C-x><C-l><c-i>   <plug>(fzf-complete-line-import)
+imap        <plug>(fzf-complete-line-buffers)    <plug>(fzf-complete-line)
+imap <expr> <plug>(fzf-complete-line-allfiles)   fzf#vim#complete(Fzf_completeline_rg('', ''))
+imap <expr> <plug>(fzf-complete-line-import)     fzf#vim#complete(Fzf_completeline_rg('import', 'py'))
+
+function! Fzf_completeline_rg(pattern, rg_filetype)
+  " TODO detect git directory for the current file and use it as search path
+  let l:pattern = empty(a:pattern) ? '""' : shellescape('\b' . a:pattern. '\b')
+  let l:filetype = empty(a:rg_filetype) ? ' ' : printf('-t %s ', shellescape(a:rg_filetype))
+
+  return fzf#wrap({
+        \ 'source': 'rg --column --line-number --no-heading --color=always ' . l:filetype . ' ' . l:pattern,
+        \ 'options': ['--delimiter', ':', '--ansi', '--nth', '3..', '--no-multi'],
+        \ 'reducer': { lines -> trim(join(split(lines[0], ':')[3:], ':')) },
+        \ })
+endfunction
 
 
 " custom commands using fzf
