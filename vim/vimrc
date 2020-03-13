@@ -1466,7 +1466,7 @@ nmap ga <Plug>(EasyAlign)
 let g:indentLine_conceallevel = 1
 
 " conceal values might not work well for tex files (hides some characters)
-let g:indentLine_fileTypeExclude = ['tex', 'markdown']
+let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc']
 
 " command alias
 command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
@@ -1492,17 +1492,21 @@ augroup END
 " ---------------------------------------------------------------- }}}
 " vim-pandoc {{{
 
-" disable automatic folding
-let g:pandoc#modules#disabled = ['folding']
+if has_key(g:plugs, 'vim-pandoc')
 
-" disable conceals
-let g:pandoc#syntax#conceal#use = 0
+  " disable automatic folding
+  let g:pandoc#modules#disabled = ['folding']
 
-" disable spell check
-let g:pandoc#spell#enabled = 0
+  " disable conceals
+  let g:pandoc#syntax#conceal#use = 0
 
-" Do not map <leader>{nr, rg, rb} by default
-let g:pandoc#keyboard#use_default_mappings = 0
+  " disable spell check
+  let g:pandoc#spell#enabled = 0
+
+  " Do not map <leader>{nr, rg, rb} by default
+  let g:pandoc#keyboard#use_default_mappings = 0
+
+endif
 
 " ---------------------------------------------------------------- }}}
 " vim-javacomplete2 {{{

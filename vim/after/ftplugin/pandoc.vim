@@ -4,6 +4,7 @@ set sw=2
 set sts=2
 
 setlocal iskeyword+=_,:
+setlocal conceallevel=0
 
 if !filereadable('Makefile')
     let &l:makeprg = 'pandoc % -t latex -o "%:r".pdf'
@@ -18,7 +19,7 @@ nnoremap <leader>5 m`^i##### <esc>``6l
 
 " GFM markdown preview using grip
 " (pip install grip)
-command! Grip Dispatch grip % 0.0.0.0
+command! -buffer   Grip Dispatch grip "%" 0.0.0.0
 
 " vim-emoji
 if has_key(g:plugs, 'vim-emoji')
