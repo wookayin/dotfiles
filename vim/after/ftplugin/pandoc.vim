@@ -6,6 +6,10 @@ set sts=2
 setlocal iskeyword+=_,:
 setlocal conceallevel=0
 
+" indentLine is never supposed to enable this for pandoc document,
+" but in some situations it does. We always force disable indentLine.
+let b:indentLine_enabled = 0
+
 if !filereadable('Makefile')
     let &l:makeprg = 'pandoc % -t latex -o "%:r".pdf'
 endif
