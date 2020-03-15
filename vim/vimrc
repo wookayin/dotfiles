@@ -940,8 +940,40 @@ let g:EditorConfig_core_mode = 'vim_core'
 " use airline, with powerline-ish theme
 let g:airline_powerline_fonts=1
 
-" [section customization] (:h airline-sections) {{{
+" [section customization] (:h airline-sections)
+" See ~/.vim/plugged/vim-airline/autoload/airline/init.vim -> airline#init#sections() to see defaults {{{
 " -----------------------
+
+autocmd User AirlineAfterInit call AirlineSectionInit()
+function! AirlineSectionInit()
+  " section c: -coc_status
+  let g:airline_section_c = airline#section#create([
+        \ '%<', 'file', g:airline_symbols.space, 'readonly',
+        \ ])
+
+  " section y: +coc_status, -filetype
+  " Customize how coc_status should work (after airline#extensions#coc#init is called)
+  if exists(':CocCommand') | call airline#parts#define_function('coc_status', 'AirlineCocStatusSimple') | endif
+  let g:airline_section_x = airline#section#create_right([
+        \ 'coc_status',
+        \ 'bookmark', 'tagbar', 'vista', 'gutentags', 'grepper',
+        \ ])               " excludes filetype
+endfunction
+
+" airline-coc customization
+function! AirlineCocStatusSimple() abort
+  " @see airline#extensions#coc#get_status for the original behavior
+  let l:status = get(g:, 'coc_status', '')
+
+  if &filetype == 'python'
+    " Strip "Python x.y.z. 64-bit ..." which I don't want to see
+    " trim() : nvim 0.3.2+ but we can safely assume it exists if coc.nvim does.
+    let l:status = ' ' . trim(substitute(l:status, "Python.*-bit\s*", "", ""))
+  endif
+
+  return airline#util#shorten(l:status, 160, 33)
+endfunction
+
 
 " section y (ffenc): skip if utf-8[unix]
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
