@@ -230,6 +230,7 @@ let mapleader=','           " comma is the <Leader> key.
 let maplocalleader=','      " comma : <LocalLeader>
 
 inoremap <silent> <C-k> <ESC>:update<CR>
+nnoremap <silent> ,e :<C-u>e<CR>zR
 
 " navigation key mapping
 map <silent> k gk
