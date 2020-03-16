@@ -63,10 +63,19 @@ if [ -d $HOME/.dotfiles/bin/ ]; then
   path=( $path $HOME/.dotfiles/bin )
 fi
 
+# Cleanup some anaconda environment variables to avoid messing up in tmux, etc.
+# (these environment variables might be copied and inherited unwantedly)
+path=( ${path[@]:#*conda3/envs*} )
+unset CONDA_EXE
+unset CONDA_PREFIX
+unset CONDA_DEFAULT_ENV
+unset CONDA_PYTHON_EXE
+unset CONDA_SHLVL
+
 # Miniconda3
-if [ -d $HOME/.miniconda3/bin/ ]; then
-  path=( $path $HOME/.miniconda3/bin )
-  export CONDA_EXE=$HOME/.miniconda3/bin/conda
+if [ -d "$HOME/.miniconda3/bin/" ]; then
+  path=( $path "$HOME/.miniconda3/bin" )
+  export CONDA_EXE="$HOME/.miniconda3/bin/conda"
 elif [ -d "/usr/local/miniconda3/" ]; then
   path=( $path "/usr/local/miniconda3/bin" )
   export CONDA_EXE="/usr/local/miniconda3/bin/conda"
