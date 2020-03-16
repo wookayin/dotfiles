@@ -37,6 +37,22 @@
      ************/
     "coc.source.omni.filetypes": ["vim"],
 
+    /***************
+     * coc-explorer
+     ***************/
+    "explorer.keyMappings": {
+      "l": "expand",
+      "I": "toggleHidden",
+      "<cr>": ["expandable?", "expandOrCollapse", "open"],
+      "<c-v>": "open:vsplit",
+      "<c-x>": "open:split",
+    },
+    "explorer.width": 32,
+    "explorer.previewAction.onHover": false,        // Do not show floating windows on hovering on nodes
+    "explorer.icon.enableNerdfont": true,           // Use nerd font icons
+    "explorer.file.column.git.showIgnored": false,
+    "explorer.openAction.strategy": "previousWindow", // Use last used window when opening files
+
     /**************************
      * custom language servers
      **************************/
