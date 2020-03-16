@@ -68,6 +68,9 @@ tasks = {
     # GTK
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
 
+    # kitty
+    '~/.config/kitty/kitty.conf': 'config/kitty/kitty.conf',
+
     # tmux
     '~/.tmux'      : 'tmux',
     '~/.tmux.conf' : 'tmux/tmux.conf',
