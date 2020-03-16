@@ -160,6 +160,11 @@ set completeopt=menuone,preview,longest     " show preview and pop-up menu
 set noswapfile
 set nobackup
 
+" dictionary
+if filereadable('/usr/share/dict/words')
+  set dictionary+=/usr/share/dict/words
+endif
+
 " miscellanious
 set visualbell
 set history=1000
