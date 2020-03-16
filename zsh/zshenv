@@ -65,7 +65,6 @@ fi
 
 # Cleanup some anaconda environment variables to avoid messing up in tmux, etc.
 # (these environment variables might be copied and inherited unwantedly)
-path=( ${path[@]:#*conda3/envs*} )
 unset CONDA_EXE
 unset CONDA_PREFIX
 unset CONDA_DEFAULT_ENV
