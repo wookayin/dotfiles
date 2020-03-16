@@ -606,6 +606,7 @@ function! s:auto_termguicolors(...)
     set termguicolors
   else
     set notermguicolors
+    silent! set pumblend=0  " disable blending
   endif
 endfunction
 if has('termguicolors')
@@ -718,7 +719,8 @@ highlight Pmenu             ctermfg=black guifg=black ctermbg=yellow guibg=#ffec
 highlight PmenuSel          ctermfg=red guifg=red ctermbg=white guibg=white gui=bold
 
 " neovim 0.4.0+ : semi-transparent popup menu
-if has('nvim') && has('termguicolors')
+" seealso: s:auto_termguicolors
+if has('nvim') && has('termguicolors') && (&termguicolors)
   silent! set pumblend=20
 endif
 
