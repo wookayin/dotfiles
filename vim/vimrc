@@ -521,19 +521,33 @@ nnoremap <leader>df :diffthis<CR>
 " Surround a word with quotes, single quotes, parens, brackets, braces, etc.
 "   requires and powered by the plugin surround.vim :-)
 " (Note) for visual blocks, use S command from surround.vim
-map  <leader>s" ysiw"
-map  <leader>s' ysiw'
-map  <leader>s` ysiw`
-map  <leader>s* ysiw*l
-map  <leader>s_ ysiw_l
-map  <leader>s~ ysiw~l
-map  <leader>s$ ysiw$
-map  <leader>s( ysiw(
-map  <leader>s) ysiw)
-map  <leader>s[ ysiw[
-map  <leader>s] ysiw]
-map  <leader>s{ ysiw{
-map  <leader>s} ysiw}
+nmap  <leader>s" ysiw"
+nmap  <leader>s' ysiw'
+nmap  <leader>s` ysiw`
+nmap  <leader>s* ysiw*l
+nmap  <leader>s_ ysiw_l
+nmap  <leader>s~ ysiw~l
+nmap  <leader>s$ ysiw$
+nmap  <leader>s( ysiw(
+nmap  <leader>s) ysiw)
+nmap  <leader>s[ ysiw[
+nmap  <leader>s] ysiw]
+nmap  <leader>s{ ysiw{
+nmap  <leader>s} ysiw}
+
+vmap  <leader>s" S"
+vmap  <leader>s' S'
+vmap  <leader>s` S`
+vmap  <leader>s* S*
+vmap  <leader>s_ S_
+vmap  <leader>s~ S~
+vmap  <leader>s$ S$
+vmap  <leader>s( S(
+vmap  <leader>s) S)
+vmap  <leader>s[ S[
+vmap  <leader>s] S]
+vmap  <leader>s{ S{
+vmap  <leader>s} S}
 
 " Zoom Tmux
 noremap <silent> <leader>z :silent exec "!tmux resize-pane -Z"<CR>
