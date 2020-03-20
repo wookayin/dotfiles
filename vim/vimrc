@@ -602,7 +602,7 @@ function! s:auto_termguicolors(...)
     return
   endif
 
-  if (&term == 'xterm-256color' || &term == 'nvim') && !IsMosh()
+  if index(['xterm-256color', 'nvim', 'xterm-kitty', 'builtin_xterm'], &term) >= 0 && !IsMosh()
     set termguicolors
   else
     set notermguicolors
