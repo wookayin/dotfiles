@@ -14,10 +14,10 @@ endfunction
 "  (or /usr/bin/pip3, /usr/local/bin/pip, depending environments)
 " The locally installed python (e.g. homebrew) at /usr/local/bin precedes.
 
-let g:python_host_prog  = '/usr/local/bin/python'
+let g:python_host_prog  = '/usr/local/bin/python2'
 if empty(glob(g:python_host_prog))
     " Fallback if not exists
-    let g:python_host_prog = '/usr/bin/python'
+    let g:python_host_prog = '/usr/bin/python2'
 endif
 
 let g:python3_host_prog = ''
