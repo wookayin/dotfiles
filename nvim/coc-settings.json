@@ -8,6 +8,9 @@
     // Enable preview (signatures, etc.) during completion
     "suggest.enablePreview": true,
 
+    // Sort completion items alphabetically rather than by length
+    "suggest.defaultSortMethod": "alphabetical",
+
     // Maxmium width of floating preview window
     "suggest.maxPreviewWidth": 80,
 
