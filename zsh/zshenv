@@ -85,10 +85,12 @@ elif [ -d "/usr/local/miniconda3/" ]; then
   export CONDA_EXE="/usr/local/miniconda3/bin/conda"
 fi
 
-# Anaconda3 (deprecated, should prefer miniconda3
+# Anaconda3 (deprecated, should prefer miniconda3)
 if [ -d $HOME/.anaconda3/bin/ ]; then
   path=( $path $HOME/.anaconda3/bin )
-  export CONDA_EXE=$HOME/.anaconda3/bin/conda
+  if [[ "$CONDA_EXE" != *"miniconda"* ]]; then
+    export CONDA_EXE=$HOME/.anaconda3/bin/conda
+  fi
 fi
 
 # rust (cargo)
