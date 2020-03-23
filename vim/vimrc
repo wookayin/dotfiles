@@ -1293,6 +1293,53 @@ nnoremap <leader>def  :<C-U>Def*<CR>
 xnoremap <leader>def  "gy:Def <C-R>g<CR>
 
 
+" :DefPackage (perform :Def on the python package directory)
+command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
+      \ DefPackage call s:rgfzf_pypackage('fzf#vim#ripgrep#rgdef_fzf', <q-args>, <bang>1)
+
+" :RgPackage (Perform :RgFzf on the python package directory)
+" TODO: too many lines (millions) on empty query; we should avoid it?
+command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
+      \ RgPackage call s:rgfzf_pypackage('fzf#vim#ripgrep#rg_fzf', <q-args>, <bang>1)
+
+
+function! s:rgfzf_pypackage(fzfrg_func, qargs, bang) abort
+  " TODO: If sitepackage dir is missing, resolve from python import path?
+  let l:args = split(a:qargs)
+  let l:query = join(l:args[1:])
+  if empty(l:args)   " corner case: empty query
+    let l:args = ['']
+  elseif l:args[0] == '*'   " search all packages.
+    let l:args[0] = ''
+  endif
+  return call(a:fzfrg_func, [l:query, {'fullscreen': a:bang,
+        \ 'path': printf('%s/%s', PythonSitePackagesDir(), Trim(l:args[0]))
+        \ } ])
+endfunction
+
+function! PythonSitePackagesDir()
+  return systemlist('python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"')[0]
+endfunction
+function! CompletePythonSitePackages(...)
+  let l:prefix = get(a:, 1, '')
+  let l:cmdline = get(a:, 2, '')
+  if len(split(l:cmdline, ' ')) >= 3
+    return []  " from the second argument, no completion
+  endif
+  " TODO: can we cache it, storing into the current buffer?
+  let packages = systemlist(
+        \ 'python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())" ' .
+        \ ' | xargs -I{} find {}/ -maxdepth 1 -type d ' .
+        \ ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" | sort ' .
+        \ ' | sed -e "s#\(.*\)/\(.*\)#\2#"'
+        \)
+  let filter_expr = '!empty(v:val)'
+  if !empty(l:prefix)
+    let filter_expr .= printf(' && v:val =~# "^%s"', escape(l:prefix, "'\""))
+  endif
+  return filter(packages, filter_expr)
+endfunction
+
 
 " FZF-based finder commands
 " -------------------------
