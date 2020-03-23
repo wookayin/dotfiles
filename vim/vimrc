@@ -1302,6 +1302,9 @@ command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
 command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
       \ RgPackage call s:rgfzf_pypackage('fzf#vim#ripgrep#rg_fzf', <q-args>, <bang>1)
 
+" command alias (:DP, :RP)
+cabbrev DP     DefPackage
+cabbrev RP     RgPackage
 
 function! s:rgfzf_pypackage(fzfrg_func, qargs, bang) abort
   " TODO: If sitepackage dir is missing, resolve from python import path?
@@ -1312,10 +1315,19 @@ function! s:rgfzf_pypackage(fzfrg_func, qargs, bang) abort
   elseif l:args[0] == '*'   " search all packages.
     let l:args[0] = ''
   endif
+  " package aliases (pd -> pandas, np -> numpy, etc.)
+  let l:args[0] = get(get(g:, 'python_package_alias', {}), l:args[0], l:args[0])
+
   return call(a:fzfrg_func, [l:query, {'fullscreen': a:bang,
         \ 'path': printf('%s/%s', PythonSitePackagesDir(), Trim(l:args[0]))
         \ } ])
 endfunction
+
+let g:python_package_alias = {
+      \ 'np': 'numpy', 'pd': 'pandas', 'mpl': 'matplotlib', 'plt': 'matplotlib', 'sns': 'seaborn',
+      \ 'tf': 'tensorflow', 'tfa': 'tensorflow_addon', 'tfp': 'tensorflow_probability',
+      \ 'tfio': 'tensorflow_io', 'snt': 'sonnet', 'ta': 'tf_agents',
+      \ }
 
 function! PythonSitePackagesDir()
   return systemlist('python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"')[0]
