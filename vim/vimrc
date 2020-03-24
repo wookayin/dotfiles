@@ -566,6 +566,10 @@ endif
 " 3. More Functions and Commands {{{
 """""""""""""""""""""""""""""""""""""""""
 
+function! Trim(input_string)  " or use trim() if neovim 0.3.2+ or vim 8.1+
+    return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
+endfunction
+
 " ----------------------------------------------------------------------------
 " <Leader>?/! : Google it / Feeling lucky
 "   (code brought from @junegunn/dotfiles)
