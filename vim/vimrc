@@ -493,11 +493,14 @@ nnoremap <leader>src :source ~/.vimrc<CR>
 command! -nargs=0 Vimrc   call s:open_vimrc_tab()
 function! s:open_vimrc_tab()
   tabnew ~/.vim/vimrc
+  if filereadable(expand("~/.vimrc.local"))
+    15sp ~/.vimrc.local
+  endif
   botright vnew ~/.vim/plugins.vim
   if filereadable(expand("~/.vim/plugins.local.vim"))
-    10sp ~/.vim/plugins.local.vim
+    15sp ~/.vim/plugins.local.vim
   endif
-  wincmd t  " focus on the first buffer (~/.vimrc)
+  wincmd t  " focus on the first window (~/.vimrc)
 endfunction
 
 " <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
