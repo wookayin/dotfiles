@@ -45,7 +45,11 @@
      ***************/
     "explorer.keyMappings": {
       "l": "expand",
+      "L": "expandRecursive",
+      "H": "collapseRecursive",
       "I": "toggleHidden",
+      "r": "refresh",
+      "R": "refresh",
       "<cr>": ["expandable?", "expandOrCollapse", "open"],
       "<c-v>": "open:vsplit",
       "<c-x>": "open:split",
