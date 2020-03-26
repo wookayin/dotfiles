@@ -20,10 +20,13 @@ endglobal
 # https://vi.stackexchange.com/questions/18490/ultisnips-context-and-tex
 # https://castel.dev/post/lecture-notes-1/
 global !p
-texMathZones = ['texMathZone' + x for x in [
-    'A', 'AS', 'B', 'BS', 'C', 'CS', 'D','DS', 'E', 'ES', 'F', 'FS', 'G', 'GS',
-    'H', 'HS', 'I', 'IS', 'J', 'JS', 'K', 'KS', 'L', 'LS', 'DS', 'V', 'W', 'X', 'Y', 'Z']
-]
+texMathZones = ['texMathZone{}'.format(x) for x in (
+    'A', 'AS', 'B', 'BS', 'C', 'CS', 'D', 'DS', 'E', 'ES', 'F', 'FS', 'G', 'GS',
+    'H', 'HS', 'I', 'IS', 'J', 'JS', 'K', 'KS', 'L', 'LS', 'DS', 'V', 'W', 'X', 'Y', 'Z', )]
+texMathZones += ['texMathZoneAms{}'.format(x) for x in (    # amsmath package
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'AS', 'BS', 'CS', 'DS', 'ES', 'FS', 'GS', )]   # amsmath package
+texMathZones += ['texMathZoneBreqn{}'.format(x) for x in (  # breqn package
+    'A', 'B', 'C', 'D', 'AS', 'BS', 'CS', 'DS', )]
 texIgnoreMathZones = ['texMathText']
 
 texMathZoneIds = vim.eval('map(' + str(texMathZones) + ", 'hlID(v:val)')")
@@ -88,37 +91,35 @@ context "is_math()"
 snippet cal "\mathcal" wA
 \mathcal{$1}$0
 endsnippet
-
 context "is_math()"
 snippet bf "\mathbf" wA
 \mathbf{$1}$0
+endsnippet
+context "is_math()"
+snippet bb "\mathbb" wA
+\mathbb{$1}$0
 endsnippet
 
 context "is_math()"
 snippet -> "\rightarrow" wA
 \rightarrow
 endsnippet
-
 context "is_math()"
 snippet <- "\leftarrow" wA
 \leftarrow
 endsnippet
-
 context "is_math()"
 snippet => "\Rightarrow" wA
 \Rightarrow
 endsnippet
-
 context "is_math()"
 snippet <= "\Leftarrow" wA
 \Leftarrow
 endsnippet
-
-#context "is_math()"
+context "is_math()"
 snippet ==> "\Longrightarrow" wA
 \Longrightarrow
 endsnippet
-
 context "is_math()"
 snippet <== "\Longleftarrow" wA
 \Longleftarrow
