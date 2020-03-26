@@ -1280,8 +1280,8 @@ endfunction
 " [@migrated] :Rg, :RgFzf are defined in ~/.vim/plugged/fzf-ripgrep.vim/plugin/fzf_ripgrep.vim
 "
 " :RgFzf, :RF, :RGF -- Ripgrep + fzf (grep then fuzzy-filter)
-command! -nargs=*     RF      :RgFzf <args>
 command! -nargs=*     RGF     :RgFzf <args>
+cabbrev               RF      RgFzf
 
 " :Rg, :Grep -- Ripgrep + fzf (but refreshs ripgrep result upon updating query)
 command! -nargs=*     Grep    :Rg <args>
@@ -1293,7 +1293,7 @@ xnoremap <leader>rg   "gy:RgF <C-R>g<CR>
 " :Def, :RgDef -- Easily find definition/declaration (requires ripgrep)
 " e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
 command! -bang -nargs=* Def     :RgDef <args>
-command! -bang -nargs=* D       :RgDef <args>
+cabbrev                 D       Def
 
 " def-this (current cursor or visual selection)
 nnoremap <leader>def  :<C-U>Def*<CR>
@@ -1980,6 +1980,11 @@ if has_key(g:plugs, 'coc.nvim')
           \ })
   endif
 
+  " [Command abbrs]
+  " ---------------
+  cabbrev  CC CocCommand
+  "cabbrev CF CocFzfList  (below)
+
   " [Custom keymappings] see plugin/coc.vim
   " ---------------------------------------
 
@@ -2097,7 +2102,11 @@ endif
 " coc-fzf {{{
 
 if has_key(g:plugs, 'coc-fzf')
-  " Nothing to configure as of now
+
+  cabbrev CF CocFzfList
+  cabbrev CC CocFzfList commands
+  cabbrev CA CocFzfList actions
+
 endif
 
 " ---------------------------------------------------------------- }}}
