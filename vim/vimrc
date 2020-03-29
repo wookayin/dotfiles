@@ -266,10 +266,13 @@ noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
 " window resize (simply)
-nnoremap - <C-W>-
+nnoremap _ <C-W>-
 nnoremap + <C-W>+
-nnoremap < <C-w><
-nnoremap > <C-w>>
+nnoremap <S-Right> <C-W>>
+nnoremap <S-Left>  <C-W><
+nnoremap <S-Down>  <C-W>-
+nnoremap <S-Up>    <C-W>+
+
 
 " zoom and unzoom (like tmux) -- by 'vim-maximizer'
 nnoremap <C-w>z :MaximizerToggle<CR>
