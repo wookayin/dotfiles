@@ -110,6 +110,17 @@ alias gds='gd --staged --no-prefix'
 alias gs='git status'
 alias gsu='gs -u'
 
+function ghad() {
+    # Run gha (git history) and refresh if anything in .git/ changes
+    _command="clear; (date; echo ''; git history --all --color) \
+                    | head -n \$((\$(tput lines) - 2)) | less -FE"
+    bash -c "$_command"
+    fswatch -o $(git rev-parse --git-dir) \
+        --exclude='.*' --include='HEAD$' --include='refs/' \
+    | xargs -n1 -I{} bash -c "$_command" \
+    || true   # exit code should be 0
+}
+
 # using the vim plugin 'GV'!
 function _vim_gv {
     vim -c ":GV $1"
