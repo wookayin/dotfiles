@@ -11,7 +11,7 @@ export FZF_CTRL_R_OPTS='--sort'
 
 # Ctrl-T: Setting ripgrep or fd as the default source for Ctrl-T fzf
 if (( $+commands[rg] )); then
-    export FZF_CTRL_T_COMMAND='rg --files --hidden --follow --glob "!.git/"'
+    export FZF_CTRL_T_COMMAND='rg --files --hidden --follow --no-messages --glob "!.git/"'
 elif (( $+commands[fd] )); then
     export FZF_CTRL_T_COMMAND='fd --type f'
 fi
