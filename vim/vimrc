@@ -377,6 +377,7 @@ endif
 
 
 " smartly dispatch according to filetype
+command! -nargs=0 -bang RunMake call s:run_make("<bang>")
 function! s:run_make(bang)
     let l:silent_filetypes = ['tex', 'pandoc', 'lilypond']
     " (1) bang given, force background
@@ -385,9 +386,9 @@ function! s:run_make(bang)
     elseif index(l:silent_filetypes, &filetype) >= 0 | TheMake!
     " (3) otherwise, make with foreground shown
     else | TheMake
-    end
+    endif
+    echo printf(':RunMake  (%s)', &makeprg)
 endfunction
-command! -nargs=0 -bang RunMake call s:run_make("<bang>")
 
 " A handy way to set makeprg.
 command! -nargs=1 Makeprg let &g:makeprg="<args>" | echo "makeprg = <args>"
