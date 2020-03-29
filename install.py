@@ -99,7 +99,8 @@ except ImportError:
     find_executable = lambda _: False   # type: ignore
 
 
-post_actions = [
+post_actions = []
+post_actions += [
     '''#!/bin/bash
     # Check whether ~/.vim and ~/.zsh are well-configured
     for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
@@ -113,8 +114,9 @@ Please remove your local folder/file $f and try again.\033[0m"
             echo "$f --> $(readlink $f)"
         fi
     done
-    ''',
+''']
 
+post_actions += [
     '''#!/bin/bash
     # Update zgen modules and cache (the init file)
     zsh -c "
@@ -129,18 +131,23 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         zgen reset
         zgen update
     "
-    ''' if not args.skip_zgen else '',
+    ''' if not args.skip_zgen else ''
+]
 
+post_actions += [
     '''#!/bin/bash
     # validate neovim package installation on python2/3 and automatically install if missing
-    source "etc/install-neovim-py.sh"
-    ''',
+    bash "etc/install-neovim-py.sh"
+''']
 
+post_actions += [
     # Run vim-plug installation
     {'install' : '{vim} +PlugInstall +qall'.format(vim='nvim' if find_executable('nvim') else 'vim'),
      'update'  : '{vim} +PlugUpdate  +qall'.format(vim='nvim' if find_executable('nvim') else 'vim'),
-     'none'    : ''}['update' if not args.skip_vimplug else 'none'],
+     'none'    : ''}['update' if not args.skip_vimplug else 'none']
+]
 
+post_actions += [
     # Install tmux plugins via tpm
     '~/.tmux/plugins/tpm/bin/install_plugins',
 
@@ -157,8 +164,9 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
     else
         echo "$(which tmux): $(tmux -V)"
     fi
-    ''',
+''']
 
+post_actions += [
     r'''#!/bin/bash
     # Setting up for coc.nvim (~/.config/coc, node.js)
 
@@ -172,23 +180,11 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
     fi
 
-    # (ii) node.js
-    node_version=$(node --version 2>/dev/null)
-    if [[ -n "$node_version" ]]; then
-    echo -e "${GREEN}node.js $node_version:${RESET} $(which node)"
-    else
-        echo -e "${YELLOW}Node.js not found. Please install node.js v10.0+ by either:
+    # (ii) validate or auto-install node.js locally
+    bash "etc/install-node.sh" || exit 1;
+''']
 
-  (a) Install node on the system (apt-get install nodejs, or brew install nodejs)
-  (b) Install node using nvm (https://github.com/nvm-sh/nvm#installation-and-update)
-  (c) Install locally (i.e. on ~/.local/),
-      $ dotfiles install node           # or,
-      $ curl -sL install-node.now.sh | bash -s -- --prefix=\$HOME/.local --verbose
-${RESET}"
-       exit 1;
-    fi
-    ''',
-
+post_actions += [
     r'''#!/bin/bash
     # Change default shell to zsh
     /bin/zsh --version >/dev/null || (echo -e "Error: /bin/zsh not found. Please install zsh"; exit 1)
@@ -198,8 +194,9 @@ ${RESET}"
     else
         echo -e "\033[0;32m\$SHELL is already zsh.\033[0m $(zsh --version)"
     fi
-    ''',
+''']
 
+post_actions += [
     r'''#!/bin/bash
     # Create ~/.gitconfig.secret file and check user configuration
     if [ ! -f ~/.gitconfig.secret ]; then
@@ -229,8 +226,7 @@ EOL
     echo -en 'user.name  : '; git config --file ~/.gitconfig.secret user.name
     echo -en 'user.email : '; git config --file ~/.gitconfig.secret user.email
     echo -en '\033[0m';
-    ''',
-]
+''']
 
 ################# END OF FIXME #################
 

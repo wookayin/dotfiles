@@ -53,10 +53,13 @@ install_zsh() {
 install_node() {
     # Install node.js LTS at ~/.local
     set -e
-    curl -sL install-node.now.sh | bash -s -- --prefix=$HOME/.local --verbose
+    curl -sL install-node.now.sh | bash -s -- --prefix=$HOME/.local --verbose --yes
 
     echo -e "\n$(which node) : $(node --version)"
     node --version
+
+    # install some useful nodejs based utility (~/.local/lib/node_modules)
+    $HOME/.local/bin/npm install -g http-server diff-so-fancy || true;
 }
 
 install_tmux() {

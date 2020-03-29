@@ -44,6 +44,29 @@ if which nvim >/dev/null; then
         $cmd;
     done
 else
-    echo -e "${RED}Neovim not found. Please install using 'dotfiles install neovim'.${RESET}"
+    if [ `uname` == "Darwin" ]; then
+        NEOVIM_INSTALL_CMD="brew install neovim"
+    else
+        NEOVIM_INSTALL_CMD="dotfiles install neovim"
+    fi
+    echo -e "${RED}Neovim not found. Please install using '${NEOVIM_INSTALL_CMD}'.${RESET}"
+
+    # Automatically install dotfiles upon confirmation (Linux only)
+    if [[ -n "$BASH_VERSION" ]] && [ `uname` == "Linux" ]; then
+        while true; do
+            echo -en "${YELLOW}Do you want to install neovim locally [y/N] ${RESET}"
+            [ -t 1 ] && read -t 5 -p "(wait 5 secs for auto-yes) ? " user_prompt;
+            if [ $? -ne 0 ]; then user_prompt="y"; fi  # when timeout, yes
+            case $user_prompt in
+                [YyNn]* ) break;;
+                *) echo "Please answer yes or no.";;
+            esac
+        done
+        if [[ "$user_prompt" == [Yy]* ]]; then
+            echo -e "\n${GREEN}Installing neovim into ~/.local/bin/ ...${RESET}";
+            dotfiles install neovim && exit 0;
+        fi
+    fi
+
     exit 1;
 fi
