@@ -87,7 +87,7 @@ if [[ "$(uname)" == "Darwin" ]] && (( $+commands[iterm-tab-color] )); then
 fi
 
 function ssh-tmuxa {
-    host="$1"
+    local host="$1"
     if [[ -z "$2" ]]; then
        ssh $host -t tmux attach -d
     else;
@@ -112,7 +112,7 @@ alias gsu='gs -u'
 
 function ghad() {
     # Run gha (git history) and refresh if anything in .git/ changes
-    _command="clear; (date; echo ''; git history --all --color) \
+    local _command="clear; (date; echo ''; git history --all --color) \
                     | head -n \$((\$(tput lines) - 2)) | less -FE"
     bash -c "$_command"
     fswatch -o $(git rev-parse --git-dir) \
@@ -217,7 +217,7 @@ function vimpy() {
     # e.g. $ vimpy numpy.core    --> opens $(site-package)/numpy/core/__init__.py
     if [[ -z "$1" ]]; then; echo "Argument required"; return 1; fi
 
-    module_path=$(python -c "import $1; print($1.__file__)")
+    local _module_path=$(python -c "import $1; print($1.__file__)")
     if [[ -n "$module_path" ]]; then
       echo $module_path
       vim "$module_path"
@@ -259,7 +259,7 @@ function watchgpucpu {
 }
 
 function usegpu {
-    gpu_id="$1"
+    local gpu_id="$1"
     if [[ "$1" == "none" ]]; then
         gpu_id=""
     elif [[ "$1" == "auto" ]] && (( $+commands[gpustat] )); then
