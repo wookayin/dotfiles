@@ -1433,6 +1433,11 @@ command! GS GFiles?
 " :H goes to :History
 command! H History
 
+" Marks
+if has_key(g:plugs, 'fzf.vim')
+  nnoremap '' :Marks<CR>
+endif
+
 " ---------------------------------------------------------------- }}}
 " vim-clap {{{
 if has_key(g:plugs, 'vim-clap')
