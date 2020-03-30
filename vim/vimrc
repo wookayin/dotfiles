@@ -291,8 +291,14 @@ if has('nvim')
   tnoremap <silent> <C-\><C-\> <C-\><C-n>
 
   " Automatically enter insert mode when entering neovim terminal buffer
-  autocmd BufWinEnter,WinEnter term://* startinsert
-  autocmd TermOpen * startinsert
+  augroup terminal_autoinsert
+    autocmd!
+    autocmd BufWinEnter,WinEnter term://* startinsert
+    autocmd TermOpen * startinsert
+
+    " mouse click puts into normal mode even in terminal; disable this
+    autocmd TermOpen * tnoremap <buffer><silent> <LeftRelease> <Nop>
+  augroup END
 
   " terminal in a new tab or vsplit buffer
   command! -nargs=* -complete=shellcmd Term         :tabnew | :term <args>
