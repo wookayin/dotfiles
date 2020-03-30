@@ -1,6 +1,7 @@
-# Custom Alias commands for ZSH
+# Custom alias and functions for ZSH
 
 # Basic
+alias reload!=". ~/.zshrc && echo 'sourced ~/.zshrc' again"
 alias c='command'
 
 alias cp='nocorrect cp -iv'
