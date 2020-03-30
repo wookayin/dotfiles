@@ -189,7 +189,9 @@ function! s:configure_coc_nvim()
   "Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }   " from source
   Plug 'neoclide/coc.nvim', {'branch': 'release'}                    " released binary
   Plug 'neoclide/jsonc.vim'
-  Plug 'antoinemadec/coc-fzf'
+  if has('nvim-0.4.0')
+    Plug 'antoinemadec/coc-fzf'
+  endif
 
   " coc supercedes deoplete and supertab
   UnPlug 'Shougo/deoplete.nvim'
