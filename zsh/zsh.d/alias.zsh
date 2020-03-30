@@ -120,6 +120,14 @@ function ghad() {
     | xargs -n1 -I{} bash -c "$_command" \
     || true   # exit code should be 0
 }
+if alias gsd > /dev/null; then unalias gsd; fi
+function gsd() {
+    local _command="clear; (date; echo ''; git status --branch)"
+    bash -c "$_command"
+    fswatch -o $(git rev-parse --git-dir)/index \
+        | xargs -n1 -I{} bash -c "$_command" \
+    || true
+}
 
 # using the vim plugin 'GV'!
 function _vim_gv {
