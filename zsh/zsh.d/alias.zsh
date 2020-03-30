@@ -174,6 +174,24 @@ alias pytest-pudb='pytest -s --pudb'
 alias pytest-html='pytest --self-contained-html --html'
 alias green='green -vv'
 
+# some useful fzf-grepping functions for python
+function pip-list-fzf() {
+  pip list "$@" | fzf --header-lines 2 --reverse --nth 1 --multi | awk '{print $1}'
+}
+function pip-search-fzf() {
+  if [[ -z "$1" ]]; then echo "argument required"; return 1; fi
+  pip search "$@" | grep '^[a-z]' | fzf --reverse --nth 1 --multi --no-sort | awk '{print $1}'
+}
+function conda-list-fzf() {
+  conda list "$@" | fzf --header-lines 3 --reverse --nth 1 --multi | awk '{print $1}'
+}
+function pipdeptree-fzf() {
+  python -m pipdeptree "$@" | fzf --reverse
+}
+function pipdeptree-vim() {   # e.g. pipdeptree -p <package>
+  python -m pipdeptree "$@" | vim - +"set ft=config foldmethod=indent" +"norm zR"
+}
+
 # }}}
 
 
