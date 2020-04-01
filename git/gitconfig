@@ -38,6 +38,8 @@
 	unassume-unchanged = update-index --no-assume-unchanged
 	list-assume-unchanged = !sh -c 'git ls-files -v | grep "^[a-z]" | sed "s/^..//"'
 
+	list-conflicts = diff --name-only --diff-filter=U
+
 	amend = commit --amend -v
 
 	wdiff = diff --color-words
