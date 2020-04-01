@@ -1940,7 +1940,10 @@ nnoremap <leader>gd :Gvdiff<CR>
 nnoremap <leader>gD :Gvdiff HEAD<CR>
 nnoremap <leader>gs :Gstatus<CR>:20wincmd +<CR>
 nnoremap <leader>gw :Gwrite<CR>
-nnoremap <leader>gb :Gblame -w<CR>:vertical resize 10<CR>
+nnoremap <silent> <leader>gb :echo ':Gblame -w'<CR>:Gblame -w<CR>:call FugitiveResizeGblame()<CR>
+function! FugitiveResizeGblame() abort
+  if &ft == 'fugitiveblame' | vertical resize 10 | endif
+endfunction
 nnoremap <leader>gci :Gcommit --verbose<CR>
 nnoremap <leader>gcA :Gcommit --amend --verbose<CR>
 
