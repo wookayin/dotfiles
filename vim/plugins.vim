@@ -207,7 +207,7 @@ function! s:configure_coc_nvim()
 
   " automatically install CocExtensions by default
   let g:coc_global_extensions = [
-        \ 'coc-json', 'coc-highlight', 'coc-snippets',
+        \ 'coc-json', 'coc-highlight', 'coc-snippets', 'coc-explorer',
         \ 'coc-python', 'coc-vimlsp'
         \ ]
 
