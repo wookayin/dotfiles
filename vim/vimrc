@@ -166,10 +166,12 @@ if filereadable('/usr/share/dict/words')
   set dictionary+=/usr/share/dict/words
 endif
 
+" Retain more history (:, search strings, etc.)
+set history=10000
+set undolevels=1000
+
 " miscellanious
 set visualbell
-set history=1000
-set undolevels=1000
 set lazyredraw              " no redrawing during macro execution
 
 " Make gitgutter signs, etc. be more responsive (default is 4000ms)
