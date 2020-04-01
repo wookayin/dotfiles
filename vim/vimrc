@@ -1314,6 +1314,41 @@ nnoremap <leader>def  :<C-U>Def*<CR>
 xnoremap <leader>def  "gy:Def <C-R>g<CR>
 
 
+" :RgPlug (perform :Rg on vim-plugins)
+command! -bang -nargs=* -complete=customlist,CompletePlugs
+      \ RgPlug call s:rgfzf_plug(<q-args>, <bang>1)
+function! s:rgfzf_plug(qargs, bang) abort
+  let l:args = split(a:qargs)
+  let l:query = join(l:args[1:])
+  if empty(l:args)   " corner case: empty query
+    echom "Argument required" | return
+  endif
+  let l:args[0] = Trim(l:args[0])
+  if l:args[0] == '*'   " search all packages.
+    let l:args[0] = ''
+  elseif index(keys(g:plugs), l:args[0]) == -1
+    echom printf("Unknown plug: %s", l:args[0]) | return
+  endif
+  call fzf#vim#ripgrep#rg_fzf(l:query, {'fullscreen': a:bang,
+        \ 'path': g:plug_home . "/" . l:args[0],
+        \ 'rg_additional_arg': '-u'} )
+endfunction
+
+function! CompletePlugs(...)
+  let l:prefix = get(a:, 1, '')
+  let l:cmdline = get(a:, 2, '')
+  let l:cmdwords = len(split(l:cmdline, ' '))
+  if l:cmdwords >= 3 || (l:cmdwords == 2 && l:cmdline =~ ' $')
+    return []  " from the second argument, no completion
+  endif
+  let filter_expr = '!empty(v:val)'
+  if !empty(l:prefix)
+    let filter_expr .= printf(' && v:val =~# "^%s"', escape(l:prefix, "'\""))
+  endif
+  return filter(sort(keys(g:plugs)), filter_expr)
+endfunction
+
+
 " :DefPackage (perform :Def on the python package directory)
 command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
       \ DefPackage call s:rgfzf_pypackage('fzf#vim#ripgrep#rgdef_fzf', <q-args>, <bang>1)
@@ -1356,7 +1391,8 @@ endfunction
 function! CompletePythonSitePackages(...)
   let l:prefix = get(a:, 1, '')
   let l:cmdline = get(a:, 2, '')
-  if len(split(l:cmdline, ' ')) >= 3
+  let l:cmdwords = len(split(l:cmdline, ' '))
+  if l:cmdwords >= 3 || (l:cmdwords == 2 && l:cmdline =~ ' $')
     return []  " from the second argument, no completion
   endif
   " TODO: can we cache it, storing into the current buffer?
