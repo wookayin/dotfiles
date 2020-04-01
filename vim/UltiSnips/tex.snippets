@@ -24,7 +24,7 @@ texMathZones = ['texMathZone{}'.format(x) for x in (
     'A', 'AS', 'B', 'BS', 'C', 'CS', 'D', 'DS', 'E', 'ES', 'F', 'FS', 'G', 'GS',
     'H', 'HS', 'I', 'IS', 'J', 'JS', 'K', 'KS', 'L', 'LS', 'DS', 'V', 'W', 'X', 'Y', 'Z', )]
 texMathZones += ['texMathZoneAms{}'.format(x) for x in (    # amsmath package
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'AS', 'BS', 'CS', 'DS', 'ES', 'FS', 'GS', )]   # amsmath package
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'AS', 'BS', 'CS', 'DS', 'ES', 'FS', 'GS', )]
 texMathZones += ['texMathZoneBreqn{}'.format(x) for x in (  # breqn package
     'A', 'B', 'C', 'D', 'AS', 'BS', 'CS', 'DS', )]
 texIgnoreMathZones = ['texMathText']
@@ -123,4 +123,13 @@ endsnippet
 context "is_math()"
 snippet <== "\Longleftarrow" wA
 \Longleftarrow
+endsnippet
+
+context "is_math()"
+snippet _t+1 "_{t+1}" iA
+_{t+1}
+endsnippet
+context "is_math()"
+snippet _t-1 "_{t-1}" iA
+_{t-1}
 endsnippet
