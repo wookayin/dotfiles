@@ -302,11 +302,14 @@ if has('nvim')
   augroup END
 
   " terminal in a new tab or vsplit buffer
-  command! -nargs=* -complete=shellcmd Term         :tabnew | :term <args>
-  command! -nargs=* -complete=shellcmd STerm        :split  | :term <args>
-  command! -nargs=* -complete=shellcmd VTerm        :split  | :term <args>
-  command! -nargs=* -complete=shellcmd TermSplit    :split  | :term <args>
-  command! -nargs=* -complete=shellcmd TermVSplit   :vsplit | :term <args>
+  command! -nargs=*        -complete=shellcmd Term         :tabnew | :term <args>
+  command! -nargs=*        -complete=shellcmd Ttab         :tabnew | :term <args>
+
+  command! -nargs=* -count -complete=shellcmd TermSplit    :exec <q-mods> .' '. (<count> ? <count> : '').'split  | :term ' . <q-args>
+  command! -nargs=* -count -complete=shellcmd TermVSplit   :exec <q-mods> .' '. (<count> ? <count> : '').'vsplit | :term ' . <q-args>
+
+  command! -nargs=* -count -complete=shellcmd Tsplit       :exec <q-mods> .' '. (<count> ? <count> : '').'split  | :term ' . <q-args>
+  command! -nargs=* -count -complete=shellcmd Tvsplit      :exec <q-mods> .' '. (<count> ? <count> : '').'vsplit | :term ' . <q-args>
 
   " Mapping for <c-hjkl> in terminal mode
   " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
