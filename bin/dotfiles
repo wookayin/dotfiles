@@ -77,8 +77,9 @@ def update(fast=False,
     action = '''
         set -x
         cd ~/.dotfiles
+        git fetch origin
         git stash
-        git pull --ff-only && python install.py {install_args}
+        git merge --ff-only && python install.py {install_args}
         git stash pop
     '''.format(install_args=install_args)
     subprocess.call(['bash', '-c', action])
