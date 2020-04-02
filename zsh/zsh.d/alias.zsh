@@ -38,7 +38,7 @@ alias vi='vim'
 alias v='vim'
 
 # Just open ~/.vimrc, ~/.zshrc, etc.
-alias vimrc='vim +Vimrc +tabclose\ 1'
+alias vimrc='vim +"cd ~/.dotfiles" +Vimrc +tabclose\ 1'
 #alias vimrc='vim +cd\ ~/.vim -O ~/.vim/vimrc ~/.vim/plugins.vim'
 
 alias zshrc='vim +cd\ ~/.zsh -O ~/.zsh/zshrc ~/.zsh/zsh.d/alias.zsh'

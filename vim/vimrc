@@ -508,13 +508,13 @@ nnoremap <leader>src :source ~/.vimrc<CR>
 " :Vimrc opens vim config files in a new tab
 command! -nargs=0 Vimrc   call s:open_vimrc_tab()
 function! s:open_vimrc_tab()
-  tabnew ~/.vim/vimrc
+  exec ":tabnew " . resolve(expand("~/.vim/vimrc"))
   if filereadable(expand("~/.vimrc.local"))
-    15sp ~/.vimrc.local
+    exec ":belowright 15sp " . resolve(expand("~/.vimrc.local"))
   endif
-  botright vnew ~/.vim/plugins.vim
+  exec ":botright vnew " . resolve(expand("~/.vim/plugins.vim"))
   if filereadable(expand("~/.vim/plugins.local.vim"))
-    15sp ~/.vim/plugins.local.vim
+    exec ":belowright 15sp " . resolve(expand("~/.vim/plugins.local.vim"))
   endif
   wincmd t  " focus on the first window (~/.vimrc)
 endfunction
