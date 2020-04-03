@@ -155,22 +155,42 @@ function deactivate() {
 # virtualenv
 alias wo='workon'
 
+# Make sure the correct python from $PATH is used for the binary, even if
+# some the package is not installed in the current python environment.
+# (Do not execute a wrong bin from different python such as the global one)
+alias pip='python -m pip'
+alias pip3='python3 -m pip'
+alias mypy='python -m mypy'
+alias pycodestyle='python -m pycodestyle'
+alias pylint='python -m pylint'
+
+# PREFIX/bin/python -> PREFIX/bin/ipython, etc.
+alias ipdb='${$(which python)%/*}/ipdb'
+alias pudb='${$(which python)%/*}/pudb3'
+alias pudb3='${$(which python)%/*}/pudb3'
+alias python-config='${$(which python)%/*}/python3-config'
+alias python3-config='${$(which python)%/*}/python3-config'
+
 # ipython
+alias ipython='${$(which python)%/*}/ipython'
 alias ipy='ipython'
 alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
 
 alias ipynb='jupyter notebook'
 alias ipynb0='ipynb --ip=0.0.0.0'
-alias jupyter-lab='jupyter-lab --no-browser'
+alias jupyter='${$(which python)%/*}/jupyter'
+alias jupyter-lab='${$(which python)%/*}/jupyter-lab --no-browser'
 
 # ptpython
+alias ptpython='${$(which python)%/*}/ptpython'
+alias ptipython='${$(which python)%/*}/ptipython'
 alias ptpy='ptipython'
 
 # pip install nose, rednose
 alias nt='NOSE_REDNOSE=1 nosetests -v'
 
 # unit test: in verbose mode
-alias pytest='pytest -vv'
+alias pytest='python -m pytest -vv'
 alias pytest-pudb='pytest -s --pudb'
 alias pytest-html='pytest --self-contained-html --html'
 alias green='green -vv'
