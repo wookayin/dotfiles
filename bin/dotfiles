@@ -103,7 +103,7 @@ def open_github():
     webbrowser.open("https://dotfiles.wook.kr", new=0)
 
 
-@add_argument('target', nargs='+', help='target package to install, see ~/.dotfiles/etc/linux-locals.sh for list')
+@add_argument('target', nargs='*', help='target package to install, see ~/.dotfiles/etc/linux-locals.sh for list')
 @add_argument('--force', action='store_true')
 def install_local(target, force, argv=[]):
     '''
@@ -122,6 +122,15 @@ def install_local(target, force, argv=[]):
         target = [target]
 
     dotfiles_dir = os.path.expanduser('~/.dotfiles')
+
+    if not target:
+        ret = subprocess.check_output('./etc/linux-locals.sh || true',
+                                      shell=True, cwd=dotfiles_dir)
+        if not isinstance(ret, str): ret = ret.decode()
+        print("Available packages:")
+        packages = [l[8:] for l in ret.split() if l.startswith('install_')]
+        print('\n'.join(['- {l}'.format(l=l) for l in packages]))
+        return 1
 
     for t in target:
         ret = subprocess.call(
