@@ -11,6 +11,45 @@ COLOR_GREEN="\033[0;32m"
 COLOR_YELLOW="\033[0;33m"
 COLOR_WHITE="\033[1;37m"
 
+
+#---------------------------------------------------------------------------------------------------
+
+_template_github_latest() {
+  set -e
+  local name="$1"
+  local repo="$2"
+  local filename="$3"
+  if [[ -z "$name" ]] || [[ -z "$repo" ]] || [[ -z "$filename" ]]; then
+    echo "Wrong usage"; return 1;
+  fi
+
+  echo -e "${COLOR_YELLOW}Installing $name from $repo ... ${COLOR_NONE}"
+  local download_url=$(\
+    curl -L https://api.github.com/repos/${repo}/releases 2>/dev/null | \
+    python -c "\
+import json, sys, fnmatch;
+J = json.load(sys.stdin);
+for asset in J[0]['assets']:
+  if fnmatch.fnmatch(asset['name'], '$filename'):
+    print(asset['browser_download_url'])
+")
+  echo -e "${COLOR_YELLOW}download_url = ${COLOR_NONE}$download_url"
+  test -n $download_url
+  sleep 0.5
+
+  local tmpdir="/tmp/$USER/$name"
+  local filename="$(basename $download_url)"
+  mkdir -p $tmpdir
+  wget -O "$tmpdir/$filename" "$download_url"
+
+  echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
+  cd $tmpdir && tar -xvzf $filename
+
+  echo -e "${COLOR_YELLOW}Copying ...${COLOR_NONE}"
+}
+
+#---------------------------------------------------------------------------------------------------
+
 install_ncurses() {
     # installs ncurses (shared libraries and headers) into local namespaces.
     set -e
@@ -348,6 +387,30 @@ install_go() {
     echo ""
     echo -e "${COLOR_GREEN}Installed at $HOME/.go${COLOR_NONE}"
     $HOME/.go/bin/go version
+}
+
+
+install_lazydocker() {
+  set -e
+  _template_github_latest "lazydocker" "jesseduffield/lazydocker" "lazydocker_*_Linux_x86_64.tar.gz"
+  [[ $(pwd) =~ ^/tmp/$USER/ ]]
+
+  cp -v "./lazydocker" $PREFIX/bin
+
+  echo -e "\n\n${COLOR_WHITE}$(which lazydocker)${COLOR_NONE}"
+  $PREFIX/bin/lazydocker --version
+}
+
+
+install_lazygit() {
+  set -e
+  _template_github_latest "lazygit" "jesseduffield/lazygit" "lazygit_*_Linux_x86_64.tar.gz"
+  [[ $(pwd) =~ ^/tmp/$USER/ ]]
+
+  cp -v "./lazygit" $PREFIX/bin
+
+  echo -e "\n\n${COLOR_WHITE}$(which lazydocker)${COLOR_NONE}"
+  $PREFIX/bin/lazygit --version
 }
 
 
