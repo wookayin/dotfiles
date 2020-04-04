@@ -94,7 +94,7 @@ endif
 Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/vim-peekaboo'
 Plug 'sjl/gundo.vim'
-if has('python3')
+if has('python3') && g:python3_host_version >= '3.5'
   Plug 'SirVer/ultisnips'
 endif
 Plug 'vim-scripts/matchit.zip'
