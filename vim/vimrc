@@ -508,13 +508,20 @@ nnoremap <leader>src :source ~/.vimrc<CR>
 " :Vimrc opens vim config files in a new tab
 command! -nargs=0 Vimrc   call s:open_vimrc_tab()
 function! s:open_vimrc_tab()
+  let l:plug_width = max([5, float2nr(0.333 * &columns)])
+  let l:addon_height = max([2, float2nr(0.2 * &lines)])
+
   exec ":tabnew " . resolve(expand("~/.vim/vimrc"))
   if filereadable(expand("~/.vimrc.local"))
-    exec ":belowright 15sp " . resolve(expand("~/.vimrc.local"))
+    exec ":belowright sp " . resolve(expand("~/.vimrc.local"))
+    exec printf(":resize %d", l:addon_height)
   endif
+
   exec ":botright vnew " . resolve(expand("~/.vim/plugins.vim"))
+  exec printf(":vertical resize %d", l:plug_width)
   if filereadable(expand("~/.vim/plugins.local.vim"))
-    exec ":belowright 15sp " . resolve(expand("~/.vim/plugins.local.vim"))
+    exec ":belowright sp " . resolve(expand("~/.vim/plugins.local.vim"))
+    exec printf(":resize %d", l:addon_height)
   endif
   wincmd t  " focus on the first window (~/.vimrc)
 endfunction
