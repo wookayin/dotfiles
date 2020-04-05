@@ -12,6 +12,13 @@ if has('nvim')
   endfunction
 endif
 
+function! s:python3_version()
+  if has('nvim')           | return g:python3_host_version
+  elseif has('python3')    | return join(py3eval('sys.version_info'), ".")
+  else                     | return ''
+  endif
+endfunction
+
 "==============================================
 call plug#begin('~/.vim/plugged')
 "==============================================
@@ -94,7 +101,7 @@ endif
 Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/vim-peekaboo'
 Plug 'sjl/gundo.vim'
-if has('python3') && g:python3_host_version >= '3.5'
+if has('python3') && s:python3_version() >= '3.5'
   Plug 'SirVer/ultisnips'
 endif
 Plug 'vim-scripts/matchit.zip'
@@ -115,7 +122,7 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'klen/python-mode', { 'branch': 'develop' } |
       \ Plug 'wookayin/vim-python-enhanced-syntax'
 Plug 'davidhalter/jedi-vim'
-if has('nvim') && g:python3_host_version >= '3.5'
+if has('nvim') && s:python3_version() >= '3.5'
   Plug 'numirias/semshi', { 'do': function('DoRemote') }
   Plug 'stsewd/isort.nvim', { 'do': function('DoRemote') }
 endif
@@ -142,7 +149,7 @@ Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
 
 " Completion engine for neovim (deoplete or language server)
 " Requires python 3.6.1+
-if has('nvim') && g:python3_host_version >= '3.6.1'
+if has('nvim') && s:python3_version() >= '3.6.1'
   Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
   Plug 'zchee/deoplete-jedi'    " Python
   Plug 'zchee/deoplete-clang'   " C/C++
