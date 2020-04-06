@@ -43,3 +43,11 @@ if !has_key(g:, 'plugs') || !has_key(g:plugs, 'coc.nvim')
     map <F7> :call jedi#usages()<CR>
     imap <F7> <ESC>:call jedi#usages()<CR>
 endif
+
+" Experimental
+
+" <M-CR> for auto import symbol (replacing coc.nvim)
+if exists(':ImportSymbol')
+  nmap <silent> <buffer>  <M-CR>   :ImportSymbol<CR>
+  imap <silent> <buffer>  <M-CR>   <Esc>:ImportSymbol<CR>a
+endif

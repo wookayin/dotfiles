@@ -2120,7 +2120,9 @@ if has_key(g:plugs, 'coc.nvim')
   command! -nargs=0 CocSnippets :CocList snippets
 
   " Quickfix (Alt-Enter)
-  command! -nargs=0 CocQuickfix :call CocActionAsync('doQuickfix', ':update')
+  " Note that some ftplugin can override <M-CR> mappings
+  " (e.g., ~/.vim/after/ftplugin/python.vim)
+  command! -nargs=0 CocQuickfix :call CocActionAsync('doQuickfix')
   nmap <silent> <M-CR>  <Plug>(coc-fix-current)
   imap <silent> <M-CR>  <Esc>:update<CR><plug>(coc-fix-current)a
 
