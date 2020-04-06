@@ -137,6 +137,12 @@ function _vim_gv {
 alias gv='_vim_gv'
 alias gva='gv --all'
 
+# cd to $(git-root)
+function cd-git-root() {
+  local _root; _root=$(git-root)
+  [ $? -eq 0 ] && cd "$_root" || return 1;
+}
+
 # }}}
 
 
