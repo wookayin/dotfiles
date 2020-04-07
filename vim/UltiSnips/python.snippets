@@ -27,8 +27,14 @@ def collect_ale_lint_codes(linter_name):
 
 endglobal
 
-snippet pylint  "pylint: disable=...' marker"
+snippet TODO  "# TODO"
+# TODO
+endsnippet
+snippet "(#\s*)?pylint"  "'pylint: disable=...' marker" r
 # pylint: disable=${1:`!p snip.rv = collect_ale_lint_codes("pylint")`}
+endsnippet
+snippet "#\s*type"  "'type: ignore' marker (mypy)" r
+# type: ignore
 endsnippet
 
 # Add a typecheck if-raise statement.
