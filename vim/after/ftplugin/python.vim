@@ -51,3 +51,6 @@ if exists(':ImportSymbol')
   nmap <silent> <buffer>  <M-CR>   :ImportSymbol<CR>
   imap <silent> <buffer>  <M-CR>   <Esc>:ImportSymbol<CR>a
 endif
+if exists(':CocCommand')
+  command! -buffer ImportOrganize    :CocCommand python.sortImports
+endif
