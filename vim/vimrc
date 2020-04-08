@@ -2020,7 +2020,15 @@ if has_key(g:plugs, 'coc.nvim')
   " <C-space> trigger/refresh completion popup menu, or show again signature help window
   inoremap <expr><silent> <c-space>
         \ pumvisible() ? coc#refresh() :
-        \ "<c-\><c-o>:call CocActionAsync('showSignatureHelp')<CR>"
+        \ "<c-\><c-o>:call CocShowSignatureHelpAsync()<CR>"
+  function! CocShowSignatureHelpAsync() abort
+    " when showSignature failed, re-trigger coc completion as fallback
+    " using coc#start() or CocActionAsync('startCompletion')
+    call CocActionAsync('showSignatureHelp', {
+          \ error, response -> empty(response) ? timer_start(0, { -> coc#start() }) : ''
+          \ })
+  endfunction
+
   nnoremap <silent> <c-space>
         \ :call CocActionAsync('showSignatureHelp')<CR>
 
