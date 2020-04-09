@@ -53,6 +53,8 @@
       "<cr>": ["expandable?", "expandOrCollapse", "open"],
       "<c-v>": "open:vsplit",
       "<c-x>": "open:split",
+      "<up>": "nodePrev",
+      "<down>": "nodeNext",
     },
     "explorer.width": 32,
     "explorer.previewAction.onHover": false,        // Do not show floating windows on hovering on nodes
