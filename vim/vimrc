@@ -122,7 +122,7 @@ catch
   " old wildmenu heavior (vanilla vim)
   set wildmode=list,longest:full
 endtry
-set wildignore=*.swp,*.swo,*.class
+set wildignore=*.swp,*.swo,*.class,*.pyc,__pycache__,
 
 " status line
 set laststatus=2            " show anytime
@@ -1612,7 +1612,11 @@ let g:nerdtree_tabs_open_on_console_startup = 0
 let g:nerdtree_tabs_open_on_gui_startup = 0
 
 " filter out some files, by extension
-let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
+let NERDTreeIgnore = [
+      \ '\.pyc$', '^__pycache__$', '\.egg-info$',
+      \ '\.class$', '\.o$',
+      \]
+let NERDTreeRespectWildIgnore = 1   " see wildignore
 
 " ---------------------------------------------------------------- }}}
 " Voom {{{
