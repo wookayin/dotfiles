@@ -592,9 +592,16 @@ endif
 " 3. More Functions and Commands {{{
 """""""""""""""""""""""""""""""""""""""""
 
-function! Trim(input_string)  " or use trim() if neovim 0.3.2+ or vim 8.1+
+" Utilities
+if exists('*trim')
+  function! Trim(input_string)
+    return trim(a:input_string)  " builtin trim() if neovim 0.3.2+ or vim 8.0.1630+
+  endfunction
+else
+  function! Trim(input_string)
     return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
-endfunction
+  endfunction
+endif
 
 function! CommandAlias(aliasname, target)
   " :aliasname => :target  (only applicable at the beginning of the command line)
@@ -1027,7 +1034,7 @@ function! AirlineCocStatusSimple() abort
   if &filetype == 'python'
     " Strip "Python x.y.z. 64-bit ..." which I don't want to see
     " trim() : nvim 0.3.2+ but we can safely assume it exists if coc.nvim does.
-    let l:status = ' ' . trim(substitute(l:status, "Python.*-bit\s*", "", ""))
+    let l:status = ' ' . Trim(substitute(l:status, "Python.*-bit\s*", "", ""))
   endif
 
   return airline#util#shorten(l:status, 160, 33)
