@@ -154,13 +154,6 @@ if has('nvim') && s:python3_version() >= '3.6.1'
   Plug 'zchee/deoplete-jedi'    " Python
   Plug 'zchee/deoplete-clang'   " C/C++
   Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }     " zsh
-
-elseif v:version >= 800
-
-  " Vim 8.0: Alternative async-completor plugin
-  " built-in support for python (jedi), java, etc.
-  Plug 'maralla/completor.vim'
-
 endif
 
 " Asynchronous Lint Engine (ALE)
@@ -168,19 +161,20 @@ if has('nvim') || v:version >= 800
   Plug 'w0rp/ale'
 endif
 
-" *EXPERIMENTAL* language-server support (coc.nvim)
+" [coc.nvim] Language-server support (neovim and vim8)
 " Activated if the following conditions are met:
-"    (i) Proper neovim version and python3
+"    (i) Proper neovim/vim8 version and python3
 "    (ii) 'node' and 'npm' are installed
 "    (iii) Directory ~/.config/coc exists
 function! s:configure_coc_nvim()
-  if has('nvim') && executable('npm') && executable('python3') &&
+  if (has('nvim') || v:version >= 800) &&
+        \ executable('npm') && executable('python3') &&
         \ isdirectory(expand("\~/.config/coc/"))
   else | return | endif   " do nothing if conditions are not met
 
-  if ! has('nvim-0.3.1')
+  if has('nvim') && !has('nvim-0.3.1')
     autocmd VimEnter * echohl WarningMsg | echom
-          \ 'WARNING: Neovim 0.3.1+ is required for coc.nvim. '
+          \ 'WARNING: Neovim 0.3.1+ or Vim 8.0+ is required for coc.nvim. '
           \ . '(Try: dotfiles install neovim)' | echohl None
     return
   endif
