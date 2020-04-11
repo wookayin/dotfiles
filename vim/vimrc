@@ -1102,6 +1102,13 @@ augroup END
 " If floating window is not available, use 33%-bottom layout
 let g:fzf_layout = { 'down' : '~33%' }
 
+" vim 8.2+: popup window (fzf.vim#821)
+if !has('nvim') && has('patch-8.2.194')
+  let g:fzf_layout = { 'window' : { 'width': 0.9, 'height': 0.6 } }
+  call extend(g:fzf_layout['window'], { 'border': 'sharp', 'highlight': 'FZFFloatBorder' })
+  hi def link FZFFloatBorder Comment
+endif
+
 " neovim 0.4+: FZF + floating window.
 if has('nvim-0.4')
   " On floating windows, we use reverse layout, i.e. prompt is at the above.
