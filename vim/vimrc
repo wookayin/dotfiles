@@ -603,6 +603,10 @@ else
   endfunction
 endif
 
+function! Echo(msg) abort
+  echo a:msg
+endfunction
+
 function! CommandAlias(aliasname, target)
   " :aliasname => :target  (only applicable at the beginning of the command line)
   exec printf('cnoreabbrev <expr> %s ', a:aliasname)
