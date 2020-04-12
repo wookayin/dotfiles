@@ -735,10 +735,13 @@ highlight SpellBad guifg=NONE ctermfg=NONE
 highlight CursorLine    cterm=none
 
 " show cursorline for active window only
+let g:NrHighlight_preserve_filetypes = ['nerdtree', 'coc-explorer']
 augroup NrHighlight
   autocmd!
-  autocmd BufEnter * setlocal cursorline
-  autocmd BufLeave * setlocal nocursorline
+  autocmd WinEnter * setlocal cursorline
+  autocmd WinLeave * if index(g:NrHighlight_preserve_filetypes, &ft) == -1
+        \ |   setlocal nocursorline
+        \ | endif
 augroup END
 
 " filetype detections
