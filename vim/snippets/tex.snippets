@@ -172,11 +172,12 @@ snippet includegraphics
 	\includegraphics[width=\linewidth]{${1:filename.png}}
 #
 snippet figure
-	\begin{figure}[htb] \begin{center}
+	\begin{figure}[htb]
+	    \centering
 	    \includegraphics[width=\linewidth]{${1:filename.png}}
 	    \caption{${2:Caption here}}
 	    \label{fig:${3:figure1}}
-	\end{center} \end{figure}
+	\end{figure}
 #
 snippet subfigure
 	\begin{figure}[h!]
