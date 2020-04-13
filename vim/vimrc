@@ -13,10 +13,9 @@ scriptencoding utf-8
 " listed up in the separate file 'plugins.vim'.
 " It is for making this vimrc could also work out-of-box
 " even if not managed by dotfiles.
+let g:plugs = {}
 if filereadable(expand('~/.vim/plugins.vim'))
   source \~/.vim/plugins.vim
-else
-  let g:plugs = {}
 endif
 
 " Automatically install missing plugins on startup
