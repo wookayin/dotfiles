@@ -1335,6 +1335,7 @@ call CommandAlias('RF', 'RgFzf')
 
 " :Rg, :Grep -- Ripgrep + fzf (but refreshs ripgrep result upon updating query)
 command! -nargs=*     Grep    :Rg <args>
+nnoremap <C-g>       :Grep<CR>
 
 " rg-this (current word or visual selection)
 nnoremap <leader>rg   :<c-u>RgF*<CR>
@@ -1533,7 +1534,7 @@ hi ClapDisplay   ctermbg=236 guibg=#292c3a
 hi ClapMatches   cterm=bold ctermfg=170 gui=bold guifg=#bc6ec5
 
 " keymappings and command aliases
-nnoremap <silent> <C-G>   :Clap<CR>
+"nnoremap <silent> <C-G>   :Clap<CR>
 
 endif
 " ---------------------------------------------------------------- }}}
