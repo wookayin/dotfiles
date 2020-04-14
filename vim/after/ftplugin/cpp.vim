@@ -15,20 +15,24 @@ endif
 
 " Automatic makeprg generation (regarding %:r.in, %r.ans)
 if !filereadable('Makefile')
-    let s:sourcefile = expand("%")
-    let s:basename = expand("%:r")
-    let s:has_input  = filereadable(s:basename . ".in")
-    let s:has_answer = filereadable(s:basename . ".ans")
-    let s:extraflag = ""
+    let b:sourcefile = expand("%")
+    let b:basename = expand("%:r")
+    let b:input_file = ""
+    let b:answer_file = ""
+    let b:output_file = b:basename . ".out"
+    if filereadable(b:basename . ".in")  | let b:input_file = b:basename . ".in" | endif
+    if filereadable(b:basename . ".ans") | let b:answer_file = b:basename . ".ans" | endif
 
+    let b:extraflag = ""
     let s:gccver = system("g++ --version | grep '^g++' | sed 's/^.* //g'")
-    if s:gccver >= "4.9.0" | let s:extraflag = s:extraflag . " -fdiagnostics-color=never" | endif
+    if s:gccver >= "4.9.0" | let b:extraflag = b:extraflag . " -fdiagnostics-color=never" | endif
 
-    let s:makeprg_compile = printf("g++ -g -Wall --std=c++0x -O2 %s -o %s %s", s:sourcefile, s:basename, s:extraflag)
-    let s:makeprg_run     = printf("time ./%s", s:basename)
-    if s:has_input  | let s:makeprg_run .= printf(" < %s.in", s:basename) | endif
-    if s:has_answer | let s:makeprg_run .= printf(" | tee %s.out && diff -wu %s.out %s.ans", s:basename, s:basename, s:basename) | endif
+    let b:makeprg_compile = printf("g++ -g -Wall --std=c++11 -O2 %s -o %s %s",
+                \ shellescape(expand("%")), shellescape(b:basename), b:extraflag)
+    let b:makeprg_run     = printf("time ./%s", b:basename)
+    if !empty(b:input_file)  | let b:makeprg_run .= printf(" < %s", shellescape(b:input_file)) | endif
+    if !empty(b:answer_file) | let b:makeprg_run .= printf(" | tee %s && diff -wu %s %s",
+                \ shellescape(b:output_file), shellescape(b:output_file), shellescape(b:answer_file)) | endif
 
-    let s:makeprg_cmds = [s:makeprg_compile, s:makeprg_run]
-    let &g:makeprg = "(" . join(s:makeprg_cmds, " && ") . ")"
+    let &l:makeprg = "(" . join([b:makeprg_compile, b:makeprg_run], " && ") . ")"
 endif
