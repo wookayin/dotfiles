@@ -1559,9 +1559,9 @@ function! FloatermToggleOrNew(...) abort
     if a:0 > 0
       " when there is no existing floaterm window and an argument is given,
       " use it as the command line to execute (e.g. :FT git status)
-      return floaterm#new(a:1)
+      execute ':FloatermNew ' . a:1
     else
-      return floaterm#new()
+      execute ':FloatermNew'
     endif
   else
     FloatermToggle
