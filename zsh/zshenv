@@ -149,7 +149,8 @@ export WORKON_HOME="$HOME/.virtualenvs"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # ensure that all new virtual environments are isolated from the system site-packages.
-export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+# (--no-site-packages has been removed since virtualenv >= 20, which has been the default option)
+# export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
 # python startup
 export PYTHONSTARTUP=$HOME/.pythonrc.py
