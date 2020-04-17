@@ -138,7 +138,6 @@ install_tmux() {
     ~/.local/bin/tmux -V
 }
 
-
 install_bazel() {
     set -e
 
@@ -170,7 +169,6 @@ install_bazel() {
     bazel 2>/dev/null | grep release | xargs
     echo ""
 }
-
 
 install_anaconda3() {
     # installs Anaconda-python3. (Deprecated: Use miniconda)
@@ -214,20 +212,30 @@ install_miniconda() {
     echo "${COLOR_GREEN}All set!${COLOR_NONE}"
 }
 
-
 install_vim() {
     # install latest vim
     set -e
 
-    TMP_VIM_DIR="/tmp/$USER/vim/"; mkdir -p $TMP_VIM_DIR
-    VIM_LATEST_VERSION=$(\
+    # check python3-config
+    local PYTHON3_CONFIGDIR=$(python3-config --configdir)
+    echo -e "${COLOR_YELLOW}$ python3-config --configdir =${COLOR_NONE} $PYTHON3_CONFIGDIR"
+    if [[ "$PYTHON3_CONFIGDIR" =~ (conda|virtualenv|venv) ]]; then
+      echo -e "${COLOR_RED}Error: python3-config reports a conda/virtual environment. Deactivate and try again."
+      return 1;
+    fi
+
+    # grab the lastest vim tarball and build it
+    local TMP_VIM_DIR="/tmp/$USER/vim/"; mkdir -p $TMP_VIM_DIR
+    local VIM_LATEST_VERSION=$(\
         curl -L https://api.github.com/repos/vim/vim/tags 2>/dev/null | \
         python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
     )
     test -n $VIM_LATEST_VERSION
-    VIM_LATEST_VERSION=${VIM_LATEST_VERSION/v/}    # (e.g) 8.0.1234
+    local VIM_LATEST_VERSION=${VIM_LATEST_VERSION/v/}    # (e.g) 8.0.1234
+    echo -e "${COLOR_GREEN}Installing vim $VIM_LATEST_VERSION ...${COLOR_NONE}"
+    sleep 1
 
-    VIM_DOWNLOAD_URL="https://github.com/vim/vim/archive/v${VIM_LATEST_VERSION}.tar.gz"
+    local VIM_DOWNLOAD_URL="https://github.com/vim/vim/archive/v${VIM_LATEST_VERSION}.tar.gz"
 
     wget -nc ${VIM_DOWNLOAD_URL} -P ${TMP_VIM_DIR} || true;
     cd ${TMP_VIM_DIR} && tar -xvzf v${VIM_LATEST_VERSION}.tar.gz
@@ -235,13 +243,14 @@ install_vim() {
 
     ./configure --prefix="$PREFIX" \
         --with-features=huge \
-        --enable-pythoninterp
+        --enable-python3interp \
+        --with-python3-config-dir="$PYTHON3_CONFIGDIR"
 
     make clean && make -j8 && make install
     ~/.local/bin/vim --version | head -n2
 
     # make sure that all necessary features are shipped
-    if ! (vim --version | grep -q '+python'); then
+    if ! (vim --version | grep -q '+python3'); then
         echo "vim: python is not enabled"
         exit 1;
     fi
@@ -285,7 +294,6 @@ install_neovim() {
     $PREFIX/bin/nvim --version
 }
 
-
 install_exa() {
     # https://github.com/ogham/exa/releases
     EXA_VERSION="0.9.0"
@@ -302,7 +310,6 @@ install_exa() {
     cp "exa-linux-x86_64" "$PREFIX/bin/exa" || exit 1;
     echo "$(which exa) : $(exa --version)"
 }
-
 
 install_fd() {
     # install fd
@@ -389,7 +396,6 @@ install_go() {
     $HOME/.go/bin/go version
 }
 
-
 install_lazydocker() {
   set -e
   _template_github_latest "lazydocker" "jesseduffield/lazydocker" "lazydocker_*_Linux_x86_64.tar.gz"
@@ -400,7 +406,6 @@ install_lazydocker() {
   echo -e "\n\n${COLOR_WHITE}$(which lazydocker)${COLOR_NONE}"
   $PREFIX/bin/lazydocker --version
 }
-
 
 install_lazygit() {
   set -e
