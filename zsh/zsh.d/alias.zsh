@@ -112,22 +112,59 @@ alias gs='git status'
 alias gsu='gs -u'
 
 function ghad() {
-    # Run gha (git history) and refresh if anything in .git/ changes
-    local _command="clear; (date; echo ''; git history --all --color) \
-                    | head -n \$((\$(tput lines) - 2)) | less -FE"
+  # Run gha (git history) and refresh if anything in .git/ changes
+  local GIT_DIR=$(git rev-parse --git-dir)
+  local _command="clear; (date; echo ''; git history --all --color) \
+    | head -n \$((\$(tput lines) - 2)) | less -FE"
+
+  if [ `uname` == "Linux" ]; then
+    which inotifywait > /dev/null || { echo "Please install inotify-tools."; return 1; }
+    trap "break" SIGINT
     bash -c "$_command"
-    fswatch -o $(git rev-parse --git-dir) \
+    while true; do
+      inotifywait -q -q -r -e modify -e delete -e delete_self -e create -e close_write -e move \
+        --exclude 'lock' "${GIT_DIR}/refs" "${GIT_DIR}/HEAD" || true;
+      bash -c "$_command"
+    done;
+
+  else
+    which fswatch > /dev/null || { echo "Please install fswatch."; return 1; }
+    bash -c "$_command"
+    fswatch -o "$GIT_DIR" \
         --exclude='.*' --include='HEAD$' --include='refs/' \
     | xargs -n1 -I{} bash -c "$_command" \
     || true   # exit code should be 0
+  fi
+
+  return 0
 }
+
 if alias gsd > /dev/null; then unalias gsd; fi
 function gsd() {
-    local _command="clear; (date; echo ''; git status --branch)"
+  # Run gs (git status) and refresh if .git/index changes
+  local GIT_DIR=$(git rev-parse --git-dir)
+  local _command="clear; (date; echo ''; git status --branch $@)"
+
+  if [ `uname` == "Linux" ]; then
+    which inotifywait > /dev/null || { echo "Please install inotify-tools."; return 1; }
+    trap "break" SIGINT
+    bash -c "$_command"
+    while true; do
+      inotifywait -q -q -r -e modify -e delete -e delete_self -e create -e close_write -e move \
+        "${GIT_DIR}/index" "${GIT_DIR}/refs" || true;
+      bash -c "$_command"
+    done;
+
+  else
+    which fswatch > /dev/null || { echo "Please install fswatch."; return 1; }
     bash -c "$_command"
     fswatch -o $(git rev-parse --git-dir)/index \
+            --event=AttributeModified --event=Updated --event=IsFile \
         | xargs -n1 -I{} bash -c "$_command" \
     || true
+  fi
+
+  return 0
 }
 
 # using the vim plugin 'GV'!
