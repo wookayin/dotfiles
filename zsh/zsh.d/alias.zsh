@@ -246,6 +246,19 @@ fi
 
 # }}}
 
+# Google Cloud ============================== {{{
+
+function gcp-instances() {
+  noglob gcloud compute instances list --filter 'name:'${1:-*} | less -F
+}
+function gcp-instances-fzf() {
+  noglob gcloud compute instances list --filter 'name:'${1:-*} \
+    | fzf --header-lines 1 --multi --reverse \
+    | awk '{print $1}'
+}
+
+# }}}
+
 
 # Etc ======================================= {{{
 
