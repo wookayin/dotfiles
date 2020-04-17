@@ -124,6 +124,9 @@ fi
 
 # }}} ===================
 
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 
 # Source after-{zplug,zgen} zsh script files.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
@@ -170,6 +173,3 @@ conda() {
   _conda_initialize
   conda "$@"
 }
-
-# fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

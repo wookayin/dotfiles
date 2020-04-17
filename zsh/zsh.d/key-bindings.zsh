@@ -20,6 +20,8 @@ bindkey '^H' backward-delete-char
 bindkey '^N' down-history
 bindkey '^P' up-history
 
-bindkey '^R' history-incremental-search-backward
+if [[ $(bindkey '^R') == *"undefined"* ]]; then
+  bindkey '^R' history-incremental-search-backward
+fi
 
 bindkey '\e.' insert-last-word # Alt-.
