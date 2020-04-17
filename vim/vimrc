@@ -481,18 +481,41 @@ if executable('rg')
 endif
 
 
-" <leader>cd : switch to the directory of the current buffer
-function! CD_to_file()
-  silent cd %:p:h
-  :pwd
+" CD: switch to the directory of the current buffer
+function! CD_to(dir)
+  if empty(a:dir) || a:dir == -1
+    return
+  endif
+  execute 'silent cd ' . a:dir
+  echohl Directory | echom getcwd() | echohl None
 
   " if NERDTree is open, chdir NERDTree as well
   if exists('g:NERDTree') && g:NERDTree.IsOpen()
     :NERDTreeCWD | wincmd w
   endif
 endfunction
-nmap <silent> <leader>cd :<C-U>CD<CR>
-command! -nargs=0   CD   :call CD_to_file()
+command! -nargs=0   CD   :call CD_to(expand('%:p:h'))
+
+" CDRoot: switch to the project root directory of the current buffer
+function! DetermineProjectRoot() abort
+  " If the current file is under a git repository, that's it!
+  let l:git_dir = s:get_git_dir()
+  if !empty(l:git_dir)
+    return l:git_dir . "/.."
+  endif
+
+  " Not a git repository. Use heuristic and domain knowledge as much as you can
+  let l:base_dir = expand("%:p:h")
+  if l:base_dir =~ 'python[^/]*/site-packages/[^/]\+/'
+    return substitute(l:base_dir, '\(python[^/]*/site-packages/[^/]\+/\).*$', '\1', 'g')
+  endif
+
+  echohl WarningMsg | echom 'Cannot determine project root directory. (Want :CD?)' | echohl None
+  return ''
+endfunction
+command! -nargs=0   CDRoot  :call CD_to(DetermineProjectRoot())
+nmap <silent> <leader>cd    :<C-U>CDRoot<CR>
+
 
 " <leader>R : screen sucks, redraw everything
 function! Redraw()
