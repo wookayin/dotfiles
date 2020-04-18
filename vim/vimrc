@@ -2021,7 +2021,7 @@ endfunction
 " key mappings
 nnoremap <leader>gd :Gvdiff<CR>
 nnoremap <leader>gD :GitThreeWayDiff<CR>
-nnoremap <leader>gs :Gstatus<CR>:20wincmd +<CR>
+nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gb :echo ':Gblame -w'<CR>:Gblame -w<CR>:call FugitiveResizeGblame()<CR>
 function! FugitiveResizeGblame() abort
