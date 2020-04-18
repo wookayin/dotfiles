@@ -17,6 +17,13 @@ if [[ -z "$PROMPT_HOST_COLOR" ]]; then
   export PROMPT_HOST_COLOR="6"  # cyan
 fi
 
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 
 # zgen           {{{
 # ===================
@@ -89,9 +96,8 @@ if ! zgen saved; then
   # additional modules/plugins
   # --------------------------
 
-  # zsh theme: pure (forked ver)
-  zgen load mafredri/zsh-async
-  zgen load wookayin/pure
+  # zsh theme: powerlevel10k + customization
+  zgen load 'romkatv/powerlevel10k' 'powerlevel10k.zsh-theme'
 
   # zsh syntax: FSH
   # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
@@ -121,6 +127,9 @@ if ! zgen saved; then
   zgen save
 
 fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # }}} ===================
 
