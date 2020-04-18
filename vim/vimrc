@@ -2005,14 +2005,18 @@ augroup END
 " ---------------------------------------------------------------- }}}
 " fugitive {{{
 
+" Custom Fugitive Commands
+" GitThreeWayDiff: open a 3-way diff window among {HEAD, index, working copy}
+command! GitThreeWayDiff        call GitThreeWayDiff()
 function! GitThreeWayDiff() abort
   diffoff!   " turn off diff for all windows
   let current_win = win_getid()
-  Gvdiff HEAD                   " [left]   HEAD
-  botright Gvdiff               " [middle] stage/index
-  call win_gotoid(current_win)  " [center] working copy
+  aboveleft Gvdiff HEAD         " [left]   HEAD
+  call win_gotoid(current_win)
+  aboveleft Gvdiff              " [middle] stage/index
+  call win_gotoid(current_win)  " [right]  working copy
 endfunction
-command! GitThreeWayDiff        call GitThreeWayDiff()
+
 
 " key mappings
 nnoremap <leader>gd :Gvdiff<CR>
@@ -2031,6 +2035,21 @@ command! -nargs=* GC :Gcommit -v<args>
 " on commit, type 'cA' to enter in amend mode
 au FileType gitcommit nnoremap <buffer> <silent>
             \ cA :bd<CR>:<C-U>Gcommit --verbose --amend<CR>
+
+" fugitive://... buffers (index) should have better statusline;
+" display nothing but buffer/file names (would contain SHA, or ref, etc.)
+if has_key(g:plugs, 'vim-airline')
+  function! FugitiveAirlinePatch(...)
+    if bufname() =~ '^fugitive://'
+      let w:airline_section_b = airline#section#create(['branch'])
+      let w:airline_section_c = '%f'
+      let w:airline_section_z = ''     " no line numbers, etc.
+      "let g:airline_variable_referenced_in_statusline = 'foo'
+    endif
+  endfunction
+  call airline#remove_statusline_func('FugitiveAirlinePatch')
+  call airline#add_statusline_func('FugitiveAirlinePatch')
+endif
 
 " ---------------------------------------------------------------- }}}
 " gitgutter {{{
