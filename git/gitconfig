@@ -89,7 +89,10 @@
 	# Detect copies as well as renames
 	renames = copies
 
-	# smarter diff on splits around blank lines (Git 2.9.0+)
+	# smarter diff algorithm that is semantically more intuitive (git 1.8.2+)
+	algorithm = patience
+
+	# smarter diff on splits around blank lines (git 2.9.0+)
 	compactionHeuristic = true
 
 [diff-so-fancy]
