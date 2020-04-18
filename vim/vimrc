@@ -2001,9 +2001,18 @@ augroup END
 " ---------------------------------------------------------------- }}}
 " fugitive {{{
 
+function! GitThreeWayDiff() abort
+  diffoff!   " turn off diff for all windows
+  let current_win = win_getid()
+  Gvdiff HEAD                   " [left]   HEAD
+  botright Gvdiff               " [middle] stage/index
+  call win_gotoid(current_win)  " [center] working copy
+endfunction
+command! GitThreeWayDiff        call GitThreeWayDiff()
+
 " key mappings
 nnoremap <leader>gd :Gvdiff<CR>
-nnoremap <leader>gD :Gvdiff HEAD<CR>
+nnoremap <leader>gD :GitThreeWayDiff<CR>
 nnoremap <leader>gs :Gstatus<CR>:20wincmd +<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gb :echo ':Gblame -w'<CR>:Gblame -w<CR>:call FugitiveResizeGblame()<CR>
