@@ -513,7 +513,7 @@ function! DetermineProjectRoot() abort
   endif
 
   " Not a git repository. Use heuristic and domain knowledge as much as you can
-  let l:base_dir = expand("%:p:h")
+  let l:base_dir = expand("%:p")
   if l:base_dir =~ 'python[^/]*/site-packages/[^/]\+/'
     return substitute(l:base_dir, '\(python[^/]*/site-packages/[^/]\+/\).*$', '\1', 'g')
   endif
