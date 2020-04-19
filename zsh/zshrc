@@ -24,6 +24,9 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# autoload built-in zsh utilities.
+autoload -Uz is-at-least
+
 
 # zgen           {{{
 # ===================
@@ -96,8 +99,16 @@ if ! zgen saved; then
   # additional modules/plugins
   # --------------------------
 
-  # zsh theme: powerlevel10k + customization
-  zgen load 'romkatv/powerlevel10k' 'powerlevel10k.zsh-theme'
+  if is-at-least 5.4; then
+    # zsh theme: powerlevel10k + customization
+    # p10k's minimum zsh requirement is 5.1 but we require zsh 5.4+,
+    # because without the instant mode initialization is slower than pure.
+    zgen load romkatv/powerlevel10k 'powerlevel10k.zsh-theme'
+  else
+    # zsh theme: pure (forked ver). For OLD zsh.
+    zgen load mafredri/zsh-async
+    zgen load wookayin/pure
+  fi
 
   # zsh syntax: FSH
   # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
@@ -128,14 +139,10 @@ if ! zgen saved; then
 
 fi
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 # }}} ===================
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
 
 # Source after-{zplug,zgen} zsh script files.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
@@ -145,6 +152,10 @@ for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 if [[ $TERM != "xterm-kitty" ]]; then
   export TERM="xterm-256color"
 fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.zsh/p10k.zsh ]] || source ~/.zsh/p10k.zsh
+
 
 # iTerm integration (for OS X iTerm2)
 # @see https://iterm2.com/shell_integration.html
