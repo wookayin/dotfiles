@@ -39,8 +39,12 @@ end
 
 set nocompatible
 
-if filereadable('/bin/zsh')
+if !empty($SHELL)
+  let &g:shell=$SHELL
+elseif filereadable('/bin/zsh')
   set shell=/bin/zsh
+else
+  set shell=/bin/bash
 endif
 
 " use path '~/.vim' even on non-unix machine
