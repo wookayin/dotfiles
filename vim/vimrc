@@ -2048,7 +2048,7 @@ au FileType gitcommit nnoremap <buffer> <silent>
 " display nothing but buffer/file names (would contain SHA, or ref, etc.)
 if has_key(g:plugs, 'vim-airline')
   function! FugitiveAirlinePatch(...)
-    if bufname() =~ '^fugitive://'
+    if bufname('%') =~ '^fugitive://'
       let w:airline_section_b = airline#section#create(['branch'])
       let w:airline_section_c = '%f'
       let w:airline_section_z = ''     " no line numbers, etc.
