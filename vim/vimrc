@@ -1587,20 +1587,29 @@ hi FloatermBorder   guibg=#1a2a31 guifg=white
 hi def link FloatermNF        Floaterm
 hi def link FloatermBorderNF  FloatermBorder
 
-command! -nargs=? -complete=shellcmd  T                    :FloatermToggleOrNew <args>
-command! -nargs=? -complete=shellcmd  FT                   :FloatermToggleOrNew <args>
-command! -nargs=? -complete=shellcmd  FloatermToggleOrNew  call FloatermToggleOrNew(<f-args>)
+command! -bang -nargs=? -complete=shellcmd  T                    :FloatermToggleOrNew<bang> <args>
+command! -bang -nargs=? -complete=shellcmd  FT                   :FloatermToggleOrNew<bang> <args>
+command! -bang -nargs=? -complete=shellcmd  FloatermToggleOrNew  call FloatermToggleOrNew(<q-args>, <bang>0)
 nnoremap <leader>tt  :FloatermToggle<CR>
 "
 function! FloatermToggleOrNew(...) abort
+  " FloatermToggleOrNew(cmdline: str, bang: int = 0)
+  "  - if bang=1, run the command in a shell use sendkeys (
   let ft_bufnr = floaterm#buflist#find_curr()
+  let bang = a:0 >= 2 ? a:2 : 0
   if ft_bufnr == -1
-    if a:0 > 0
+    if a:0 > 0 && !bang
       " when there is no existing floaterm window and an argument is given,
       " use it as the command line to execute (e.g. :FT git status)
       execute ':FloatermNew ' . a:1
+    elseif a:0 > 0 && bang
+      " Given bang, (e.g. :FT! git status) run cmd in a (interacive) shell.
+      FloatermNew
+      let ft_bufnr = floaterm#buflist#find_curr()
+      call floaterm#terminal#send(ft_bufnr, [a:1])
     else
-      execute ':FloatermNew'
+      " no argument, just open a new floaterm shell.
+      FloatermNew
     endif
   else
     FloatermToggle
