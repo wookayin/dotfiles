@@ -25,8 +25,20 @@ configure_general() {
 
     # Always show scrollbars (`WhenScrolling`, `Automatic` and `Always`)
     defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+
 }
 
+################################################################
+# Dock
+################################################################
+
+configure_dock() {
+    # Make dock auto-hide/show instantly (no animation!)
+    # https://apple.stackexchange.com/questions/33600/how-can-i-make-auto-hide-show-for-the-dock-faster
+    defaults write com.apple.dock autohide-delay -float 0.0
+    defaults write com.apple.dock autohide-time-modifier -float 0.0
+    killall Dock
+}
 
 ################################################################
 # Screen
@@ -38,7 +50,7 @@ configure_screen() {
 }
 
 ################################################################
-# Screen
+# Finder
 ################################################################
 
 configure_finder() {
@@ -85,6 +97,7 @@ configure_vscode() {
 
 all() {
     configure_general
+    configure_dock
     configure_screen
     configure_finder
     configure_safari
