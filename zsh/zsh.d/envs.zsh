@@ -7,7 +7,7 @@
 
 # fzf-powered CTRL-R: launch fzf with sort enabled
 # @see https://github.com/junegunn/fzf/issues/526
-export FZF_CTRL_R_OPTS='--sort'
+export FZF_CTRL_R_OPTS="--sort --prompt 'History> '"
 
 # Ctrl-T: Setting ripgrep or fd as the default source for Ctrl-T fzf
 if (( $+commands[rg] )); then
@@ -22,7 +22,7 @@ fi
 
 # ALT-C: FASD_CD with preview
 export FZF_ALT_C_COMMAND='fasd_cd -d -l -R'
-export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200' --prompt 'cd> '"
 
 # Color and appearances
 # use brighter and more visible background color.
