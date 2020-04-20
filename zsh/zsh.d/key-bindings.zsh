@@ -13,6 +13,12 @@ bindkey '^E' end-of-line
 # For Home and End key support
 bindkey "\033[1~" beginning-of-line
 bindkey "\033[4~" end-of-line
+bindkey "\033[7~" beginning-of-line
+bindkey "\033[8~" end-of-line
+bindkey "\033[H" beginning-of-line
+bindkey "\033[F" end-of-line
+bindkey "\033OH" beginning-of-line
+bindkey "\033OF" end-of-line
 
 bindkey '^D' delete-char
 bindkey '^H' backward-delete-char
