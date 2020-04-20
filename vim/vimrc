@@ -669,6 +669,31 @@ nnoremap <leader>! :call <SID>goog(expand("<cword>"), 1)<cr>
 xnoremap <leader>? "gy:call <SID>goog(@g, 0)<cr>gv
 xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
 
+
+" :Toggle... command aliases
+if has('lambda')
+  augroup RegisterToggleCommands
+    autocmd!
+    autocmd CmdlineEnter * call RegisterToggleCommands() | autocmd! RegisterToggleCommands
+  augroup END
+  function! RegisterToggleCommands() abort
+    " collect all commands ending with :...Toggle and re-register them as :Toggle...
+    redir => cout
+      silent command
+    redir END
+    let command_list = split(cout, "\n")[1:]   " strip the header line
+    let command_list = filter(
+                \ map(command_list, { l, v -> Trim((matchlist(v, '\S[A-Z]\+Toggle ') + [''])[0]) }),
+                \ '!empty(v:val)')
+    for cmd in command_list
+      let new_cmd = 'Toggle' . substitute(cmd, 'Toggle$', '', '')
+      " register both alias and command (to make tab completion work)
+      exec printf(':command! -nargs=0 %s %s', new_cmd, cmd)
+      call CommandAlias(new_cmd, cmd)
+    endfor
+  endfunction
+endif
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " 4. Appearance (e.g. Colors, Syntax) {{{
