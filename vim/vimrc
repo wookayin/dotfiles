@@ -838,7 +838,7 @@ match ExtraWhitespace /\s\+$/
 
 augroup trailing_whitespaces
   autocmd!
-  autocmd FileType GV,gitmessengerpopup highlight clear ExtraWhitespace
+  autocmd FileType GV,gitmessengerpopup,fugitive highlight clear ExtraWhitespace
   autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
   autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
   autocmd InsertLeave * match ExtraWhitespace /\s\+$/
@@ -2087,6 +2087,29 @@ command! -nargs=* GC :Gcommit -v<args>
 " on commit, type 'cA' to enter in amend mode
 au FileType gitcommit nnoremap <buffer> <silent>
             \ cA :bd<CR>:<C-U>Gcommit --verbose --amend<CR>
+
+" GStatus: more configuration and keymaps for fugitive index buffers
+augroup FugitiveAddon
+  autocmd!
+  " Fix window height to be 20
+  autocmd FileType fugitive    resize 20 | setlocal winfixheight
+
+  " [?] show help  / [ci] commit -v  / [g=] Toggle inline diffs for all files
+  autocmd FileType fugitive    nnoremap <buffer> <silent> ?  :<C-u>vertical help fugitive-maps<CR>:wincmd p<CR>
+  autocmd FileType fugitive    nmap     <buffer> ci          cvc
+  autocmd FileType fugitive    nmap     <buffer> g=          ggVG=zM
+  " [,gd] diffvsplit
+  autocmd FileType fugitive    nmap     <buffer> <leader>gd  dv
+augroup END
+
+" highlights for fugitive
+hi fugitiveUntrackedHeading  gui=bold  guifg=#000087    guibg=Gold1
+hi fugitiveUntrackedSection  gui=bold  guifg=#bbbb00    guibg=None
+hi fugitiveUnstagedHeading   gui=bold  guifg=black      guibg=#d7875f
+hi fugitiveUnstagedSection   gui=bold  guifg=#af0000    guibg=None
+hi fugitiveStagedHeading     gui=bold  guifg=black      guibg=SeaGreen2
+hi fugitiveStagedSection     gui=bold  guifg=#009900    guibg=None
+hi fugitiveHeading           gui=bold                   guibg=None
 
 " fugitive://... buffers (index) should have better statusline;
 " display nothing but buffer/file names (would contain SHA, or ref, etc.)
