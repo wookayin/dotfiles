@@ -84,6 +84,14 @@ set showtabline=2           " always show tab pannel
 
 set scrolloff=3
 
+if exists('##TermEnter')
+  " Disable scrolloff in terminal buffers (to avoid flickering)
+  augroup TermScrollFix
+    autocmd!
+    autocmd TermEnter * setlocal scrolloff=0
+  augroup end
+endif
+
 " search
 set ignorecase              " case-insensitive by default
 set smartcase               " case-sensitive if keyword contains both uppercase and lowercase
