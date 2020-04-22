@@ -86,9 +86,11 @@ set scrolloff=3
 
 if exists('##TermEnter')
   " Disable scrolloff in terminal buffers (to avoid flickering)
+  " Note: scrolloff is a global option until neovim 0.5 (neovim/neovim#11915)
   augroup TermScrollFix
     autocmd!
-    autocmd TermEnter * setlocal scrolloff=0
+    autocmd TermOpen,TermEnter * setlocal scrolloff=0
+    autocmd TermLeave          * setlocal scrolloff=3        " workaround for nvim<0.5
   augroup end
 endif
 
