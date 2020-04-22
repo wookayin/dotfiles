@@ -2100,7 +2100,7 @@ au FileType gitcommit nnoremap <buffer> <silent>
 augroup FugitiveAddon
   autocmd!
   " Fix window height to be 20
-  autocmd FileType fugitive    resize 20 | setlocal winfixheight
+  autocmd FileType fugitive    if !&winfixheight | resize 20 | setlocal winfixheight | endif
 
   " [?] show help  / [ci] commit -v  / [g=] Toggle inline diffs for all files
   autocmd FileType fugitive    nnoremap <buffer> <silent> ?  :<C-u>vertical help fugitive-maps<CR>:wincmd p<CR>
@@ -2112,12 +2112,12 @@ augroup END
 
 " highlights for fugitive
 hi fugitiveUntrackedHeading  gui=bold  guifg=#000087    guibg=Gold1
-hi fugitiveUntrackedSection  gui=bold  guifg=#bbbb00    guibg=None
+hi fugitiveUntrackedSection  gui=bold  guifg=#bbbb00    guibg=NONE
 hi fugitiveUnstagedHeading   gui=bold  guifg=black      guibg=#d7875f
-hi fugitiveUnstagedSection   gui=bold  guifg=#af0000    guibg=None
+hi fugitiveUnstagedSection   gui=bold  guifg=#af0000    guibg=NONE
 hi fugitiveStagedHeading     gui=bold  guifg=black      guibg=SeaGreen2
-hi fugitiveStagedSection     gui=bold  guifg=#009900    guibg=None
-hi fugitiveHeading           gui=bold                   guibg=None
+hi fugitiveStagedSection     gui=bold  guifg=#009900    guibg=NONE
+hi fugitiveHeading           gui=bold                   guibg=NONE
 
 " fugitive://... buffers (index) should have better statusline;
 " display nothing but buffer/file names (would contain SHA, or ref, etc.)
@@ -2127,7 +2127,6 @@ if has_key(g:plugs, 'vim-airline')
       let w:airline_section_b = airline#section#create(['branch'])
       let w:airline_section_c = '%f'
       let w:airline_section_z = ''     " no line numbers, etc.
-      "let g:airline_variable_referenced_in_statusline = 'foo'
     endif
   endfunction
   call airline#remove_statusline_func('FugitiveAirlinePatch')
