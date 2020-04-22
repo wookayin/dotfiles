@@ -311,7 +311,7 @@ if has('nvim')
   " Automatically enter insert mode when entering neovim terminal buffer
   augroup terminal_autoinsert
     autocmd!
-    autocmd BufWinEnter,WinEnter term://* startinsert
+    autocmd BufWinEnter,WinEnter *  if &buftype == 'terminal' | startinsert | endif
     autocmd TermOpen * startinsert
 
     " mouse click puts into normal mode even in terminal; disable this
