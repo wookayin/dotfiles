@@ -458,10 +458,10 @@ else
     imap <F5> <ESC>:w<CR>:make!<CR>a
 endif
 
-" Makeprg for vimrc is to reload itself.
-augroup VimrcMakeprg
+" Make for vim script files is to reload itself.
+augroup VimscriptMakeprg
   autocmd!
-  autocmd FileType vim   if expand("%") =~ "vimrc" | nmap <buffer> <F5> :source %<CR> | endif
+  autocmd FileType vim   nmap <buffer> <F5> :source %<CR>
 augroup END
 
 " Alternative to <F5>
