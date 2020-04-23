@@ -94,6 +94,10 @@ snippet item \begin{itemize} ... \end{itemize} block
 	\end{itemize}
 snippet paragraph
 	\paragraph{${1}} $0
+snippet minipage
+	\begin{minipage}[t]{\linewidth}
+	${0}
+	\end{minipage}
 #
 # Math Shortcuts
 # ==============
@@ -134,6 +138,8 @@ snippet tightlist Define \tightlist
 snippet xspace Import xspace package and configure it
 	\usepackage{xspace}
 	\xspaceaddexceptions{]\\}}
+snippet cleveref Import cleveref package
+	\usepackage[nameinlink]{cleveref}
 snippet deftodo
 	\newcommand{\\${1:todo}}[1]{\mbox{\color{red}{\small\bf\sf [${2:TODO: }#1]}}}
 snippet defabbr
