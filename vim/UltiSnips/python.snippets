@@ -56,6 +56,28 @@ snippet print_exception
 traceback.print_exception(*sys.exc_info())
 endsnippet
 
+# test {{{
+snippet pytest.main
+pytest.main(["-s", "-v"] + sys.argv)
+endsnippet
+snippet @pytest.mark.parametrize
+@pytest.mark.parametrize((${1:"arg0", "arg1"}), [
+	(${2:"val0", "val1"}),
+])
+endsnippet
+snippet pytest.param
+pytest.param(${1}, id=None, marks=${3:pytest.mark.xfail})
+endsnippet
+snippet pytest.xfail
+@pytest.mark.xfail(reason="${1:xfail}")
+endsnippet
+snippet unittest
+class Test${1:Example}(unittest.TestCase):
+	def testHello(self):
+		self.assertFalse("Implement me!")
+endsnippet
+# }}}
+
 # ipython {{{
 snippet ipython.system "Import system from ipython (same as !shell execute magic)" b
 from IPython.utils._process_posix import system, getoutput
