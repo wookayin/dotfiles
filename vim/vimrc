@@ -677,6 +677,19 @@ function! CommandAlias(aliasname, target)
     \ .printf('("%s") : ("%s"))', a:target, a:aliasname)
 endfunction
 
+" WinDo: Like :windo, but preserves the current window and view.
+function! WinDo(command) abort
+  let l:currwin = winnr()
+  let l:view = winsaveview()
+  try
+    execute printf('windo execute "%s"', escape(a:command, '"'))
+  finally
+    execute l:currwin . 'wincmd w'
+    call winrestview(l:view)
+  endtry
+endfunction
+command! -nargs=* WinDo   call WinDo(<q-args>)
+
 " ----------------------------------------------------------------------------
 " <Leader>?/! : Google it / Feeling lucky
 "   (code brought from @junegunn/dotfiles)
@@ -2122,7 +2135,16 @@ augroup FugitiveAddon
   autocmd FileType fugitive    nmap     <buffer> g=          ggVG=zM
   " [,gd] diffvsplit
   autocmd FileType fugitive    nmap     <buffer> <leader>gd  dv
+
+  " when git index is updated via hunk stage operation, reload fugitive buffers
+  if exists('*timer_start')  " 7.4.1578+
+    autocmd User GitGutterStage  call timer_start(0, function('ReloadFugitiveBlobs'))
+  endif
 augroup END
+
+function! ReloadFugitiveBlobs(...) abort
+  WinDo if bufname('%') =~ '^fugitive://' | :e | endif
+endfunction
 
 " highlights for fugitive
 hi fugitiveUntrackedHeading  gui=bold  guifg=#000087    guibg=Gold1
