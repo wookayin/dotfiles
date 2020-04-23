@@ -1691,7 +1691,9 @@ augroup FloatermCustom
   " when leaving out from floaterm, hide it so that it doesn't cover other windows
   autocmd BufLeave term://*
         \  if &filetype == 'floaterm'
-        \|   call timer_start(0, {-> floaterm#hide()})
+        \|   if get(get(b:, 'floaterm_winopts', {}), 'wintype') == 'floating'
+        \|     call timer_start(0, {-> floaterm#hide()})
+        \|   endif
         \| endif
   autocmd FileType floaterm tmap <buffer> <silent> <C-z>
         \ <C-\><C-n>:wincmd p<CR>
