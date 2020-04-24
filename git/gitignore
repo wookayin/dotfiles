@@ -4,6 +4,7 @@
 .*.s[a-w][a-z]
 Session.vim
 .netrwhist
+.XTabline*
 
 # Mac OS X
 .DS_Store
@@ -27,6 +28,7 @@ Thumbs.db
 .settings/
 .ipynb_checkpoints/
 tags
+.vimspector.json
 
 # Python, Virtualenv
 .venv*
