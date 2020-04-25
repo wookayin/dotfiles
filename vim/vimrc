@@ -785,9 +785,13 @@ if has('termguicolors')
   endif
 endif
 
-" apply base theme
+" apply colorscheme (base: xoria256 + customization)
 if !exists('g:colors_name')
-  silent! colorscheme xoria256
+  try
+    silent! colorscheme xoria256-wook
+  catch /E185/  " Cannot find color scheme
+    silent! colorscheme evening
+  endtry
 endif
 
 " airline theme: status line and tab line
@@ -796,44 +800,6 @@ if has('termguicolors') && &termguicolors
 else
   let g:airline_theme = 'bubblegum'
 endif
-
-
-" override more customized colors
-highlight StatusLine    ctermfg=LightGreen
-highlight ColorColumn   ctermbg=52 guibg=#5f0000
-
-highlight LineNr        ctermfg=248 ctermbg=233 guifg=#a8a8a8 guibg=#121212
-highlight SignColumn    ctermfg=248 ctermbg=233 guifg=#a8a8a8 guibg=#121212
-
-" gitgutter sign column (see afa4f2dd)
-"  guibg=<X> and ctermbg=<Y> should match that of "SignColumn"
-highlight GitGutterAdd    guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=233
-highlight GitGutterChange guifg=#bbbb00 guibg=#121212 ctermfg=3 ctermbg=233
-highlight GitGutterDelete guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233
-
-" some primitive colors customized on top of xoria256
-highlight Normal        ctermfg=255 guifg=white    ctermbg=NONE guibg=NONE
-highlight Comment       ctermfg=035 guifg=#38B04A
-highlight Constant      ctermfg=204 guifg=#ff5f87
-highlight PreProc       ctermfg=219 guifg=#ffafff
-highlight SpecialKey    ctermfg=242 guifg=#666666
-highlight Folded        ctermbg=60  guibg=#404056
-
-" colors for gui/24bit mode {{
-" DiffAdd - inserted lines (dark green)
-highlight DiffAdd       guibg=#103a05 guifg=NONE
-" DiffDelete - deleted/filler lines (gray 246)
-highlight DiffDelete    guibg=#949494
-" DiffChange - changed lines (dark red)
-highlight DiffChange    guibg=#471515 guifg=NONE
-" DiffChange - changed 'text'(brighter red)
-highlight DiffText      guibg=#721b1b guifg=NONE
-" }}
-
-highlight SpellBad guifg=NONE ctermfg=NONE
-
-" no underline, current cursor line
-highlight CursorLine    cterm=none
 
 " show cursorline for active window only
 let g:NrHighlight_preserve_filetypes = ['nerdtree', 'coc-explorer']
@@ -879,10 +845,6 @@ augroup END
 
 " Unset paste when leaving insert mode
 autocmd InsertLeave * silent! set nopaste
-
-" better popup menu colors (instead of dark black)
-highlight Pmenu             ctermfg=black guifg=black ctermbg=yellow guibg=#ffec99
-highlight PmenuSel          ctermfg=red guifg=red ctermbg=white guibg=white gui=bold
 
 " neovim 0.4.0+ : semi-transparent popup menu
 " seealso: s:auto_termguicolors
