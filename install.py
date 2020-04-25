@@ -277,6 +277,13 @@ def log_boxed(msg, color_fn=WHITE, use_bold=False, len_adjust=0):
                      "│" + pad_msg   + "│\n" +
                      "└" + ("─" * l) + "┘\n"), cr=False)
 
+def makedirs(target, mode=511, exist_ok=False):
+    try:
+        os.makedirs(target, mode=mode)
+    except OSError as ex:  # py2 has no exist_ok=True
+        import errno
+        if ex.errno == errno.EEXIST and exist_ok: pass
+        else: raise
 
 # get current directory (absolute path)
 current_dir = os.path.abspath(os.path.dirname(__file__))
@@ -345,12 +352,9 @@ for target, source in sorted(tasks.items()):
 
     # make a symbolic link if available
     if not os.path.lexists(target):
-        try:
-            mkdir_target = os.path.split(target)[0]
-            os.makedirs(mkdir_target)
-            log(GREEN('Created directory : %s' % mkdir_target))
-        except:
-            pass
+        mkdir_target = os.path.split(target)[0]
+        makedirs(mkdir_target, exist_ok=True)
+        log(GREEN('Created directory : %s' % mkdir_target))
         os.symlink(source, target)
         log("{:50s} : {}".format(
             BLUE(target),
