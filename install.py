@@ -120,7 +120,8 @@ post_actions += [
     '''#!/bin/bash
     # Update zgen modules and cache (the init file)
     zsh -c "
-        DOTFILES_UPDATE=1 source ${HOME}/.zshrc       # source zplug and list plugins
+        # source zplug and list plugins
+        DOTFILES_UPDATE=1 __p9k_instant_prompt_disabled=1 source ${HOME}/.zshrc
         if ! which zgen > /dev/null; then
             echo -e '\033[0;31m\
 ERROR: zgen not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
@@ -190,7 +191,8 @@ post_actions += [
 post_actions += [
     r'''#!/bin/bash
     # Change default shell to zsh
-    /bin/zsh --version >/dev/null || (echo -e "Error: /bin/zsh not found. Please install zsh"; exit 1)
+    /bin/zsh --version >/dev/null || (\
+        echo -e "\033[0;31mError: /bin/zsh not found. Please install zsh.\033[0m"; exit 1)
     if [[ ! "$SHELL" = *zsh ]]; then
         echo -e '\033[0;33mPlease type your password if you wish to change the default shell to ZSH\e[m'
         chsh -s /bin/zsh && echo -e 'Successfully changed the default shell, please re-login'
