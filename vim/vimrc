@@ -112,6 +112,9 @@ set foldopen+=jump
 " use spaces for tabbing, by default
 set expandtab
 
+" vertical splits (use thicker unicode bar)
+set fillchars+=vert:┃
+
 " listchars for whitespaces
 set list
 set listchars=tab:»\ ,trail:·,extends:>,precedes:<

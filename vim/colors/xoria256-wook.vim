@@ -15,8 +15,9 @@ let g:colors_name = "xoria256-wook"
 highlight StatusLine    ctermfg=LightGreen
 highlight ColorColumn   ctermbg=52 guibg=#5f0000
 
-highlight LineNr        ctermfg=248 ctermbg=233 guifg=#a8a8a8 guibg=#121212
-highlight SignColumn    ctermfg=248 ctermbg=233 guifg=#a8a8a8 guibg=#121212
+highlight LineNr        ctermfg=248 ctermbg=233   guifg=#a8a8a8 guibg=#121212
+highlight SignColumn    ctermfg=248 ctermbg=233   guifg=#a8a8a8 guibg=#121212
+highlight VertSplit     ctermfg=246 ctermbg=NONE  guifg=#6d747f guibg=NONE
 
 " gitgutter sign column (see afa4f2dd)
 "  guibg=<X> and ctermbg=<Y> should match that of SignColumn
@@ -26,6 +27,7 @@ highlight GitGutterDelete guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233
 
 " some primitive colors customized on top of xoria256
 highlight Normal        ctermfg=255 guifg=white    ctermbg=NONE guibg=NONE
+highlight EndOfBuffer   ctermfg=240 guifg=#585858  ctermbg=NONE guibg=NONE
 highlight Comment       ctermfg=035 guifg=#38B04A
 highlight Constant      ctermfg=204 guifg=#ff5f87
 highlight PreProc       ctermfg=219 guifg=#ffafff
