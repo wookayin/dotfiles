@@ -1624,26 +1624,27 @@ function! FloatermToggleOrNew(...) abort
   " FloatermToggleOrNew(cmdline: str, bang: int = 0)
   "  - if bang=1, run the command in a shell use sendkeys.
   "  - if bang=0, execute the program without shell
-  let ft_bufnr = floaterm#buflist#find_curr()
+  " We use a dedicated name 'FT' for the floaterm triggered by the :FT, :T command
+  let ft_bufnr = floaterm#terminal#get_bufnr('FT')
   let bang = a:0 >= 2 ? a:2 : 0
   let cmd = a:0 > 0 ? Trim(a:1) : ''
   if ft_bufnr == -1
     if empty(cmd)
       " when there is no existing floaterm window
       " and no argument given, just open a new floaterm shell.
-      FloatermNew --autoclose
+      execute ':FloatermNew --name=FT --autoclose'
     elseif !bang
       " if argument given but without bang,
       " use it as the command line to execute (e.g. :FT git status)
-      execute ':FloatermNew ' . cmd
+      execute ':FloatermNew --name=FT ' . cmd
     elseif bang
       " Given bang, (e.g. :FT! git status) run cmd in a (interactive) shell.
-      FloatermNew --autoclose
-      let ft_bufnr = floaterm#buflist#find_curr()
+      execute ':FloatermNew --name=FT --autoclose'
+      let ft_bufnr = floaterm#terminal#get_bufnr('FT')
       call floaterm#terminal#send(ft_bufnr, [cmd])
     endif
   else
-    FloatermToggle
+    FloatermToggle FT
   endif
 endfunction
 
