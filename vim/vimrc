@@ -450,7 +450,7 @@ if has_key(g:plugs, 'vim-dispatch')
 
     " <F5>: run make, asynchronously or split windows (dispatch)
     map  <F5> <ESC>:w<CR>:RunMake<CR>
-    imap <F5> <ESC>:w<CR>:RunMake<CR>a
+    imap <F5> <ESC><F5>a
 
     " <leader-F5>: run make with visible progress (split window in tmux)
     map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
@@ -458,7 +458,7 @@ if has_key(g:plugs, 'vim-dispatch')
 else
     " otherwise, fallback to default make
     map <F5> <ESC>:w<CR>:make!<CR>
-    imap <F5> <ESC>:w<CR>:make!<CR>a
+    imap <F5> <ESC><F5>a
 endif
 
 " Make for vim script files is to reload itself.
