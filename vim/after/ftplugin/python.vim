@@ -1,10 +1,12 @@
 " python.vim
 
 if !filereadable('Makefile')
-  if bufname('%') =~ '_test.py$'
-    let &l:makeprg=printf('pytest %s', shellescape(expand("%")))
+  if bufname('%') =~ '_test.py$' || expand('%:t') =~ '^test_.*\.py'
+    let &l:makeprg='pytest "%" -s'
+    let b:makeprg_pytest = 1
   else
-    let &l:makeprg=printf('python %s', shellescape(expand("%")))
+    let &l:makeprg='python "%"'
+    let b:makeprg_pytest = 0
   endif
 endif
 
@@ -66,6 +68,13 @@ if exists(':CocCommand')
 endif
 
 
+function! s:method_on_cursor() abort
+  " try to automatically get the current function
+  if exists('*CocAction')
+    return CocAction('getCurrentFunctionSymbol')
+  else | return '' | endif
+endfunction
+
 " <F5> to run &makeprg on a floaterm window (experimental)
 " pytest or execute the script itself, as per &makeprg
 if has_key(g:plugs, 'vim-floaterm')
@@ -73,7 +82,13 @@ if has_key(g:plugs, 'vim-floaterm')
   function! MakeInTerminal() abort
     let l:bufnr = floaterm#terminal#get_bufnr(s:ftname)
     let l:CTRL_U = nr2char(21)
-    let l:cmd = l:CTRL_U . (&makeprg)
+    let l:cmd = ExpandCmd(&makeprg)
+    if get(b:, 'makeprg_pytest', 0)
+      let l:pytest_pattern = s:method_on_cursor()
+      if !empty(l:pytest_pattern)
+        let l:cmd = printf('pytest -s -k %s', shellescape(l:pytest_pattern))
+      endif
+    endif
     if l:bufnr == -1
       let l:bufnr = floaterm#new(l:cmd,
             \ {'name': s:ftname, 'position': 'right', 'wintype': 'normal',
@@ -81,7 +96,7 @@ if has_key(g:plugs, 'vim-floaterm')
       tnoremap <buffer> <silent> <F6>  <c-\><c-n>:FloatermHide<CR>
       wincmd p        " move back to the python buf
     else
-      call floaterm#terminal#send(l:bufnr, [l:cmd])
+      call floaterm#terminal#send(l:bufnr, [l:CTRL_U . l:cmd])
       " show the window (it could be either hidden or visible)
       " this works as we are currently on the 'python' buffer
       call floaterm#toggle(s:ftname)

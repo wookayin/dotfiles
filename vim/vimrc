@@ -673,6 +673,15 @@ function! Echo(msg) abort
   echo a:msg
 endfunction
 
+if exists('*expandcmd')  " neovim 0.5, vim: +v8.1.1510
+  let ExpandCmd = function('expandcmd')
+else
+  let s:expandable = '\\*\%(<\w\+>\|%\|#\d*\)\%(:[p8~.htre]\|:g\=s\(.\).\{-\}\1.\{-\}\1\)*'
+  function! ExpandCmd(string) abort
+      return substitute(a:string, s:expandable, '\=expand(submatch(0))', 'g')
+  endfunction
+endif
+
 function! CommandAlias(aliasname, target)
   " :aliasname => :target  (only applicable at the beginning of the command line)
   exec printf('cnoreabbrev <expr> %s ', a:aliasname)
