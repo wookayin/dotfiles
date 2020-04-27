@@ -229,6 +229,7 @@ alias jupyter-lab='${$(which python)%/*}/jupyter-lab --no-browser'
 alias ptpython='${$(which python)%/*}/ptpython'
 alias ptipython='${$(which python)%/*}/ptipython'
 alias ptpy='ptipython'
+alias pt='ptpy'
 
 # pip install nose, rednose
 alias nt='NOSE_REDNOSE=1 nosetests -v'
