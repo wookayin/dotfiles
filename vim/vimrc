@@ -1664,15 +1664,18 @@ let g:floaterm_height = 0.7
 augroup FloatermCustom
   autocmd!
   " when leaving out from floaterm, hide it so that it doesn't cover other windows
-  autocmd BufLeave term://*
-        \  if &filetype == 'floaterm'
-        \|   if get(get(b:, 'floaterm_winopts', {}), 'wintype') == 'floating'
-        \|     call timer_start(0, {-> floaterm#hide()})
-        \|   endif
-        \| endif
+  autocmd BufLeave floaterm://*,term://*   call <SID>autohide_floaterm()
   autocmd FileType floaterm tmap <buffer> <silent> <C-z>
         \ <C-\><C-n>:wincmd p<CR>
 augroup END
+function! s:autohide_floaterm() abort
+  if &filetype == 'floaterm'
+    if get(get(b:, 'floaterm_winopts', {}), 'wintype') == 'floating'
+      let l:FuncHide = function('floaterm#window#hide_floaterm', [bufnr('%')])  " neovim or 7.4.1836+
+      call timer_start(0, { -> l:FuncHide() })
+    endif
+  endif
+endfunction
 
 " ---------------------------------------------------------------- }}}
 " quickui (floating windows) {{{
