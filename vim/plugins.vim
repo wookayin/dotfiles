@@ -12,10 +12,15 @@ if has('nvim')
   endfunction
 endif
 
+let s:_python3_version = ''
 function! s:python3_version()
   if has('nvim')           | return g:python3_host_version
-  elseif has('python3')    | return join(py3eval('sys.version_info'), ".")
-  else                     | return ''
+  elseif has('python3')
+    if empty(s:_python3_version)
+      let s:_python3_version = join(py3eval('sys.version_info'), ".")
+    endif
+    return s:_python3_version
+  else | return ''
   endif
 endfunction
 
@@ -125,6 +130,9 @@ Plug 'davidhalter/jedi-vim'
 if has('nvim') && s:python3_version() >= '3.5'
   Plug 'numirias/semshi', { 'do': function('DoRemote') }
   Plug 'stsewd/isort.nvim', { 'do': function('DoRemote') }
+endif
+if has('python3') && s:python3_version() >= '3.5'
+  Plug 'wookayin/vim-autoimport'
 endif
 
 Plug 'artur-shaik/vim-javacomplete2'

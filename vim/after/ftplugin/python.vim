@@ -59,7 +59,7 @@ endif
 " ============
 
 " <M-CR> for auto import symbol (replacing coc.nvim)
-if exists(':ImportSymbol')
+if exists(':ImportSymbol')   " plugin vim-autoimport
   nmap <silent> <buffer>  <M-CR>   :ImportSymbol<CR>
   imap <silent> <buffer>  <M-CR>   <Esc>:ImportSymbol<CR>a
 endif
