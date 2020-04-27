@@ -282,6 +282,9 @@ noremap <C-B> <C-U>
 " Ignore errornous input in Mac OS X
 imap <D-space> <Nop>
 
+" Workaround neovim bug (it freezes, why?)
+imap <F3> <Nop>
+
 " <Ctrl-Space> invokes <C-X><C-O> (omni-completion)
 inoremap <C-Space> <C-x><C-o>
 inoremap <C-@> <C-x><C-o>
