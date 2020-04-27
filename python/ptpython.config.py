@@ -122,6 +122,12 @@ def configure(repl):
     """
 
     # Add custom key binding.
+    # ControlA and ControlE should work as Home/End (emac-style keybindings).
+    @repl.add_key_binding(Keys.ControlA)
+    def _(event): event.cli.key_processor.feed(KeyPress(Keys.Home))
+    @repl.add_key_binding(Keys.ControlE)
+    def _(event): event.cli.key_processor.feed(KeyPress(Keys.End))
+
     """
     @repl.add_key_binding(Keys.ControlB)
     def _(event):
