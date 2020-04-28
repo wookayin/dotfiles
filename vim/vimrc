@@ -677,11 +677,13 @@ function! Echo(msg) abort
 endfunction
 
 if exists('*expandcmd')  " neovim 0.5, vim: +v8.1.1510
-  let ExpandCmd = function('expandcmd')
+  function! ExpandCmd(string) abort
+    return expandcmd(a:string)
+  endfunction
 else
   let s:expandable = '\\*\%(<\w\+>\|%\|#\d*\)\%(:[p8~.htre]\|:g\=s\(.\).\{-\}\1.\{-\}\1\)*'
   function! ExpandCmd(string) abort
-      return substitute(a:string, s:expandable, '\=expand(submatch(0))', 'g')
+    return substitute(a:string, s:expandable, '\=expand(submatch(0))', 'g')
   endfunction
 endif
 
