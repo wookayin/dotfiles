@@ -104,7 +104,7 @@ compdef '_hosts' ssh-tmuxa
 # (overrides prezto's default git/alias.zsh)
 
 alias gh='git history'
-alias gha='gh --branches --remotes --tags'
+alias gha='gh --exclude=refs/stash --all'
 alias ghA='gh --all'
 alias gd='git diff --no-prefix'
 alias gdc='gd --cached --no-prefix'
