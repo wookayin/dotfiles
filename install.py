@@ -118,6 +118,19 @@ Please remove your local folder/file $f and try again.\033[0m"
 
 post_actions += [
     '''#!/bin/bash
+    # Download command line scripts
+    mkdir -p "$HOME/.local/bin/"
+    _download() {
+        curl -L "$2" > "$1" && chmod +x "$1"
+    }
+    ret=0
+    set -v
+    _download "$HOME/.local/bin/video2gif" "https://raw.githubusercontent.com/wookayin/video2gif/master/video2gif" || ret=1
+    exit $ret;
+''']
+
+post_actions += [
+    '''#!/bin/bash
     # Update zgen modules and cache (the init file)
     zsh -c "
         # source zplug and list plugins
