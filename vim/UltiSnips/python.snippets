@@ -41,7 +41,7 @@ endsnippet
 # TODO: auto-retrieve type annotation from the current python context.
 snippet typecheck
 if not isinstance(${1}, ${2:object}):
-	raise TypeError("\`$1\` must be a $2, but given {}".format($2, type($1)))
+	raise TypeError("\`$1\` must be a {}, but given {}".format($2, type($1)))
 endsnippet
 snippet TypeError(
 TypeError("\`$1\` must be a ${2:object}, but given {}".format($2, type($1)))
@@ -51,9 +51,14 @@ snippet rangecheck
 if not ${3:0} <= ${1} < ${2:n}:
 	raise IndexError("Index out of range [{}, {}), but given {}".format($3, $2, $1))
 endsnippet
-
 snippet print_exception
 traceback.print_exception(*sys.exc_info())
+endsnippet
+snippet pprint
+from pprint import pprint
+endsnippet
+snippet cpprint
+from prettyprinter import cpprint
 endsnippet
 
 # test {{{
