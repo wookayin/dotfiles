@@ -1097,6 +1097,9 @@ let g:airline_powerline_fonts=1
 " See ~/.vim/plugged/vim-airline/autoload/airline/init.vim -> airline#init#sections() to see defaults {{{
 " -----------------------
 
+call airline#parts#define_minwidth('coc_status', 100)
+call airline#parts#define_minwidth('branch', 120)
+
 autocmd User AirlineAfterInit call AirlineSectionInit()
 function! AirlineSectionInit()
   " section c: -coc_status
