@@ -34,10 +34,12 @@ set completeopt-=longest
 
 " Prevent vim from removing indentation on python comments
 " https://stackoverflow.com/questions/2360249/
-inoremap # X<BS>#
+inoremap <buffer> # X<BS>#
 
 " LSP (coc.nvim) is used but just in case...
-setlocal omnifunc=python3complete#Complete
+if has('python3')
+  setlocal omnifunc=python3complete#Complete
+endif
 
 
 " shortcuts
