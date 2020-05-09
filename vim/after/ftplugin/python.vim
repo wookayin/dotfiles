@@ -45,6 +45,15 @@ endif
 " shortcuts
 " =========
 
+if has_key(g:, 'plugs') && has_key(g:plugs, 'vim-surround')
+  " Apply str(...) repr(...) to the current word or selection
+  " :help surround-replacements
+  nmap <buffer>  <leader>str   ysiwfstr<CR>
+  vmap <buffer>  <leader>str   Sfstr<CR>
+  nmap <buffer>  <leader>repr  ysiwfrepr<CR>
+  vmap <buffer>  <leader>repr  Sfrepr<CR>
+endif
+
 " if coc.nvim is available, use the global shortcut
 " (see ~/.vimrc for the global mapping of <F3> key)
 if !has_key(g:, 'plugs') || !has_key(g:plugs, 'coc.nvim')

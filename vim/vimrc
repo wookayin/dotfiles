@@ -629,6 +629,8 @@ nmap  <leader>s[ ysiw[
 nmap  <leader>s] ysiw]
 nmap  <leader>s{ ysiw{
 nmap  <leader>s} ysiw}
+" ask function: e.g., word -> function(word)
+nmap  <leader>sf ysiwf
 
 vmap  <leader>s" S"
 vmap  <leader>s' S'
@@ -643,6 +645,9 @@ vmap  <leader>s[ S[
 vmap  <leader>s] S]
 vmap  <leader>s{ S{
 vmap  <leader>s} S}
+" ask function: e.g., word -> function(word)
+vmap  <leader>sf Sf
+
 
 " Zoom Tmux
 noremap <silent> <leader>z :silent exec "!tmux resize-pane -Z"<CR>
