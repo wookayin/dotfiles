@@ -1249,6 +1249,9 @@ if has('nvim-0.4')
     tnoremap <buffer> <silent> <C-w>k       <C-\><C-n>:wincmd k<CR>
     tnoremap <buffer> <silent> <C-w>l       <C-\><C-n>:wincmd l<CR>
     tnoremap <buffer> <silent> <C-w>w       <C-\><C-n>:wincmd w<CR>
+    " Ctrl-{J, K} scrolls fzf (rather than wincmd)
+    tnoremap <buffer> <silent> <C-j>        <Down>
+    tnoremap <buffer> <silent> <C-k>        <Up>
 
   endfunction
 
