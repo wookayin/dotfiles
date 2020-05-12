@@ -695,8 +695,8 @@ endif
 function! CommandAlias(aliasname, target)
   " :aliasname => :target  (only applicable at the beginning of the command line)
   exec printf('cnoreabbrev <expr> %s ', a:aliasname)
-    \ .printf('((getcmdtype() ==# ":" && getcmdline() ==# "%s") ?', a:aliasname)
-    \ .printf('("%s") : ("%s"))', a:target, a:aliasname)
+    \ .printf('((getcmdtype() ==# ":" && getcmdline() ==# "%s") ? ', a:aliasname)
+    \ .printf('("%s") : ("%s"))', escape(a:target, '"'), escape(a:aliasname, '"'))
 endfunction
 
 " WinDo: Like :windo, but preserves the current window and view.
@@ -728,6 +728,19 @@ nnoremap <leader>? :call <SID>goog(expand("<cword>"), 0)<cr>
 nnoremap <leader>! :call <SID>goog(expand("<cword>"), 1)<cr>
 xnoremap <leader>? "gy:call <SID>goog(@g, 0)<cr>gv
 xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
+
+
+" command abbrevations
+" :eh, :vsh, :sph, :tabnewh => :{e, vs, sp, tabnew} %:h/
+"  (to open files in the same directory as the current buffer)
+function! EatWhitespace()
+  let c = nr2char(getchar(0))
+  return index([nr2char(9), nr2char(10), nr2char(13), ' '], c) >= 0 ? '' : c
+endfunction
+call CommandAlias('eh', "e %:h/<C-R>=EatWhitespace()<CR>")
+call CommandAlias('vsh', "vs %:h/<C-R>=EatWhitespace()<CR>")
+call CommandAlias('sph', "sp %:h/<C-R>=EatWhitespace()<CR>")
+call CommandAlias('tabnewh', "tabnew %:h/<C-R>=EatWhitespace()<CR>")
 
 
 " :Toggle... command aliases
