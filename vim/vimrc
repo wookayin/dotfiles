@@ -262,7 +262,7 @@ let mapleader=','           " comma is the <Leader> key.
 let maplocalleader=','      " comma : <LocalLeader>
 
 inoremap <silent> <C-k> <ESC>:update<CR>
-nnoremap <silent> ,e :<C-u>e<CR>zR
+nnoremap <silent> <leader>e   :<C-u>e<CR>zR
 
 " navigation key mapping
 map <silent> k gk
@@ -808,6 +808,7 @@ if has('termguicolors')
 endif
 
 " apply colorscheme (base: xoria256 + customization)
+" See ~/.vim/colors/xoria256-wook.vim
 if !exists('g:colors_name')
   try
     silent! colorscheme xoria256-wook
@@ -2414,4 +2415,4 @@ endif
 
 " }}}
 
-" vim: set ts=2 sts=2 sw=2 foldmethod=marker foldlevel=1:
+" vim: set ts=2 sts=2 sw=2 foldmethod=marker:
