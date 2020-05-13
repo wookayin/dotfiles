@@ -1121,6 +1121,13 @@ call airline#parts#define_minwidth('branch', 120)
 
 autocmd User AirlineAfterInit call AirlineSectionInit()
 function! AirlineSectionInit()
+  " define minwidth for some parts
+  call airline#parts#define_minwidth('coc_status', 100)
+  call airline#parts#define_minwidth('branch', 120)
+
+  " section b: git info (need to call again after define_minwidth/branch)
+  let g:airline_section_b = airline#section#create(['hunks', 'branch'])
+
   " section c: -coc_status
   let g:airline_section_c = airline#section#create([
         \ '%<', 'file', g:airline_symbols.space, 'readonly',
