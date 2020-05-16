@@ -82,7 +82,9 @@ endif
 function! s:method_on_cursor() abort
   " try to automatically get the current function
   if exists('*CocAction')
-    return CocAction('getCurrentFunctionSymbol')
+    let l:symbol = CocAction('getCurrentFunctionSymbol')
+    " coc has a bug where unicode item kind labels appear; strip it
+    return substitute(l:symbol, '^[^\w]\s*', '', '')
   else | return '' | endif
 endfunction
 
