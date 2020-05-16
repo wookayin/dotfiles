@@ -75,7 +75,9 @@ if exists(':ImportSymbol')   " plugin vim-autoimport
   imap <silent> <buffer>  <M-CR>   <Esc>:ImportSymbol<CR>a
 endif
 if exists(':CocCommand')
-  command! -buffer ImportOrganize    :CocCommand python.sortImports
+  command! -buffer SortImport        :CocCommand python.sortImports
+  command! -buffer ImportSort        :SortImport
+  command! -buffer ImportOrganize    :SortImport
 endif
 
 
