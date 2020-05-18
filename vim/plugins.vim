@@ -121,7 +121,7 @@ Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 " Syntax, Completion, Coding stuffs
 Plug 'editorconfig/editorconfig-vim'
 
-Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot', {'tag': 'v4.2.1'}   " conflicts with vimtex (see polyglot#484)
 Plug 'tmux-plugins/vim-tmux'
 
 Plug 'klen/python-mode', { 'branch': 'develop' } |
