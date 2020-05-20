@@ -692,12 +692,16 @@ else
   endfunction
 endif
 
+" Command aliases or abbrevations
 function! CommandAlias(aliasname, target)
   " :aliasname => :target  (only applicable at the beginning of the command line)
   exec printf('cnoreabbrev <expr> %s ', a:aliasname)
     \ .printf('((getcmdtype() ==# ":" && getcmdline() ==# "%s") ? ', a:aliasname)
     \ .printf('("%s") : ("%s"))', escape(a:target, '"'), escape(a:aliasname, '"'))
 endfunction
+
+" some basic command abbrs
+call CommandAlias('tnew', 'tabnew')
 
 " WinDo: Like :windo, but preserves the current window and view.
 function! WinDo(command) abort
