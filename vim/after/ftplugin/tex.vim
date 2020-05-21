@@ -43,7 +43,7 @@ if filereadable('Makefile')
     let &l:makeprg = 'make'
 elseif filereadable(expand("%:p:h") . "/Makefile")
     let &l:makeprg = 'make'
-    call CD_to_file()      " auto-CWD to the file's basepath (see ~/.vimrc)
+    :CD      " auto-CWD to the file's basepath (see ~/.vimrc)
 else
     let &l:makeprg = '(latexmk -pdf -pdflatex="pdflatex -halt-on-error -interaction=nonstopmode -file-line-error -synctex=1" "%:r" && latexmk -c "%:r")'
     "let &l:makeprg = 'xelatex -recorder -halt-on-error -interaction=nonstopmode -file-line-error -synctex=1 "%:r"'
