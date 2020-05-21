@@ -1290,6 +1290,11 @@ if executable('ag')
   let $FZF_DEFAULT_COMMAND = 'ag -l -g "" 2> /dev/null'
 endif
 
+" fzf.vim options
+
+" :Buffers => Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+
 " Customize built-in commands of 'vim-fzf' (overriden by commands here) {{{
 " For full list, @see https://github.com/junegunn/fzf.vim/blob/master/plugin/fzf.vim#L42
 
