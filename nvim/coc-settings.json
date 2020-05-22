@@ -50,7 +50,11 @@
       "I": "toggleHidden",
       "r": "refresh",
       "R": "refresh",
-      "<cr>": ["expandable?", "expandOrCollapse", "open"],
+
+      // do not use expandable{Prev,Next}
+      "gk": false, "gj": false,
+
+      "<cr>": ["expandable?", ["expanded?", "collapse", "expand"], "open"],
       "<c-v>": "open:vsplit",
       "<c-x>": "open:split",
       "<up>": "nodePrev",
