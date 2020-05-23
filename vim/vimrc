@@ -1828,7 +1828,7 @@ nmap ga <Plug>(EasyAlign)
 let g:indentLine_conceallevel = 1
 
 " conceal values might not work well for tex files (hides some characters)
-let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc', 'coc-explorer']
+let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc', 'coc-explorer', 'floaterm', 'tagbar']
 
 " command alias
 command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
