@@ -54,6 +54,10 @@ function! s:OnNeomakeFinished(context)
     if ! exists(':VimtexView')
       return
     endif
+    if ! get(b:, 'neomake_vimtexview_enabled', 1)
+      " disabled temporarily, no VimtexView
+      return
+    endif
 
     let l:context = g:neomake_hook_context
     " the buffer on which Neomake was invoked
@@ -88,6 +92,8 @@ augroup tex_neomake_callback
     autocmd User NeomakeFinished call s:OnNeomakeFinished(g:neomake_hook_context)
 augroup END
 
+command! -buffer -nargs=0 VimtexViewDisable     let b:neomake_vimtexview_enabled = 0
+command! -buffer -nargs=0 VimtexViewEnable      let b:neomake_vimtexview_enabled = 1
 
 
 
