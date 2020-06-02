@@ -86,7 +86,7 @@ function! s:method_on_cursor() abort
   if exists('*CocAction')
     let l:symbol = CocAction('getCurrentFunctionSymbol')
     " coc has a bug where unicode item kind labels appear; strip it
-    return substitute(l:symbol, '^[^\w]\s*', '', '')
+    return substitute(l:symbol, '^[^a-z]\s*', '', '')
   else | return '' | endif
 endfunction
 
