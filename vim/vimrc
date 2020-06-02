@@ -710,7 +710,7 @@ function! WinDo(command) abort
   try
     execute printf('windo execute "%s"', escape(a:command, '"'))
   finally
-    execute l:currwin . 'wincmd w'
+    noautocmd execute l:currwin . 'wincmd w'
     call winrestview(l:view)
   endtry
 endfunction
