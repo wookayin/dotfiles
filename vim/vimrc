@@ -708,7 +708,7 @@ function! WinDo(command) abort
   let l:currwin = winnr()
   let l:view = winsaveview()
   try
-    execute printf('windo execute "%s"', escape(a:command, '"'))
+    execute printf('noautocmd windo execute "%s"', escape(a:command, '"'))
   finally
     noautocmd execute l:currwin . 'wincmd w'
     call winrestview(l:view)
