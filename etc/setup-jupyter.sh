@@ -6,10 +6,10 @@ node -v || (echo "node.js required"; exit 1)
 set -v
 
 install_jupyter_basic() {
-    pip install 'jupyterlab>=1.1'
-    pip install 'ipykernel>=5.0'
-    pip install 'ipympl'
-    pip install 'ipywidgets>=7.5.0'
+    pip install --upgrade 'jupyterlab>=2.0'
+    pip install --upgrade 'ipywidgets>=7.5.0'
+    pip install --upgrade 'ipykernel>=5.1'
+    pip install --upgrade 'ipympl'
 
     jupyter nbextension enable --py --sys-prefix 'widgetsnbextension'
 
