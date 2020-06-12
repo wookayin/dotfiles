@@ -333,11 +333,14 @@ function vimpy() {
 if [[ "$(uname)" == "Darwin" ]]; then
 
     # typora
-    function typora   { open -a Typora $@ }
+    function typora   { open -a Typora "$@" }
 
     # skim
-    function skim     { open -a Skim $@ }
+    function skim     { open -a Skim "$@" }
     compdef '_files -g "*.pdf"' skim
+
+    # vimr
+    function vimr     { open -a VimR "$@" }
 
     # terminal-notifier
     function notify   { terminal-notifier -message "$*" }
