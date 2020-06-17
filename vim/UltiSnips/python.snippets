@@ -60,6 +60,9 @@ endsnippet
 snippet cpprint
 from prettyprinter import cpprint
 endsnippet
+snippet filterwarnings
+warnings.filterwarnings("ignore", category=${1:DeprecationWarning}, message="$2")
+endsnippet
 
 # test {{{
 snippet pytest.main
@@ -76,6 +79,9 @@ pytest.param(${1}, id=None, marks=${3:pytest.mark.xfail})
 endsnippet
 snippet pytest.xfail
 @pytest.mark.xfail(reason="${1:xfail}")
+endsnippet
+snippet pytest.filterwarnings
+@pytest.mark.filterwarnings("${1:ignore:DeprecationWarning}")
 endsnippet
 snippet unittest
 class Test${1:Example}(unittest.TestCase):
