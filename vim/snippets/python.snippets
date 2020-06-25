@@ -13,10 +13,10 @@ snippet future
 	from __future__ import division
 	from __future__ import print_function
 
-snippet rich
+snippet rich.console
 	from rich.console import Console
 	console = Console(markup=False)
-	print = Console.print
+	rich_print = console.log
 snippet rich.traceback
 	import rich.traceback; rich.traceback.install(width=None)
 
