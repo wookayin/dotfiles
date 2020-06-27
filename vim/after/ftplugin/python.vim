@@ -106,7 +106,6 @@ if has_key(g:plugs, 'vim-floaterm')
     endif
     if l:bufnr == -1
       " floaterm#new(bang, cmd, winopts, jobopts)
-      call PytestFloatermCallback(-1, '', 'init')
       let l:bufnr = floaterm#new(1, l:cmd,
             \ {'name': s:ftname, 'position': 'right', 'wintype': 'normal',
             \  'width': float2nr(&columns / 3.0), 'autoclose': 1},
