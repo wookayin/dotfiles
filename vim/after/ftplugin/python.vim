@@ -109,6 +109,7 @@ if has_key(g:plugs, 'vim-floaterm')
       let l:bufnr = floaterm#new(1, l:cmd,
             \ {'name': s:ftname, 'position': 'right', 'wintype': 'normal',
             \  'width': float2nr(&columns / 3.0), 'autoclose': 1},
+            \ {}
             \)
       tnoremap <buffer> <silent> <F6>  <c-\><c-n>:FloatermHide<CR>
       wincmd p        " move back to the python buf
