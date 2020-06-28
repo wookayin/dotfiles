@@ -106,9 +106,15 @@ if has_key(g:plugs, 'vim-floaterm')
     endif
     if l:bufnr == -1
       " floaterm#new(bang, cmd, winopts, jobopts)
+      if &columns / (&lines + 0.0) >= 1.6
+        let l:winopt = {'position': 'right', 'width': float2nr(&columns / 3.0)}
+      else
+        let l:winopt = {'position': 'below', 'height': float2nr(&lines / 5.0)}
+      endif
       let l:bufnr = floaterm#new(1, l:cmd,
-            \ {'name': s:ftname, 'position': 'right', 'wintype': 'normal',
-            \  'width': float2nr(&columns / 3.0), 'autoclose': 1},
+            \ extend(l:winopt, {
+            \   'name': s:ftname, 'wintype': 'normal',
+            \   'autoclose': 1}),
             \ {}
             \)
       tnoremap <buffer> <silent> <F6>  <c-\><c-n>:FloatermHide<CR>
