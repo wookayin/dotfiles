@@ -66,7 +66,7 @@
     "explorer.icon.enableNerdfont": true,             // Use nerd font icons
     "explorer.file.column.git.showIgnored": false,
     "explorer.file.hiddenRules": {
-      "extensions": ["o", "a", "obj", "pyc"],
+      "extensions": ["o", "a", "obj", "pyc", "egg-info"],
       "patternMatches": ["^\\.", "^__pycache__$"],
       "filenames": []
     },
