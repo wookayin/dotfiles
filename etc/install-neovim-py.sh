@@ -64,7 +64,7 @@ else
         done
         if [[ "$user_prompt" == [Yy]* ]]; then
             echo -e "\n${GREEN}Installing neovim into ~/.local/bin/ ...${RESET}";
-            dotfiles install neovim && exit 0;
+            $HOME/.dotfiles/bin/dotfiles install neovim && exit 0;
         fi
     fi
 
