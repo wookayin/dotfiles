@@ -2188,8 +2188,11 @@ if has_key(g:plugs, 'vim-airline')
       let w:airline_section_z = ''     " no line numbers, etc.
     endif
   endfunction
-  call airline#remove_statusline_func('FugitiveAirlinePatch')
-  call airline#add_statusline_func('FugitiveAirlinePatch')
+  try
+    call airline#remove_statusline_func('FugitiveAirlinePatch')
+    call airline#add_statusline_func('FugitiveAirlinePatch')
+  catch /E117/  " airline doesn't exist yet
+  endtry
 endif
 
 " ---------------------------------------------------------------- }}}
