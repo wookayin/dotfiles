@@ -23,6 +23,12 @@ fi
 
 GIT_REPO="https://github.com/wookayin/dotfiles.git"
 
+if which python3 > /dev/null; then
+    PYTHON="python3"
+else
+    PYTHON="python"
+fi
+
 set -x
 set -e
 
@@ -31,6 +37,6 @@ set -e
 cd ~
 
 git clone --recursive ${GIT_FLAGS} ${GIT_REPO} ~/.dotfiles
-cd ~/.dotfiles && python install.py
+cd ~/.dotfiles && $PYTHON install.py
 
 echo "All Done!"
