@@ -170,7 +170,7 @@ install_bazel() {
     echo ""
 }
 
-install_anaconda3() {
+install_anaconda() {
     # installs Anaconda-python3. (Deprecated: Use miniconda)
     # https://www.anaconda.com/download/#linux
     set -e
@@ -203,10 +203,11 @@ install_miniconda() {
     MINICONDA_PREFIX="$HOME/.miniconda3/"
     bash "Miniconda3-latest-Linux-x86_64.sh" -b -p ${MINICONDA_PREFIX}
 
+    # 3.7 as of July 2020
     $MINICONDA_PREFIX/bin/python --version
 
-    echo "${COLOR_YELLOW}Will downgrade python from 3.7 to 3.6.${COLOR_NONE}"
-    $MINICONDA_PREFIX/bin/conda install -y 'python==3.6.*'
+    #echo "${COLOR_YELLOW}Will downgrade python from 3.7 to 3.6.${COLOR_NONE}"
+    #$MINICONDA_PREFIX/bin/conda install -y 'python==3.6.*'
 
     $MINICONDA_PREFIX/bin/python --version
     echo "${COLOR_GREEN}All set!${COLOR_NONE}"
