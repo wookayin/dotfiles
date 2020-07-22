@@ -1888,17 +1888,27 @@ let g:deoplete#enable_at_startup = 1
 
 " Register some default omnicomplete functions/patterns
 " to automatically trigger in deoplete {{
-let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
-let g:deoplete#omni#input_patterns = get(g:, 'deoplete#omni#input_patterns', {})
+function! s:configure_deoplete_vars()
+  let l:functions = {}
+  let l:input_patterns = {}
 
-let g:deoplete#omni#functions.tex = ['vimtex#complete#omnifunc']
-let g:deoplete#omni#input_patterns.tex =
-      \ '(?:'
-      \ . '\\\w*'
-      \ . ')'
+  let l:functions.tex = ['vimtex#complete#omnifunc']
+  let l:input_patterns.tex =
+        \ '(?:'
+        \ . '\\\w*'
+        \ . ')'
 
-let g:deoplete#omni#functions.lua = 'xolox#lua#omnifunc'
-let g:deoplete#omni#input_patterns.lua = '\w+|[^. *\t][.:]\w*'
+  let l:functions.lua = 'xolox#lua#omnifunc'
+  let l:input_patterns.lua = '\w+|[^. *\t][.:]\w*'
+
+  call deoplete#custom#var('omni', 'functions', l:functions)
+  call deoplete#custom#var('omni', 'input_patterns', l:input_patterns)
+endfunction
+
+try
+  call s:configure_deoplete_vars()
+catch /E117/  " deoplete doesn't exist yet, ignore
+endtry
 
 " }}
 
