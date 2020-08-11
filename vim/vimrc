@@ -1941,8 +1941,10 @@ let g:lua_define_completion_mappings = 0
 " Specify linters.
 " You may find the configuration file for each linter engine useful.
 "  (e.g. ~/.pylintrc for pylint)
+
+" python: pycodestyle was dropped.
 let g:ale_linters = {
-      \ 'python': ['pylint', 'mypy', 'pycodestyle'],
+      \ 'python': ['pylint', 'mypy' ],
       \}
 
 let g:ale_type_map = {
@@ -1999,15 +2001,17 @@ if has_key(g:plugs, 'coc.nvim')
     let g:pymode_doc_bind = '<leader>PK'
 endif
 
-" lint (code checking):
-" disable in favor of ALE, but only if pylint/pycodestyle exists
-let s:py_linters_exists = executable('pylint') || executable('pycodestyle')
-if has_key(g:plugs, 'ale') && s:py_linters_exists
-  let g:pymode_lint = 0
-else
-  autocmd VimEnter *.py echomsg
-        \ '[Warning] Please install `pylint` and/or `pycodestyle` using pip.' .
-        \ ' As a fallback, pymode linter (slow and outdated) will be used for linting.'
+" pymode lint (code checking):
+" disable in favor of ALE, but only if pylint exists
+let s:py_linters_exists = executable('pylint')
+if has_key(g:plugs, 'ale')
+  if s:py_linters_exists
+    let g:pymode_lint = 0
+  else
+    autocmd VimEnter *.py echomsg
+          \ '[Warning] Please install `pylint` using pip.' .
+          \ ' As a fallback, pymode linter (slow and outdated) will be used for linting.'
+  endif
 endif
 
 " Check code on every save (not on the fly)
