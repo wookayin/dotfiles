@@ -652,11 +652,13 @@ vmap  <leader>sf Sf
 " Zoom Tmux
 noremap <silent> <leader>z :silent exec "!tmux resize-pane -Z"<CR>
 
-" Prevent accidental <Ctrl-A> on Tmux
+" Prevent accidental <Ctrl-A> (on tmux) and <Ctrl-X>
 if !empty($TMUX)
   nnoremap <C-a> <nop>
-  " To increase numbers, press <comma>, <c-a>, a ...?
+  nnoremap <C-x> <nop>
+  " To increase/decrease numbers, press <comma>, <c-a>, a ...?
   nnoremap <leader><C-a> <C-a>
+  nnoremap <leader><C-x> <C-x>
 endif
 
 " }}}
