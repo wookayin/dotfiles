@@ -205,10 +205,12 @@ set matchpairs+=<:>
 set switchbuf+=usetab,split
 
 " diff: ignore whitespaces
-set diffopt+=iwhite
-" use more intuitive, semantically easy-to-parse diff algorithm
-if has("patch-8.1.0360")
-  set diffopt+=internal,algorithm:patience
+if &diff
+  set diffopt+=iwhite
+  " use more intuitive, semantically easy-to-parse diff algorithm
+  if has("patch-8.1.0360")
+    set diffopt+=internal,algorithm:patience
+  endif
 endif
 
 " jump to the last position when reopening a file
