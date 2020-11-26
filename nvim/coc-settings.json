@@ -43,7 +43,7 @@
     /***************
      * coc-explorer
      ***************/
-    "explorer.keyMappings": {
+    "explorer.keyMappings.global": {
       "l": "expand",
       "L": "expandRecursive",
       "H": "collapseRecursive",
@@ -64,7 +64,7 @@
     "explorer.previewAction.onHover": false,          // Do not show floating windows on hovering on nodes
     "explorer.openAction.strategy": "previousWindow", // Use last used window when opening files
     "explorer.icon.enableNerdfont": true,             // Use nerd font icons
-    "explorer.file.column.git.showIgnored": false,
+    "explorer.git.showIgnored": false,
     "explorer.file.hiddenRules": {
       "extensions": ["o", "a", "obj", "pyc", "egg-info"],
       "patternMatches": ["^\\.", "^__pycache__$"],
