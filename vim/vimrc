@@ -1688,14 +1688,14 @@ function! FloatermToggleOrNew(...) abort
     if empty(cmd)
       " when there is no existing floaterm window
       " and no argument given, just open a new floaterm shell.
-      execute ':FloatermNew --name=FT --autoclose'
+      execute ':FloatermNew --name=FT --autoclose=1'
     elseif !bang
       " if argument given but without bang,
       " use it as the command line to execute (e.g. :FT git status)
       execute ':FloatermNew --name=FT ' . cmd
     elseif bang
       " Given bang, (e.g. :FT! git status) run cmd in a (interactive) shell.
-      execute ':FloatermNew --name=FT --autoclose'
+      execute ':FloatermNew --name=FT --autoclose=1'
       let ft_bufnr = floaterm#terminal#get_bufnr('FT')
       call floaterm#terminal#send(ft_bufnr, [cmd])
     endif
