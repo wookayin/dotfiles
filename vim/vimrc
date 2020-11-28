@@ -1715,10 +1715,14 @@ augroup FloatermCustom
   autocmd FileType floaterm tmap <buffer> <silent> <C-z>
         \ <C-\><C-n>:wincmd p<CR>
 augroup END
+function! s:floaterm_hide(bufnr)
+  "return floaterm#window#hide_floaterm(a:bufnr)   " API removed (d7196ee0)
+  execute a:bufnr . 'FloatermHide'
+endfunction
 function! s:autohide_floaterm() abort
   if &filetype == 'floaterm'
-    if get(get(b:, 'floaterm_winopts', {}), 'wintype') == 'floating'
-      let l:FuncHide = function('floaterm#window#hide_floaterm', [bufnr('%')])  " neovim or 7.4.1836+
+    if get(get(b:, 'floaterm_opts', {}), 'wintype') == 'floating'  " (e29e93b2)
+      let l:FuncHide = function('s:floaterm_hide', [bufnr('%')])   " neovim or 7.4.1836+
       call timer_start(0, { -> l:FuncHide() })
     endif
   endif
