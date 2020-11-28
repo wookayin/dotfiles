@@ -347,6 +347,9 @@ function vimpy() {
 # open some macOS applications
 if [[ "$(uname)" == "Darwin" ]]; then
 
+    # Force run under Rosetta 2 (for M1 mac)
+    alias rosetta2='arch -x86_64'
+
     # typora
     function typora   { open -a Typora "$@" }
 
