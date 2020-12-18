@@ -44,6 +44,10 @@ fi
 
 typeset -gU cdpath fpath mailpath path
 
+# [For Mac M1 USERS]
+# Homebrew: /opt/homebrew/bin must precede /usr/local/bin.
+# Please update /etc/paths: add `/opt/homebrew/bin` manually.
+
 # Set the the list of directories that cd searches.
 # cdpath=(
 #   $cdpath

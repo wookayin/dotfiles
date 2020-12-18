@@ -350,6 +350,9 @@ if [[ "$(uname)" == "Darwin" ]]; then
     # Force run under Rosetta 2 (for M1 mac)
     alias rosetta2='arch -x86_64'
 
+    # brew for intel
+    alias ibrew='arch -x86_64 /usr/local/bin/brew'
+
     # typora
     function typora   { open -a Typora "$@" }
 
