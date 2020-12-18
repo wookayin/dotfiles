@@ -39,7 +39,7 @@ if executable("python3")
   " Since checking pynvim is slow (~200ms), it should be executed after vim init is done.
   call timer_start(0, { -> s:autoinstall_pynvim() })
   function! s:autoinstall_pynvim()
-    let s:python3_neovim_path = substitute(system("python3 -c 'import pynvim; print(pynvim.__path__)' 2>/dev/null"), '\n\+$', '', '')
+    let s:python3_neovim_path = substitute(system(g:python3_host_prog . " -c 'import pynvim; print(pynvim.__path__)' 2>/dev/null"), '\n\+$', '', '')
     if empty(s:python3_neovim_path)
       " auto-install 'neovim' python package for the current python3 (virtualenv, anaconda, or system-wide)
       let s:pip_options = Python3_determine_pip_options()
@@ -55,6 +55,16 @@ if executable("python3")
 else
   echoerr "python3 is not found on your system. Most features are disabled."
   let s:python3_local = ''
+endif
+
+" On M1 mac, neovim and python3 can have different architecture.
+let s:uname = substitute(system('uname -s'), '\n', '', '')
+if s:uname ==? 'Darwin' && !empty(g:python3_host_prog)
+  if substitute(system("uname -m"), '\n\+$', '', '') !=
+        \ substitute(system("lipo -archs " . g:python3_host_prog), '\n\+$', '', '')
+    echomsg "WARNING: neovim and python3 have different architecture (arm64 vs x86_64). Falling back to intel python3 on /usr/local ..."
+    let g:python3_host_prog = ''
+  endif
 endif
 
 " Fallback to system python3 (if not exists)
