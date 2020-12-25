@@ -8,6 +8,8 @@ function! s:show_warning_message(hlgroup, msg)
     echom a:msg | echohl None
 endfunction
 
+let s:uname = substitute(system('uname -s'), '\n', '', '')
+
 " Specify python host (preferrably system default) for neovim.
 " The 'neovim' package must be installed in that python:
 " e.g. /usr/bin/pip install neovim
@@ -27,10 +29,14 @@ if executable("python3")
   let s:python3_local = substitute(system("which python3"), '\n\+$', '', '')
 
   function! Python3_determine_pip_options()
-    let l:pip_options = '--user --upgrade '
+    let l:pip_options = '--user --upgrade --ignore-installed'
     if empty(substitute(system("python3 -c 'import site; print(site.getusersitepackages())' 2>/dev/null"), '\n\+$', '', ''))
       " virtualenv pythons may not have site-packages, hence no 'pip -user'
       let l:pip_options = '--upgrade '
+    endif
+    " mac: Force greenlet to be compiled from source due to potential architecture mismatch (pynvim#473)
+    if s:uname ==? 'Darwin'
+      let l:pip_options = l:pip_options . ' --no-binary greenlet'
     endif
     return l:pip_options
   endfunction
@@ -58,7 +64,6 @@ else
 endif
 
 " On M1 mac, neovim and python3 can have different architecture.
-let s:uname = substitute(system('uname -s'), '\n', '', '')
 if s:uname ==? 'Darwin' && !empty(g:python3_host_prog)
   if substitute(system("uname -m"), '\n\+$', '', '') !=
         \ substitute(system("lipo -archs " . g:python3_host_prog), '\n\+$', '', '')
