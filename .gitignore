@@ -1,3 +1,6 @@
 .*.sw[a-z]
 .netrwhist
 Session.vim
+
+nvim/spell
+vim/spell
