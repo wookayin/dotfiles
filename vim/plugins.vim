@@ -82,6 +82,9 @@ Plug 'rking/ag.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'junegunn/vim-easy-align'
 Plug 'Yggdroot/indentLine'
+if exists('##WinScrolled')  " neovim nightly (0.5.0+)
+  Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
+endif
 
 " Utilities
 Plug 'junegunn/vim-emoji'
