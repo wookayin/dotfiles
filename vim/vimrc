@@ -1839,6 +1839,12 @@ let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc', 'coc-explorer',
 command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
 
 " ---------------------------------------------------------------- }}}
+" nvim-scrollview {{{
+
+" Make the scrollbar aware of foldings (see #11).
+let g:scrollview_mode = 'virtual'
+
+" ---------------------------------------------------------------- }}}
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:UltiSnipsJumpForwardTrigger = '<c-j>'
