@@ -48,6 +48,7 @@ endif
 if has('nvim-0.4.0') || has('popup')
   Plug 'skywind3000/vim-quickui'
 endif
+Plug 'mg979/vim-xtabline'
 Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
