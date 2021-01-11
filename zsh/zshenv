@@ -72,6 +72,11 @@ if [ -d $HOME/.dotfiles/bin/ ]; then
   path=( $path $HOME/.dotfiles/bin )
 fi
 
+# Node + Yarn
+if [ -d $HOME/.yarn/bin/ ]; then
+  path=( $path $HOME/.yarn/bin )
+fi
+
 # Cleanup some anaconda environment variables to avoid messing up in tmux, etc.
 # (these environment variables might be copied and inherited unwantedly)
 unset CONDA_EXE
