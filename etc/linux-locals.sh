@@ -50,6 +50,24 @@ for asset in J[0]['assets']:
 
 #---------------------------------------------------------------------------------------------------
 
+install_git() {
+    # installs a modern version of git locally.
+    set -e
+
+    GIT_VER="2.30.0"
+    TMP_GIT_DIR="/tmp/$USER/git"; mkdir -p $TMP_GIT_DIR
+
+    wget -nc -O $TMP_GIT_DIR/git.tar.gz "https://github.com/git/git/archive/v${GIT_VER}.tar.gz"
+    tar -xvzf $TMP_GIT_DIR/git.tar.gz -C $TMP_GIT_DIR --strip-components 1
+    cd $TMP_GIT_DIR
+
+    make configure
+    ./configure --prefix="$PREFIX"
+    make clean -j8 && make install
+
+    ~/.local/bin/git --version
+}
+
 install_ncurses() {
     # installs ncurses (shared libraries and headers) into local namespaces.
     set -e
