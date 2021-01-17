@@ -29,10 +29,13 @@ if executable("python3")
   let s:python3_local = substitute(system("which python3"), '\n\+$', '', '')
 
   function! Python3_determine_pip_options()
-    let l:pip_options = '--user --upgrade --ignore-installed'
-    if empty(substitute(system("python3 -c 'import site; print(site.getusersitepackages())' 2>/dev/null"), '\n\+$', '', ''))
-      " virtualenv pythons may not have site-packages, hence no 'pip -user'
-      let l:pip_options = '--upgrade '
+    if system("python3 -c 'import sys; print(sys.prefix != getattr(sys, \"base_prefix\", sys.prefix))' 2>/dev/null") =~ "True"
+      " This is probably a user-namespace virtualenv python. `pip` won't accept --user option.
+      " See pip._internal.utils.virtualenv._running_under_venv()
+      let l:pip_options = '--upgrade --ignore-installed'
+    else
+      " Probably system(global) or anaconda python.
+      let l:pip_options = '--user --upgrade --ignore-installed'
     endif
     " mac: Force greenlet to be compiled from source due to potential architecture mismatch (pynvim#473)
     if s:uname ==? 'Darwin'
