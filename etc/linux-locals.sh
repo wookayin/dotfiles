@@ -57,15 +57,22 @@ install_git() {
     GIT_VER="2.30.0"
     TMP_GIT_DIR="/tmp/$USER/git"; mkdir -p $TMP_GIT_DIR
 
-    wget -nc -O $TMP_GIT_DIR/git.tar.gz "https://github.com/git/git/archive/v${GIT_VER}.tar.gz"
+    wget -N -O $TMP_GIT_DIR/git.tar.gz "https://github.com/git/git/archive/v${GIT_VER}.tar.gz"
     tar -xvzf $TMP_GIT_DIR/git.tar.gz -C $TMP_GIT_DIR --strip-components 1
     cd $TMP_GIT_DIR
 
     make configure
-    ./configure --prefix="$PREFIX"
-    make clean -j8 && make install
+    ./configure --prefix="$PREFIX" --with-curl --with-expat
+    make clean
+    make -j8 && make install
 
     ~/.local/bin/git --version
+
+    if [[ ! -f "$(~/.local/bin/git --exec-path)/git-remote-https" ]]; then
+        echo -e "${COLOR_YELLOW}Warning: $(~/.local/bin/git --exec-path)/git-remote-https not found. "
+        echo -e "https:// git url will not work. Please install libcurl-dev and try again.${COLOR_NONE}"
+        false;
+    fi
 }
 
 install_ncurses() {
