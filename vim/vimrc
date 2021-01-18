@@ -1721,7 +1721,13 @@ function! s:floaterm_hide(bufnr)
 endfunction
 function! s:autohide_floaterm() abort
   if &filetype == 'floaterm'
-    if get(get(b:, 'floaterm_opts', {}), 'wintype') == 'floating'  " (e29e93b2)
+    " Damn, floaterm keeps changing and breaking things ...
+    " e29e93b2 (2020/8/31): floaterm_winopts -> floaterm_opts
+    " 2b241d7e (2021/1/3):  floaterm_opts -> floaterm_config
+    " 392f3b65 (2021/1/10): No more dict, b:floaterm_wintype, etc. (why such changes?)
+    let l:floaterm_wintype = get(get(b:, 'floaterm_config', get(b:, 'floaterm_opts', {})), 'wintype')
+    if empty(l:floaterm_wintype) | let l:floaterm_wintype = get(b:, 'floaterm_wintype') | endif
+    if l:floaterm_wintype == 'float' || l:floaterm_wintype == 'floating'
       let l:FuncHide = function('s:floaterm_hide', [bufnr('%')])   " neovim or 7.4.1836+
       call timer_start(0, { -> l:FuncHide() })
     endif
