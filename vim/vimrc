@@ -1669,6 +1669,7 @@ let g:floaterm_background = '#1a2a31'
 hi Floaterm         guibg=#1a2a31
 hi FloatermBorder   guibg=#1a2a31 guifg=white
 hi def link FloatermNF        Floaterm
+hi def link FloatermNC        Floaterm
 hi def link FloatermBorderNF  FloatermBorder
 
 command! -bang -nargs=? -complete=shellcmd  T                    :FloatermToggleOrNew<bang> <args>
