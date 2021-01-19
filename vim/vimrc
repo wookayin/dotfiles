@@ -1808,6 +1808,11 @@ let g:NERDTreeChDirMode = 1
 " <Leader>N toggles NERDTree (across tab)
 map <Leader>N <plug>NERDTreeTabsToggle<CR>
 
+" By default nerdtree maps <C-j> and <C-k> which I want to reserve for window
+" navigation instead for the sake consistency. Therefore use different keymaps.
+let g:NERDTreeMapJumpNextSibling = '<leader><C-j>'
+let g:NERDTreeMapJumpPrevSibling = '<leader><C-k>'
+
 " Startup Options (do NOT show automatically)
 let g:nerdtree_tabs_open_on_console_startup = 0
 let g:nerdtree_tabs_open_on_gui_startup = 0
