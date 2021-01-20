@@ -64,6 +64,21 @@ snippet filterwarnings
 warnings.filterwarnings("ignore", category=${1:DeprecationWarning}, message="$2")
 endsnippet
 
+# logging {{{
+snippet p
+print($1)
+endsnippet
+snippet log
+log.info($1)
+endsnippet
+snippet logw
+log.warning($1)
+endsnippet
+snippet loge
+log.error($1)
+endsnippet
+# }}}
+
 # test {{{
 snippet pytest.main
 if __name__ == '__main__':
