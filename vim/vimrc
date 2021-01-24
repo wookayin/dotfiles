@@ -362,6 +362,10 @@ if has('nvim')
   tmap <silent> <C-k> <C-\><C-n>:wincmd k<CR>
   "tmap <C-l> <C-\><C-n><C-l>
   " TODO: <c-l> is for clear screen...?
+
+  " Ctrl-E, Ctrl-Y: Scroll window in terminal-normal mode
+  tmap <silent> <C-e> <C-\><C-n><C-e>
+  tmap <silent> <C-y> <C-\><C-n><C-y>
 endif
 
 if has('nvim')
