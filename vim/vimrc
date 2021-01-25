@@ -1713,6 +1713,10 @@ endfunction
 let g:floaterm_width = 0.9
 let g:floaterm_height = 0.7
 
+" Turn off auto-hiding of previous floaterm windows,
+" in favor of the autohide autocmd below (only works for 'floating' windows)
+let g:floaterm_autohide = 0
+
 augroup FloatermCustom
   autocmd!
   " when leaving out from floaterm, hide it so that it doesn't cover other windows
