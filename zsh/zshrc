@@ -77,7 +77,7 @@ fi
 # -----------------------
 
 # fzf-marks
-export FZF_MARKS_JUMP='^b'
+export FZF_MARKS_JUMP='^g'
 
 # }}}
 
