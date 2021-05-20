@@ -50,8 +50,9 @@ endif
 " use path '~/.vim' even on non-unix machine
 set runtimepath+=~/.vim
 
-" add ~/.local/bin to $PATH
+" add ~/.local/bin and ~/.dotfiles/bin to $PATH
 let $PATH .= ':' . expand('~/.local/bin')
+let $PATH .= ':' . expand('~/.dotfiles/bin')
 
 " load plugins with pathogen
 try
@@ -2171,7 +2172,8 @@ endif
 " in macOS, use Skim as the default LaTeX PDF viewer (for vimtex)
 " for :Vimtexview, move Skim's position to where the cursor currently points to.
 if has('mac')
-  if executable('texshop-preview') && isdirectory('/Applications/TeX/TeXShop.app')
+  let s:texshop_present = isdirectory('/Applications/TeX/TeXShop.app') || isdirectory('/Applications/TeXShop.app')
+  if executable('texshop-preview') && s:texshop_present
     " ~/.dotfiles/bin/texshop-preview
     let g:vimtex_view_general_viewer = 'texshop-preview'
   else
