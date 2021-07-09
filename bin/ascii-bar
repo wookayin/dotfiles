@@ -15,4 +15,4 @@ if [[ ! $width =~ [0-9]+ ]]; then
 fi
 awk "{PERCENT=\$1; printf \"[\"; \
     for(i=0;i<$width;++i) if(i/$width < PERCENT/100.0) printf \"|\"; else printf \" \"; \
-    printf \"] %5.2f %\", PERCENT; print \"\" }"
+    printf \"] %5.2f %%\", PERCENT; print \"\" }"
