@@ -1657,6 +1657,8 @@ endif
 " vim-clap {{{
 if has_key(g:plugs, 'vim-clap')
 
+let g:clap_layout = { 'relative': 'editor' }
+
 " better background color for clap dialogs
 hi ClapDisplay   ctermbg=236 guibg=#292c3a
 hi ClapMatches   cterm=bold ctermfg=170 gui=bold guifg=#bc6ec5
