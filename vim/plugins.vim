@@ -24,20 +24,22 @@ function! s:python3_version()
   endif
 endfunction
 
+
 "==============================================
 call plug#begin('~/.vim/plugged')
 "==============================================
 
-" General and Behaviour
+" General Plugins
+" -------------------------------------
 Plug 'flazz/vim-colorschemes'
+Plug 'embear/vim-localvimrc', PlugCond(has('patch-7.4.1154'))  " requires v:false
+Plug 'tweekmonster/helpful.vim', { 'on' : ['HelpfulVersion'] }
+
+" Vim Interfaces
+" -------------------------------------
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'tweekmonster/helpful.vim', { 'on' : ['HelpfulVersion'] }
-if has('patch-7.4.1154')  " requires v:false
-  Plug 'embear/vim-localvimrc'
-endif
 
-" Integration and Interfaces
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
 Plug 'junegunn/fzf.vim'
 Plug 'wookayin/fzf-ripgrep.vim'
@@ -53,9 +55,7 @@ Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-if executable('tree')
-  Plug 'mhinz/vim-tree'
-endif
+Plug 'mhinz/vim-tree', PlugCond(executable('tree'))
 Plug 'vim-voom/VOoM', { 'on' : ['Voom', 'VoomToggle'] }
 Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 if has('nvim') || v:version >= 800
@@ -87,7 +87,8 @@ if exists('##WinScrolled')  " neovim nightly (0.5.0+)
   Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
 endif
 
-" Utilities
+" Miscellanious Utilities
+" -------------------------------------
 Plug 'junegunn/vim-emoji'
 Plug 'cocopon/colorswatch.vim', { 'on' : ['ColorSwatchGenerate'] }
 Plug 'tpope/vim-surround'
@@ -122,7 +123,8 @@ Plug 'rizzatti/dash.vim',   { 'on': 'Dash' }
 Plug 'wookayin/vim-typora', { 'on': 'Typora' }
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
-" Syntax, Completion, Coding stuffs
+" Syntax, Completion, Language Servers, etc.
+" ------------------------------------------
 Plug 'editorconfig/editorconfig-vim'
 
 Plug 'sheerun/vim-polyglot', {'tag': 'v4.2.1'}   " conflicts with vimtex (see polyglot#484)
@@ -237,5 +239,6 @@ call plug#end()
 
 delcom UnPlug
 delcom ForcePlugURI
+silent delfunction PlugCond
 
 " vim: set ts=2 sts=2 sw=2:

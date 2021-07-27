@@ -51,3 +51,11 @@ function! plug_addon#version_lessthan(ver_given, ver_required)
     endfor
     return 0
 endfunction
+
+
+" Trick for conditional activation  (see vim-plug#935)
+" https://github.com/junegunn/vim-plug/wiki/tips#conditional-activation
+function! PlugCond(cond, ...)
+  let opts = get(a:000, 0, {})
+  return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
+endfunction
