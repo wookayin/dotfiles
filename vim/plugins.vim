@@ -26,6 +26,9 @@ function! s:python3_version()
   endif
 endfunction
 
+" Detect (neo)vim features
+let s:floating_available = exists('*nvim_open_win') &&
+      \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))
 
 "==============================================
 call plug#begin('~/.vim/plugged')
@@ -141,7 +144,6 @@ Plug 'tmux-plugins/vim-tmux'
 
 Plug 'klen/python-mode', { 'branch': 'develop' } |
       \ Plug 'wookayin/vim-python-enhanced-syntax'
-Plug 'davidhalter/jedi-vim'
 if has('nvim') && s:python3_version() >= '3.5'
   Plug 'numirias/semshi', { 'do': function('UpdateRemote') }
   Plug 'stsewd/isort.nvim', { 'do': function('UpdateRemote') }
@@ -162,39 +164,39 @@ Plug 'tfnico/vim-gradle'
 Plug 'Tyilo/applescript.vim'
 Plug 'rdolgushin/groovy.vim'
 
-if has('nvim')
-  Plug 'Shougo/echodoc.vim'
-endif
-
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
 
+" [Completion Engine or LSP backend]
+" We have a long history and I want to make completion work for legacy and
+" older vim as well. Choose the completion or LSP engine in the order of
+" preferred and up-to-date technology with a fallback manner.
+" (Read g:dotfiles_completion_backend to see which one has been chosen)
+function! s:choose_completion_backend()
+  " 1. Neovim 0.5.0+: built-in LSP
+  if has('nvim-0.5.0')
+    return '@lsp'
+  endif
 
-" Completion engine for neovim (deoplete or language server)
-" Requires python 3.6.1+
-if has('nvim') && s:python3_version() >= '3.6.1'
-  Plug 'Shougo/deoplete.nvim', { 'do': function('UpdateRemote') }
-  Plug 'zchee/deoplete-jedi'    " Python
-  Plug 'zchee/deoplete-clang'   " C/C++
-  Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }     " zsh
-endif
-
-" Asynchronous Lint Engine (ALE)
-if has('nvim') || v:version >= 800
-  Plug 'w0rp/ale'
-endif
-
-" [coc.nvim] Language-server support (neovim and vim8)
-" Activated if the following conditions are met:
-"    (i) Proper neovim/vim8 version and python3
-"    (ii) 'node' and 'npm' are installed
-"    (iii) Directory ~/.config/coc exists
-function! s:configure_coc_nvim()
-  if (has('nvim') || v:version >= 800) &&
+  " 2. Neovim 0.3.1+ or vim 8.0+: coc.nvim
+  "   (i) Proper neovim/vim8 version and python3
+  "   (ii) 'node' and 'npm' are installed
+  "   (iii) Directory ~/.config/coc exists (opt-in)
+  if (has('nvim-0.3.1') || v:version >= 800) &&
         \ executable('npm') && executable('python3') &&
         \ isdirectory(expand("\~/.config/coc/"))
-  else | return | endif   " do nothing if conditions are not met
+    " Check minimum node version
+    let node_version = system('node --version')
+    if !plug_addon#version_lessthan(node_version, 'v8.10')
+      return '@coc'
+    else
+      autocmd VimEnter * echohl WarningMsg | echom
+            \ 'WARNING: Node v8.10.0+ is required for coc.nvim. '
+            \ . '(Try: dotfiles install node)' | echohl None
+    endif
+  endif
 
+  " (At this point, apparently we are maybe using legacy (neo)vim. Warn users!)
   if has('nvim') && !has('nvim-0.3.1')
     autocmd VimEnter * echohl WarningMsg | echom
           \ 'WARNING: Neovim 0.3.1+ or Vim 8.0+ is required for coc.nvim. '
@@ -202,28 +204,42 @@ function! s:configure_coc_nvim()
     return
   endif
 
-  let node_version = system('node --version')
-  if plug_addon#version_lessthan(node_version, 'v8.10')
-    autocmd VimEnter * echohl WarningMsg | echom
-          \ 'WARNING: Node v8.10.0+ is required for coc.nvim. '
-          \ . '(Try: dotfiles install node)' | echohl None
-    return
+  " 3. Legacy Neovim: Deoplete
+  if has('nvim') && s:python3_version() >= '3.6.1'
+    return '@deoplete'
   endif
 
-  "Plug 'neoclide/coc.nvim', {'do': function('coc#util#install') }   " from source
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}                    " released binary
+  " No completion available :(
+  return ''
+endfunction
+let g:dotfiles_completion_backend = s:choose_completion_backend()
+
+" Asynchronous Lint Engine (ALE): seems orthogonal to backend
+if has('nvim') || v:version >= 800
+  Plug 'w0rp/ale'
+endif
+
+" 1. [Neovim 0.5.0 LSP]
+" See also for more config: ~/.config/nvim/lua/config/lsp.lua
+if g:dotfiles_completion_backend == '@lsp'
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'hrsh7th/nvim-compe'
+  Plug 'ray-x/lsp_signature.nvim'
+
+  UnPlug 'ervandew/supertab'   " Custom <TAB> mapping for coc.nvim supercedes supertab
+endif
+
+" 2. [coc.nvim]
+if g:dotfiles_completion_backend == '@coc'
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'neoclide/jsonc.vim'
   if has('nvim-0.4.0')
     Plug 'antoinemadec/coc-fzf'
   endif
 
   " coc supercedes deoplete and supertab
-  UnPlug 'Shougo/deoplete.nvim'
-  UnPlug 'davidhalter/jedi-vim'
-  UnPlug 'ervandew/supertab'         " Custom <TAB> mapping supercedes supertab
+  UnPlug 'ervandew/supertab'   " Custom <TAB> mapping for coc.nvim supercedes supertab
 
-  let s:floating_available = exists('*nvim_open_win') &&
-        \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))
   if s:floating_available
     " disable vim-which-key if floating windows are used (have some conflicts)
     UnPlug 'liuchengxu/vim-which-key'
@@ -234,12 +250,32 @@ function! s:configure_coc_nvim()
         \ 'coc-json', 'coc-highlight', 'coc-snippets', 'coc-explorer',
         \ 'coc-python', 'coc-vimlsp', 'coc-texlab'
         \ ]
+endif
 
-endfunction
-call s:configure_coc_nvim()
+" 3. [Legacy neovim: deoplete]
+if g:dotfiles_completion_backend == '@deoplete'
+  Plug 'Shougo/deoplete.nvim', { 'do': function('UpdateRemote') }
+  Plug 'zchee/deoplete-jedi'    " Python
+  Plug 'zchee/deoplete-clang'   " C/C++
+  Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }     " zsh
+endif
+
+if g:dotfiles_completion_backend == '' || g:dotfiles_completion_backend == '@deoplete'
+  " Use jedi-vim, only if we are not using coc.nvim or LSP.
+  Plug 'davidhalter/jedi-vim'
+endif
+
+if g:dotfiles_completion_backend == '' || g:dotfiles_completion_backend == '@deoplete'
+  " echodoc: not needed for coc.nvim and nvim-lsp
+  if has('nvim')
+    Plug 'Shougo/echodoc.vim'
+  endif
+endif
 
 
+" =======================================================
 " Additional, optional local plugins
+" =======================================================
 if filereadable(expand("\~/.vim/plugins.local.vim"))
   source \~/.vim/plugins.local.vim
 endif

@@ -107,3 +107,12 @@ endif
 source ~/.vimrc
 
 set rtp+=~/.vim
+
+
+" Neovim: Execute lua config.
+" See ~/.config/nvim/lua/config
+if has('nvim-0.5')
+lua << EOF
+  require 'config/lsp'
+EOF
+endif

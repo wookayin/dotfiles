@@ -177,6 +177,8 @@ set splitbelow                              " :split  opens window below (:below
 set splitright                              " :vsplit opens window right (:belowright vsplit)
 set completeopt=menuone,preview,longest     " show preview and pop-up menu
 
+" Avoid 'Pattern not found' messages (nvim-compe, etc.)
+set shortmess+=c
 
 " no fucking swap and backup files
 set noswapfile
