@@ -211,6 +211,16 @@ function deactivate() {
   [[ -n "$CONDA_DEFAULT_ENV" ]] && conda deactivate || source deactivate
 }
 
+function conda-activate.d() {
+    # Ensure the current conda environment's activate.d directory.
+    if [[ -z "$CONDA_PREFIX" ]]; then
+        >&2 echo "conda environment not found."
+        return 1;
+    fi
+    mkdir -p $CONDA_PREFIX/etc/conda/activate.d
+    echo $CONDA_PREFIX/etc/conda/activate.d/$1
+}
+
 # virtualenv
 alias wo='workon'
 
