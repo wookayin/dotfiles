@@ -908,6 +908,11 @@ if hlexists('NormalFloat')
   highlight NormalFloat     ctermbg=233 guibg=#121212
 endif
 
+" Use different popupmenu highlight color for nvim-lsp
+if g:dotfiles_completion_backend == '@lsp'
+  " oc-yellow-1
+  hi Pmenu guibg=#fff3bf
+endif
 
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 function! ShowSyntaxGroup()
