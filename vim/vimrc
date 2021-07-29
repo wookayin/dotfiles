@@ -1145,13 +1145,21 @@ function! AirlineSectionInit()
         \ '%<', 'file', g:airline_symbols.space, 'readonly',
         \ ])
 
-  " section y: +coc_status, -filetype
-  " Customize how coc_status should work (after airline#extensions#coc#init is called)
+  " LSP or coc.nvim support (this should run after airline#extensions#coc#init is called)
   if exists(':CocCommand') | call airline#parts#define_function('coc_status', 'AirlineCocStatusSimple') | endif
+  if exists(':LspStatus')  | call airline#parts#define_function('lsp_status', 'AirlineLspStatus') | endif
+
+  " section y: +coc_status, -filetype
   let g:airline_section_x = airline#section#create_right([
-        \ 'coc_status',
+        \ 'coc_status', 'lsp_status',
         \ 'bookmark', 'tagbar', 'vista', 'gutentags', 'grepper',
         \ ])               " excludes filetype
+
+endfunction
+
+" airline + lsp-status
+function! AirlineLspStatus() abort
+  return v:lua.LspStatus()
 endfunction
 
 " airline-coc customization

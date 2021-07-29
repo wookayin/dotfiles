@@ -225,6 +225,7 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'neovim/nvim-lspconfig'
   Plug 'hrsh7th/nvim-compe'
   Plug 'ray-x/lsp_signature.nvim'
+  Plug 'nvim-lua/lsp-status.nvim'
 
   UnPlug 'ervandew/supertab'   " Custom <TAB> mapping for coc.nvim supercedes supertab
 endif
