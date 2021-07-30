@@ -2137,7 +2137,7 @@ let g:pymode_indent_hanging_width = 4
 " pymode lint (code checking):
 " disable in favor of ALE, but only if pylint exists
 let s:py_linters_exists = executable('pylint')
-if has_key(g:plugs, 'ale')
+if has_key(g:plugs, 'ale') || g:dotfiles_completion_backend == '@lsp'
   if s:py_linters_exists
     let g:pymode_lint = 0
   else

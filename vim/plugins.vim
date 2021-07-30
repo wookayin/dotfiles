@@ -228,6 +228,7 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'nvim-lua/lsp-status.nvim'
 
   UnPlug 'ervandew/supertab'   " Custom <TAB> mapping for coc.nvim supercedes supertab
+  UnPlug 'w0rp/ale'            " Disable ALE for now (TODO: we might still need it for LSP-lacking filetypes)
 endif
 
 " 2. [coc.nvim]
