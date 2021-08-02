@@ -61,6 +61,9 @@ Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 if has('nvim') || v:version >= 800
   Plug 'neomake/neomake'
 endif
+if has('nvim-0.4.0')
+  Plug 'gelguy/wilder.nvim', { 'do': function('DoRemote') }
+endif
 Plug 'tpope/vim-tbone'
 Plug 'szw/vim-maximizer'    " zoom and unzoom!
 Plug 'junegunn/goyo.vim'
