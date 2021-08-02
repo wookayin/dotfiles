@@ -1722,16 +1722,27 @@ let g:floaterm_autohide = 0
 
 augroup FloatermCustom
   autocmd!
-  " when leaving out from floaterm, hide it so that it doesn't cover other windows
-  autocmd BufLeave floaterm://*,term://*   call <SID>autohide_floaterm()
-  autocmd FileType floaterm tmap <buffer> <silent> <C-z>
-        \ <C-\><C-n>:wincmd p<CR>
+  autocmd user FloatermOpen   call s:floaterm_configure_after()
 augroup END
+function! s:floaterm_configure_after()
+  " Automatically hide floaterm when leaving the buffer:
+  " When leaving out of floaterm, hide it so that it doesn't cover other windows
+  " This autocmd should be set after 'opening' floaterm is complete (i.e., autocmd FloatermOpen),
+  " because BufLeave can be triggered before that (e.g., while creating border windows).
+  augroup FloatermAutoHide
+    autocmd!
+    autocmd BufLeave <buffer> call <SID>autohide_floaterm()
+  augroup end
+  " Use <C-z> to auto-hide the current floaterm window and move back to the previous window
+  tnoremap <buffer> <silent> <C-z>    <C-\><C-n>:wincmd p<CR>
+endfunction
 function! s:floaterm_hide(bufnr)
   "return floaterm#window#hide_floaterm(a:bufnr)   " API removed (d7196ee0)
   execute a:bufnr . 'FloatermHide'
 endfunction
 function! s:autohide_floaterm() abort
+  " Ensure this BufLeave event handler gets executed only once
+  autocmd! FloatermAutoHide
   if &filetype == 'floaterm'
     " Damn, floaterm keeps changing and breaking things ...
     " e29e93b2 (2020/8/31): floaterm_winopts -> floaterm_opts
