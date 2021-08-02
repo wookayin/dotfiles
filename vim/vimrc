@@ -886,9 +886,9 @@ match ExtraWhitespace /\s\+$/
 augroup trailing_whitespaces
   autocmd!
   autocmd FileType GV,gitmessengerpopup,fugitive highlight clear ExtraWhitespace
-  autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-  autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-  autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+  autocmd BufWinEnter * if &filetype != '' | match ExtraWhitespace /\s\+$/ | endif
+  autocmd InsertEnter * if &filetype != '' | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
+  autocmd InsertLeave * if &filetype != '' | match ExtraWhitespace /\s\+$/ | endif
   autocmd BufWinLeave * call clearmatches()
 augroup END
 
