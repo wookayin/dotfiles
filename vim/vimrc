@@ -590,8 +590,12 @@ function! s:open_vimrc_tab()
   let l:addon_height = max([2, float2nr(0.2 * &lines)])
 
   exec ":tabnew " . resolve(expand("~/.vim/vimrc"))
+  if filereadable(expand("~/.config/nvim/lua/config/lsp.lua"))
+    exec ":vsplit " . resolve(expand("~/.config/nvim/lua/config/lsp.lua"))
+    exec printf(":vertical resize %d", 2 * l:plug_width)
+  endif
   if filereadable(expand("~/.vimrc.local"))
-    exec ":belowright sp " . resolve(expand("~/.vimrc.local"))
+    exec ":botright sp " . resolve(expand("~/.vimrc.local"))
     exec printf(":resize %d", l:addon_height)
   endif
 
