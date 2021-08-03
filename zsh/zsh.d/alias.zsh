@@ -233,6 +233,9 @@ alias mypy='python -m mypy'
 alias pycodestyle='python -m pycodestyle'
 alias pylint='python -m pylint'
 
+# pip
+alias pip-search='pip_search'
+
 # PREFIX/bin/python -> PREFIX/bin/ipython, etc.
 alias ipdb='${$(which python)%/*}/ipdb'
 alias pudb='${$(which python)%/*}/pudb3'
@@ -270,8 +273,10 @@ function pip-list-fzf() {
   pip list "$@" | fzf --header-lines 2 --reverse --nth 1 --multi | awk '{print $1}'
 }
 function pip-search-fzf() {
+  # 'pip search' is gone; try: pip install pip_search
+  if ! (( $+commands[pip_search] )); then echo "pip_search not found (Try: pip install pip_search)."; return 1; fi
   if [[ -z "$1" ]]; then echo "argument required"; return 1; fi
-  pip search "$@" | grep '^[a-z]' | fzf --reverse --nth 1 --multi --no-sort | awk '{print $1}'
+  pip-search "$@" | fzf --reverse --multi --no-sort --header-lines=4 | awk '{print $3}'
 }
 function conda-list-fzf() {
   conda list "$@" | fzf --header-lines 3 --reverse --nth 1 --multi | awk '{print $1}'
