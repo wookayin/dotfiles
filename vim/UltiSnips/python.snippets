@@ -3,6 +3,19 @@
 # seealso :help snippet-options
 
 global !p
+import re
+
+def toCamelCase(s):
+    return ''.join(x for x in s.title() if x.isalnum())
+
+def snip_expand(snip, jump_pos=1, jump_forward=False):
+    # See 'snippets-aliasing' in doc
+    if snip.tabstop != jump_pos:
+        return
+    vim.eval('feedkeys("\<C-R>=UltiSnips#ExpandSnippet()\<CR>")')
+    if jump_forward:
+        vim.eval('feedkeys("\<C-R>=UltiSnips#JumpForwards()\<CR>")')
+
 def collect_ale_lint_codes(linter_name):
     if not vim.eval('get(g:, "ale_enabled", 0)'):
         # works only if ALE is installed and enabled
@@ -80,6 +93,20 @@ endsnippet
 # }}}
 
 # test {{{
+post_jump "snip_expand(snip, jump_forward=True)"
+snippet pytest
+import sys
+import pytest
+
+
+class Test${2:`!p snip.rv = toCamelCase(re.sub("_test$", "", snip.basename))`}:
+	def test_hello(self):
+		assert False, "A test case."
+
+
+pytest.main$1
+endsnippet
+
 snippet pytest.main
 if __name__ == '__main__':
 	sys.exit(pytest.main(["-s", "-v"] + sys.argv))
