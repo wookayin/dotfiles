@@ -60,7 +60,6 @@ Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'mhinz/vim-tree', PlugCond(executable('tree'))
 Plug 'vim-voom/VOoM', { 'on' : ['Voom', 'VoomToggle'] }
 Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 if has('nvim') || v:version >= 800
@@ -134,6 +133,11 @@ Plug 'tpope/vim-eunuch'
 Plug 'rizzatti/dash.vim',   { 'on': 'Dash' }
 Plug 'wookayin/vim-typora', { 'on': 'Typora' }
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+
+if has('nvim-0.5.0')
+  " Some lua-powered plugins for neovim 0.5.0+
+  Plug 'kyazdani42/nvim-tree.lua'
+endif
 
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
@@ -252,6 +256,8 @@ if g:dotfiles_completion_backend == '@coc'
         \ 'coc-json', 'coc-highlight', 'coc-snippets', 'coc-explorer',
         \ 'coc-python', 'coc-vimlsp', 'coc-texlab'
         \ ]
+
+  UnPlug 'kyazdani42/nvim-tree.lua'   " use coc-explorer
 endif
 
 " 3. [Legacy neovim: deoplete]
