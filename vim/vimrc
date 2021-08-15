@@ -2093,6 +2093,11 @@ if has_key(g:plugs, 'coc.nvim')
     let g:pymode_doc_bind = '<leader>PK'
 endif
 
+" Hanging indent of 4 spaces, in which case there should be nothing after
+" the open parenthesis or bracket on the first line.
+" https://google.github.io/styleguide/pyguide.html#34-indentation
+let g:pymode_indent_hanging_width = 4
+
 " pymode lint (code checking):
 " disable in favor of ALE, but only if pylint exists
 let s:py_linters_exists = executable('pylint')
