@@ -7,7 +7,9 @@ let g:plug_window = '-tabnew'
 
 " for neovim plugins (rplugin)
 if has('nvim')
-  function! DoRemote(arg)
+  function! UpdateRemote(arg)
+    if has_key(g:, 'did_plug_UpdateRemote') | return | endif
+    let g:did_plug_UpdateDoRemote = 1
     UpdateRemotePlugins
   endfunction
 endif
@@ -62,7 +64,7 @@ if has('nvim') || v:version >= 800
   Plug 'neomake/neomake'
 endif
 if has('nvim-0.4.0')
-  Plug 'gelguy/wilder.nvim', { 'do': function('DoRemote') }
+  Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemote') }
 endif
 Plug 'tpope/vim-tbone'
 Plug 'szw/vim-maximizer'    " zoom and unzoom!
@@ -137,8 +139,8 @@ Plug 'klen/python-mode', { 'branch': 'develop' } |
       \ Plug 'wookayin/vim-python-enhanced-syntax'
 Plug 'davidhalter/jedi-vim'
 if has('nvim') && s:python3_version() >= '3.5'
-  Plug 'numirias/semshi', { 'do': function('DoRemote') }
-  Plug 'stsewd/isort.nvim', { 'do': function('DoRemote') }
+  Plug 'numirias/semshi', { 'do': function('UpdateRemote') }
+  Plug 'stsewd/isort.nvim', { 'do': function('UpdateRemote') }
 endif
 if has('python3') && s:python3_version() >= '3.5'
   Plug 'wookayin/vim-autoimport'
@@ -167,7 +169,7 @@ Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
 " Completion engine for neovim (deoplete or language server)
 " Requires python 3.6.1+
 if has('nvim') && s:python3_version() >= '3.6.1'
-  Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+  Plug 'Shougo/deoplete.nvim', { 'do': function('UpdateRemote') }
   Plug 'zchee/deoplete-jedi'    " Python
   Plug 'zchee/deoplete-clang'   " C/C++
   Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }     " zsh
