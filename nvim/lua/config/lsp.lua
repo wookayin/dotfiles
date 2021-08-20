@@ -207,3 +207,14 @@ end
 vim.cmd [[
 command! -nargs=0 LspStatus   echom v:lua.LspStatus()
 ]]
+
+
+---------------
+-- trouble.nvim
+---------------
+require("trouble").setup {
+    -- https://github.com/folke/trouble.nvim#setup
+    mode = "lsp_document_diagnostics",
+    auto_preview = false,
+}
+
