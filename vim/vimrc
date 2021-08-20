@@ -1922,6 +1922,10 @@ command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
 " Make the scrollbar aware of foldings (see #11).
 let g:scrollview_mode = 'virtual'
 
+" Disable scrollbar on some filetypes                                                                          │
+" (to avoid which can cause floating-window related errors)                                                    │
+let g:scrollview_excluded_filetypes = ['vim-plug']
+
 " ---------------------------------------------------------------- }}}
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<c-j>'
