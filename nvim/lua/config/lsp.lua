@@ -31,10 +31,16 @@ local on_attach = function(client, bufnr)
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
   local opts = { noremap=true, silent=true }
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  if vim.fn.exists(':Telescope') then
+    buf_set_keymap('n', 'gr', '<cmd>Telescope lsp_references<CR>', opts)
+    buf_set_keymap('n', 'gd', '<cmd>Telescope lsp_definitions<CR>', opts)
+    buf_set_keymap('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts)
+  else
+    buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  end
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   --buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
@@ -218,3 +224,16 @@ require("trouble").setup {
     auto_preview = false,
 }
 
+
+---------------
+-- Telescope
+---------------
+local telescope = require('telescope')
+
+telescope.load_extension("frecency")
+
+-- Custom Telescope mappings
+vim.cmd [[
+command! -nargs=0 Highlights    :Telescope highlights
+command! -nargs=0 Frecency      :Telescope frecency
+]]
