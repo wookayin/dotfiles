@@ -1904,17 +1904,34 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " ---------------------------------------------------------------- }}}
+" indent-blankline.nvim {{{
+" :help indent-blankline
+
+if has_key(g:plugs, 'indent-blankline.nvim')
+  let g:indent_blankline_char = '┊'
+  let g:indent_blankline_filetype_exclude = ['help', 'NvimTree', 'pandoc']
+  let g:indent_blankline_buftype_exclude = ['terminal']
+  let g:indent_blankline_show_first_indent_level = v:false
+
+  highlight IndentBlanklineChar guifg=#444444 gui=nocombine
+endif
+
+" ---------------------------------------------------------------- }}}
 " indentLine {{{
+"
+if has_key(g:plugs, 'indentLine')
 
-" conceal might break latex/json/markdown syntax, etc.
-" see also after/ftplugin/*.vim settings for conceal level configuration.
-let g:indentLine_conceallevel = 1
+  " conceal might break latex/json/markdown syntax, etc.
+  " see also after/ftplugin/*.vim settings for conceal level configuration.
+  let g:indentLine_conceallevel = 1
 
-" conceal values might not work well for tex files (hides some characters)
-let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc', 'coc-explorer', 'floaterm', 'tagbar']
+  " conceal values might not work well for tex files (hides some characters)
+  let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc', 'NvimTree', 'coc-explorer', 'floaterm', 'tagbar']
 
-" command alias
-command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
+  " command alias
+  command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
+
+endif
 
 " ---------------------------------------------------------------- }}}
 " nvim-scrollview {{{

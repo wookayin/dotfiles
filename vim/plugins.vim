@@ -87,9 +87,13 @@ Plug 'majutsushi/tagbar'
 Plug 'rking/ag.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'junegunn/vim-easy-align'
-Plug 'Yggdroot/indentLine'
+if has('nvim-0.5.0')
+  Plug 'lukas-reineke/indent-blankline.nvim'
+else
+  Plug 'Yggdroot/indentLine'
+endif
 if exists('##WinScrolled')  " neovim nightly (0.5.0+)
-  Plug 'dstein64/nvim-scrollview', { 'branch': 'main' }
+  Plug 'dstein64/nvim-scrollview'
 endif
 
 " Miscellanious Utilities
