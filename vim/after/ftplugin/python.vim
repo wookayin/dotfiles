@@ -20,6 +20,22 @@ setlocal ts=4
 setlocal sw=4
 setlocal sts=4
 
+if exists('*timer_start')
+  function! AutoTabsizePython(...) abort
+    let l:project_root = DetermineProjectRoot()
+    if !filereadable(l:project_root . '/.pylintrc')
+      return -1  " no pylintrc found
+    endif
+    if !empty(systemlist("grep", "indent-string='  '",
+          \ (l:project_root . '/.pylintrc')))
+      setlocal ts=2 sw=2 sts=2
+      return 2  " Use tabsize 2
+    endif
+    return 0   " no config found, don't touch tabsize
+  endfunction
+  call timer_start(0, function('AutoTabsizePython'))
+endif
+
 setlocal cc=80
 setlocal tw=100
 

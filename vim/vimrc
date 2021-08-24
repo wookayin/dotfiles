@@ -555,13 +555,13 @@ function! DetermineProjectRoot() abort
   " If the current file is under a git repository, that's it!
   let l:git_dir = s:get_git_dir()
   if !empty(l:git_dir)
-    return l:git_dir . "/.."
+    return resolve(l:git_dir . "/..")
   endif
 
   " Not a git repository. Use heuristic and domain knowledge as much as you can
   let l:base_dir = expand("%:p")
   if l:base_dir =~ 'python[^/]*/site-packages/[^/]\+/'
-    return substitute(l:base_dir, '\(python[^/]*/site-packages/[^/]\+/\).*$', '\1', 'g')
+    return resolve(substitute(l:base_dir, '\(python[^/]*/site-packages/[^/]\+/\).*$', '\1', 'g'))
   endif
 
   echohl WarningMsg | echom 'Cannot determine project root directory. (Want :CD?)' | echohl None
