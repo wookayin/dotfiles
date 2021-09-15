@@ -19,10 +19,10 @@ if filereadable(expand('~/.vim/plugins.vim'))
 endif
 
 " Automatically install missing plugins on startup
-autocmd VimEnter *
-  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \|   PlugInstall --sync | q
-  \| endif
+if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  let g:plugs_missing = 1
+  autocmd VimEnter * PlugInstall --sync | q
+endif
 
 
 " }}}
