@@ -231,6 +231,7 @@ endif
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
 if g:dotfiles_completion_backend == '@lsp'
   Plug 'neovim/nvim-lspconfig'
+  Plug 'wookayin/nvim-lspinstall'  " Use my fork
   Plug 'hrsh7th/nvim-compe'
   Plug 'ray-x/lsp_signature.nvim'
   Plug 'nvim-lua/lsp-status.nvim'

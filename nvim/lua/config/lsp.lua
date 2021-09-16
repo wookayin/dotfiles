@@ -4,6 +4,8 @@
 -- See ~/.dotfiles/vim/plugins.vim for Plug directives
 
 local lspconfig = require('lspconfig')
+local lspinstall = require('lspinstall')
+lspinstall.setup()
 
 -- lsp_signature
 -- https://github.com/ray-x/lsp_signature.nvim#full-configuration
@@ -57,17 +59,41 @@ local on_attach = function(client, bufnr)
 end
 
 
--- Activate LSP servers
--- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md
-local lsp_servers = {
-    -- "pylsp",        -- pip install python-lsp-server
-    "pyright",      -- npm install -g pyright
-    "vimls",        -- npm install -g vim-language-server
-    "tsserver",     -- npm install -g typescript typescript-language-server
+-- Register and activate LSP servers (managed by lspinstall)
+-- @see(config):     https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md
+local builtin_lsp_servers = {
+  -- List name of LSP servers that will be automatically installed and managed by lspinstall.
+  -- @see(lspinstall): https://github.com/kabouzeid/nvim-lspinstall#bundled-installers
+  'python',
+  'vim',
+  'typescript',
 }
-for _, lsp in ipairs(lsp_servers) do
-    lspconfig[lsp].setup { on_attach = on_attach }
+-- Automatically install if a required LSP server is missing.
+-- LSP servers will be installed locally at ~/.local/share/nvim/lspinstall
+local installed_lsp_servers = lspinstall.installed_servers()
+local timer = vim.loop.new_timer()
+for _, lsp in ipairs(builtin_lsp_servers) do
+  if not vim.tbl_contains(installed_lsp_servers, lsp) then
+    vim.defer_fn(function()
+      lspinstall.install_server(lsp)
+    end, 0)
+  end
 end
+
+local function setup_lsp_servers()
+  local lsp_servers = lspinstall.installed_servers()
+  for _, lsp in ipairs(lsp_servers) do
+    -- Note: When managed by lsp, the server name might be different (e.g. 'python' v.s. 'pyright')
+    lspconfig[lsp].setup { on_attach = on_attach }
+  end
+end
+
+setup_lsp_servers()
+lspinstall.post_install_hook = function ()
+  setup_lsp_servers()    -- reload installed servers
+  --vim.cmd("bufdo e")     -- this triggers the FileType autocmd that starts the server
+end
+
 
 --- Customize how to show diagnostics: Do not use distracting virtual text
 -- :help lsp-handler-configuration
