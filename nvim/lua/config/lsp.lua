@@ -24,6 +24,9 @@ end
 -- Customize LSP behavior
 -- [[ A callback executed when LSP engine attaches to a buffer. ]]
 local on_attach = function(client, bufnr)
+  -- Always use signcolumn for the current buffer
+  vim.wo.signcolumn = 'yes:1'
+
   -- Activate LSP signature.
   on_attach_lsp_signature(client, buffer)
 
