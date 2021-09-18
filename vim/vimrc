@@ -1901,14 +1901,19 @@ if has_key(g:plugs, 'nvim-tree.lua')
   let g:nvim_tree_add_trailing = 1
   " Show indent markers (vertical segments)
   let g:nvim_tree_indent_markers = 1
+  " Don't ask which window should be picked to open files.
+  let g:nvim_tree_disable_window_picker = 1
 
   " keymappings
 lua<<EOF
-  local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-  vim.g.nvim_tree_bindings = {
-    { key = "?",                            cb = tree_cb("toggle_help") },
-    { key = "r",                            cb = tree_cb("refresh") },
-  }
+  lua_ready, _ = pcall(require, 'nvim-tree.config')
+  if lua_ready then   -- TODO: Make it lazyily sourced
+    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+    vim.g.nvim_tree_bindings = {
+      { key = "?",                            cb = tree_cb("toggle_help") },
+      { key = "r",                            cb = tree_cb("refresh") },
+    }
+  end
 EOF
 endif
 
