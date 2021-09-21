@@ -260,10 +260,15 @@ require("trouble").setup {
 ---------------
 local telescope = require('telescope')
 
-telescope.load_extension("frecency")
-
 -- Custom Telescope mappings
 vim.cmd [[
 command! -nargs=0 Highlights    :Telescope highlights
-command! -nargs=0 Frecency      :Telescope frecency
 ]]
+
+-- Telescope extensions
+if vim.fn['HasPlug']('telescope-frecency.nvim') == 1 then
+  telescope.load_extension("frecency")
+  vim.cmd [[
+    command! -nargs=0 Frecency      :Telescope frecency
+  ]]
+end

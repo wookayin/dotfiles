@@ -30,6 +30,11 @@ endfunction
 let s:floating_available = exists('*nvim_open_win') &&
       \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))
 
+" An utility to tell whether a plugin is configured.
+function! HasPlug(name) abort
+  return has_key(g:plugs, a:name)
+endfunction
+
 "==============================================
 call plug#begin('~/.vim/plugged')
 "==============================================
@@ -139,8 +144,10 @@ if has('nvim-0.5.0')
   Plug 'kyazdani42/nvim-tree.lua'
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
-  Plug 'nvim-telescope/telescope-frecency.nvim'
-  Plug 'tami5/sql.nvim'    " required for telescope-frecency
+  if s:darwin
+    Plug 'nvim-telescope/telescope-frecency.nvim'
+    Plug 'tami5/sql.nvim'    " required for telescope-frecency
+  endif
 endif
 
 " Syntax, Completion, Language Servers, etc.
