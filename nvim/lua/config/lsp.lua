@@ -4,8 +4,6 @@
 -- See ~/.dotfiles/vim/plugins.vim for Plug directives
 
 local lspconfig = require('lspconfig')
-local lspinstall = require('lspinstall')
-lspinstall.setup()
 
 -- lsp_signature
 -- https://github.com/ray-x/lsp_signature.nvim#full-configuration
@@ -62,39 +60,42 @@ local on_attach = function(client, bufnr)
 end
 
 
--- Register and activate LSP servers (managed by lspinstall)
+-- Register and activate LSP servers (managed by nvim-lsp-installer)
 -- @see(config):     https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md
 local builtin_lsp_servers = {
-  -- List name of LSP servers that will be automatically installed and managed by lspinstall.
-  -- @see(lspinstall): https://github.com/kabouzeid/nvim-lspinstall#bundled-installers
-  'python',
-  'vim',
-  'typescript',
+  -- List name of LSP servers that will be automatically installed and managed by :LspInstall.
+  -- LSP servers will be installed locally at: ~/.local/share/nvim/lsp_servers
+  -- @see(lspinstall): https://github.com/williamboman/nvim-lsp-installer
+  'pyright',
+  'vimls',
+  'tsserver',
 }
+
+local lsp_installer = require("nvim-lsp-installer")
+lsp_installer.on_server_ready(function(server)
+  local opts = {
+    on_attach = on_attach
+  }
+
+  -- (optional) Customize the options passed to the server
+  -- if server.name == "tsserver" then
+  --     opts.root_dir = function() ... end
+  -- end
+
+  -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
+  server:setup(opts)
+  vim.cmd [[ do User LspAttachBuffers ]]
+end)
+
 -- Automatically install if a required LSP server is missing.
--- LSP servers will be installed locally at ~/.local/share/nvim/lspinstall
-local installed_lsp_servers = lspinstall.installed_servers()
-local timer = vim.loop.new_timer()
-for _, lsp in ipairs(builtin_lsp_servers) do
-  if not vim.tbl_contains(installed_lsp_servers, lsp) then
+for _, lsp_name in ipairs(builtin_lsp_servers) do
+  local ok, lsp = require('nvim-lsp-installer.servers').get_server(lsp_name)
+  if ok and not lsp:is_installed() then
     vim.defer_fn(function()
-      lspinstall.install_server(lsp)
+      -- lsp:install()   -- headless
+      lsp_installer.install(lsp_name)   -- with UI (so that users can be notified)
     end, 0)
   end
-end
-
-local function setup_lsp_servers()
-  local lsp_servers = lspinstall.installed_servers()
-  for _, lsp in ipairs(lsp_servers) do
-    -- Note: When managed by lsp, the server name might be different (e.g. 'python' v.s. 'pyright')
-    lspconfig[lsp].setup { on_attach = on_attach }
-  end
-end
-
-setup_lsp_servers()
-lspinstall.post_install_hook = function ()
-  setup_lsp_servers()    -- reload installed servers
-  --vim.cmd("bufdo e")     -- this triggers the FileType autocmd that starts the server
 end
 
 
