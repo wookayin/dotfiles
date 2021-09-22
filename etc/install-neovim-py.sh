@@ -8,7 +8,13 @@ WHITE="\033[1;37m";
 CYAN="\033[0;36m";
 RESET="\033[0m";
 
-if which nvim >/dev/null; then
+_version_check() {
+    curver="${1/v/}"; targetver="$2";
+    [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
+}
+NVIM_MINIMUM_VERSION="0.5.0"
+
+if which nvim >/dev/null && _version_check "$(nvim --version | head -n1 | cut -d' ' -f2)" "$NVIM_MINIMUM_VERSION"; then
     echo -e "neovim found at ${GREEN}$(which nvim)${RESET}"
     host_python3=""
     [[ -z "$host_python3" ]] && [[ -f "/usr/local/bin/python3" ]] && host_python3="/usr/local/bin/python3"
@@ -49,7 +55,12 @@ else
     else
         NEOVIM_INSTALL_CMD="dotfiles install neovim"
     fi
-    echo -e "${RED}Neovim not found. Please install using '${NEOVIM_INSTALL_CMD}'.${RESET}"
+    if ! which nvim >/dev/null; then
+        echo -e "${RED}Neovim not found."
+    else
+        echo -e "${RED}Neovim is too old (recommended >= $NVIM_MINIMUM_VERSION): $(nvim --version | head -1)"
+    fi
+    echo -e "Please install using '${NEOVIM_INSTALL_CMD}'.${RESET}"
 
     # Automatically install dotfiles upon confirmation (Linux only)
     if [[ -n "$BASH_VERSION" ]] && [ `uname` == "Linux" ]; then
