@@ -107,3 +107,36 @@ endif
 source ~/.vimrc
 
 set rtp+=~/.vim
+
+
+" Neovim: Execute lua config.
+" See ~/.config/nvim/lua/config
+if has('nvim-0.5')
+  function! s:source_lua_configs(...)
+lua << EOF
+    require 'config/lsp'
+EOF
+  endfunction
+  function! s:reload_buffers()
+    " reattach LSP on all (named) buffers after reloading the config
+    let l:current_buffer = bufnr('%')
+    execute 'silent! bufdo if &buftype == "" | e | endif'
+    if l:current_buffer >= 0
+      execute printf('buffer %d', l:current_buffer)
+    endif
+  endfunction
+
+  " If missing plugins (and lua modules) are going to be installed on VimEnter,
+  " lua-based config files should be sourced after they become available.
+  " Otherwise, we let them execute as early as we can during init.vim,
+  " because startup buffers may not have LSP clients correctly attached.
+  if !exists('g:plugs_missing')  " see vimrc:L23
+    call s:source_lua_configs()
+  else
+    " Some plugins needs to be installed;
+    " source lsp configs after PlugInstall is done
+    autocmd VimEnter *
+          \ call s:source_lua_configs() |
+          \ call s:reload_buffers()    " this shouldn't run until init is done
+  endif
+endif

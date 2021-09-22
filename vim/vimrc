@@ -19,10 +19,10 @@ if filereadable(expand('~/.vim/plugins.vim'))
 endif
 
 " Automatically install missing plugins on startup
-autocmd VimEnter *
-  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \|   PlugInstall --sync | q
-  \| endif
+if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  let g:plugs_missing = 1
+  autocmd VimEnter * PlugInstall --sync | q
+endif
 
 
 " }}}
@@ -177,6 +177,8 @@ set splitbelow                              " :split  opens window below (:below
 set splitright                              " :vsplit opens window right (:belowright vsplit)
 set completeopt=menuone,preview,longest     " show preview and pop-up menu
 
+" Avoid 'Pattern not found' messages (nvim-compe, etc.)
+set shortmess+=c
 
 " no fucking swap and backup files
 set noswapfile
@@ -588,8 +590,12 @@ function! s:open_vimrc_tab()
   let l:addon_height = max([2, float2nr(0.2 * &lines)])
 
   exec ":tabnew " . resolve(expand("~/.vim/vimrc"))
+  if filereadable(expand("~/.config/nvim/lua/config/lsp.lua"))
+    exec ":vsplit " . resolve(expand("~/.config/nvim/lua/config/lsp.lua"))
+    exec printf(":vertical resize %d", 2 * l:plug_width)
+  endif
   if filereadable(expand("~/.vimrc.local"))
-    exec ":belowright sp " . resolve(expand("~/.vimrc.local"))
+    exec ":botright sp " . resolve(expand("~/.vimrc.local"))
     exec printf(":resize %d", l:addon_height)
   endif
 
@@ -906,6 +912,11 @@ if hlexists('NormalFloat')
   highlight NormalFloat     ctermbg=233 guibg=#121212
 endif
 
+" Use different popupmenu highlight color for nvim-lsp
+if g:dotfiles_completion_backend == '@lsp'
+  " oc-yellow-1
+  hi Pmenu guibg=#fff3bf
+endif
 
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 function! ShowSyntaxGroup()
@@ -1143,13 +1154,21 @@ function! AirlineSectionInit()
         \ '%<', 'file', g:airline_symbols.space, 'readonly',
         \ ])
 
-  " section y: +coc_status, -filetype
-  " Customize how coc_status should work (after airline#extensions#coc#init is called)
+  " LSP or coc.nvim support (this should run after airline#extensions#coc#init is called)
   if exists(':CocCommand') | call airline#parts#define_function('coc_status', 'AirlineCocStatusSimple') | endif
+  if exists(':LspStatus')  | call airline#parts#define_function('lsp_status', 'AirlineLspStatus') | endif
+
+  " section y: +coc_status, -filetype
   let g:airline_section_x = airline#section#create_right([
-        \ 'coc_status',
+        \ 'coc_status', 'lsp_status',
         \ 'bookmark', 'tagbar', 'vista', 'gutentags', 'grepper',
         \ ])               " excludes filetype
+
+endfunction
+
+" airline + lsp-status
+function! AirlineLspStatus() abort
+  return v:lua.LspStatus()
 endfunction
 
 " airline-coc customization
@@ -1859,10 +1878,44 @@ let g:nerdtree_tabs_open_on_gui_startup = 0
 
 " filter out some files, by extension
 let NERDTreeIgnore = [
-      \ '\.pyc$', '^__pycache__$', '\.egg-info$',
+      \ '\.git$', '^__node_modules__$',
+      \ '\.pyc$', '^__pycache__$', '^.pytest_cache$', '.mypy_cache', '\.egg-info$',
       \ '\.class$', '\.o$',
       \]
 let NERDTreeRespectWildIgnore = 1   " see wildignore
+
+" ---------------------------------------------------------------- }}}
+" nvim-tree.lua {{{
+
+if has_key(g:plugs, 'nvim-tree.lua')
+  nmap <leader>E  :NvimTreeToggle<CR>
+
+  " Ignore some files
+  let g:nvim_tree_ignore = ['.git', '__node_modules__',
+        \ '__pycache__', '.pytest_cache', '.mypy_cache', '.cache',
+        \ ]
+  let g:nvim_tree_gitignore = 1
+  " Update the location cursor whenever entering a buffer
+  let g:nvim_tree_follow = 1
+  " Use trailing '/' for folders
+  let g:nvim_tree_add_trailing = 1
+  " Show indent markers (vertical segments)
+  let g:nvim_tree_indent_markers = 1
+  " Don't ask which window should be picked to open files.
+  let g:nvim_tree_disable_window_picker = 1
+
+  " keymappings
+lua<<EOF
+  lua_ready, _ = pcall(require, 'nvim-tree.config')
+  if lua_ready then   -- TODO: Make it lazyily sourced
+    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+    vim.g.nvim_tree_bindings = {
+      { key = "?",                            cb = tree_cb("toggle_help") },
+      { key = "r",                            cb = tree_cb("refresh") },
+    }
+  end
+EOF
+endif
 
 " ---------------------------------------------------------------- }}}
 " Voom {{{
@@ -2122,7 +2175,7 @@ let g:pymode_indent_hanging_width = 4
 " pymode lint (code checking):
 " disable in favor of ALE, but only if pylint exists
 let s:py_linters_exists = executable('pylint')
-if has_key(g:plugs, 'ale')
+if has_key(g:plugs, 'ale') || g:dotfiles_completion_backend == '@lsp'
   if s:py_linters_exists
     let g:pymode_lint = 0
   else

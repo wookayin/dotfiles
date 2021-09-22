@@ -42,6 +42,7 @@
 
     /***************
      * coc-explorer
+     * (deprecated in favor of nvim-tree.lua)
      ***************/
     "explorer.keyMappings.global": {
       "l": "expand",
