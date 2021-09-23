@@ -1,6 +1,5 @@
 " options
 " =======
-setlocal completeopt=longest,menuone,preview
 
 
 " cpp-specific Keymaps
