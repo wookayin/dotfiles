@@ -12,7 +12,7 @@ _version_check() {
     curver="${1/v/}"; targetver="$2";
     [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
 }
-NVIM_MINIMUM_VERSION="0.5.0"
+NVIM_MINIMUM_VERSION="0.5.1"
 
 if which nvim >/dev/null && _version_check "$(nvim --version | head -n1 | cut -d' ' -f2)" "$NVIM_MINIMUM_VERSION"; then
     echo -e "neovim found at ${GREEN}$(which nvim)${RESET}"
