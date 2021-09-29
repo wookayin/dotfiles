@@ -56,7 +56,7 @@ snippet typecheck
 if not isinstance(${1}, ${2:object}):
 	raise TypeError("\`$1\` must be a {}, but given {}".format($2, type($1)))
 endsnippet
-snippet TypeError(
+snippet TypeError
 TypeError("\`$1\` must be a ${2:object}, but given {}".format($2, type($1)))
 endsnippet
 
