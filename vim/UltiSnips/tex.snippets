@@ -68,6 +68,15 @@ snippet hyperref "Import hyperref package with color settings."
 \hypersetup{linkcolor=red,citecolor=green,urlcolor=magenta,menucolor=red}
 endsnippet
 
+snippet lineno "Adds line numbers for draft mode."
+\usepackage{lineno}
+\linenumbers
+% Patch per https://tex.stackexchange.com/questions/25784/
+\let\oldalign\align \let\oldendalign\endalign
+\renewenvironment{align}{\linenomathNonumbers\oldalign}{\oldendalign\endlinenomath}
+endsnippet
+
+
 # Common environments
 # ===================
 
