@@ -47,8 +47,13 @@ Plug 'tweekmonster/helpful.vim', { 'on' : ['HelpfulVersion'] }
 
 " Vim Interfaces
 " -------------------------------------
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+if has('nvim-0.5.0')
+  " Status line: use lualine.nvim (fork)
+  Plug 'shadmansaleh/lualine.nvim'
+else
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+endif
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
 Plug 'junegunn/fzf.vim'

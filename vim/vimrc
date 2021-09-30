@@ -1130,8 +1130,62 @@ let g:EditorConfig_core_mode = 'vim_core'
 
 
 " ---------------------------------------------------------------- }}}
+" lualine.nvim (Airline replacement) {{{
+
+" Make sure we execute config after the lua module is loaded.
+function! s:setup_lualine() abort
+lua<<EOF
+
+require('lualine').setup {
+  -- https://github.com/shadmansaleh/lualine.nvim/blob/master/THEMES.md
+  options = {
+    theme = 'onedark'
+  },
+  -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/config.lua
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch'},
+    lualine_c = {
+      {'filename', path = 1}
+    },
+    lualine_x = {
+      'LspStatus()',
+      'encoding', 'fileformat', 'filetype'
+    },
+    lualine_y = {},  -- excludes 'progress'
+    lualine_z = {'location'},
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {
+      {'filename', path = 1}
+    },
+    lualine_x = {},  -- excludes 'location'
+    lualine_y = {},
+    lualine_z = {}
+  },
+}
+
+-- Customize statusline components
+-- https://github.com/shadmansaleh/lualine.nvim#changing-components-in-lualine-sections
+
+-- Override 'encoding': Don't display if encoding is UTF-8.
+local Encoding = require('lualine.components.encoding')
+Encoding.update_status = function()
+  return [[%{substitute(strlen(&fenc) ? &fenc : &enc, "^utf-8$", "", "")}]]
+end
+
+EOF
+endfunction
+if has_key(g:plugs, 'lualine.nvim')
+  autocmd VimEnter * call s:setup_lualine()
+endif
+
+" ---------------------------------------------------------------- }}}
 " Airline {{{
 " Note: for airline theme, see the 'appearance' section
+" (Neovim 0.5.0+) airline is deprecated in favor of lualine.nvim
 
 " use airline, with powerline-ish theme
 let g:airline_powerline_fonts=1
@@ -1196,6 +1250,9 @@ let g:airline_section_z = 'L%3l:%v'
 
 " enable tabline feature
 let g:airline#extensions#tabline#enabled = 1
+
+" disable tagbar (in favor of LSP)
+let g:airline#extensions#tagbar#enabled = 0
 
 " Display buffers (like tabs) in the tabline
 " if there is only one tab
