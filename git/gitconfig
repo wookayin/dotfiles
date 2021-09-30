@@ -124,6 +124,10 @@
 	# Make all new branches to automatically use rebase rather than merge, on pull
 	autosetuprebase = always
 
+[submodule]
+	# Git 2.15+: Update submodules recursively when pulling changes
+	recurse = true
+
 [credential]
 	# Enable HTTP(S) auth credential caching
 	# for 60 seconds (requires git 1.7.9+)
