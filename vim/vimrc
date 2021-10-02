@@ -1944,16 +1944,12 @@ let NERDTreeRespectWildIgnore = 1   " see wildignore
 " ---------------------------------------------------------------- }}}
 " nvim-tree.lua {{{
 
-if has_key(g:plugs, 'nvim-tree.lua')
-  nmap <leader>E  :NvimTreeToggle<CR>
-
+function! s:setup_nvimtree() abort
   " Ignore some files
   let g:nvim_tree_ignore = ['.git', '__node_modules__',
         \ '__pycache__', '.pytest_cache', '.mypy_cache', '.cache',
         \ ]
   let g:nvim_tree_gitignore = 1
-  " Update the location cursor whenever entering a buffer
-  let g:nvim_tree_follow = 1
   " Use trailing '/' for folders
   let g:nvim_tree_add_trailing = 1
   " Show indent markers (vertical segments)
@@ -1961,17 +1957,30 @@ if has_key(g:plugs, 'nvim-tree.lua')
   " Don't ask which window should be picked to open files.
   let g:nvim_tree_disable_window_picker = 1
 
-  " keymappings
 lua<<EOF
-  lua_ready, _ = pcall(require, 'nvim-tree.config')
-  if lua_ready then   -- TODO: Make it lazyily sourced
-    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-    vim.g.nvim_tree_bindings = {
-      { key = "?",                            cb = tree_cb("toggle_help") },
-      { key = "r",                            cb = tree_cb("refresh") },
+  -- Config: https://github.com/kyazdani42/nvim-tree.lua#setup
+  local tree_cb = require('nvim-tree.config').nvim_tree_callback
+  require('nvim-tree').setup {
+    -- Update the location cursor whenever entering a buffer
+    update_focused_file = {
+      enable = true,
+    },
+    -- Custom Keymappings
+    view = {
+      mappings = {
+        list = {
+          { key = "?",                            cb = tree_cb("toggle_help") },
+          { key = "r",                            cb = tree_cb("refresh") },
+        }
+      }
     }
-  end
+  }
 EOF
+endfunction
+
+if has_key(g:plugs, 'nvim-tree.lua')
+  autocmd VimEnter *     call s:setup_nvimtree()
+  nmap <leader>E  :NvimTreeToggle<CR>
 endif
 
 " ---------------------------------------------------------------- }}}
