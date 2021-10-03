@@ -1130,6 +1130,13 @@ let g:EditorConfig_core_mode = 'vim_core'
 
 
 " ---------------------------------------------------------------- }}}
+" nvim-colorizer
+
+if IsPlugInstalled('nvim-colorizer.lua')
+  lua require('colorizer').setup()
+endif
+
+" ---------------------------------------------------------------- }}}
 " lualine.nvim (Airline replacement) {{{
 
 " Make sure we execute config after the lua module is loaded.

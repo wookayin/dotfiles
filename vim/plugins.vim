@@ -30,9 +30,12 @@ endfunction
 let s:floating_available = exists('*nvim_open_win') &&
       \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))
 
-" An utility to tell whether a plugin is configured.
+" Utilities to tell whether a plugin is configured or installed.
 function! HasPlug(name) abort
   return has_key(g:plugs, a:name)
+endfunction
+function! IsPlugInstalled(name) abort
+  return has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir)
 endfunction
 
 "==============================================
@@ -146,6 +149,7 @@ Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
 if has('nvim-0.5.0')
   " Some lua-powered plugins for neovim 0.5.0+
+  Plug 'norcalli/nvim-colorizer.lua'
   Plug 'kyazdani42/nvim-tree.lua'
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
