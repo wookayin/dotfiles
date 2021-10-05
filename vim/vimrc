@@ -2558,6 +2558,7 @@ if has_key(g:plugs, 'coc.nvim')
   " ---------------------------------------
 
   " Go to definitions
+  " (Note: If you are using LSP instead of coc, see config/lsp.lua for keymappings)
   noremap <silent> <F3> :CocJumpDefinition<CR>
   noremap <silent> <F12> :CocJumpDefinition<CR>
   command! -nargs=0 CocJumpDefinition :call CocActionAsync('jumpDefinition')
@@ -2602,6 +2603,7 @@ if has_key(g:plugs, 'coc.nvim')
           \ })
   endfunction
   " <F24> = <Shift-F12>
+  " TODO: Change to list usage/references (LSP)
   nmap <F24>         :<C-U>PreviewDefinition<CR>
   nmap <S-F12>       :<C-U>PreviewDefinition<CR>
   nmap <D-F12>       :<C-U>PreviewDefinition<CR>

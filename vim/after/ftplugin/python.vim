@@ -70,15 +70,16 @@ if has_key(g:, 'plugs') && has_key(g:plugs, 'vim-surround')
   vmap <buffer>  <leader>repr  Sfrepr<CR>
 endif
 
-" if coc.nvim is available, use the global shortcut
-" (see ~/.vimrc for the global mapping of <F3> key)
-if !has_key(g:, 'plugs') || !has_key(g:plugs, 'coc.nvim')
-    " goto definition
-    map  <F3> :call jedi#goto_assignments()<CR>
-    imap <F3> <ESC>:call jedi#goto_assignments()<CR>
-    " show usages
-    map <F7> :call jedi#usages()<CR>
-    imap <F7> <ESC>:call jedi#usages()<CR>
+" Fallback to jedi for providing gd/gr command
+if has_key(g:, 'plugs') && !has_key(g:plugs, 'coc.nvim') && has_key(g:plugs, 'jedi-vim')
+  " goto definition (gd)
+  noremap  <buffer> <F12>  :call jedi#goto_assignments()<CR>
+  nmap     <buffer> <F3>   :call jedi#goto_assignments()<CR>
+  inoremap <buffer> <F12>  :call jedi#goto_assignments()<CR>
+  imap     <buffer> <F3>   :call jedi#goto_assignments()<CR>
+  " show usages (gr)
+  noremap  <buffer> <F24>  :call jedi#usages()<CR>
+  inoremap <buffer> <F24>  :call jedi#usages()<CR>
 endif
 
 

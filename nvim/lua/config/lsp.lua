@@ -59,6 +59,20 @@ local on_attach = function(client, bufnr)
   --buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 end
 
+-- Add global keymappings for LSP actions
+-- F3, F12: goto definition
+vim.cmd [[
+  map  <F12>  gd
+  imap <F12>  <ESC>gd
+  map  <F3>   <F12>
+  imap <F3>   <F12>
+]]
+-- Shift+F12: show usages/references
+vim.cmd [[
+  map  <F24>  gr
+  imap <F24>  <ESC>gr
+]]
+
 
 -- Register and activate LSP servers (managed by nvim-lsp-installer)
 -- @see(config):     https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md
