@@ -2387,23 +2387,23 @@ function! GitThreeWayDiff() abort
 endfunction
 
 
-" key mappings
+" fugitive key mappings
 nnoremap <leader>gd :Gvdiff<CR>
 nnoremap <leader>gD :GitThreeWayDiff<CR>
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gw :Gwrite<CR>
-nnoremap <silent> <leader>gb :echo ':Gblame -w'<CR>:Gblame -w<CR>:call FugitiveResizeGblame()<CR>
+nnoremap <silent> <leader>gb :echo ':Git blame -w'<CR>:Git blame -w<CR>:call FugitiveResizeGblame()<CR>
 function! FugitiveResizeGblame() abort
   if &ft == 'fugitiveblame' | vertical resize 10 | endif
 endfunction
-nnoremap <leader>gci :Gcommit --verbose<CR>
-nnoremap <leader>gcA :Gcommit --amend --verbose<CR>
+nnoremap <leader>gci :Git commit --verbose<CR>
+nnoremap <leader>gcA :Git commit --amend --verbose<CR>
 
-command! -nargs=* GC :Gcommit -v<args>
+command! -nargs=* GC :Git commit -v<args>
 
 " on commit, type 'cA' to enter in amend mode
 au FileType gitcommit nnoremap <buffer> <silent>
-            \ cA :bd<CR>:<C-U>Gcommit --verbose --amend<CR>
+            \ cA :bd<CR>:<C-U>Git commit --verbose --amend<CR>
 
 " GStatus: more configuration and keymaps for fugitive index buffers
 augroup FugitiveAddon
