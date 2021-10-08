@@ -88,7 +88,12 @@ local builtin_lsp_servers = {
 local lsp_installer = require("nvim-lsp-installer")
 lsp_installer.on_server_ready(function(server)
   local opts = {
-    on_attach = on_attach
+    on_attach = on_attach,
+
+    -- Suggested configuration by nvim-cmp
+    capabilities = require('cmp_nvim_lsp').update_capabilities(
+     vim.lsp.protocol.make_client_capabilities()
+    ),
   }
 
   -- (optional) Customize the options passed to the server
@@ -134,102 +139,83 @@ augroup END
 
 
 ---------------------------------
--- nvim-compe: completion support
+-- nvim-cmp: completion support
 ---------------------------------
--- https://github.com/hrsh7th/nvim-compe#lua-config
+-- https://github.com/hrsh7th/nvim-cmp#recommended-configuration
+-- ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
 
--- TODO: Previously there was `longest` too. Maybe needed for coc.nvim?
-vim.o.completeopt = "menuone,noselect"
+vim.o.completeopt = "menu,menuone,noselect"
 
-local compe = require('compe')
-compe.setup {
-    enabled = true;
-    autocomplete = true;
-    debug = false;
-    min_length = 1;
-    preselect = 'disable';
-    throttle_time = 80;
-    source_timeout = 200;
-    resolve_timeout = 500;
-    incomplete_delay = 400;
-    allow_prefix_unmatch = false;
-    max_abbr_width = 1000;
-    max_kind_width = 1000;
-    max_menu_width = 1000000;
-    documentation = true;
+local has_words_before = function()
+  if vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt' then
+    return false
+  end
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line-1, line, true)[1]:sub(col, col):match('%s') == nil
+end
 
-    source = {
-        path = true;
-        buffer = true;
-        calc = true;
-        nvim_lsp = true;
-        nvim_lua = true;
-        spell = true;
-        tags = true;
-        snippets_nvim = true;
-        treesitter = true;
-        -- ultisnips = true;    -- TODO: conflicts with LSP completion
-        -- luasnip = true;
-    };
+local cmp = require('cmp')
+cmp.setup {
+  snippet = {
+    expand = function(args)
+      vim.fn["UltiSnips#Anon"](args.body)
+    end,
+  },
+  documentation = {
+    border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'}  -- in a clockwise order
+  },
+  mapping = {
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
+    ['<Tab>'] = function(fallback)  -- see GH-231, GH-286
+      if cmp.visible() then cmp.select_next_item()
+      elseif has_words_before() then cmp.complete()
+      else fallback() end
+    end,
+    ['<S-Tab>'] = function(fallback)
+      if cmp.visible() then cmp.select_prev_item()
+      else fallback() end
+    end,
+  },
+  formatting = {
+    format = function(entry, vim_item)
+      -- fancy icons and a name of kind
+      vim_item.kind = " " .. require("lspkind").presets.default[vim_item.kind] .. " " .. vim_item.kind
+      -- set a name for each source (see the sources section below)
+      vim_item.menu = ({
+        buffer        = "[Buffer]",
+        nvim_lsp      = "[LSP]",
+        luasnip       = "[LuaSnip]",
+        ultisnips     = "[UltiSnips]",
+        nvim_lua      = "[Lua]",
+        latex_symbols = "[Latex]",
+      })[entry.source.name]
+      return vim_item
+    end,
+  },
+  sources = {
+    -- Note: make sure you have proper plugins specified in plugins.vim
+    -- https://github.com/topics/nvim-cmp
+    { name = 'nvim_lsp', priority = 100 },
+    { name = 'ultisnips', keyword_length = 2, priority = 50 },  -- workaround '.' trigger
+    { name = 'path', priority = 30, },
+    { name = 'buffer', priority = 10 },
+  },
 }
 
--- Keymaps for comp
-vim.cmd [[ inoremap <silent><expr> <C-Space> compe#complete() ]]
-vim.cmd [[ inoremap <silent><expr> <C-Space> compe#complete() ]]
-vim.cmd [[ inoremap <silent><expr> <CR>      compe#confirm('<CR>') ]]
-vim.cmd [[ inoremap <silent><expr> <C-e>     compe#close('<C-e>') ]]
-vim.cmd [[ inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 }) ]]
-vim.cmd [[ inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 }) ]]
-
--- https://github.com/hrsh7th/nvim-compe#how-to-use-tab-to-navigate-completion-menu
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
-end
-
--- Use Shift-tab/tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
-  --elseif vim.fn['vsnip#available'](1) == 1 then
-  --  return t "<Plug>(vsnip-expand-or-jump)"
-  elseif check_back_space() then
-    return t "<Tab>"
-  else
-    return vim.fn['compe#complete']()
-  end
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  --elseif vim.fn['vsnip#jumpable'](-1) == 1 then
-  --  return t "<Plug>(vsnip-jump-prev)"
-  else
-    -- If <S-Tab> is not working in your terminal, change it to <C-h>
-    return t "<S-Tab>"
-  end
-end
-
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-
--- Workaround a compe.nim bug where completion doesn't get closed when '(' is typed
--- https://github.com/hrsh7th/nvim-compe/issues/436
-_G.compe_parenthesis_fix = function()
-  if vim.fn.pumvisible() then
-    vim.cmd [[ call timer_start(0, { -> luaeval('require"compe"._close()') }) ]]
-  end
-  return t "("
-end
-vim.api.nvim_set_keymap("i", "(", "v:lua.compe_parenthesis_fix()", {expr = true})
+-- Highlights for nvim-cmp's custom popup menu (GH-224)
+vim.cmd [[
+  " To be compatible with Pmenu (#fff3bf)
+  hi CmpItemAbbr           guifg=#111111
+  hi CmpItemAbbrMatch      guifg=#f03e3e gui=bold
+  hi CmpItemAbbrMatchFuzzy guifg=#fd7e14 gui=bold
+  hi CmpItemAbbrDeprecated guifg=#adb5bd
+  hi CmpItemKind           guifg=#cc5de8
+  hi CmpItemMenu           guifg=#cfa050
+]]
 
 
 ------------
