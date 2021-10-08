@@ -258,7 +258,20 @@ require("trouble").setup {
 ---------------
 -- Telescope
 ---------------
-local telescope = require('telescope')
+-- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
+local telescope = require("telescope")
+telescope.setup {
+  defaults = {
+    mappings = {
+      i = {
+        ["<C-u>"] = false,   -- Do not map <C-u>; CTRL-U should be backward-kill-line.
+        ["<C-d>"] = false,
+        ["<C-y>"] = require("telescope.actions").preview_scrolling_up,
+        ["<C-e>"] = require("telescope.actions").preview_scrolling_down,
+      }
+    }
+  }
+}
 
 -- Custom Telescope mappings
 vim.cmd [[
