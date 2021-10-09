@@ -904,7 +904,7 @@ autocmd InsertLeave * silent! set nopaste
 " neovim 0.4.0+ : semi-transparent popup menu
 " seealso: s:auto_termguicolors
 if has('nvim') && has('termguicolors') && (&termguicolors)
-  silent! set pumblend=20
+  silent! set pumblend=10
 endif
 
 " neovim 0.4.0+ : Default background for floating windows (should be dark, not Pmenu)
