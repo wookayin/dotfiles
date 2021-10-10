@@ -118,7 +118,12 @@ for _, lsp_name in ipairs(builtin_lsp_servers) do
 end
 
 
---- Customize how to show diagnostics: Do not use distracting virtual text
+------------------
+-- LSP diagnostics
+------------------
+-- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
+
+-- Customize how to show diagnostics: Do not use distracting virtual text
 -- :help lsp-handler-configuration
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -135,6 +140,17 @@ augroup LSPDiagnosticsOnHover
   autocmd!
   autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({focusable = false})
 augroup END
+]]
+
+-- Redefine signs (:help diagnostic-signs)
+vim.fn.sign_define("DiagnosticSignError",  {text = "✘", texthl = "DiagnosticSignError"})
+vim.fn.sign_define("DiagnosticSignWarn",   {text = "", texthl = "DiagnosticSignWarn"})
+vim.fn.sign_define("DiagnosticSignInfo",   {text = "i", texthl = "DiagnosticSignInfo"})
+vim.fn.sign_define("DiagnosticSignHint",   {text = "", texthl = "DiagnosticSignHint"})
+vim.cmd [[
+hi DiagnosticSignError    guifg=#e6645f ctermfg=167
+hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
+hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
 ]]
 
 
