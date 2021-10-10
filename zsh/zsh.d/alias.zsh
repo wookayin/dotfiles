@@ -11,6 +11,7 @@ _version_check() {
 # Basic
 alias reload!=". ~/.zshrc && echo 'sourced ~/.zshrc' again"
 alias c='command'
+alias ZQ='exit'
 
 alias cp='nocorrect cp -iv'
 alias mv='nocorrect mv -iv'
