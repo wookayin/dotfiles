@@ -731,6 +731,12 @@ function! WinDo(command) abort
 endfunction
 command! -nargs=* WinDo   call WinDo(<q-args>)
 
+" Lua utilities (helpful for debugging)
+function! LuaEcho(expr) abort
+  echo luaeval("vim.inspect(" . a:expr . ")")
+endfunction
+command! -nargs=* LuaEcho   call LuaEcho(<q-args>)
+
 " ----------------------------------------------------------------------------
 " <Leader>?/! : Google it / Feeling lucky
 "   (code brought from @junegunn/dotfiles)
