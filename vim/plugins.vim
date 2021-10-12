@@ -143,9 +143,16 @@ Plug 'tomtom/tlib_vim'
 Plug 'junegunn/vader.vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tpope/vim-eunuch'
-Plug 'rizzatti/dash.vim',   { 'on': 'Dash' }
 Plug 'wookayin/vim-typora', { 'on': 'Typora' }
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+
+if s:darwin
+  if has('nvim-0.5.0')
+    Plug 'mrjones2014/dash.nvim'
+  else
+    Plug 'rizzatti/dash.vim',   { 'on': 'Dash' }
+  endif
+endif
 
 if has('nvim-0.5.0')
   " Some lua-powered plugins for neovim 0.5.0+
