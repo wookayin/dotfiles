@@ -93,6 +93,7 @@ if !has('nvim')
 endif
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
+Plug 'rbong/vim-flog'
 Plug 'airblade/vim-gitgutter'
 if has('nvim-0.4.0') && exists('*nvim_open_win')
   " git blame with floating window (requires nvim 0.4.0+)
