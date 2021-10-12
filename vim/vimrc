@@ -2179,6 +2179,8 @@ let g:lua_define_completion_mappings = 0
 " ---------------------------------------------------------------- }}}
 " semshi {{{
 
+" Disable diagonostics sign in favor of ALE, LSP, etc.
+let g:semshi#error_sign = 0
 
 " ---------------------------------------------------------------- }}}
 " ALE {{{
