@@ -1,12 +1,12 @@
 -------------
 -- LSP config
 -------------
--- See ~/.dotfiles/vim/plugins.vim for Plug directives
+-- See ~/.dotfiles/vim/plugins.vim for the Plug directives
 
 local lspconfig = require('lspconfig')
 
 -- lsp_signature
--- https://github.com/ray-x/lsp_signature.nvim#full-configuration
+-- https://github.com/ray-x/lsp_signature.nvim#full-configuration-with-default-values
 local on_attach_lsp_signature = function(client, bufnr)
   require "lsp_signature".on_attach({
       bind = true, -- This is mandatory, otherwise border config won't get registered.
@@ -16,6 +16,7 @@ local on_attach_lsp_signature = function(client, bufnr)
       },
       zindex = 99,     -- <100 so that it does not hide completion popup.
       fix_pos = false, -- Let signature window change its position when needed, see GH-53
+      toggle_key = '<M-x>',  -- Press <Alt-x> to toggle signature on and off.
     })
 end
 
@@ -26,7 +27,7 @@ local on_attach = function(client, bufnr)
   vim.wo.signcolumn = 'yes:1'
 
   -- Activate LSP signature.
-  on_attach_lsp_signature(client, buffer)
+  on_attach_lsp_signature(client, bufnr)
 
   -- Keybindings
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
@@ -181,7 +182,7 @@ cmp.setup {
     border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'}  -- in a clockwise order
   },
   mapping = {
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.close(),
@@ -282,8 +283,8 @@ telescope.setup {
       i = {
         ["<C-u>"] = false,   -- Do not map <C-u>; CTRL-U should be backward-kill-line.
         ["<C-d>"] = false,
-        ["<C-y>"] = require("telescope.actions").preview_scrolling_up,
-        ["<C-e>"] = require("telescope.actions").preview_scrolling_down,
+        ["<C-b>"] = require("telescope.actions").preview_scrolling_up,
+        ["<C-f>"] = require("telescope.actions").preview_scrolling_down,
       }
     }
   }
