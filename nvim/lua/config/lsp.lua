@@ -8,7 +8,7 @@ local lspconfig = require('lspconfig')
 -- lsp_signature
 -- https://github.com/ray-x/lsp_signature.nvim#full-configuration-with-default-values
 local on_attach_lsp_signature = function(client, bufnr)
-  require "lsp_signature".on_attach({
+  require('lsp_signature').on_attach({
       bind = true, -- This is mandatory, otherwise border config won't get registered.
       floating_window = true,
       handler_opts = {
@@ -26,8 +26,11 @@ local on_attach = function(client, bufnr)
   -- Always use signcolumn for the current buffer
   vim.wo.signcolumn = 'yes:1'
 
-  -- Activate LSP signature.
+  -- Activate LSP signature on attach.
   on_attach_lsp_signature(client, bufnr)
+
+  -- Activate LSP status on attach (see a configuration below).
+  require('lsp-status').on_attach(client)
 
   -- Keybindings
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
@@ -245,6 +248,9 @@ lsp_status.config({
     -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
     indicator_hint = '!',
     status_symbol = ' ',
+
+    -- Automatically sets b:lsp_current_function
+    current_function = true,
 })
 lsp_status.register_progress()
 
