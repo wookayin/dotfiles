@@ -79,7 +79,6 @@ vim.cmd [[
 
 
 -- Register and activate LSP servers (managed by nvim-lsp-installer)
--- @see(config):     https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md
 local builtin_lsp_servers = {
   -- List name of LSP servers that will be automatically installed and managed by :LspInstall.
   -- LSP servers will be installed locally at: ~/.local/share/nvim/lsp_servers
@@ -87,6 +86,16 @@ local builtin_lsp_servers = {
   'pyright',
   'vimls',
   'tsserver',
+}
+-- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
+-- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md
+local lsp_setup_opts = {
+  sumneko_lua = (function()
+    local opts = require("lua-dev").setup {}
+    opts.settings.Lua.completion.callSnippet = "Disable"
+    opts.settings.Lua.workspace.maxPreload = nil
+    return opts
+  end)(),
 }
 
 local lsp_installer = require("nvim-lsp-installer")
@@ -100,10 +109,8 @@ lsp_installer.on_server_ready(function(server)
     ),
   }
 
-  -- (optional) Customize the options passed to the server
-  -- if server.name == "tsserver" then
-  --     opts.root_dir = function() ... end
-  -- end
+  -- Customize the options passed to the server
+  opts = vim.tbl_extend("error", opts, lsp_setup_opts[server.name] or {})
 
   -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
   server:setup(opts)

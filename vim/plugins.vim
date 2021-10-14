@@ -256,6 +256,7 @@ endif
 if g:dotfiles_completion_backend == '@lsp'
   Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/nvim-lsp-installer'
+  Plug 'folke/lua-dev.nvim'
 
   Plug 'hrsh7th/nvim-cmp'
   Plug 'hrsh7th/cmp-buffer'
