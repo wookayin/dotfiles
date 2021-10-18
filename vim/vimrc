@@ -1149,6 +1149,15 @@ endif
 function! s:setup_lualine() abort
 lua<<EOF
 
+-- Customize statusline components
+-- https://github.com/shadmansaleh/lualine.nvim#changing-components-in-lualine-sections
+local custom_components = {
+  -- Override 'encoding': Don't display if encoding is UTF-8.
+  encoding = function()
+    return [[%{substitute(strlen(&fenc) ? &fenc : &enc, "^utf-8$", "", "")}]]
+  end,
+}
+
 require('lualine').setup {
   -- https://github.com/shadmansaleh/lualine.nvim/blob/master/THEMES.md
   options = {
@@ -1163,7 +1172,7 @@ require('lualine').setup {
     },
     lualine_x = {
       'LspStatus()',
-      'encoding', 'fileformat', 'filetype'
+      custom_components.encoding, 'fileformat', 'filetype'
     },
     lualine_y = {},  -- excludes 'progress'
     lualine_z = {'location'},
@@ -1179,15 +1188,6 @@ require('lualine').setup {
     lualine_z = {}
   },
 }
-
--- Customize statusline components
--- https://github.com/shadmansaleh/lualine.nvim#changing-components-in-lualine-sections
-
--- Override 'encoding': Don't display if encoding is UTF-8.
-local Encoding = require('lualine.components.encoding')
-Encoding.update_status = function()
-  return [[%{substitute(strlen(&fenc) ? &fenc : &enc, "^utf-8$", "", "")}]]
-end
 
 EOF
 endfunction
