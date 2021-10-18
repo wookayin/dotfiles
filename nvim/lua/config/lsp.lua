@@ -154,6 +154,12 @@ augroup END
 ]]
 
 -- Redefine signs (:help diagnostic-signs)
+-- neovim <= 0.5.1
+vim.fn.sign_define("LspDiagnosticsSignError",       {text = "✘", texthl = "DiagnosticSignError"})
+vim.fn.sign_define("LspDiagnosticsSignWarning",     {text = "", texthl = "DiagnosticSignWarn"})
+vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "i", texthl = "DiagnosticSignInfo"})
+vim.fn.sign_define("LspDiagnosticsSignHint",        {text = "", texthl = "DiagnosticSignHint"})
+-- neovim >= 0.6.0
 vim.fn.sign_define("DiagnosticSignError",  {text = "✘", texthl = "DiagnosticSignError"})
 vim.fn.sign_define("DiagnosticSignWarn",   {text = "", texthl = "DiagnosticSignWarn"})
 vim.fn.sign_define("DiagnosticSignInfo",   {text = "i", texthl = "DiagnosticSignInfo"})
