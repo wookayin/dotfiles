@@ -250,6 +250,46 @@ vim.cmd [[
   hi CmpItemMenu           guifg=#cfa050
 ]]
 
+-----------------------------
+-- Configs for PeekDefinition
+-----------------------------
+function PeekDefinition()
+  local params = vim.lsp.util.make_position_params()
+  local definition_callback = function (_, result)
+    if result == nil or vim.tbl_isempty(result) then
+      print("PeekDefinition: " .. "cannot find the definition.")
+      return nil
+    end
+    -- { range = { start = { character = ..., line = ...}, end = {...} }, uri = "file:///..." }
+    local def_result = result[1]
+
+    -- Peek defintion. Currently, use quickui but a better alternative should be found.
+    -- vim.lsp.util.preview_location(result[1])
+    vim.fn['quickui#preview#open'](vim.uri_to_fname(def_result.uri), {
+        cursor = def_result.range.start.line,
+        number = 1,   -- show line number
+        persist = 0,
+      })
+  end
+  -- Asynchronous request doesn't work very smoothly, so we use synchronous one with timeout;
+  -- return vim.lsp.buf_request(0, 'textDocument/definition', params, definition_callback)
+  local results, err = vim.lsp.buf_request_sync(0, 'textDocument/definition', params, 1000)
+  if results then
+    for client_id, result in pairs(results) do
+      definition_callback(client_id, result.result)
+    end
+  else
+    print("PeekDefinition: " .. err)
+  end
+end
+
+vim.cmd [[
+  command! -nargs=0 PeekDefinition      :lua PeekDefinition()
+  command! -nargs=0 PreviewDefinition   :PeekDefinition
+  nmap <leader>K     :<C-U>PeekDefinition<CR>
+  nmap <silent> gp   :<C-U>PeekDefinition<CR>
+]]
+
 
 ------------
 -- LSPstatus
