@@ -24,6 +24,13 @@ if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   autocmd VimEnter * PlugInstall --sync | q
 endif
 
+" Utilities to tell whether a plugin is configured or installed.
+function! HasPlug(name) abort
+  return has_key(g:plugs, a:name)
+endfunction
+function! IsPlugInstalled(name) abort
+  return has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir)
+endfunction
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
@@ -919,7 +926,7 @@ if hlexists('NormalFloat')
 endif
 
 " Use different popupmenu highlight color for nvim-lsp
-if g:dotfiles_completion_backend == '@lsp'
+if get(g:, 'dotfiles_completion_backend') == '@lsp'
   " oc-yellow-1
   hi Pmenu guibg=#fff3bf
 endif
@@ -2256,7 +2263,7 @@ let g:pymode_indent_hanging_width = 4
 " pymode lint (code checking):
 " disable in favor of ALE, but only if pylint exists
 let s:py_linters_exists = executable('pylint')
-if has_key(g:plugs, 'ale') || g:dotfiles_completion_backend == '@lsp'
+if has_key(g:plugs, 'ale') || get(g:, 'dotfiles_completion_backend') == '@lsp'
   if s:py_linters_exists
     let g:pymode_lint = 0
   else

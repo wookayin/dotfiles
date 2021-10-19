@@ -30,14 +30,6 @@ endfunction
 let s:floating_available = exists('*nvim_open_win') &&
       \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))
 
-" Utilities to tell whether a plugin is configured or installed.
-function! HasPlug(name) abort
-  return has_key(g:plugs, a:name)
-endfunction
-function! IsPlugInstalled(name) abort
-  return has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir)
-endfunction
-
 "==============================================
 call plug#begin('~/.vim/plugged')
 "==============================================
