@@ -145,7 +145,7 @@ Plug 'junegunn/vader.vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tpope/vim-eunuch'
 Plug 'wookayin/vim-typora', { 'on': 'Typora' }
-Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+"Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
 if s:darwin
   if has('nvim-0.5.0')
