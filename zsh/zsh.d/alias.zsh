@@ -186,11 +186,10 @@ function gsd() {
 }
 
 # using the vim plugin GV/Flog
-function _vim_flog {
-    vim -c ":Flog $1"
+function _vim_gv {
+    vim -c ":GV $1"
 }
-alias flog='_vim_flog'
-alias gv='_vim_flog'
+alias gv='_vim_gv'
 alias gva='gv --all'
 
 # cd to $(git-root)
