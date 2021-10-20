@@ -57,6 +57,7 @@ alias zshrc='vim +cd\ ~/.zsh -O ~/.zsh/zshrc ~/.zsh/zsh.d/alias.zsh'
 
 # create a new session with name
 alias tmuxnew='tmux new -s'
+alias tnew='tmuxnew'
 # list sessions
 alias tmuxl='tmux list-sessions'
 # tmuxa <session> : attach to <session> (force 256color and detach others)
