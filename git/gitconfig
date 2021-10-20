@@ -120,6 +120,10 @@
 	# Adopt the new default in Git 2.x
 	default = simple
 
+[fetch]
+	# Use parallel jobs for fetching submodules
+	parallel = 0
+
 [branch]
 	# Make all new branches to automatically use rebase rather than merge, on pull
 	autosetuprebase = always
