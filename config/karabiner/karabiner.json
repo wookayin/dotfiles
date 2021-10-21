@@ -71,7 +71,7 @@
                         ]
                     },
                     {
-                        "description": "Home/End to Command + Left/Right",
+                        "description": "Remap Home/End and Shift+Home/End",
                         "manipulators": [
                             {
                                 "from": {
@@ -93,6 +93,36 @@
                                     {
                                         "key_code": "right_arrow",
                                         "modifiers": [ "left_command" ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "home",
+                                    "modifiers": {
+                                        "mandatory": [ "left_shift" ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "a",
+                                        "modifiers": [ "left_control", "left_shift" ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "end",
+                                    "modifiers": {
+                                        "mandatory": [ "left_shift" ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "e",
+                                        "modifiers": [ "left_control", "left_shift" ]
                                     }
                                 ],
                                 "type": "basic"
