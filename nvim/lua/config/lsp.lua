@@ -134,22 +134,40 @@ end
 ------------------
 -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
 
--- Customize how to show diagnostics: Do not use distracting virtual text
--- :help lsp-handler-configuration
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = false,     -- disable virtual text
-      signs = true,             -- show signs
-      update_in_insert = false, -- delay update diagnostics
-      -- display_diagnostic_autocmds = { "InsertLeave" },
-    }
-  )
+-- Customize how to show diagnostics:
+-- No virtual text (distracting!), show popup window on hover.
+if vim.fn.has('nvim-0.6.0') then
+  -- @see https://github.com/neovim/neovim/pull/16057 for new APIs
+  vim.diagnostic.config({
+    virtual_text = false,
+    float = {
+      source = 'always',
+      border = 'single',
+    },
+  })
+  _G.LspDiagnosticsShowPopup = function()
+    return vim.diagnostic.open_float(0, {scope="cursor"})
+  end
+else  -- neovim 0.5.0
+  -- @see :help lsp-handler-configuration
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+      vim.lsp.diagnostic.on_publish_diagnostics, {
+        virtual_text = false,     -- disable virtual text
+        signs = true,             -- show signs
+        update_in_insert = false, -- delay update diagnostics
+        -- display_diagnostic_autocmds = { "InsertLeave" },
+      }
+    )
+  _G.LspDiagnosticsShowPopup = function()
+    return vim.lsp.diagnostic.show_position_diagnostics({focusable = false})
+  end
+end
 
--- Instead, show line diagnostics in a pop-up window on hover
+-- Show diagnostics in a pop-up window on hover
 vim.cmd [[
 augroup LSPDiagnosticsOnHover
   autocmd!
-  autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({focusable = false})
+  autocmd CursorHold *   lua _G.LspDiagnosticsShowPopup()
 augroup END
 ]]
 
