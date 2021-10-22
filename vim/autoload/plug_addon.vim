@@ -15,7 +15,7 @@ command! -nargs=1 -bar UnPlug call s:unplug(<args>)
 
 " ForcePlugURI: In case when plugin repo URI changes, PlugClean is required.
 " To automatically fix it for individual plugin, we force-correct URI of an existing one.
-function! s:force_plug_uri(plug_name)
+function! s:force_plug_uri(plug_name) abort
   let dir = g:plugs[a:plug_name].dir
   let expected_uri = substitute(g:plugs[a:plug_name].uri,
         \ '^https://git::@github\.com', 'https://github.com', '')
@@ -26,6 +26,7 @@ function! s:force_plug_uri(plug_name)
         \ '^https://git::@github\.com', 'https://github.com', '')
 
   if !v:shell_error && actual_uri != expected_uri
+      " Update the remote repository URI.
       echo printf("NOTE: We have automatically corrected URL of the plugin %s: ", a:plug_name)
       echo printf("    %s", actual_uri)
       echo printf(" -> %s", expected_uri)
@@ -33,6 +34,12 @@ function! s:force_plug_uri(plug_name)
             \ shellescape(dir . '/.git/config'),
             \ shellescape(g:plugs[a:plug_name].uri))
             \ )
+      " The new repository might have diverged (non-fast-forward).
+      " At this moment, we haven't fetched the tree; we may rollback to the ancestor commit.
+      " This may not work if two remotes do not share the tree at all, but probably it's okay...
+      call system(printf(
+            \ "git -C %s reset --hard $(git rev-list --reverse --topo-order --first-parent HEAD | sed 1q)",
+            \ shellescape(dir)))
   endif
 endfunction
 command! -nargs=1 -bar ForcePlugURI call s:force_plug_uri(<args>)
