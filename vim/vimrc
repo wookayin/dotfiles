@@ -571,12 +571,19 @@ function! DetermineProjectRoot() abort
   let l:base_dir = expand("%:p")
   if l:base_dir =~ 'python[^/]*/site-packages/[^/]\+/'
     return resolve(substitute(l:base_dir, '\(python[^/]*/site-packages/[^/]\+/\).*$', '\1', 'g'))
+  else
+    return ''
   endif
-
-  echohl WarningMsg | echom 'Cannot determine project root directory. (Want :CD?)' | echohl None
-  return ''
 endfunction
-command! -nargs=0   CDRoot  :call CD_to(DetermineProjectRoot())
+function! s:CDRoot() abort
+  let l:project_root = DetermineProjectRoot()
+  if empty(l:project_root)
+    echohl WarningMsg | echom 'Cannot determine project root directory. (Want :CD?)' | echohl None
+  else
+    return CD_to(l:project_root)
+  endif
+endfunction
+command! -nargs=0   CDRoot  :call s:CDRoot()
 nmap <silent> <leader>cd    :<C-U>CDRoot<CR>
 
 
