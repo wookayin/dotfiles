@@ -102,6 +102,13 @@ if exists('##TermEnter')
   augroup end
 endif
 
+if exists('##TermOpen')
+  augroup TermSignColumn
+    autocmd!
+    autocmd TermOpen           * set signcolumn=
+  augroup end
+endif
+
 " search
 set ignorecase              " case-insensitive by default
 set smartcase               " case-sensitive if keyword contains both uppercase and lowercase
