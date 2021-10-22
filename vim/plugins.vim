@@ -44,7 +44,8 @@ Plug 'tweekmonster/helpful.vim', { 'on' : ['HelpfulVersion'] }
 " -------------------------------------
 if has('nvim-0.5.0')
   " Status line: use lualine.nvim (fork)
-  Plug 'shadmansaleh/lualine.nvim'
+  Plug 'nvim-lualine/lualine.nvim'
+  ForcePlugURI 'lualine.nvim'
 else
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
