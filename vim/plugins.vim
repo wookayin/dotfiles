@@ -256,6 +256,7 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-path'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+  Plug 'lukas-reineke/cmp-under-comparator'
 
   Plug 'ray-x/lsp_signature.nvim'
   Plug 'nvim-lua/lsp-status.nvim'
