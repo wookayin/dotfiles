@@ -1163,7 +1163,7 @@ let g:EditorConfig_core_mode = 'vim_core'
 
 
 " ---------------------------------------------------------------- }}}
-" nvim-colorizer
+" nvim-colorizer {{{
 
 if IsPlugInstalled('nvim-colorizer.lua')
   lua require('colorizer').setup()
@@ -1886,7 +1886,7 @@ let g:quickui_preview_h = 25
 
 " Customize color scheme
 let g:quickui_color_scheme = 'papercol light'
-hi QuickPreview guibg=#262d2d
+autocmd VimEnter * hi QuickPreview guibg=#262d2d
 
 
 " ---------------------------------------------------------------- }}}
