@@ -757,6 +757,7 @@ function! LuaEcho(expr) abort
   echo luaeval("vim.inspect(" . a:expr . ")")
 endfunction
 command! -nargs=* LuaEcho   call LuaEcho(<q-args>)
+call CommandAlias('Luaecho', 'LuaEcho')
 
 " ----------------------------------------------------------------------------
 " <Leader>?/! : Google it / Feeling lucky
