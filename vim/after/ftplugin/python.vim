@@ -125,17 +125,21 @@ if has_key(g:plugs, 'vim-floaterm')
     endif
     if l:bufnr == -1
       " floaterm#new(bang, cmd, winopts, jobopts)
+      " floaterm API is fucking capricious and not sensible :(
       if &columns / (&lines + 0.0) >= 1.6
-        let l:winopt = {'position': 'right', 'width': float2nr(&columns / 3.0)}
+        " vertical split (put in the right)
+        let l:winopt = {
+              \ 'position': 'right', 'wintype': 'vsplit',
+              \ 'width': float2nr(&columns / 3.0)}
       else
-        let l:winopt = {'position': 'below', 'height': float2nr(&lines / 5.0)}
+        " horizontal split (put in the below)
+        let l:winopt = {
+              \ 'position': 'below', 'wintype': 'split',
+              \ 'height': float2nr(&lines / 5.0)}
       endif
       " floaterm#new(bang, cmd, jobopts, opts) -- this API keeps changing...  :(
-      let l:bufnr = floaterm#new(1, l:cmd, {},
-            \ extend(l:winopt, {
-            \   'name': s:ftname, 'wintype': 'normal',
-            \   'autoclose': 1})
-            \)
+      let l:winopt = extend(l:winopt, {'name': s:ftname, 'autoclose': 1})
+      let l:bufnr = floaterm#new(1, l:cmd, {}, l:winopt)
       tnoremap <buffer> <silent> <F6>  <c-\><c-n>:FloatermHide<CR>
       wincmd p        " move back to the python buf
     else
