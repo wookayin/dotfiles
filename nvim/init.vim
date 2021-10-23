@@ -121,7 +121,7 @@ EOF
     " reattach LSP on all (named) buffers after reloading the config
     let l:current_buffer = bufnr('%')
     execute 'silent! bufdo if &buftype == "" | e | endif'
-    if l:current_buffer >= 0
+    if l:current_buffer >= 0 && bufexists(l:current_buffer)
       execute printf('buffer %d', l:current_buffer)
     endif
   endfunction
