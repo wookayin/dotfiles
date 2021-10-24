@@ -2490,17 +2490,55 @@ if has_key(g:plugs, 'vim-airline')
 endif
 
 " ---------------------------------------------------------------- }}}
-" gitgutter {{{
+" gitsigns.nvim {{{
+" :Gitsigns
 
-" For colors for gitgutter signs (see afa4f2dd),
-" please see above (search for "/SignColumn")
+function! s:setup_gitsigns() abort
+lua<<EOF
+require('gitsigns').setup {
+  signs = {
+    --add          = {hl = 'GitSignsAdd'   , text = '+', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+    --Change       = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+    --delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    --topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    --changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+  },
+  signcolumn = true,
+}
+EOF
+
+" Manually define (override) signs after calling setup, due to neovim bug 16136
+" For highlights, see ~/.vim/colors/xoria256-wook.vim
+" TODO: This is just a workaround, these will be lost after toggling signs
+sign define GitSignsAdd            text=┃  texthl=GitSignsAdd     numhl=false
+sign define GitSignsChange         text=┃  texthl=GitSignsChange  numhl=false
+sign define GitSignsChangeDelete   text=┃  texthl=GitSignsChange  numhl=false
+
+endfunction
+
+if HasPlug('gitsigns.nvim')
+  autocmd VimEnter * call s:setup_gitsigns()
+
+  " Additional keymappings other than the defaults
+  nmap <leader>ha  <cmd>lua require"gitsigns".stage_hunk()<CR>
+  nmap <leader>hm  <cmd>lua require"gitsigns".blame_line(true)<CR>
+  nmap <leader>hh  <cmd>Gitsigns toggle_linehl<CR>
+  nmap <leader>hw  <cmd>Gitsigns toggle_word_diff<CR>
+endif
+
+" ---------------------------------------------------------------- }}}
+" vim-gitgutter (legacy) {{{
+
+" For colors for gitgutter signs, see ~/.vim/colors/xoria256-wook.vim
 
 " Another alias for adding or staging hunk (similar as <leader>ga).
 " for other keys (e.g <leader>hu, <leader>hp), please see
 "  :help gitgutter-<Leader>
-nmap <leader>ha  <Plug>(GitGutterStageHunk)
 
-nmap <leader>hh  :GitGutterLineHighlightsToggle<CR>
+if HasPlug('vim-gitgutter')
+  nmap <leader>ha  <Plug>(GitGutterStageHunk)
+  nmap <leader>hh  :GitGutterLineHighlightsToggle<CR>
+endif
 
 " ---------------------------------------------------------------- }}}
 " git-messenger {{{
