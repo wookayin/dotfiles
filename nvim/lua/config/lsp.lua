@@ -136,7 +136,7 @@ end
 
 -- Customize how to show diagnostics:
 -- No virtual text (distracting!), show popup window on hover.
-if vim.fn.has('nvim-0.6.0') then
+if vim.fn.has('nvim-0.6.0') > 0 then
   -- @see https://github.com/neovim/neovim/pull/16057 for new APIs
   vim.diagnostic.config({
     virtual_text = false,
@@ -159,7 +159,7 @@ else  -- neovim 0.5.0
       }
     )
   _G.LspDiagnosticsShowPopup = function()
-    return vim.lsp.diagnostic.show_position_diagnostics({focusable = false})
+    return vim.lsp.diagnostic.show_line_diagnostics({focusable = false})
   end
 end
 
