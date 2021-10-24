@@ -165,9 +165,11 @@ if !empty($TMUX)
   set title
 endif
 
-" native customized statusline, if airline is not available
-" (this setting will be replaced afterwards by airline)
-set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
+" customize the native statusline, just in case airline/lualine is not available
+" (this setting will be replaced afterwards by airline/lualine)
+if empty(&statusline)
+  set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
+endif
 
 " mouse behaviour
 if has('mouse')
