@@ -310,13 +310,16 @@ function PeekDefinition()
       print("PeekDefinition: " .. "cannot find the definition.")
       return nil
     end
-    -- { range = { start = { character = ..., line = ...}, end = {...} }, uri = "file:///..." }
+    --- either Location | LocationLink
+    --- https://microsoft.github.io/language-server-protocol/specification#location
     local def_result = result[1]
 
     -- Peek defintion. Currently, use quickui but a better alternative should be found.
     -- vim.lsp.util.preview_location(result[1])
-    vim.fn['quickui#preview#open'](vim.uri_to_fname(def_result.uri), {
-        cursor = def_result.range.start.line,
+    local def_uri = def_result.uri or def_result.targetUri
+    local def_range = def_result.range or def_result.targetSelectionRange
+    vim.fn['quickui#preview#open'](vim.uri_to_fname(def_uri), {
+        cursor = def_range.start.line,
         number = 1,   -- show line number
         persist = 0,
       })
