@@ -128,6 +128,14 @@ for _, lsp_name in ipairs(builtin_lsp_servers) do
   end
 end
 
+-------------------------
+-- LSP Handlers (general)
+-------------------------
+-- :help lsp-method
+-- :help lsp-handler
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'single' })
+
 
 ------------------
 -- LSP diagnostics
@@ -159,6 +167,7 @@ else  -- neovim 0.5.0
       }
     )
   _G.LspDiagnosticsShowPopup = function()
+    ---@diagnostic disable-next-line: deprecated
     return vim.lsp.diagnostic.show_line_diagnostics({focusable = false})
   end
 end
