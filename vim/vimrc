@@ -5,6 +5,9 @@
 
 scriptencoding utf-8
 
+" Clean up all VimEnter event handlers, so vimrc can be re-sourced again
+autocmd! VimEnter
+
 """""""""""""""""""""""""""""""""""""""""
 " 0. Load Plugin {{{
 """""""""""""""""""""""""""""""""""""""""
@@ -605,7 +608,7 @@ endfunction
 nnoremap <silent> <leader>R :call Redraw()<CR>
 
 " <leader>src : source ~/.vimrc
-nnoremap <leader>src :source ~/.vimrc<CR>
+nnoremap <leader>src   <cmd>source ~/.vimrc<CR><cmd>doautocmd VimEnter<CR><cmd>echo 'Sourced ~/.vimrc'<CR>
 
 " :Vimrc opens vim config files in a new tab
 command! -nargs=0 Vimrc   call s:open_vimrc_tab()
@@ -740,6 +743,7 @@ function! CommandAlias(aliasname, target)
 endfunction
 
 " some basic command abbrs
+call CommandAlias('s%', 'source %')
 call CommandAlias('tnew', 'tabnew')
 
 " WinDo: Like :windo, but preserves the current window and view.
@@ -1039,9 +1043,10 @@ let g:startify_skiplist = [
 if has_key(g:plugs, 'vim-eunuch')
   autocmd VimEnter * call s:remove_eunuch_commands()
   function! s:remove_eunuch_commands()
-    if exists('g:loaded_eunuch')
-      delcommand Remove | delcommand Delete | delcommand Unlink
-    endif
+    if !exists('g:loaded_eunuch') | return | endif
+    if exists(':Remove') | delcommand Remove | endif
+    if exists(':Delete') | delcommand Delete | endif
+    if exists(':Unlink') | delcommand Unlink | endif
   endfunction
 endif
 
