@@ -1148,7 +1148,9 @@ endif
 " Make timeout delay slightly smaller (before popup appears), default is 1000ms
 set timeoutlen=500
 
-autocmd VimEnter * call s:setup_which_key()
+if has_key(g:plugs, 'which-key.nvim')
+  autocmd VimEnter * call s:setup_which_key()
+endif
 function! s:setup_which_key()
 lua<<EOF
   require("which-key").setup {
@@ -1186,6 +1188,9 @@ endif
 " lualine.nvim (Airline replacement) {{{
 
 " Make sure we execute config after the lua module is loaded.
+if HasPlug('lualine.nvim')
+  autocmd VimEnter * call s:setup_lualine()
+endif
 function! s:setup_lualine() abort
 lua<<EOF
 
@@ -1231,9 +1236,6 @@ require('lualine').setup {
 
 EOF
 endfunction
-if has_key(g:plugs, 'lualine.nvim')
-  autocmd VimEnter * call s:setup_lualine()
-endif
 
 " ---------------------------------------------------------------- }}}
 " Airline {{{
