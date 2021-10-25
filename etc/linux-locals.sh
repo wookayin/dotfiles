@@ -96,11 +96,11 @@ install_ncurses() {
 install_zsh() {
     set -e
 
-    ZSH_VER="5.4.1"
+    ZSH_VER="5.8"
     TMP_ZSH_DIR="/tmp/$USER/zsh/"; mkdir -p $TMP_ZSH_DIR
 
-    wget -nc -O $TMP_ZSH_DIR/zsh.tar.gz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.gz/download"
-    tar -xvzf $TMP_ZSH_DIR/zsh.tar.gz -C $TMP_ZSH_DIR --strip-components 1
+    wget -nc -O $TMP_ZSH_DIR/zsh.tar.xz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.xz/download"
+    tar xvJf $TMP_ZSH_DIR/zsh.tar.xz -C $TMP_ZSH_DIR --strip-components 1
     cd $TMP_ZSH_DIR
 
     if [[ -d "$PREFIX/include/ncurses" ]]; then
