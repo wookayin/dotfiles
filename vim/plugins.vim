@@ -146,9 +146,9 @@ if has('nvim-0.5.0')
   Plug 'folke/which-key.nvim'
 endif
 
-if s:darwin
+if s:darwin && isdirectory('/Applications/Dash.app')
   if has('nvim-0.5.0')
-    Plug 'mrjones2014/dash.nvim'
+    Plug 'mrjones2014/dash.nvim', { 'do': 'make install' }
   else
     Plug 'rizzatti/dash.vim',   { 'on': 'Dash' }
   endif
