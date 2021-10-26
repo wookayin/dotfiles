@@ -195,9 +195,6 @@ Plug 'tfnico/vim-gradle'
 Plug 'Tyilo/applescript.vim'
 Plug 'rdolgushin/groovy.vim'
 
-Plug 'xolox/vim-misc'
-Plug 'xolox/vim-lua-ftplugin', { 'for' : ['lua'] }
-
 " [Completion Engine or LSP backend]
 " We have a long history and I want to make completion work for legacy and
 " older vim as well. Choose the completion or LSP engine in the order of
