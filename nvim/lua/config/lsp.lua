@@ -405,6 +405,8 @@ telescope.setup {
 -- Custom Telescope mappings
 vim.cmd [[
 command! -nargs=0 Highlights    :Telescope highlights
+command! -nargs=0 CodeActions   :Telescope lsp_code_actions
+call CommandAlias("CA", "CodeActions")
 ]]
 
 -- Telescope extensions
