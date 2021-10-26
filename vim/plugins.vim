@@ -156,6 +156,7 @@ endif
 
 if has('nvim-0.5.0')
   " Some lua-powered plugins for neovim 0.5.0+
+  Plug 'rcarriga/nvim-notify'
   Plug 'norcalli/nvim-colorizer.lua'
   Plug 'kyazdani42/nvim-tree.lua'
   Plug 'nvim-lua/plenary.nvim'

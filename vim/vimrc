@@ -1187,6 +1187,39 @@ let g:EditorConfig_core_mode = 'vim_core'
 
 
 " ---------------------------------------------------------------- }}}
+" nvim-notify {{{
+
+" Backward compatibility for neovim < 0.5
+if has('nvim') && luaeval('vim.notify == nil')
+  lua vim.notify = function(msg, log_level, opts) print(msg) end
+endif
+
+if IsPlugInstalled('nvim-notify')
+  lua function VimNotify(msg, log_level, opts) return vim.notify(msg, log_level, opts) end
+  autocmd VimEnter * call s:setup_nvim_notify()
+endif
+function! s:setup_nvim_notify() abort
+lua<<EOF
+require("notify").setup({
+  stages = "slide",
+  on_open = function(win)
+    vim.api.nvim_win_set_config(win, { focusable = false })  -- see GH-28
+  end,
+  timeout = 5000,
+  background_colour = "#000000",
+})
+
+-- Notification APIs (lua function, command)
+-- See config/lsp.lua for telescope extensions as well
+vim.notify = require("notify")
+vim.cmd [[
+command! -nargs=+ Notify               :lua vim.notify <q-args>
+command! -nargs=0 NotificationsPrint   :lua require('notify')._print_history()
+]]
+EOF
+endfunction
+
+" ---------------------------------------------------------------- }}}
 " nvim-colorizer {{{
 
 if IsPlugInstalled('nvim-colorizer.lua')
