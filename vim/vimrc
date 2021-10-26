@@ -760,7 +760,7 @@ endfunction
 command! -nargs=* WinDo   call WinDo(<q-args>)
 
 " Lua utilities (helpful for debugging)
-if has('nvim-0.4.0')
+if has('nvim-0.5.0')
   function! LuaEcho(expr) abort
     echo luaeval("vim.inspect(" . a:expr . ")")
   endfunction
