@@ -2492,7 +2492,7 @@ endfunction
 " fugitive key mappings
 nnoremap <leader>gd :Gvdiff<CR>
 nnoremap <leader>gD :GitThreeWayDiff<CR>
-nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gs :Git<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gb :echo ':Git blame -w'<CR>:Git blame -w<CR>:call FugitiveResizeGblame()<CR>
 function! FugitiveResizeGblame() abort
@@ -2513,10 +2513,13 @@ augroup FugitiveAddon
   " Fix window height to be 20
   autocmd FileType fugitive    if !&winfixheight | resize 20 | setlocal winfixheight | endif
 
-  " [?] show help  / [ci] commit -v  / [g=] Toggle inline diffs for all files
+  " [?] show help  / [ci] commit -v
   autocmd FileType fugitive    nnoremap <buffer> <silent> ?  :<C-u>vertical help fugitive-maps<CR>:wincmd p<CR>
   autocmd FileType fugitive    nmap     <buffer> ci          cvc
+  " [g=] Toggle inline diffs for all files
+  " [space] same as = (toggle inline diffs for the current file)
   autocmd FileType fugitive    nmap     <buffer> g=          ggVG=zM
+  autocmd FileType fugitive    nmap     <buffer> <space>     =
   " [,gd] diffvsplit
   autocmd FileType fugitive    nmap     <buffer> <leader>gd  dv
 
