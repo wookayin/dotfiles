@@ -1365,26 +1365,36 @@ let g:airline#extensions#whitespace#mixed_indent_algo = 1
 let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
 
 " General hook/callback on starting and finishing jobs {
-function! s:OnNeomakeStart(context)
+function! s:OnNeomakeJobStart()
   " what will we do?
+  let l:context = g:neomake_hook_context
 endfunction
 
-function! s:OnNeomakeFinished(context)
+function! s:OnNeomakeJobFinished()
   let l:context = g:neomake_hook_context
+  let l:bufnr = l:context.jobinfo.bufnr
+  let l:job_title = printf('Neomake: %s', bufname(l:bufnr))
 
   " If there is any failed job (non-zero exit code), notify it.
   let l:failure_message = ''
-  for job in l:context['finished_jobs']
-    if l:job['exit_code'] != 0
-      let l:failure_message = printf('%s%s ', l:failure_message, l:job['as_string']())
+  let l:job = l:context.jobinfo
+  if l:job['exit_code'] != 0
+    let l:failure_message = printf('%s%s ', l:failure_message, l:job['as_string']())
+  endif
+  if !empty(l:failure_message)
+    if has('nvim-0.5.0')  " lua vim.notify
+      call v:lua.VimNotify(l:failure_message, 'warn',
+            \ {'title': l:job_title})
+    else | echom 'Job Finished, FAIL: ' . l:failure_message
     endif
-  endfor
-  if ! empty(l:failure_message)
-    echom 'Job Finished, FAIL: ' . l:failure_message
     copen | wincmd p   " copen, but not move to the quickfix window
     let b:neomake_auto_copen = 1
   else
-    echom 'Job Finished, Success.'
+    if has('nvim-0.5.0')  " lua vim.notify
+      call v:lua.VimNotify('Job Finished, Success.', 'info',
+            \ {'title': l:job_title, 'timeout': 1000})
+    else | echom 'Job Finished, Success.'
+    endif
     if get(b:, 'neomake_auto_copen', 0) == 1
       " if quickfix list is opened automatically by neomake callback,
       " we should automatically close it upon the success of neomake job.
@@ -1396,8 +1406,8 @@ endfunction
 
 augroup neomake_hooks_common
   au!
-  autocmd User NeomakeJobInit  call s:OnNeomakeStart(g:neomake_hook_context)
-  autocmd User NeomakeFinished call s:OnNeomakeFinished(g:neomake_hook_context)
+  autocmd User NeomakeJobInit     call s:OnNeomakeJobStart()
+  autocmd User NeomakeJobFinished call s:OnNeomakeJobFinished()
 augroup END
 " }
 
