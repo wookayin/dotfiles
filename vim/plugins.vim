@@ -73,6 +73,7 @@ if has('nvim') || v:version >= 800
 endif
 if has('nvim-0.4.0')
   Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemote') }
+  Plug 'romgrk/fzy-lua-native'
 endif
 Plug 'tpope/vim-tbone'
 Plug 'szw/vim-maximizer'    " zoom and unzoom!
@@ -255,7 +256,8 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/lua-dev.nvim'
 
-  Plug 'hrsh7th/nvim-cmp'
+  " TODO(nvim-cmp): Pin until GH-362, GH-427 is resolved
+  Plug 'hrsh7th/nvim-cmp', {'commit': 'b5899f0'}
   Plug 'hrsh7th/cmp-buffer'
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-path'
