@@ -2004,15 +2004,18 @@ function! s:setup_wilder()
   " only / and ? are enabled by default
   call wilder#set_option('modes', ['/', '?', ':'])
 
-  " pipeline: enable fuzzy command matching, fuzzy file search, search history
+  " pipeline: enable fuzzy command matching, fuzzy file search (GH-101), search history
   let l:pipeline = {}
   let l:pipeline.noop = [{_ -> v:false}]
   let l:pipeline.cmdline = wilder#cmdline_pipeline({
         \ 'fuzzy' : 1, 'fuzzy_filter': wilder#lua_fzy_filter() })
   let l:pipeline.file_fuzzy = executable('fd') ? wilder#python_file_finder_pipeline({
         \ 'debounce': 50,
-        \ 'file_command': {_, arg -> arg[0] !=# '.' ? ['fd', '--type', 'f'] : ['fd', '--type', 'f', '-H']},
-        \ 'dir_command':  {_, arg -> arg[0] !=# '.' ? ['fd', '--type', 'd'] : v:false},
+        \ 'file_command': {_, arg -> arg[0:1] ==# './' ? v:false :
+        \                            arg[0] ==# '.' ? ['fd', '--type', 'f', '-H'] :
+        \                            ['fd', '--type', 'f']},
+        \ 'dir_command':  {_, arg -> arg[0] ==# '.' ? v:false :
+        \                            ['fd', '--type', 'd']},
         \ 'filters': ['fuzzy_filter', 'difflib_sorter'],
         \ }) : l:pipeline.noop
   let l:pipeline.search_history = [ wilder#check({_, x -> empty(x)}), wilder#history() ]
