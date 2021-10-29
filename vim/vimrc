@@ -2009,16 +2009,53 @@ function! s:setup_wilder()
   let l:pipeline.noop = [{_ -> v:false}]
   let l:pipeline.cmdline = wilder#cmdline_pipeline({
         \ 'fuzzy' : 1, 'fuzzy_filter': wilder#lua_fzy_filter() })
+  let l:pipeline.search_history = [ wilder#check({_, x -> empty(x)}), wilder#history() ]
+
   let l:pipeline.file_fuzzy = executable('fd') ? wilder#python_file_finder_pipeline({
         \ 'debounce': 50,
-        \ 'file_command': {_, arg -> arg[0:1] ==# './' ? v:false :
-        \                            arg[0] ==# '.' ? ['fd', '--type', 'f', '-H'] :
-        \                            ['fd', '--type', 'f']},
-        \ 'dir_command':  {_, arg -> arg[0] ==# '.' ? v:false :
-        \                            ['fd', '--type', 'd']},
+        \ 'file_command': {ctx, arg -> v:lua._wilder_fuzzy_fd_pipeline_command(ctx, arg, 'f')},
+        \ 'dir_command':  {ctx, arg -> v:lua._wilder_fuzzy_fd_pipeline_command(ctx, arg, 'd')},
         \ 'filters': ['fuzzy_filter', 'difflib_sorter'],
+        \ 'path': {-> getcwd()},
         \ }) : l:pipeline.noop
-  let l:pipeline.search_history = [ wilder#check({_, x -> empty(x)}), wilder#history() ]
+
+lua<<EOF
+_G._wilder_fuzzy_fd_pipeline_command = function(ctx, arg, file_mode)
+  local cmd = {'fd'}
+
+  -- Do not enable if the argument starts with "./",
+  if string.sub(arg, 1, 2) == "./" then return false end
+  -- Do not enable if it's not a git repository, for the performance reason
+  local is_git_repo = (vim.fn.FugitiveExtractGitDir(vim.fn.getcwd()) ~= '')
+  if not is_git_repo then return false end
+
+  if file_mode == 'f' then   -- both file and directory (TODO: sharkdp/fd#436)
+    cmd = vim.list_extend(cmd, {'--type', 'f', '--type', 'd'})
+  else  -- directory only
+    cmd = vim.list_extend(cmd, {'--type', 'd'})
+  end
+
+  local arg_basedir, arg_filename = string.match(arg, "(.-)([^\\/]-%.?[^%.\\/]*)$")
+  -- Starting with dot: include hidden files, but restrict to the depth 1 only (exact subdir)
+  if string.sub(arg_filename, 1, 1) == "." then
+    cmd = vim.list_extend(cmd, {'--no-ignore', '--hidden', '--maxdepth', '1'})
+  end
+  table.insert(cmd, '.')
+  -- When the current path argument exactly matches a subdirectory, search inside it (narrow down);
+  -- otherwise search the entire current directory
+  if not (arg_basedir == "") and vim.fn.isdirectory(arg_basedir) == 1 then
+    table.insert(cmd, './' .. arg_basedir)
+  end
+
+  -- Avoid accidentally scanning the large volume ...
+  if not vim.tbl_contains(cmd, '--maxdepth') then
+    cmd = vim.list_extend(cmd, {'--maxdepth', '5'})
+  end
+
+  -- vim.o.titlestring = table.concat(cmd, ' ')   -- just for debugging :)
+  return cmd
+end
+EOF
 
   call wilder#set_option('pipeline', [
         \ wilder#branch(
@@ -2040,7 +2077,7 @@ function! s:setup_wilder()
         \ 'highlights': l:wilder_hl,
         \ 'reverse': v:false,
         \ 'max_height': '33%',
-        \ 'left': [' '],
+        \ 'left': [' ', wilder#popupmenu_devicons()],
         \ 'right': [' ', wilder#popupmenu_scrollbar()],
         \ }
   call wilder#set_option('renderer', wilder#popupmenu_renderer(l:wilder_renderer_option))

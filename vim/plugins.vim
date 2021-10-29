@@ -256,8 +256,7 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/lua-dev.nvim'
 
-  " TODO(nvim-cmp): Pin until GH-362, GH-427 is resolved
-  Plug 'hrsh7th/nvim-cmp', {'commit': 'b5899f0'}
+  Plug 'hrsh7th/nvim-cmp'
   Plug 'hrsh7th/cmp-buffer'
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-path'
