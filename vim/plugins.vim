@@ -63,9 +63,12 @@ if has('nvim-0.4.0') || has('popup')
 endif
 Plug 'mg979/vim-xtabline'
 Plug 'ervandew/supertab'
-Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
+
+let g:_nerdtree_lazy_events = ['NERDTree', 'NERDTreeToggle', 'NERDTreeTabsToggle', '<Plug>NERDTreeTabsToggle']
+Plug 'scrooloose/nerdtree', { 'on': g:_nerdtree_lazy_events }
+Plug 'jistr/vim-nerdtree-tabs', { 'on': g:_nerdtree_lazy_events }
 Plug 'Xuyuanp/nerdtree-git-plugin'
+
 Plug 'vim-voom/VOoM', { 'on' : ['Voom', 'VoomToggle'] }
 Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 if has('nvim') || v:version >= 800
@@ -149,7 +152,8 @@ endif
 
 if s:darwin && isdirectory('/Applications/Dash.app')
   if has('nvim-0.5.0')
-    Plug 'mrjones2014/dash.nvim', { 'do': 'make install' }
+    Plug 'mrjones2014/dash.nvim', { 'do': 'make install',
+          \ 'on': ['Dash', 'DashWord'] }
   else
     Plug 'rizzatti/dash.vim',   { 'on': 'Dash' }
   endif
@@ -331,5 +335,6 @@ call plug#end()
 delcom UnPlug
 delcom ForcePlugURI
 silent delfunction PlugCond
+silent unlet g:_nerdtree_lazy_events
 
 " vim: set ts=2 sts=2 sw=2:

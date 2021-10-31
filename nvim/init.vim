@@ -8,8 +8,6 @@ function! s:show_warning_message(hlgroup, msg)
     echom a:msg | echohl None
 endfunction
 
-let s:uname = substitute(system('uname -s'), '\n', '', '')
-
 " Specify python host (preferrably system default) for neovim.
 " The 'neovim' package must be installed in that python:
 " e.g. /usr/bin/pip install neovim
@@ -17,7 +15,7 @@ let s:uname = substitute(system('uname -s'), '\n', '', '')
 " The locally installed python (e.g. homebrew) at /usr/local/bin precedes.
 
 let g:python_host_prog  = '/usr/local/bin/python2'
-if empty(glob(g:python_host_prog))
+if !filereadable(g:python_host_prog)
     " Fallback if not exists
     let g:python_host_prog = '/usr/bin/python2'
 endif
@@ -38,7 +36,7 @@ if executable("python3")
       let l:pip_options = '--user --upgrade --ignore-installed'
     endif
     " mac: Force greenlet to be compiled from source due to potential architecture mismatch (pynvim#473)
-    if s:uname ==? 'Darwin'
+    if has('mac')
       let l:pip_options = l:pip_options . ' --no-binary greenlet'
     endif
     return l:pip_options
@@ -68,9 +66,9 @@ else
 endif
 
 " Fallback to system python3 (if not exists)
-if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = '/usr/local/bin/python3' | endif
-if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = '/usr/bin/python3'       | endif
-if empty(glob(g:python3_host_prog)) | let g:python3_host_prog = s:python3_local          | endif
+if !filereadable(g:python3_host_prog) | let g:python3_host_prog = '/usr/local/bin/python3' | endif
+if !filereadable(g:python3_host_prog) | let g:python3_host_prog = '/usr/bin/python3'       | endif
+if !filereadable(g:python3_host_prog) | let g:python3_host_prog = s:python3_local          | endif
 
 " Get and validate python version
 try
@@ -117,6 +115,13 @@ lua << EOF
     require 'config/lsp'
 EOF
   endfunction
+
+  " All lua-based plugins will be loaded and set up lazily after Vim loads.
+  " See vimrc:L10 for LazyInit
+  autocmd User LazyInit
+        \ call s:source_lua_configs() |
+        \ call s:reload_buffers()    " this shouldn't run until init is done
+
   function! s:reload_buffers()
     " reattach LSP on all (named) buffers after reloading the config
     let l:current_buffer = bufnr('%')
@@ -125,18 +130,4 @@ EOF
       execute printf('buffer %d', l:current_buffer)
     endif
   endfunction
-
-  " If missing plugins (and lua modules) are going to be installed on VimEnter,
-  " lua-based config files should be sourced after they become available.
-  " Otherwise, we let them execute as early as we can during init.vim,
-  " because startup buffers may not have LSP clients correctly attached.
-  if !exists('g:plugs_missing')  " see vimrc:L23
-    call s:source_lua_configs()
-  else
-    " Some plugins needs to be installed;
-    " source lsp configs after PlugInstall is done
-    autocmd VimEnter *
-          \ call s:source_lua_configs() |
-          \ call s:reload_buffers()    " this shouldn't run until init is done
-  endif
 endif

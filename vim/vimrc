@@ -5,8 +5,14 @@
 
 scriptencoding utf-8
 
-" Clean up all VimEnter event handlers, so vimrc can be re-sourced again
+" Allow lazy execution of plugin inits (after VimEnter and then UI initializes)
 autocmd! VimEnter
+autocmd! User LazyInit
+if exists("*timer_start")
+  autocmd! VimEnter * call timer_start(0, { -> execute('doautocmd User LazyInit') })
+else  " No timer support, this will run during VimEnter (before UI draws)
+  autocmd! VimEnter * call execute('doautocmd User LazyInit')
+endif
 
 """""""""""""""""""""""""""""""""""""""""
 " 0. Load Plugin {{{
@@ -609,7 +615,20 @@ endfunction
 nnoremap <silent> <leader>R :call Redraw()<CR>
 
 " <leader>src : source ~/.vimrc
-nnoremap <leader>src   <cmd>source ~/.vimrc<CR><cmd>doautocmd VimEnter<CR><cmd>echo 'Sourced ~/.vimrc'<CR>
+nnoremap <leader>src   <cmd>call _source_rc()<CR>
+if v:vim_did_enter == 0   " Do not redefine the function
+  function! _source_rc() abort
+    if has('nvim')
+      source ~/.config/nvim/init.vim
+      doautocmd VimEnter
+      echo 'Sourced ~/.config/nvim/init.vim'
+    else
+      source ~/.vimrc
+      doautocmd VimEnter
+      echo 'Sourced ~/.vimrc'
+    endif
+  endfunction
+endif
 
 " :Vimrc opens vim config files in a new tab
 command! -nargs=0 Vimrc   call s:open_vimrc_tab()
@@ -1046,7 +1065,7 @@ let g:startify_skiplist = [
 
 " remove all rm-like commands, which are too dangerous (even no confirm...)
 if has_key(g:plugs, 'vim-eunuch')
-  autocmd VimEnter * call s:remove_eunuch_commands()
+  autocmd User LazyInit call s:remove_eunuch_commands()
   function! s:remove_eunuch_commands()
     if !exists('g:loaded_eunuch') | return | endif
     if exists(':Remove') | delcommand Remove | endif
@@ -1161,8 +1180,8 @@ endif
 " Make timeout delay slightly smaller (before popup appears), default is 1000ms
 set timeoutlen=500
 
-if has_key(g:plugs, 'which-key.nvim')
-  autocmd VimEnter * call s:setup_which_key()
+if HasPlug('which-key.nvim')
+  autocmd User LazyInit call s:setup_which_key()
 endif
 function! s:setup_which_key()
 lua<<EOF
@@ -1200,7 +1219,7 @@ endif
 
 if IsPlugInstalled('nvim-notify')
   lua function VimNotify(msg, log_level, opts) return vim.notify(msg, log_level, opts) end
-  autocmd VimEnter * call s:setup_nvim_notify()
+  autocmd User LazyInit  call s:setup_nvim_notify()
 endif
 function! s:setup_nvim_notify() abort
 lua<<EOF
@@ -2169,7 +2188,7 @@ EOF
 endfunction
 
 if has_key(g:plugs, 'nvim-tree.lua')
-  autocmd VimEnter *     call s:setup_nvimtree()
+  autocmd User LazyInit      call s:setup_nvimtree()
   nmap <leader>E  :NvimTreeToggle<CR>
 endif
 
@@ -2406,10 +2425,12 @@ let g:ale_emit_conflict_warnings = 0
 " Change default keymapping to <C-_> (default is <C-l>)
 nmap <silent> <C-_> <Plug>(pydocstring)
 
-" disable code folding by default
+" Disable unnecessary pymode features to speed up loading.
+let g:pymode_init = 0
+let g:pymode_debug = 0
 let g:pymode_folding = 0
 
-" disable rope (terribly slow), in favor of jedi-vim
+" disable rope (terribly slow), in favor of jedi-vim or other LSP engine
 let g:pymode_rope = 0
 
 " prefer jedi's <leader>r (rename), instead of run
@@ -2670,7 +2691,7 @@ sign define GitSignsChangeDelete   text=┃  texthl=GitSignsChange  numhl=false
 endfunction
 
 if HasPlug('gitsigns.nvim')
-  autocmd VimEnter * call s:setup_gitsigns()
+  autocmd User LazyInit  call s:setup_gitsigns()
 
   " Additional keymappings other than the defaults
   nmap <leader>ha  <cmd>lua require"gitsigns".stage_hunk()<CR>
