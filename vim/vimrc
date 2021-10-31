@@ -2426,7 +2426,6 @@ let g:ale_emit_conflict_warnings = 0
 nmap <silent> <C-_> <Plug>(pydocstring)
 
 " Disable unnecessary pymode features to speed up loading.
-let g:pymode_init = 0
 let g:pymode_debug = 0
 let g:pymode_folding = 0
 
@@ -2453,8 +2452,8 @@ let g:pymode_indent_hanging_width = 4
 
 " pymode lint (code checking):
 " disable in favor of ALE, but only if pylint exists
-let s:py_linters_exists = executable('pylint')
-if has_key(g:plugs, 'ale') || get(g:, 'dotfiles_completion_backend') == '@lsp'
+if has_key(g:plugs, 'ale')
+  let s:py_linters_exists = executable('pylint')
   if s:py_linters_exists
     let g:pymode_lint = 0
   else
