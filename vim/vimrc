@@ -299,6 +299,9 @@ nnoremap <leader>:  :
 inoremap <silent> <C-k> <ESC>:update<CR>
 nnoremap <silent> <leader>e   :<C-u>e<CR>zR
 
+nnoremap Q <Nop>
+nnoremap QQ ZQ
+
 " navigation key mapping
 map <silent> k gk
 map <silent> j gj
