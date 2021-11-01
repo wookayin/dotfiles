@@ -770,6 +770,11 @@ endif
 
 function! Echo(msg) abort
   echo a:msg
+  return a:msg
+endfunction
+function! Echom(msg) abort
+  echom a:msg
+  return a:msg
 endfunction
 
 if exists('*expandcmd')  " neovim 0.5, vim: +v8.1.1510
