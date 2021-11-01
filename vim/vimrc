@@ -2038,15 +2038,16 @@ function! s:setup_wilder()
   let l:pipeline = {}
   let l:pipeline.noop = [{_ -> v:false}]
   let l:pipeline.cmdline = wilder#cmdline_pipeline({
-        \ 'fuzzy' : 1, 'fuzzy_filter': wilder#lua_fzy_filter() })
+        \ 'fuzzy' : 2, 'fuzzy_filter': wilder#lua_fzy_filter() })
   let l:pipeline.search_history = [ wilder#check({_, x -> empty(x)}), wilder#history() ]
 
-  let l:pipeline.file_fuzzy = executable('fd') ? wilder#python_file_finder_pipeline({
-        \ 'debounce': 50,
-        \ 'file_command': {ctx, arg -> v:lua._wilder_fuzzy_fd_pipeline_command(ctx, arg, 'f')},
-        \ 'dir_command':  {ctx, arg -> v:lua._wilder_fuzzy_fd_pipeline_command(ctx, arg, 'd')},
-        \ 'filters': ['fuzzy_filter', 'difflib_sorter'],
-        \ 'path': {-> getcwd()},
+  let l:pipeline.file_fuzzy = executable('fd') && has('nvim-0.5.0') ?
+        \ wilder#python_file_finder_pipeline({
+        \   'debounce': 50,
+        \   'file_command': {ctx, arg -> v:lua._wilder_fuzzy_fd_pipeline_command(ctx, arg, 'f')},
+        \   'dir_command':  {ctx, arg -> v:lua._wilder_fuzzy_fd_pipeline_command(ctx, arg, 'd')},
+        \   'filters': ['fuzzy_filter', 'difflib_sorter'],
+        \   'path': {-> getcwd()},
         \ }) : l:pipeline.noop
 
 lua<<EOF
@@ -2070,6 +2071,7 @@ _G._wilder_fuzzy_fd_pipeline_command = function(ctx, arg, file_mode)
   if string.sub(arg_filename, 1, 1) == "." then
     cmd = vim.list_extend(cmd, {'--no-ignore', '--hidden', '--maxdepth', '1'})
   end
+
   table.insert(cmd, '.')
   -- When the current path argument exactly matches a subdirectory, search inside it (narrow down);
   -- otherwise search the entire current directory
