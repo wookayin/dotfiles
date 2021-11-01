@@ -61,7 +61,6 @@ if has('nvim-0.4.0') || has('popup')
   Plug 'skywind3000/vim-quickui'
 endif
 Plug 'mg979/vim-xtabline'
-Plug 'ervandew/supertab'
 
 let g:_nerdtree_lazy_events = ['NERDTree', 'NERDTreeToggle', 'NERDTreeTabsToggle', '<Plug>NERDTreeTabsToggle']
 Plug 'scrooloose/nerdtree', { 'on': g:_nerdtree_lazy_events }
@@ -188,8 +187,6 @@ if has('python3') && s:python3_version() >= '3.5'
   Plug 'wookayin/vim-autoimport'
 endif
 
-Plug 'artur-shaik/vim-javacomplete2'
-
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 "Plug 'LaTeX-Box-Team/LaTeX-Box'
@@ -211,11 +208,11 @@ function! s:choose_completion_backend()
     return '@lsp'
   endif
 
-  " 2. Neovim 0.3.1+ or vim 8.0+: coc.nvim
+  " 2. Neovim 0.4.0+ or vim 8.0.1453+: coc.nvim
   "   (i) Proper neovim/vim8 version and python3
   "   (ii) 'node' and 'npm' are installed
   "   (iii) Directory ~/.config/coc exists (opt-in)
-  if (has('nvim-0.3.1') || v:version >= 800) &&
+  if (has('nvim-0.4.0') || (!has('nvim') && has('patch-8.0.1453'))) &&
         \ executable('npm') && executable('python3') &&
         \ isdirectory(expand("\~/.config/coc/"))
     " Check minimum node version
@@ -230,16 +227,10 @@ function! s:choose_completion_backend()
   endif
 
   " (At this point, apparently we are maybe using legacy (neo)vim. Warn users!)
-  if has('nvim') && !has('nvim-0.3.1')
+  if has('nvim') && !has('nvim-0.4.0')
     autocmd VimEnter * echohl WarningMsg | echom
-          \ 'WARNING: Neovim 0.3.1+ or Vim 8.0+ is required for coc.nvim. '
+          \ 'WARNING: Neovim version is too old. Please install latest neovim (0.5.1+). '
           \ . '(Try: dotfiles install neovim)' | echohl None
-    return
-  endif
-
-  " 3. Legacy Neovim: Deoplete
-  if has('nvim') && s:python3_version() >= '3.6.1'
-    return '@deoplete'
   endif
 
   " No completion available :(
@@ -284,9 +275,6 @@ if g:dotfiles_completion_backend == '@coc'
     Plug 'antoinemadec/coc-fzf'
   endif
 
-  " coc supercedes deoplete and supertab
-  UnPlug 'ervandew/supertab'   " Custom <TAB> mapping for coc.nvim supercedes supertab
-
   if s:floating_available
     " disable vim-which-key if floating windows are used (have some conflicts)
     UnPlug 'liuchengxu/vim-which-key'
@@ -301,20 +289,12 @@ if g:dotfiles_completion_backend == '@coc'
   UnPlug 'kyazdani42/nvim-tree.lua'   " use coc-explorer
 endif
 
-" 3. [Legacy neovim: deoplete]
-if g:dotfiles_completion_backend == '@deoplete'
-  Plug 'Shougo/deoplete.nvim', { 'do': function('UpdateRemote') }
-  Plug 'zchee/deoplete-jedi'    " Python
-  Plug 'zchee/deoplete-clang'   " C/C++
-  Plug 'zchee/deoplete-zsh', { 'for': ['zsh'] }     " zsh
-endif
-
-if g:dotfiles_completion_backend == '' || g:dotfiles_completion_backend == '@deoplete'
+" no LSP/coc support (legacy)
+if g:dotfiles_completion_backend == ''
   " Use jedi-vim, only if we are not using coc.nvim or LSP.
   Plug 'davidhalter/jedi-vim'
-endif
-
-if g:dotfiles_completion_backend == '' || g:dotfiles_completion_backend == '@deoplete'
+  " Legacy support for <TAB> in the completion context
+  Plug 'ervandew/supertab'
   " echodoc: not needed for coc.nvim and nvim-lsp
   if has('nvim')
     Plug 'Shougo/echodoc.vim'

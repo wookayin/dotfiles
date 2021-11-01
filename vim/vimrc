@@ -2332,10 +2332,6 @@ if has_key(g:plugs, 'vim-pandoc')
 endif
 
 " ---------------------------------------------------------------- }}}
-" vim-javacomplete2 {{{
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
-
-" ---------------------------------------------------------------- }}}
 " vim-verdict {{{
 
 " cooperative mode required to make it work with coc.nvim, YCM, etc.
@@ -2344,56 +2340,6 @@ let g:Verdin#cooperativemode = 1
 " ---------------------------------------------------------------- }}}
 " echodoc.vim {{{
 let g:echodoc#enable_at_startup = 1
-
-" ---------------------------------------------------------------- }}}
-" deoplete.nvim {{{
-let g:deoplete#enable_at_startup = 1
-
-
-" Register some default omnicomplete functions/patterns
-" to automatically trigger in deoplete {{
-function! s:configure_deoplete_vars()
-  let l:functions = {}
-  let l:input_patterns = {}
-
-  let l:functions.tex = ['vimtex#complete#omnifunc']
-  let l:input_patterns.tex =
-        \ '(?:'
-        \ . '\\\w*'
-        \ . ')'
-
-  let l:functions.lua = 'xolox#lua#omnifunc'
-  let l:input_patterns.lua = '\w+|[^. *\t][.:]\w*'
-
-  call deoplete#custom#var('omni', 'functions', l:functions)
-  call deoplete#custom#var('omni', 'input_patterns', l:input_patterns)
-endfunction
-
-try
-  call s:configure_deoplete_vars()
-catch /E117/  " deoplete doesn't exist yet, ignore
-endtry
-
-" }}
-
-" ---------------------------------------------------------------- }}}
-" Lua {{{
-" https://github.com/xolox/vim-lua-ftplugin
-"
-" See also:
-" https://github.com/Shougo/deoplete.nvim/issues/458      compatibility with deoplete
-" https://github.com/xolox/vim-lua-ftplugin/issues/40     if not working with Torch
-
-let g:lua_check_syntax = 1
-
-let g:lua_complete_omni = 1
-
-if has_key(g:plugs, 'deoplete.nvim')
-  let g:lua_complete_dynamic = 0    " deoplete will take care of this instead
-endif
-
-let g:lua_define_completion_mappings = 0
-
 
 " ---------------------------------------------------------------- }}}
 " semshi {{{
@@ -2500,15 +2446,7 @@ let g:pymode_lint_cwindow = 0
 let g:pymode_lint_ignore = ['E401', 'E501']
 
 
-" For neovim or vim8 (completor.vim),
-" disable jedi's autocompletion behavior but enable all the other features (e.g. goto, or refactoring)
-" The autocompletion is supported by deoplete-jedi or completor.vim.
-if has_key(g:plugs, 'deoplete-jedi')
-      \ || has_key(g:plugs, 'completor.vim')
-      \ || has_key(g:plugs, 'coc.nvim')
-  " @see https://github.com/zchee/deoplete-jedi/issues/35
-  let g:jedi#completions_enabled = 0
-endif
+" Deprecated: LEGACY jedi-vim support (without LSP, coc.nvim)
 
 " Make jedi's completeopt not to include 'longest',
 " to prevent underscore prefix auto-completion (e.g. self.__)
@@ -2529,33 +2467,6 @@ let g:jedi#use_tabs_not_buffers = 0
 " window splits to open with; for now, it is disabled
 "let g:jedi#use_splits_not_buffers = 'bottom'
 "
-
-" ---------------------------------------------------------------- }}}
-" deoplete-clang {{{
-
-function! s:detect_libclang_path()
-  " linux: detect the latest version
-  let l:linux_clang = sort(glob('/usr/lib/llvm-*/lib/libclang.so', 1, 1), 'n')   " numeric sort
-  if ! empty(l:linux_clang) | return l:linux_clang[-1] | endif
-
-  let l:linux_clang = sort(glob('/usr/lib/llvm-*/lib/libclang.so.1', 1, 1), 'n')   " numeric sort
-  if ! empty(l:linux_clang) | return l:linux_clang[-1] | endif
-
-  " darwin
-  let l:darwin_clang = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
-  if filereadable(l:darwin_clang) | return l:darwin_clang | endif
-endfunction
-
-let s:libclang_path = s:detect_libclang_path()
-if ! empty(s:libclang_path)
-  let g:deoplete#sources#clang#libclang_path = s:libclang_path
-endif
-
-if isdirectory('/usr/include/clang')
-  let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
-elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
-  let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
-endif
 
 " ---------------------------------------------------------------- }}}
 " LaTeX {{{
