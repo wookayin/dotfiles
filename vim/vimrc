@@ -285,6 +285,29 @@ function! ToggleVerbose()
   endif
 endfunction
 
+" :lua vim.notify / VimNotify
+if has('nvim') && luaeval('vim.notify == nil')
+  " Backward compatibility for neovim < 0.5
+  " see nvim-notify plugin settings below
+  lua vim.notify = function(msg, log_level, opts) print(msg) end
+endif
+
+if has('nvim')
+  function! VimNotify(msg, ...)
+    " Compatible with vanilla vim, neovim 0.4.x, and 0.5.0+ (native)
+    " Same spec as v:lua.vim.notify(msg, log, opts).
+    let l:log_level = a:0 >= 1 ? a:000[0] : 'info'
+    let l:opts = a:0 >= 2 ? a:000[1] : {}
+    return luaeval("vim.notify(_A[1], _A[2], _A[3])", [a:msg, l:log_level, l:opts])
+  endfunction
+else  " fallback for vanilla vim
+  function! VimNotify(msg, ...)
+    echom a:msg
+  endfunction
+endif
+command! -nargs=+ Notify         :call VimNotify(<q-args>)
+command! -nargs=+ NotifyError    :call VimNotify(<q-args>, 'error')
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " 2. Key and Functional Mappings {{{
@@ -1218,11 +1241,6 @@ let g:EditorConfig_core_mode = 'vim_core'
 " ---------------------------------------------------------------- }}}
 " nvim-notify {{{
 
-" Backward compatibility for neovim < 0.5
-if has('nvim') && luaeval('vim.notify == nil')
-  lua vim.notify = function(msg, log_level, opts) print(msg) end
-endif
-
 if IsPlugInstalled('nvim-notify')
   lua function VimNotify(msg, log_level, opts) return vim.notify(msg, log_level, opts) end
   autocmd User LazyInit  call s:setup_nvim_notify()
@@ -1242,7 +1260,6 @@ require("notify").setup({
 -- See config/lsp.lua for telescope extensions as well
 vim.notify = require("notify")
 vim.cmd [[
-command! -nargs=+ Notify               :lua vim.notify <q-args>
 command! -nargs=0 NotificationsPrint   :lua require('notify')._print_history()
 ]]
 EOF
@@ -1411,19 +1428,12 @@ function! s:OnNeomakeJobFinished()
     let l:failure_message = printf('%s%s ', l:failure_message, l:job['as_string']())
   endif
   if !empty(l:failure_message)
-    if has('nvim-0.5.0')  " lua vim.notify
-      call v:lua.VimNotify(l:failure_message, 'warn',
-            \ {'title': l:job_title})
-    else | echom 'Job Finished, FAIL: ' . l:failure_message
-    endif
+    call VimNotify('Job Failed: ' . l:failure_message, 'warn', {'title': l:job_title})
     copen | wincmd p   " copen, but not move to the quickfix window
     let b:neomake_auto_copen = 1
   else
-    if has('nvim-0.5.0')  " lua vim.notify
-      call v:lua.VimNotify('Job Finished, Success.', 'info',
-            \ {'title': l:job_title, 'timeout': 1000})
-    else | echom 'Job Finished, Success.'
-    endif
+    call VimNotify('Job Finished, Success.', 'info',
+          \ {'title': l:job_title, 'timeout': 1000})
     if get(b:, 'neomake_auto_copen', 0) == 1
       " if quickfix list is opened automatically by neomake callback,
       " we should automatically close it upon the success of neomake job.
@@ -2106,7 +2116,7 @@ function! s:check_wilder_rplugins() abort
   if !exists('*_wilder_init')
     let l:msg = 'Please run :UpdateRemotePlugins and restart. (see :messages)'
     echohl WarningMsg | echom l:msg | echohl None
-    call v:lua.VimNotify(l:msg, 'error', {'timeout': 30 * 1000, 'title': 'wilder.nvim'})
+    call VimNotify(l:msg, 'error', {'timeout': 30 * 1000, 'title': 'wilder.nvim'})
   endif
 endfunction
 
