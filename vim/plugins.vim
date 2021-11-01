@@ -55,7 +55,6 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
 Plug 'junegunn/fzf.vim'
 Plug 'wookayin/fzf-ripgrep.vim'
 if has('nvim-0.4.0')
-  Plug 'liuchengxu/vim-clap'   " Deprecated
   Plug 'voldikss/vim-floaterm'
 endif
 if has('nvim-0.4.0') || has('popup')
