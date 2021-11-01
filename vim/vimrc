@@ -28,9 +28,9 @@ if filereadable(expand('~/.vim/plugins.vim'))
 endif
 
 " Automatically install missing plugins on startup
-if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  let g:plugs_missing = 1
-  autocmd VimEnter * PlugInstall --sync | q
+let g:plugs_missing = filter(values(g:plugs), '!isdirectory(v:val.dir)')
+if len(g:plugs_missing) > 0
+  PlugInstall --sync | q
 endif
 
 " Utilities to tell whether a plugin is configured or installed.
