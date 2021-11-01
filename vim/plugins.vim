@@ -172,30 +172,6 @@ endif
 
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
-Plug 'editorconfig/editorconfig-vim'
-
-Plug 'sheerun/vim-polyglot', {'tag': 'v4.2.1'}   " conflicts with vimtex (see polyglot#484)
-Plug 'tmux-plugins/vim-tmux'
-
-Plug 'klen/python-mode', { 'branch': 'develop' } |
-      \ Plug 'wookayin/vim-python-enhanced-syntax'
-if has('nvim') && s:python3_version() >= '3.5'
-  Plug 'numirias/semshi', { 'do': function('UpdateRemote') }
-  Plug 'stsewd/isort.nvim', { 'do': function('UpdateRemote') }
-endif
-if has('python3') && s:python3_version() >= '3.5'
-  Plug 'wookayin/vim-autoimport'
-endif
-
-Plug 'vim-pandoc/vim-pandoc'
-Plug 'vim-pandoc/vim-pandoc-syntax'
-"Plug 'LaTeX-Box-Team/LaTeX-Box'
-Plug 'lervag/vimtex', { 'for' : ['tex', 'plaintex'] }
-Plug 'machakann/vim-Verdin', { 'for': ['vim'] }   " vimscript omnifunc
-Plug 'gisraptor/vim-lilypond-integrator'
-Plug 'tfnico/vim-gradle'
-Plug 'Tyilo/applescript.vim'
-Plug 'rdolgushin/groovy.vim'
 
 " [Completion Engine or LSP backend]
 " We have a long history and I want to make completion work for legacy and
@@ -300,6 +276,30 @@ if g:dotfiles_completion_backend == ''
     Plug 'Shougo/echodoc.vim'
   endif
 endif
+
+" Other language-specific plugins supplementary and orthogonal to LSP, coc, etc.
+" ------------------------------------------------------------------------------
+Plug 'klen/python-mode', { 'branch': 'develop' }
+Plug 'wookayin/vim-python-enhanced-syntax'
+
+" polyglot: cannot use latest version (see GH-608, GH-613)
+Plug 'sheerun/vim-polyglot', {'tag': 'v4.2.1'}
+Plug 'tmux-plugins/vim-tmux'
+
+if has('nvim') && s:python3_version() >= '3.5'
+  Plug 'numirias/semshi', { 'do': function('UpdateRemote') }
+  Plug 'stsewd/isort.nvim', { 'do': function('UpdateRemote') }
+  Plug 'wookayin/vim-autoimport'
+endif
+
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'lervag/vimtex', { 'for' : ['tex', 'plaintex'] }
+Plug 'machakann/vim-Verdin', { 'for': ['vim'] }   " vimscript omnifunc
+Plug 'gisraptor/vim-lilypond-integrator'
+Plug 'tfnico/vim-gradle'
+Plug 'Tyilo/applescript.vim'
+Plug 'rdolgushin/groovy.vim'
 
 
 " =======================================================
