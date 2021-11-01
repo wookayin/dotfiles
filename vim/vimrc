@@ -130,6 +130,9 @@ if has('nvim')
   set inccommand=split
 endif
 
+" Fold level: when starting, let all the folds be open
+set nofoldenable
+
 " When jumping to line, folds on the line should be opened (:help 'foldopen')
 set foldopen+=jump
 
