@@ -2218,6 +2218,12 @@ endfunction
 if has_key(g:plugs, 'nvim-tree.lua')
   autocmd User LazyInit      call s:setup_nvimtree()
   nmap <leader>E  :NvimTreeToggle<CR>
+
+  " On focus, refresh automatically
+  augroup NvimTreeCustomization
+    autocmd!
+    autocmd BufEnter NvimTree*   :NvimTreeRefresh
+  augroup end
 endif
 
 " ---------------------------------------------------------------- }}}
