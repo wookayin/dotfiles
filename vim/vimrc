@@ -319,6 +319,8 @@ let mapleader=','           " comma is the <Leader> key.
 let maplocalleader=','      " comma : <LocalLeader>
 nnoremap <leader>:  :
 
+nnoremap <Space> :
+
 inoremap <silent> <C-k> <ESC>:update<CR>
 nnoremap <silent> <leader>e   :<C-u>e<CR>zR
 
