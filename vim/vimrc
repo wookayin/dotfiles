@@ -532,7 +532,8 @@ endif
 " Make for vim script files is to reload itself.
 augroup VimscriptMakeprg
   autocmd!
-  autocmd FileType vim   nmap <buffer> <F5> :source %<CR>
+  autocmd FileType vim   nmap <buffer> <F5>
+        \ <cmd>source %<CR><cmd>call VimNotify("Sourced " . bufname('%'))<CR>
 augroup END
 
 " Alternative to <F5>
@@ -2306,8 +2307,9 @@ let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
 let g:UltiSnipsEditSplit = 'context'
 let g:UltiSnipsSnippetDirectories = [$HOME . '/.vim/UltiSnips']
 
-command! -nargs=0 UltiSnipsRefreshSnippets :call UltiSnips#RefreshSnippets()
-command! -nargs=0 RefreshUltiSnips         :UltiSnipsRefreshSnippets
+command! -nargs=0 UltiSnipsRefreshSnippets call UltiSnips#RefreshSnippets()
+            \ | call VimNotify("Reloaded Snippets.", 'info', {'title': 'Ultisnips'})
+command! -nargs=0 RefreshUltiSnips         UltiSnipsRefreshSnippets
 
 augroup UltiSnipsAutoReload
   autocmd!
