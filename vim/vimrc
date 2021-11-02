@@ -2550,7 +2550,7 @@ command! -nargs=* GC :Git commit -v<args>
 au FileType gitcommit nnoremap <buffer> <silent>
             \ cA :bd<CR>:<C-U>Git commit --verbose --amend<CR>
 
-" GStatus: more configuration and keymaps for fugitive index buffers
+" Git: more configuration and keymaps for fugitive index buffers
 augroup FugitiveAddon
   autocmd!
   " Fix window height to be 20
@@ -2563,6 +2563,7 @@ augroup FugitiveAddon
   " [space] same as = (toggle inline diffs for the current file)
   autocmd FileType fugitive    nmap     <buffer> g=          ggVG=zM
   autocmd FileType fugitive    nmap     <buffer> <space>     =
+  autocmd FileType fugitive    nmap     <buffer> <tab>       =
   " [,gd] diffvsplit
   autocmd FileType fugitive    nmap     <buffer> <leader>gd  dv
 
