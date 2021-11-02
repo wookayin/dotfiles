@@ -39,6 +39,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'flazz/vim-colorschemes'
 Plug 'embear/vim-localvimrc', PlugCond(has('patch-7.4.1154'))  " requires v:false
 Plug 'tweekmonster/helpful.vim', { 'on' : ['HelpfulVersion'] }
+Plug 'dstein64/vim-startuptime', { 'on': ['StartupTime'] }
 
 " Vim Interfaces
 " -------------------------------------
