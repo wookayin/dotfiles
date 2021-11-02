@@ -174,6 +174,8 @@ endif
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
 
+Plug 'editorconfig/editorconfig-vim'
+
 " [Completion Engine or LSP backend]
 " We have a long history and I want to make completion work for legacy and
 " older vim as well. Choose the completion or LSP engine in the order of
