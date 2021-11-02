@@ -442,6 +442,37 @@ install_lazygit() {
   $PREFIX/bin/lazygit --version
 }
 
+install_mujoco() {
+  # https://mujoco.org/download
+  set -e; set -x
+  local mujoco_version="mujoco210"
+
+  local MUJOCO_ROOT=$HOME/.mujoco/$mujoco_version
+  if [[ -d "$MUJOCO_ROOT" ]]; then
+    echo -e "${COLOR_YELLOW}Error: $MUJOCO_ROOT already exists.${COLOR_NONE}"
+    return 1;
+  fi
+
+  local tmpdir="/tmp/$USER/mujoco"
+  mkdir -p $tmpdir && cd $tmpdir
+  mkdir -p $HOME/.mujoco
+
+  local download_url="https://mujoco.org/download/${mujoco_version}-linux-x86_64.tar.gz"
+  local filename="$(basename $download_url)"
+  wget -N -O $tmpdir/$filename "$download_url"
+  tar -xvzf "$filename" -C $tmpdir
+
+  mv $tmpdir/$mujoco_version $HOME/.mujoco/
+  test -d $MUJOCO_ROOT
+
+  $MUJOCO_ROOT/bin/testspeed $MUJOCO_ROOT/model/scene.xml 1000
+  set +x
+
+  echo -e "${COLOR_GREEN}MUJOCO_ROOT = $MUJOCO_ROOT${COLOR_NONE}"
+  echo -e "${COLOR_WHITE}Done. Please don't forget to set LD_LIBRARY_PATH \
+   (should include $MUJOCO_ROOT/bin).${COLOR_NONE}\n"
+}
+
 
 # entrypoint script
 if [ `uname` != "Linux" ]; then
