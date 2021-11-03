@@ -241,6 +241,8 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'onsails/lspkind-nvim'
 
+  Plug 'jose-elias-alvarez/null-ls.nvim', PlugCond(has('nvim-0.6.0'))
+
   UnPlug 'ervandew/supertab'   " Custom <TAB> mapping for coc.nvim supercedes supertab
   UnPlug 'w0rp/ale'            " Disable ALE for now (TODO: we might still need it for LSP-lacking filetypes)
 endif

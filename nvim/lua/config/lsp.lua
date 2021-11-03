@@ -418,3 +418,111 @@ require("trouble").setup {
     mode = "document_diagnostics",
     auto_preview = false,
 }
+
+
+----------------------------------------
+-- Formatting, Linting, and Code actions
+----------------------------------------
+-- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md
+-- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
+-- @see ~/.vim/plugged/null-ls.nvim/lua/null-ls/builtins
+local _, null_ls = pcall(require, "null-ls")
+local executable = function(cmd)
+  -- @see BUILTINS.md#conditional-registration
+  return function(utils)
+    return vim.fn.executable(cmd)
+  end
+end
+if null_ls then
+  local h = require("null-ls.helpers")
+  null_ls.setup({
+    sources = {
+      -- [[ Auto-Formatting ]]
+      -- @python (pip install yapf isort)
+      null_ls.builtins.formatting.yapf.with({condition = executable("yapf")}),
+      null_ls.builtins.formatting.isort.with({condition = executable("isort")}),
+      -- @javascript
+      null_ls.builtins.formatting.prettier,
+
+      -- Linting (diagnostics)
+      -- @python: pylint, flake8
+      null_ls.builtins.diagnostics.pylint.with({condition = executable("pylint")}),
+      null_ls.builtins.diagnostics.flake8.with({
+          -- Activate when flake8 is available and any project config is found,
+          -- per https://flake8.pycqa.org/en/latest/user/configuration.html
+          condition = function(utils)
+            return vim.fn.executable("flake8") and (
+              utils.root_has_file("setup.cfg") or
+              utils.root_has_file("tox.ini") or
+              utils.root_has_file(".flake8")
+            )
+          end,
+          -- Ignore some too aggressive errors (indentation, lambda, etc.)
+          -- @see https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
+          extra_args = {"--extend-ignore", "E111,E114,E731"},
+          -- Override flake8 diagnostics levels
+          -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/issues/538
+          on_output = h.diagnostics.from_pattern(
+            [[:(%d+):(%d+): ((%u)%w+) (.*)]],
+            { "row", "col", "code", "severity", "message" },
+            {
+              severities = {
+                E = h.diagnostics.severities["warning"], -- Changed to warning!
+                W = h.diagnostics.severities["warning"],
+                F = h.diagnostics.severities["information"],
+                D = h.diagnostics.severities["information"],
+                R = h.diagnostics.severities["warning"],
+                S = h.diagnostics.severities["warning"],
+                I = h.diagnostics.severities["warning"],
+                C = h.diagnostics.severities["warning"],
+              },
+            }),
+        }),
+    },
+
+    -- Debug mode: Use :NullLsLog for viewing log files (~/.cache/nvim/null-ls.log)
+    debug = false,
+  })
+
+  -- Commands for LSP formatting. :Format
+  -- FormattingOptions: @see https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#formattingOptions
+  vim.cmd [[
+    command! LspFormatSync        lua vim.lsp.buf.formatting_sync({}, 5000)
+    command! -range=0 Format      LspFormat
+  ]]
+
+  -- Automatic formatting
+  -- see ~/.vim/after/ftplugin/python.vim for filetype use
+  vim.cmd [[
+    augroup LspAutoFormatting
+    augroup END
+    command! LspAutoFormattingOn      lua _G.LspAutoFormattingStart()
+    command! LspAutoFormattingOff     lua _G.LspAutoFormattingStop()
+  ]]
+  _G.LspAutoFormattingStart = function ()
+    vim.cmd [[
+    augroup LspAutoFormatting
+      autocmd!
+      autocmd BufWritePre *    :lua _G.LspAutoFormattingTrigger()
+    augroup END
+    ]]
+    vim.notify("Lsp Auto-Formatting has been turned on.")
+  end
+  _G.LspAutoFormattingTrigger = function ()
+    -- Disable on some files (e.g., external packages)
+    if string.find(vim.fn.bufname(), '/site-packages/') then
+      return false
+    end
+    -- TODO: Enable only on the current project specified by PATH.
+    if vim.tbl_count(vim.lsp.buf_get_clients()) > 0 then
+      vim.lsp.buf.formatting_sync({}, 1000)
+      return true
+    end
+    return false
+  end
+  _G.LspAutoFormattingStop = function ()
+    vim.cmd [[ autocmd! LspAutoFormatting ]]
+    vim.notify("Lsp Auto-Formatting has been turned off.", 'warn')
+  end
+
+end   -- if null-ls

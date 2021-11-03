@@ -104,6 +104,23 @@ nmap <silent> <Plug>ToggleLineCommentTypeIgnore
 " Experimental
 " ============
 
+" LSP: turn on auto formatting by default for a 'project'
+" condition: when one have .style.yapf file in a git repository.
+" Executed only once for the current vim session.
+if exists(':LspAutoFormattingOn')
+  if get(g:, '_python_autoformatting_detected', 0) == 0
+    let g:_python_autoformatting_detected = 1  " do not auto-turn on any more
+    let s:project_root = DetermineProjectRoot()
+    if !empty(s:project_root)
+      let s:style_yapf = s:project_root . '/.style.yapf'
+      if filereadable(s:style_yapf)
+        " TODO: Do not affect files outside the project!!
+        :LspAutoFormattingOn
+      endif
+    endif
+  endif
+endif
+
 " <M-CR> for auto import symbol (replacing coc.nvim)
 if exists(':ImportSymbol')   " plugin vim-autoimport
   nmap <silent> <buffer>  <M-CR>   :ImportSymbol<CR>
