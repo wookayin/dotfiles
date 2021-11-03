@@ -288,6 +288,7 @@ Plug 'wookayin/vim-python-enhanced-syntax'
 " polyglot: cannot use latest version (see GH-608, GH-613)
 Plug 'sheerun/vim-polyglot', {'tag': 'v4.2.1'}
 Plug 'tmux-plugins/vim-tmux'
+Plug 'fladson/vim-kitty', { 'for': ['kitty'] }
 
 if has('nvim') && s:python3_version() >= '3.5'
   Plug 'numirias/semshi', { 'do': function('UpdateRemote') }
