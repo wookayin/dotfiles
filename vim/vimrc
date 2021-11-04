@@ -8,8 +8,8 @@ scriptencoding utf-8
 " Allow lazy execution of plugin inits (after VimEnter and then UI initializes)
 autocmd! VimEnter
 autocmd! User LazyInit
-if exists("*timer_start")
-  autocmd! VimEnter * call timer_start(0, { -> execute('doautocmd User LazyInit') })
+if exists("*timer_start") && exists('*nvim_command')  " neovim
+  autocmd! VimEnter * call timer_start(0, { -> nvim_command('doautocmd User LazyInit') })
 else  " No timer support, this will run during VimEnter (before UI draws)
   autocmd! VimEnter * call execute('doautocmd User LazyInit')
 endif

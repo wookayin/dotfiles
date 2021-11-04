@@ -123,11 +123,11 @@ EOF
         \ call s:reload_buffers()    " this shouldn't run until init is done
 
   function! s:reload_buffers()
-    " reattach LSP on all (named) buffers after reloading the config
-    let l:current_buffer = bufnr('%')
-    execute 'silent! bufdo if &buftype == "" | e | endif'
-    if l:current_buffer >= 0 && bufexists(l:current_buffer)
-      execute printf('buffer %d', l:current_buffer)
+    " reattach LSP on all buffers, after reloading the LSP config
+    if exists('*win_getid')  " neovim or vim 7.4.1557+
+      let l:current_winid = win_getid()
+      execute 'silent! windo if &filetype != "" && &buftype == "" | e | endif'
+      call win_gotoid(l:current_winid)
     endif
   endfunction
 endif
