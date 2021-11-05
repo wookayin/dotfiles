@@ -61,7 +61,9 @@ endif
 if has('nvim-0.4.0') || has('popup')
   Plug 'skywind3000/vim-quickui'
 endif
-Plug 'mg979/vim-xtabline'
+if exists('##TermOpen') || exists('##TerminalOpen')
+  Plug 'mg979/vim-xtabline'
+endif
 
 let g:_nerdtree_lazy_events = ['NERDTree', 'NERDTreeToggle', 'NERDTreeTabsToggle', '<Plug>NERDTreeTabsToggle']
 Plug 'scrooloose/nerdtree', { 'on': g:_nerdtree_lazy_events }

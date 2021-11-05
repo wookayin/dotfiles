@@ -859,7 +859,7 @@ call CommandAlias('tabnewh', "tabnew %:h/<C-R>=EatWhitespace()<CR>")
 
 
 " :Toggle... command aliases
-if has('lambda')
+if has('lambda') && exists('##CmdlineEnter')
   augroup RegisterToggleCommands
     autocmd!
     autocmd CmdlineEnter * call RegisterToggleCommands() | autocmd! RegisterToggleCommands
