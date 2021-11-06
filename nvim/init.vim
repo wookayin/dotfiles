@@ -51,7 +51,7 @@ if executable("python3")
     if empty(s:python3_neovim_path)
       " auto-install 'neovim' python package for the current python3 (virtualenv, anaconda, or system-wide)
       let s:pip_options = Python3_determine_pip_options()
-      execute ("!" . s:python3_local . " -m pip install " . s:pip_options . " pynvim")
+      execute ("!" . g:python3_host_prog . " -m pip install " . s:pip_options . " pynvim")
       if v:shell_error != 0
         call s:show_warning_message('ErrorMsg', "Installation of pynvim failed. Python-based features may not work.")
       endif
@@ -61,7 +61,7 @@ if executable("python3")
   " Assuming that pynvim package is available (or will be installed later), use it as a host python3
   let g:python3_host_prog = s:python3_local
 else
-  echoerr "python3 is not found on your system. Most features are disabled."
+  echoerr "python3 is not found on your system: Check $PATH or $SHELL. Most features are disabled."
   let s:python3_local = ''
 endif
 
@@ -84,7 +84,7 @@ endtry
 " (with timer, make it shown frontmost over other warning messages)
 if empty(g:python3_host_version)
   call timer_start(0, { -> s:show_warning_message('ErrorMsg',
-        \ "ERROR: You don't have python3 on your $PATH. Most features are disabled.")
+        \ "ERROR: You don't have python3 on your $PATH. Check $PATH or $SHELL. Most features are disabled.")
         \ })
 elseif g:python3_host_version < '3.6.1'
   call timer_start(0, { -> s:show_warning_message('WarningMsg',

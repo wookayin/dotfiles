@@ -55,7 +55,7 @@ end
 
 set nocompatible
 
-if !empty($SHELL)
+if !empty($SHELL) && filereadable($SHELL)
   let &g:shell=$SHELL
 elseif filereadable('/bin/zsh')
   set shell=/bin/zsh
