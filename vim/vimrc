@@ -886,7 +886,7 @@ endif
 " Closes all floating windows, useful for cleaning up messed up pop-ups
 if has('nvim-0.4.0')
   command! CloseAllFloatingWindows   lua _G.CloseAllFloatingWindows()
-lua<<EOF
+lua << EOF
   _G.CloseAllFloatingWindows = function()
     local closed_windows = {}
     for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -1240,7 +1240,7 @@ if HasPlug('which-key.nvim')
   autocmd User LazyInit call s:setup_which_key()
 endif
 function! s:setup_which_key()
-lua<<EOF
+lua << EOF
   require("which-key").setup {
     window = {
       border = "single",
@@ -1273,7 +1273,7 @@ if IsPlugInstalled('nvim-notify')
   autocmd User LazyInit  call s:setup_nvim_notify()
 endif
 function! s:setup_nvim_notify() abort
-lua<<EOF
+lua << EOF
 require("notify").setup({
   stages = "slide",
   on_open = function(win)
@@ -1307,7 +1307,7 @@ if HasPlug('lualine.nvim')
   autocmd VimEnter * call s:setup_lualine()
 endif
 function! s:setup_lualine() abort
-lua<<EOF
+lua << EOF
 
 -- Customize statusline components
 -- https://github.com/shadmansaleh/lualine.nvim#changing-components-in-lualine-sections
@@ -2072,7 +2072,7 @@ function! s:setup_wilder()
         \   'path': {-> getcwd()},
         \ }) : l:pipeline.noop
 
-lua<<EOF
+lua << EOF
 _G._wilder_fuzzy_fd_pipeline_command = function(ctx, arg, file_mode)
   local cmd = {'fd'}
 
@@ -2213,7 +2213,7 @@ function! s:setup_nvimtree() abort
   " Don't ask which window should be picked to open files.
   let g:nvim_tree_disable_window_picker = 1
 
-lua<<EOF
+lua << EOF
   -- Config: https://github.com/kyazdani42/nvim-tree.lua#setup
   local tree_cb = require('nvim-tree.config').nvim_tree_callback
   require('nvim-tree').setup {
@@ -2637,26 +2637,19 @@ endif
 " :Gitsigns
 
 function! s:setup_gitsigns() abort
-lua<<EOF
+lua << EOF
 require('gitsigns').setup {
   signs = {
-    --add          = {hl = 'GitSignsAdd'   , text = '+', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
-    --Change       = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-    --delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-    --topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-    --changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+    -- For highlights, see ~/.vim/colors/xoria256-wook.vim
+    add          = {hl = 'GitSignsAdd'   , text = '┃', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+    change       = {hl = 'GitSignsChange', text = '┃', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+    delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    changedelete = {hl = 'GitSignsChange', text = '┃', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
   },
   signcolumn = true,
 }
 EOF
-
-" Manually define (override) signs after calling setup, due to neovim bug 16136
-" For highlights, see ~/.vim/colors/xoria256-wook.vim
-" TODO: This is just a workaround, these will be lost after toggling signs
-sign define GitSignsAdd            text=┃  texthl=GitSignsAdd     numhl=false
-sign define GitSignsChange         text=┃  texthl=GitSignsChange  numhl=false
-sign define GitSignsChangeDelete   text=┃  texthl=GitSignsChange  numhl=false
-
 endfunction
 
 if HasPlug('gitsigns.nvim')
