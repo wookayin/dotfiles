@@ -86,21 +86,25 @@ unset CONDA_PYTHON_EXE
 unset CONDA_SHLVL
 
 # Miniconda3
-if [ -d "$HOME/.miniconda3/bin/" ]; then
-  path=( $path "$HOME/.miniconda3/bin" )
-  export CONDA_EXE="$HOME/.miniconda3/bin/conda"
-elif [ -d "/usr/local/miniconda3/" ]; then
-  path=( $path "/usr/local/miniconda3/bin" )
-  export CONDA_EXE="/usr/local/miniconda3/bin/conda"
-fi
-
-# Anaconda3 (deprecated, should prefer miniconda3)
-if [ -d $HOME/.anaconda3/bin/ ]; then
-  path=( $path $HOME/.anaconda3/bin )
-  if [[ "$CONDA_EXE" != *"miniconda"* ]]; then
-    export CONDA_EXE=$HOME/.anaconda3/bin/conda
+function _try_conda_base() {
+  local conda_base="$1"
+  [[ -z "$conda_base" ]] && return 1;
+  if [[ -n "$CONDA_EXE" ]]; then
+    return 0;  # do nothing, CONDA_EXE is already found
   fi
-fi
+
+  if [ -d "$conda_base" ]; then
+    path=( $path "$conda_base/bin" )
+    export CONDA_EXE="$conda_base/bin/conda"
+    if [ ! -f "$CONDA_EXE" ]; then
+      echo "Warning: $CONDA_EXE does not exist"
+    fi
+  fi
+}
+_try_conda_base "$HOME/.miniconda3/";
+_try_conda_base "$HOME/miniconda3/";
+_try_conda_base "/usr/local/miniconda3";
+unfunction _try_conda_base
 
 # rust (cargo)
 if [ -d $HOME/.cargo/bin/ ]; then
