@@ -101,8 +101,9 @@ function _try_conda_base() {
     fi
   fi
 }
-_try_conda_base "$HOME/.miniconda3/";
-_try_conda_base "$HOME/miniconda3/";
+_try_conda_base "$HOME/.miniconda3";
+_try_conda_base "$HOME/miniconda3";
+_try_conda_base "$HOME/.miniforge3";
 _try_conda_base "/usr/local/miniconda3";
 unfunction _try_conda_base
 
