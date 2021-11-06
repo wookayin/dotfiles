@@ -35,8 +35,11 @@ configure_general() {
 configure_dock() {
     # Make dock auto-hide/show instantly (no animation!)
     # https://apple.stackexchange.com/questions/33600/how-can-i-make-auto-hide-show-for-the-dock-faster
+    defaults write com.apple.dock autohide -int 1
     defaults write com.apple.dock autohide-delay -float 0.0
     defaults write com.apple.dock autohide-time-modifier -float 0.0
+
+    #defaults write com.apple.dock magnification -int 1
     killall Dock
 }
 
