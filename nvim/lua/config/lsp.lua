@@ -89,14 +89,23 @@ local builtin_lsp_servers = {
 }
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md
-local lsp_setup_opts = {
-  sumneko_lua = (function()
-    local opts = require("lua-dev").setup {}
-    opts.settings.Lua.completion.callSnippet = "Disable"
-    opts.settings.Lua.workspace.maxPreload = nil
-    return opts
-  end)(),
+local lsp_setup_opts = {}
+lsp_setup_opts['pyright'] = {
+  settings = {
+    python = {
+    },
+  },
 }
+lsp_setup_opts['sumneko_lua'] = vim.tbl_extend('force',
+  require("lua-dev").setup {}, {
+    settings = {
+      Lua = {
+        completion = { callSnippet = "Disable" },
+        workspace = { maxPreload = 2000 },
+      },
+    },
+  }
+)
 
 local lsp_installer = require("nvim-lsp-installer")
 lsp_installer.on_server_ready(function(server)
@@ -120,6 +129,7 @@ end)
 -- Automatically install if a required LSP server is missing.
 for _, lsp_name in ipairs(builtin_lsp_servers) do
   local ok, lsp = require('nvim-lsp-installer.servers').get_server(lsp_name)
+  ---@diagnostic disable-next-line: undefined-field
   if ok and not lsp:is_installed() then
     vim.defer_fn(function()
       -- lsp:install()   -- headless
