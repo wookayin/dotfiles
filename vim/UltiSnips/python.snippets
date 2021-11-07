@@ -46,8 +46,14 @@ endsnippet
 snippet "(#\s*)?pylint"  "'pylint: disable=...' marker" r
 # pylint: disable=${1:`!p snip.rv = collect_ale_lint_codes("pylint")`}
 endsnippet
-snippet "#\s*type"  "'type: ignore' marker (mypy)" r
+snippet "#\s*type"  "'type: ignore' marker (mypy, pyright)" r
 # type: ignore
+endsnippet
+snippet "ignore" "'type: ignore' marker (mypy, pyright)" r
+# type: ignore
+endsnippet
+snippet "yapf"  "yapf: disable/enable" r
+# yapf: disable
 endsnippet
 
 # Add a typecheck if-raise statement.
