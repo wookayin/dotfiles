@@ -2682,6 +2682,9 @@ augroup END
 " Display content diff as well in the popup window
 let g:git_messenger_include_diff = 'current'
 
+" Use git blame -w (ignore-whitespaces).
+let g:git_messenger_extra_blame_args = '-w'
+
 " ---------------------------------------------------------------- }}}
 " vim-flog {{{
 " https://github.com/rbong/vim-flog/blob/master/EXAMPLES.md
