@@ -383,6 +383,10 @@ vim.cmd [[
 command! -nargs=0 LspStatus   echom v:lua.LspStatus()
 ]]
 
+-- Other LSP commands
+vim.cmd [[
+command! -nargs=0 LspDebug  :tab drop $HOME/.cache/nvim/lsp.log
+]]
 
 ---------------
 -- trouble.nvim
