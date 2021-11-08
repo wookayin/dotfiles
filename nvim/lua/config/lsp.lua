@@ -401,10 +401,19 @@ require("trouble").setup {
 ---------------
 -- Telescope
 ---------------
+-- @see  :help telescope.setup
 -- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
 local telescope = require("telescope")
 telescope.setup {
   defaults = {
+    winblend = 10,
+    layout_strategy = 'horizontal',
+    layout_config = {  -- :help telescope.layout
+      horizontal = { width = 0.9 },
+      mirror = false,
+      prompt_position = 'top',
+    },
+    sorting_strategy = 'ascending',  -- with prompt_position='top'
     mappings = {
       i = {
         ["<C-u>"] = false,   -- Do not map <C-u>; CTRL-U should be backward-kill-line.
@@ -415,12 +424,17 @@ telescope.setup {
     }
   }
 }
+-- Highlights
+vim.cmd [[
+  hi TelescopePrompt guibg=#1a2a31
+]]
 
 -- Custom Telescope mappings
 vim.cmd [[
 command! -nargs=0 Highlights    :Telescope highlights
 command! -nargs=0 CodeActions   :Telescope lsp_code_actions
 call CommandAlias("CA", "CodeActions")
+call CommandAlias("Te", "Telescope")
 ]]
 
 -- Telescope extensions
