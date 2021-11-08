@@ -1268,6 +1268,8 @@ let g:EditorConfig_core_mode = 'vim_core'
 " ---------------------------------------------------------------- }}}
 " nvim-notify {{{
 
+let g:nvim_notify_winblend = 20
+
 if IsPlugInstalled('nvim-notify')
   lua function VimNotify(msg, log_level, opts) return vim.notify(msg, log_level, opts) end
   autocmd User LazyInit  call s:setup_nvim_notify()
@@ -1277,7 +1279,8 @@ lua << EOF
 require("notify").setup({
   stages = "slide",
   on_open = function(win)
-    vim.api.nvim_win_set_config(win, { focusable = false })  -- see GH-28
+    vim.api.nvim_win_set_config(win, { focusable = false })
+    vim.api.nvim_win_set_option(win, "winblend", vim.g.nvim_notify_winblend)
   end,
   timeout = 5000,
   background_colour = "#000000",
