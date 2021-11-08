@@ -687,6 +687,9 @@ function! s:open_vimrc_tab()
   wincmd t  " focus on the first window (~/.vimrc)
 endfunction
 
+" :Plugins
+command! -nargs=0 Plugins  exec ":rightbelow vs " . resolve(expand("~/.vim/plugins.vim"))
+
 " <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
 map <leader>y "*y
 noremap <leader>x "*x
