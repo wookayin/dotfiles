@@ -1316,6 +1316,12 @@ local custom_components = {
   encoding = function()
     return [[%{substitute(strlen(&fenc) ? &fenc : &enc, "^utf-8$", "", "")}]]
   end,
+  neomake_status = function()
+    return table.concat(vim.tbl_values(vim.tbl_map(function(job)
+      if job.exit_code == nil then return '⏳' end
+      return (job.exit_code == 0 and '✅' or '❌')
+    end, vim.g.neomake_job_status or {})))
+  end
 }
 
 require('lualine').setup {
@@ -1324,11 +1330,13 @@ require('lualine').setup {
     theme = 'onedark'
   },
   -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/config.lua
+  -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/components
   sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch'},
     lualine_c = {
-      {'filename', path = 1}
+      custom_components.neomake_status,
+      {'filename', path = 1},
     },
     lualine_x = {
       'LspStatus()',
@@ -1436,22 +1444,43 @@ let g:airline#extensions#whitespace#mixed_indent_algo = 1
 
 " so that ':Neomake clean' invokes 'make clean'
 let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
+let g:neomake_job_status = {}
+
+command! NeomakeNotificationStart    call s:NeomakeNotificationSet(1)
+command! NeomakeNotificationStop     call s:NeomakeNotificationSet(0)
+let g:neomake_job_notification = 0       " notify when success?
+function! s:NeomakeNotificationSet(value) abort
+  let g:neomake_job_notification = a:value
+  call VimNotify((a:value ? "Enabled" : "Disabled") . " notification of successful jobs.",
+        \ "info", {'title': 'Neomake'})
+endfunction
 
 " General hook/callback on starting and finishing jobs {
 function! s:OnNeomakeJobStart()
   " what will we do?
   let l:context = g:neomake_hook_context
+  let g:neomake_job_status[l:context.jobinfo.make_id] = l:context.jobinfo
 endfunction
 
 function! s:OnNeomakeJobFinished()
   let l:context = g:neomake_hook_context
+  let l:job = l:context.jobinfo
+  let l:exit_code = l:job['exit_code']
+
+  " Remove the job from the statusline after 2 seconds
+  if !exists('*timer_start')
+    unlet g:neomake_job_status[l:context.jobinfo.make_id]
+  else
+    call timer_start(2000, { -> execute(printf(
+          \"unlet g:neomake_job_status[%d]", l:context.jobinfo.make_id)) })
+  endif
+
   let l:bufnr = l:context.jobinfo.bufnr
   let l:job_title = printf('Neomake: %s', bufname(l:bufnr))
 
   " If there is any failed job (non-zero exit code), notify it.
   let l:failure_message = ''
-  let l:job = l:context.jobinfo
-  if l:job['exit_code'] != 0
+  if l:exit_code != 0
     let l:failure_message = printf('%s%s ', l:failure_message, l:job['as_string']())
   endif
   if !empty(l:failure_message)
@@ -1459,8 +1488,10 @@ function! s:OnNeomakeJobFinished()
     copen | wincmd p   " copen, but not move to the quickfix window
     let b:neomake_auto_copen = 1
   else
-    call VimNotify('Job Finished, Success.', 'info',
-          \ {'title': l:job_title, 'timeout': 1000})
+    if g:neomake_job_notification > 0
+      call VimNotify('Job Finished, Success.', 'info',
+            \ {'title': l:job_title, 'timeout': 1000})
+    endif
     if get(b:, 'neomake_auto_copen', 0) == 1
       " if quickfix list is opened automatically by neomake callback,
       " we should automatically close it upon the success of neomake job.
@@ -1475,6 +1506,7 @@ augroup neomake_hooks_common
   autocmd User NeomakeJobInit     call s:OnNeomakeJobStart()
   autocmd User NeomakeJobFinished call s:OnNeomakeJobFinished()
 augroup END
+
 " }
 
 
