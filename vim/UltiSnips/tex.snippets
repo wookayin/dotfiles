@@ -51,7 +51,7 @@ def detect_root_texfile():
             for nr, line in enumerate(fp):
                 if nr > 50: break   # do not read too many lines
                 if '!TEX ROOT =' in line: continue
-                if line.startswith(r'\documentclass{'):
+                if line.startswith(r'\documentclass'):
                     return os.path.basename(f)
     return "UNKNOWN_ROOT_DOCUMENT.tex"  # Not found
 endglobal
