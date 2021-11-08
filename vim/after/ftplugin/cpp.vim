@@ -7,7 +7,7 @@
 
 " Show <Quickfix List> buffer at the right splitted vertically
 if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
-    noremap <F6> <ESC>:cclose<CR>:TheCopen<CR>:wincmd L<CR>:60wincmd \|<CR>:wincmd h<CR>
+    noremap <F6> <ESC>:cclose<CR>:TheCopen<CR>:wincmd L<CR>:setlocal nowfh<CR>:70wincmd \|<CR>:wincmd h<CR>
 else
     noremap <F6> <ESC>:cclose<CR>:vertical 60copen<CR>:wincmd h<CR>
 endif
@@ -15,7 +15,7 @@ endif
 " Automatic makeprg generation (regarding %:r.in, %r.ans)
 if !filereadable('Makefile')
     let b:sourcefile = expand("%")
-    let b:basename = expand("%:r")
+    let b:basename = expand("%:t:r")
     let b:input_file = ""
     let b:answer_file = ""
     let b:output_file = b:basename . ".out"
