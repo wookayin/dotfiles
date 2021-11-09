@@ -1010,14 +1010,14 @@ match ExtraWhitespace /\s\+$/
 augroup trailing_whitespaces
   autocmd!
   autocmd FileType GV,gitmessengerpopup,fugitive highlight clear ExtraWhitespace
-  autocmd BufWinEnter * if s:is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif
-  autocmd InsertEnter * if s:is_file_buffer() | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
-  autocmd InsertLeave * if s:is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif
+  autocmd BufWinEnter * if _is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif
+  autocmd InsertEnter * if _is_file_buffer() | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
+  autocmd InsertLeave * if _is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif
   autocmd BufWinLeave * call clearmatches()
 augroup END
 
-function! s:is_file_buffer() abort
-  return &filetype != '' && &buftype == ''
+function! _is_file_buffer() abort
+  return &filetype != '' && &buftype == '' && &modifiable
 endfunction
 
 

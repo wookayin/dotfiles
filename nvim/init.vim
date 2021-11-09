@@ -126,7 +126,7 @@ EOF
     " reattach LSP on all buffers, after reloading the LSP config
     if exists('*win_getid')  " neovim or vim 7.4.1557+
       let l:current_winid = win_getid()
-      execute 'silent! windo if &filetype != "" && &buftype == "" | e | endif'
+      execute 'silent! windo if _is_file_buffer() | e | endif'
       call win_gotoid(l:current_winid)
     endif
   endfunction
