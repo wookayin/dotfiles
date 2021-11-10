@@ -440,10 +440,6 @@ call CommandAlias("Te", "Telescope")
 -- Telescope extensions
 -- These should be executed *AFTER* other plugins are loaded
 vim.defer_fn(function()
-  if vim.fn['HasPlug']('telescope-frecency.nvim') == 1 then
-    telescope.load_extension("frecency")
-    vim.cmd [[ command! -nargs=0 Frecency       :Telescope frecency ]]
-  end
   if vim.fn['HasPlug']('nvim-notify') == 1 then
     telescope.load_extension("notify")
     vim.cmd [[ command! -nargs=0 Notifications  :Telescope notify ]]

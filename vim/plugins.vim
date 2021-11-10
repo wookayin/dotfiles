@@ -167,10 +167,6 @@ if has('nvim-0.5.0')
   Plug 'kyazdani42/nvim-tree.lua'
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
-  if s:darwin
-    Plug 'nvim-telescope/telescope-frecency.nvim'
-    Plug 'tami5/sql.nvim'    " required for telescope-frecency
-  endif
 endif
 
 " Syntax, Completion, Language Servers, etc.
