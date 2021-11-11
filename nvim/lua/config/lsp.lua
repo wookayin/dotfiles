@@ -93,7 +93,7 @@ local builtin_lsp_servers = {
   'tsserver',
 }
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
--- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md
+-- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 local lsp_setup_opts = {}
 lsp_setup_opts['pyright'] = {
   settings = {
