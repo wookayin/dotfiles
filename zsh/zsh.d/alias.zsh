@@ -237,7 +237,10 @@ alias pycodestyle='python -m pycodestyle'
 alias pylint='python -m pylint'
 
 # pip
-alias pip-search='pip_search'
+function pip-search() {
+  (( $+commands[pip_search] )) || python -m pip install pip_search
+  pip_search "$@"
+}
 
 # PREFIX/bin/python -> PREFIX/bin/ipython, etc.
 alias ipdb='${$(which python)%/*}/ipdb'
