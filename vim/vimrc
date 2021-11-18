@@ -92,9 +92,11 @@ set textwidth=0             " disable automatic line breaking
 set cursorline
 
 " tab settings
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+if has('vim_starting')
+  set tabstop=4
+  set shiftwidth=4
+  set softtabstop=4
+endif
 
 " tab navigation
 set showtabline=2           " always show tab pannel
