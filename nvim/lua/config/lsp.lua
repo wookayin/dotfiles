@@ -144,7 +144,16 @@ end
 -- :help lsp-method
 -- :help lsp-handler
 
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'single' })
+local lsp_handlers_hover = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = 'single'
+})
+vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+  local bufnr, winnr = lsp_handlers_hover(err, result, ctx, config)
+  if winnr ~= nil then
+    vim.api.nvim_win_set_option(winnr, "winblend", 20)  -- opacity for hover
+  end
+  return bufnr, winnr
+end
 
 
 ------------------
@@ -178,7 +187,10 @@ else  -- neovim 0.5.0
     )
   _G.LspDiagnosticsShowPopup = function()
     ---@diagnostic disable-next-line: deprecated
-    return vim.lsp.diagnostic.show_line_diagnostics({focusable = false})
+    return vim.lsp.diagnostic.show_line_diagnostics({
+      focusable = false,
+      border = 'single',
+    })
   end
 end
 
@@ -191,7 +203,10 @@ _G.LspDiagnosticsPopupHandler = function()
   -- but only once for the current cursor location (unless moved afterwards).
   if not (current_cursor[1] == last_popup_cursor[1] and current_cursor[2] == last_popup_cursor[2]) then
     vim.w.lsp_diagnostics_last_cursor = current_cursor
-    _G.LspDiagnosticsShowPopup()
+    local _, winnr = _G.LspDiagnosticsShowPopup()
+    if winnr ~= nil then
+      vim.api.nvim_win_set_option(winnr, "winblend", 20)  -- opacity for diagnostics
+    end
   end
 end
 vim.cmd [[
