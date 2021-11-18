@@ -4,6 +4,15 @@
 -- @see  :help telescope.setup
 -- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
 local telescope = require("telescope")
+
+if not pcall(require, 'telescope.actions.layout') then
+  vim.api.nvim_echo({
+      {"Warning: Telescope is outdated and disabled. Please update the plugin.", "WarningMsg"}
+    }, true, {})
+  vim.cmd [[ silent! delcommand! Telescope ]]
+  do return end
+end
+
 telescope.setup {
   defaults = {
     winblend = 10,
@@ -20,6 +29,7 @@ telescope.setup {
         ["<C-d>"] = false,
         ["<C-b>"] = require("telescope.actions").preview_scrolling_up,
         ["<C-f>"] = require("telescope.actions").preview_scrolling_down,
+        ["<C-_>"] = require("telescope.actions.layout").toggle_preview,
       }
     }
   }
