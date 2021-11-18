@@ -113,6 +113,7 @@ if has('nvim-0.5')
   function! s:source_lua_configs(...)
 lua << EOF
     require 'config/lsp'
+    require 'config/telescope'
 EOF
   endfunction
 
