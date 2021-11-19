@@ -360,6 +360,9 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
+noremap <M-h> <C-w>h
+noremap <M-l> <C-w>l
+
 " window navigation: aware of tmux
 let g:tmux_navigator_no_mappings = 1
 if has_key(g:plugs, 'vim-tmux-navigator') && !empty($TMUX)
@@ -420,11 +423,12 @@ if has('nvim')
 
   " Mapping for <c-hjkl> in terminal mode
   " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
-  tmap <silent> <C-h> <C-\><C-n>:wincmd h<CR>
-  tmap <silent> <C-j> <C-\><C-n>:wincmd j<CR>
-  tmap <silent> <C-k> <C-\><C-n>:wincmd k<CR>
-  "tmap <C-l> <C-\><C-n><C-l>
-  " TODO: <c-l> is for clear screen...?
+  tmap <silent> <C-h> <C-\><C-n><cmd>wincmd h<CR>
+  tmap <silent> <C-j> <C-\><C-n><cmd>wincmd j<CR>
+  tmap <silent> <C-k> <C-\><C-n><cmd>wincmd k<CR>
+  "tmap <silent> <C-l> <C-\><C-n><cmd>wincmd l<CR>   " Ctrl-L is clear screen
+  tmap <silent> <M-h> <C-\><C-n><cmd>wincmd h<CR>
+  tmap <silent> <M-l> <C-\><C-n><cmd>wincmd l<CR>
 
   " Ctrl-E, Ctrl-Y: Scroll window in terminal-normal mode
   tmap <silent> <C-e> <C-\><C-n><C-e>
