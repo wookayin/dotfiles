@@ -1326,8 +1326,15 @@ lua << EOF
 local custom_components = {
   -- Override 'encoding': Don't display if encoding is UTF-8.
   encoding = function()
-    return [[%{substitute(strlen(&fenc) ? &fenc : &enc, "^utf-8$", "", "")}]]
+    local ret, _ = (vim.bo.fenc or vim.go.enc):gsub("^utf%-8$", "")  -- Note: '-' is a magic character
+    return ret
   end,
+  -- fileformat: Don't display if &ff is unix.
+  fileformat = function()
+    local ret, _ = vim.bo.fileformat:gsub("^unix$", "")
+    return ret
+  end,
+  -- neomake job status
   neomake_status = function()
     return table.concat(vim.tbl_values(vim.tbl_map(function(job)
       if job.exit_code == nil then return '⏳' end
@@ -1352,7 +1359,9 @@ require('lualine').setup {
     },
     lualine_x = {
       'LspStatus()',
-      custom_components.encoding, 'fileformat', 'filetype'
+      { custom_components.encoding,   color = {fg = '#d70000'} },
+      { custom_components.fileformat, color = {fg = '#d70000'} },
+      'filetype'
     },
     lualine_y = {},  -- excludes 'progress'
     lualine_z = {'location'},
