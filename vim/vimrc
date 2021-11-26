@@ -380,6 +380,13 @@ nnoremap <S-Left>  <C-W><
 nnoremap <S-Down>  <C-W>-
 nnoremap <S-Up>    <C-W>+
 
+if exists(':tnoremap')
+  tnoremap <S-Right> <cmd>wincmd ><CR>
+  tnoremap <S-Left>  <cmd>wincmd <<CR>
+  tnoremap <S-Down>  <cmd>wincmd -<CR>
+  tnoremap <S-Up>    <cmd>wincmd +<CR>
+endif
+
 
 " zoom and unzoom (like tmux) -- by 'vim-maximizer'
 nnoremap <C-w>z :MaximizerToggle<CR>
