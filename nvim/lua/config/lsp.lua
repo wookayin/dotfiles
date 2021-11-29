@@ -169,6 +169,7 @@ if vim.fn.has('nvim-0.6.0') > 0 then
     virtual_text = false,
     float = {
       source = 'always',
+      focusable = false,   -- See neovim#16425
       border = 'single',
     },
   })
