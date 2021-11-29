@@ -30,6 +30,7 @@ function! s:force_plug_uri(plug_name) abort
       echo printf("NOTE: We have automatically corrected URL of the plugin %s: ", a:plug_name)
       echo printf("    %s", actual_uri)
       echo printf(" -> %s", expected_uri)
+      echo printf("Please run :PlugUpdate again.")
       call system(printf("git config -f %s remote.origin.url %s",
             \ shellescape(dir . '/.git/config'),
             \ shellescape(g:plugs[a:plug_name].uri))

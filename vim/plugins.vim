@@ -289,7 +289,9 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'fladson/vim-kitty', { 'for': ['kitty'] }
 
 if has('nvim') && s:python3_version() >= '3.5'
-  Plug 'numirias/semshi', { 'do': function('UpdateRemote') }
+  " Semshi is no longer being maintained. Use my own fork
+  Plug 'wookayin/semshi', { 'do': function('UpdateRemote') }
+  ForcePlugURI 'semshi'
   Plug 'stsewd/isort.nvim', { 'do': function('UpdateRemote') }
   Plug 'wookayin/vim-autoimport'
 endif
