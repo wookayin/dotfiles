@@ -321,7 +321,8 @@ vim.cmd [[
   hi CmpItemAbbrMatch      guifg=#f03e3e gui=bold
   hi CmpItemAbbrMatchFuzzy guifg=#fd7e14 gui=bold
   hi CmpItemAbbrDeprecated guifg=#adb5bd
-  hi CmpItemKind           guifg=#cc5de8
+  hi CmpItemKindDefault    guifg=#cc5de8
+  hi! def link CmpItemKind CmpItemKindDefault
   hi CmpItemMenu           guifg=#cfa050
 ]]
 
