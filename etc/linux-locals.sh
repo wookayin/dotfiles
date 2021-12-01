@@ -284,7 +284,7 @@ install_neovim() {
     # install neovim nightly
     set -e
 
-    NEOVIM_VERSION="v0.5.1"
+    NEOVIM_VERSION="v0.6.0"
     VERBOSE=""
     for arg in "$@"; do
       if [ "$arg" == "--nightly" ]; then
