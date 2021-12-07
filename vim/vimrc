@@ -946,28 +946,14 @@ function! IsMosh()
   return !empty(l:output)
 endfunction
 
-function! s:auto_termguicolors(...)
-  if !(has('termguicolors'))
-    return
-  endif
-
-  if index(['xterm-256color', 'nvim', 'xterm-kitty', 'builtin_xterm'], &term) >= 0 && !IsMosh()
-    set termguicolors
-  else
-    set notermguicolors
-    silent! set pumblend=0  " disable blending
-  endif
-endfunction
+" Use 24-bit color.
 if has('termguicolors')
-  " by default, enable 24-bit color, but lazily disable if under mosh
+  " Note: We will use GUI colors even if the current session is running under mosh.
+  " Although the stable release does not support 24-bit color yet (see GH-961),
+  " users are expected to use a HEAD version of mosh both on server and client
+  " (e.g., brew install mosh --HEAD,  dotfiles install mosh)
   if !&termguicolors
     set termguicolors
-  endif
-
-  if exists('*timer_start')
-    call timer_start(0, function('s:auto_termguicolors'))
-  else
-    call s:auto_termguicolors()
   endif
 endif
 
