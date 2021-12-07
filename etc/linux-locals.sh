@@ -442,6 +442,22 @@ install_lazygit() {
   $PREFIX/bin/lazygit --version
 }
 
+install_mosh() {
+  set -e; set -x
+  mkdir -p /tmp/$USER && cd /tmp/$USER/
+  rm -rf mosh || true
+  git clone https://github.com/mobile-shell/mosh --depth=1
+  cd mosh
+
+  # bump up mosh version to indicate this is a HEAD version
+  sed -i -e 's/1\.3\.2/1.4.0/g' configure.ac
+
+  ./autogen.sh
+  ./configure --prefix="$PREFIX"
+  make install
+  $PREFIX/bin/mosh-server --version
+}
+
 install_mujoco() {
   # https://mujoco.org/download
   set -e; set -x
