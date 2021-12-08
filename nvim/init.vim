@@ -27,16 +27,18 @@ if executable("python3")
   let s:python3_local = substitute(system("which python3"), '\n\+$', '', '')
 
   function! Python3_determine_pip_options()
-    if system("python3 -c 'import sys; print(sys.prefix != getattr(sys, \"base_prefix\", sys.prefix))' 2>/dev/null") =~ "True"
-      " This is probably a user-namespace virtualenv python. `pip` won't accept --user option.
-      " See pip._internal.utils.virtualenv._running_under_venv()
-      let l:pip_options = '--upgrade --ignore-installed'
-    else
-      " Probably system(global) or anaconda python.
-      let l:pip_options = '--user --upgrade --ignore-installed'
+    " On mac/miniconda/anaconda environments, do not use --user flag (NO ~/.local/bin)
+    let l:pip_options = ''
+    if !has('mac')
+      let l:py_prefix = substitute(system("python3 -c 'import sys; print(sys.prefix)' 2>/dev/null"), '\n\+$', '', '')
+      if l:py_prefix == "/usr" || l:py_prefix == "/usr/local"
+        let l:pip_options = '--user'
+      endif
     endif
-    " mac: Force greenlet to be compiled from source due to potential architecture mismatch (pynvim#473)
+
+    let l:pip_options .= ' --upgrade --ignore-installed'
     if has('mac')
+      " mac: Force greenlet to be compiled from source due to potential architecture mismatch (pynvim#473)
       let l:pip_options = l:pip_options . ' --no-binary greenlet'
     endif
     return l:pip_options
