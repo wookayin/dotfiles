@@ -2098,8 +2098,6 @@ if IsPlugInstalled('wilder.nvim')
   augroup END
 endif
 function! s:setup_wilder()
-  call wilder#enable_cmdline_enter()
-
   cmap <expr> <Tab>   wilder#in_context() ? wilder#next()     : "\<Tab>"
   cmap <expr> <S-Tab> wilder#in_context() ? wilder#previous() : "\<S-Tab>"
 
