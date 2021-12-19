@@ -410,6 +410,6 @@ command! -nargs=0 LspDebug  :tab drop $HOME/.cache/nvim/lsp.log
 ---------------
 require("trouble").setup {
     -- https://github.com/folke/trouble.nvim#setup
-    mode = "lsp_document_diagnostics",
+    mode = "document_diagnostics",
     auto_preview = false,
 }
