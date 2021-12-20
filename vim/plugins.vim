@@ -166,7 +166,7 @@ if has('nvim-0.5.0')
   Plug 'norcalli/nvim-colorizer.lua'
   Plug 'kyazdani42/nvim-tree.lua'
   Plug 'nvim-lua/plenary.nvim'
-  Plug 'nvim-telescope/telescope.nvim'
+  Plug 'nvim-telescope/telescope.nvim', PinIf(!has('nvim-0.6.0'), '80cdb00')
 endif
 
 " Syntax, Completion, Language Servers, etc.
@@ -235,7 +235,7 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'lukas-reineke/cmp-under-comparator'
 
   Plug 'ray-x/lsp_signature.nvim'
-  Plug 'nvim-lua/lsp-status.nvim'
+  Plug 'nvim-lua/lsp-status.nvim', PinIf(!has('nvim-0.6.0'), 'e8e5303')
   Plug 'folke/trouble.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'onsails/lspkind-nvim'
@@ -318,6 +318,7 @@ call plug#end()
 delcom UnPlug
 delcom ForcePlugURI
 silent delfunction PlugCond
+silent delfunction PinIf
 silent unlet g:_nerdtree_lazy_events
 
 " vim: set ts=2 sts=2 sw=2:
