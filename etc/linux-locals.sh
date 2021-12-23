@@ -168,9 +168,10 @@ install_tmux() {
 install_bazel() {
     set -e
 
+    # install the 'latest' stable release (no pre-releases.)
     BAZEL_LATEST_VERSION=$(\
-        curl -L https://api.github.com/repos/bazelbuild/bazel/tags 2>/dev/null | \
-        python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+        curl -L https://api.github.com/repos/bazelbuild/bazel/releases/latest 2>/dev/null | \
+        python -c 'import json, sys; print(json.load(sys.stdin)["name"])'\
     )
     test -n $BAZEL_LATEST_VERSION
     BAZEL_VER="${BAZEL_LATEST_VERSION}"
