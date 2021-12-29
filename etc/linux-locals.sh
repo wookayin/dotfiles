@@ -443,6 +443,21 @@ install_lazygit() {
   $PREFIX/bin/lazygit --version
 }
 
+install_rsync() {
+  set -e
+
+  local URL="https://rsync.samba.org/ftp/rsync/rsync-3.2.3.tar.gz"
+  local TMP_DIR="/tmp/$USER/rsync"; mkdir -p $TMP_DIR
+
+  wget -N -O $TMP_DIR/rsync.tar.gz "$URL"
+  tar -xvzf $TMP_DIR/rsync.tar.gz -C $TMP_DIR --strip-components 1
+  cd $TMP_DIR
+
+  ./configure --prefix="$PREFIX"
+  make install
+  $PREFIX/bin/rsync --version
+}
+
 install_mosh() {
   set -e; set -x
   mkdir -p /tmp/$USER && cd /tmp/$USER/
