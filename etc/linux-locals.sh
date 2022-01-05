@@ -282,11 +282,16 @@ install_vim() {
 }
 
 install_neovim() {
-    # install neovim nightly
+    # install neovim stable or nightly
     set -e
 
-    NEOVIM_VERSION="v0.6.0"
-    VERBOSE=""
+    local NEOVIM_VERSION=$(\
+        curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
+        python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
+    )   # starts with "v", e.g. "v0.6.1"
+    test -n "$NEOVIM_VERSION"
+
+    local VERBOSE=""
     for arg in "$@"; do
       if [ "$arg" == "--nightly" ]; then
         NEOVIM_VERSION="nightly";
@@ -303,8 +308,8 @@ install_neovim() {
     fi
     sleep 1;  # allow users to read above comments
 
-    TMP_NVIM_DIR="/tmp/$USER/neovim"; mkdir -p $TMP_NVIM_DIR
-    NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim-linux64.tar.gz"
+    local TMP_NVIM_DIR="/tmp/$USER/neovim"; mkdir -p $TMP_NVIM_DIR
+    local NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim-linux64.tar.gz"
 
     cd $TMP_NVIM_DIR
     wget --backups=1 $NVIM_DOWNLOAD_URL      # always overwrite, having only one backup
