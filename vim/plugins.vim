@@ -148,7 +148,8 @@ Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tpope/vim-eunuch'
 Plug 'wookayin/vim-typora', { 'on': 'Typora' }
 if has('nvim-0.5.0')
-  Plug 'folke/which-key.nvim'
+  Plug 'wookayin/which-key.nvim'
+  ForcePlugURI 'which-key.nvim'    " See GH-227
 endif
 
 if s:darwin && isdirectory('/Applications/Dash.app')
