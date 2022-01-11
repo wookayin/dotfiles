@@ -1294,6 +1294,7 @@ require("notify").setup({
 vim.notify = require("notify")
 vim.cmd [[
 command! -nargs=0 NotificationsPrint   :lua require('notify')._print_history()
+command! -nargs=0 PrintNotifications   :NotificationsPrint
 ]]
 EOF
 endfunction
