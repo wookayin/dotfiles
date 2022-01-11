@@ -2726,7 +2726,7 @@ if HasPlug('gitsigns.nvim')
 
   " Additional keymappings other than the defaults
   nmap <leader>ha  <cmd>lua require"gitsigns".stage_hunk()<CR>
-  nmap <leader>hm  <cmd>lua require"gitsigns".blame_line(true)<CR>
+  nmap <leader>hm  <cmd>lua require"gitsigns".blame_line({full = true, ignore_whitespace = true})<CR>
   nmap <leader>hh  <cmd>Gitsigns toggle_linehl<CR>
   nmap <leader>hw  <cmd>Gitsigns toggle_word_diff<CR>
 endif
