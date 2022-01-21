@@ -82,6 +82,20 @@ if has_key(g:, 'plugs') && !has_key(g:plugs, 'coc.nvim') && has_key(g:plugs, 'je
   inoremap <buffer> <F24>  :call jedi#usages()<CR>
 endif
 
+" comment annotations
+function! ToggleLineComment(str)
+  let l:comment = '# ' . a:str
+  let l:line = getline('.')
+  if l:line =~ (l:comment) . '$'
+    " Already exists at the end: strip the comment
+    call setline('.', l:line[:-(len(l:comment) + 1)])
+  else
+    " or append it if there wasn't
+    call setline('.', l:line . '  ' . l:comment)
+  end
+endfunction
+noremap <buffer> <leader>ti   <cmd>call ToggleLineComment("type: ignore")<CR>
+
 
 " Experimental
 " ============
