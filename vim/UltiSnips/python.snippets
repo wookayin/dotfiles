@@ -16,8 +16,8 @@ def snip_expand(snip, jump_pos=1, jump_forward=False):
     if jump_forward:
         vim.eval('feedkeys("\<C-R>=UltiSnips#JumpForwards()\<CR>")')
 
-def collect_ale_lint_codes(linter_name):
-    if not vim.eval('get(g:, "ale_enabled", 0)'):
+def collect_ale_lint_codes(linter_name: str):
+    if not int(vim.eval('get(g:, "ale_enabled", 0)')):
         # works only if ALE is installed and enabled
         return ''
 
