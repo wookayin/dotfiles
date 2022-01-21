@@ -788,6 +788,10 @@ else
   endfunction
 endif
 
+function! TrimRight(input_string)
+  return substitute(a:input_string, '\s*$', '\1', '')
+endfunction
+
 function! Echo(msg) abort
   echo a:msg
   return a:msg

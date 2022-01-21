@@ -88,13 +88,17 @@ function! ToggleLineComment(str)
   let l:line = getline('.')
   if l:line =~ (l:comment) . '$'
     " Already exists at the end: strip the comment
-    call setline('.', l:line[:-(len(l:comment) + 1)])
+    call setline('.', TrimRight(l:line[:-(len(l:comment) + 1)]))
   else
     " or append it if there wasn't
     call setline('.', l:line . '  ' . l:comment)
   end
 endfunction
-noremap <buffer> <leader>ti   <cmd>call ToggleLineComment("type: ignore")<CR>
+nmap <buffer> <leader>ti <Plug>ToggleLineCommentTypeIgnore
+nmap <silent> <Plug>ToggleLineCommentTypeIgnore
+            \ :<C-u>call ToggleLineComment("type: ignore")<CR><bar>
+            \ :<C-u>silent! call   repeat#set("\<Plug>ToggleLineCommentTypeIgnore")<CR>
+
 
 
 " Experimental
