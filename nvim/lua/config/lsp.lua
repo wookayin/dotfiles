@@ -453,16 +453,23 @@ if null_ls then
 
       -- Linting (diagnostics)
       -- @python: pylint, flake8
-      _cond("pylint", null_ls.builtins.diagnostics.pylint),
+      _cond("pylint", null_ls.builtins.diagnostics.pylint.with({
+          condition = function(utils)
+            -- https://pylint.pycqa.org/en/latest/user_guide/run.html#command-line-options
+            return (
+              utils.root_has_file("pylintrc") or
+              utils.root_has_file(".pylintrc")) or
+              utils.root_has_file("setup.cfg")
+          end,
+        })),
       _cond("flake8", null_ls.builtins.diagnostics.flake8.with({
           -- Activate when flake8 is available and any project config is found,
           -- per https://flake8.pycqa.org/en/latest/user/configuration.html
           condition = function(utils)
-            return vim.fn.executable("flake8") and (
+            return (
               utils.root_has_file("setup.cfg") or
               utils.root_has_file("tox.ini") or
-              utils.root_has_file(".flake8")
-            )
+              utils.root_has_file(".flake8"))
           end,
           -- Ignore some too aggressive errors (indentation, lambda, etc.)
           -- @see https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
