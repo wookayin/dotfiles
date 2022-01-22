@@ -435,19 +435,26 @@ local executable = function(cmd)
 end
 if null_ls then
   local h = require("null-ls.helpers")
+  local _cond = function(cmd, source)
+    if vim.fn.executable(cmd) > 0 then return source
+    else return nil end
+  end
+  local _exclude_nil = function(tbl)
+    return vim.tbl_filter(function(s) return s ~= nil end, tbl)
+  end
   null_ls.setup({
-    sources = {
+    sources = _exclude_nil {
       -- [[ Auto-Formatting ]]
       -- @python (pip install yapf isort)
-      null_ls.builtins.formatting.yapf.with({condition = executable("yapf")}),
-      null_ls.builtins.formatting.isort.with({condition = executable("isort")}),
+      _cond("yapf", null_ls.builtins.formatting.yapf),
+      _cond("isort", null_ls.builtins.formatting.isort),
       -- @javascript
       null_ls.builtins.formatting.prettier,
 
       -- Linting (diagnostics)
       -- @python: pylint, flake8
-      null_ls.builtins.diagnostics.pylint.with({condition = executable("pylint")}),
-      null_ls.builtins.diagnostics.flake8.with({
+      _cond("pylint", null_ls.builtins.diagnostics.pylint),
+      _cond("flake8", null_ls.builtins.diagnostics.flake8.with({
           -- Activate when flake8 is available and any project config is found,
           -- per https://flake8.pycqa.org/en/latest/user/configuration.html
           condition = function(utils)
@@ -477,7 +484,7 @@ if null_ls then
                 C = h.diagnostics.severities["warning"],
               },
             }),
-        }),
+        })),
     },
 
     -- Debug mode: Use :NullLsLog for viewing log files (~/.cache/nvim/null-ls.log)
