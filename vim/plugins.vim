@@ -216,11 +216,6 @@ function! s:choose_completion_backend()
 endfunction
 let g:dotfiles_completion_backend = s:choose_completion_backend()
 
-" Asynchronous Lint Engine (ALE): seems orthogonal to backend
-if has('nvim') || v:version >= 800
-  Plug 'w0rp/ale'
-endif
-
 " 1. [Neovim 0.5.0 LSP]
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
 if g:dotfiles_completion_backend == '@lsp'
@@ -243,11 +238,11 @@ if g:dotfiles_completion_backend == '@lsp'
 
   Plug 'jose-elias-alvarez/null-ls.nvim', PlugCond(has('nvim-0.6.0'))
 
-  UnPlug 'ervandew/supertab'   " Custom <TAB> mapping for coc.nvim supercedes supertab
-  UnPlug 'w0rp/ale'            " Disable ALE for now (TODO: we might still need it for LSP-lacking filetypes)
 endif
 
 " 2. [coc.nvim]
+" Note: coc.nvim is not tested since my migration to nvim-lsp,
+" so it may not work properly with the recent versions of nvim and coc.
 if g:dotfiles_completion_backend == '@coc'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'neoclide/jsonc.vim'
@@ -275,6 +270,8 @@ if g:dotfiles_completion_backend == ''
   Plug 'davidhalter/jedi-vim'
   " Legacy support for <TAB> in the completion context
   Plug 'ervandew/supertab'
+  " Use ALE if no LSP support was used
+  Plug 'w0rp/ale', PlugCond(has('nvim') || v:version >= 800)
   " echodoc: not needed for coc.nvim and nvim-lsp
   if has('nvim')
     Plug 'Shougo/echodoc.vim'

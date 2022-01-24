@@ -2454,6 +2454,8 @@ let g:semshi#error_sign = 0
 
 " ---------------------------------------------------------------- }}}
 " ALE {{{
+" Note: This ALE configuration is legacy, and is not used any more
+" in favor of builtin LSP and null-ls.nvim)
 
 " Specify linters.
 " You may find the configuration file for each linter engine useful.
