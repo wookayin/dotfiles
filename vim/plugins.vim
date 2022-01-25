@@ -16,7 +16,8 @@ endif
 
 let s:_python3_version = ''
 function! s:python3_version()
-  if has('nvim')           | return g:python3_host_version
+  if has('nvim')
+    return get(g:, 'python3_host_version', '')
   elseif has('python3')
     if empty(s:_python3_version)
       let s:_python3_version = join(py3eval('sys.version_info'), ".")
