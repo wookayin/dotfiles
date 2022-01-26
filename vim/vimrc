@@ -2724,6 +2724,11 @@ require('gitsigns').setup {
     changedelete = {hl = 'GitSignsChange', text = '┃', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
   },
   signcolumn = true,
+  current_line_blame_opts = {
+    delay = 150,
+    virt_text_pos = 'right_align',
+    ignore_whitespace = true,
+  },
   on_attach = function(bufnr)
     local function map(mode, lhs, rhs, opts)
       opts = vim.tbl_extend('force', {noremap = true, silent = true}, opts or {})
