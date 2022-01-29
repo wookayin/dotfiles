@@ -116,6 +116,8 @@ compdef '_hosts' ssh-tmuxa
 
 GIT_VERSION=$(git --version | awk '{print $3}')
 
+alias github='\gh'
+
 alias gh='git history'
 alias ghA='gh --all'
 if _version_check $GIT_VERSION "2.0"; then
