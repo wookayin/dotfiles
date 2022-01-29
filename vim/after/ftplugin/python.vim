@@ -26,8 +26,7 @@ if exists('*timer_start')
     if !filereadable(l:project_root . '/.pylintrc')
       return -1  " no pylintrc found
     endif
-    if !empty(systemlist("grep", "indent-string='  '",
-          \ (l:project_root . '/.pylintrc')))
+    if !empty(systemlist("grep \"indent-string='  '\" " .. shellescape(l:project_root . '/.pylintrc')))
       setlocal ts=2 sw=2 sts=2
       return 2  " Use tabsize 2
     endif
