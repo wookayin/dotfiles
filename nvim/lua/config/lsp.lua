@@ -410,6 +410,27 @@ vim.cmd [[
 command! -nargs=0 LspDebug  :tab drop $HOME/.cache/nvim/lsp.log
 ]]
 
+-----------------------------------
+--- Fidget.nvim (LSP status widget)
+-----------------------------------
+
+local _, fidget = pcall(require, 'fidget')
+if fidget then
+  -- https://github.com/j-hui/fidget.nvim/blob/main/doc/fidget.md
+  -- Note: This will override lsp-status.nvim (progress handlers).
+  fidget.setup {
+    text = {
+      --see ~/.vim/plugged/fidget.nvim/lua/fidget/spinners.lua
+      spinner = "zip",
+    },
+    window = {
+      relative = "win",
+      blend = 50,
+    },
+  }
+end
+
+
 ---------------
 -- trouble.nvim
 ---------------

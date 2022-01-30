@@ -233,6 +233,7 @@ if g:dotfiles_completion_backend == '@lsp'
 
   Plug 'ray-x/lsp_signature.nvim'
   Plug 'nvim-lua/lsp-status.nvim', PinIf(!has('nvim-0.6.0'), 'e8e5303')
+  Plug 'j-hui/fidget.nvim', PlugCond(has('nvim-0.6.0'))
   Plug 'folke/trouble.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'onsails/lspkind-nvim'
