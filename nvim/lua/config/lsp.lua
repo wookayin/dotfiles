@@ -475,6 +475,7 @@ if null_ls then
       -- Linting (diagnostics)
       -- @python: pylint, flake8
       _cond("pylint", null_ls.builtins.diagnostics.pylint.with({
+          method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
           condition = function(utils)
             -- https://pylint.pycqa.org/en/latest/user_guide/run.html#command-line-options
             return (
@@ -484,6 +485,7 @@ if null_ls then
           end,
         })),
       _cond("flake8", null_ls.builtins.diagnostics.flake8.with({
+          method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
           -- Activate when flake8 is available and any project config is found,
           -- per https://flake8.pycqa.org/en/latest/user/configuration.html
           condition = function(utils)
