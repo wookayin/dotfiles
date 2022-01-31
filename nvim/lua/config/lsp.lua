@@ -176,7 +176,24 @@ if vim.fn.has('nvim-0.6.0') > 0 then
       source = 'always',
       focusable = false,   -- See neovim#16425
       border = 'single',
-    },
+
+      -- Customize how diagnostic message will be shown: show error code.
+      format = function(diagnostic)
+        -- See null-ls.nvim#632, neovim#17222 for how to pick up `code`
+        local user_data
+        user_data = diagnostic.user_data or {}
+        user_data = user_data.lsp or user_data.null_ls or user_data
+        local code = (
+          -- TODO: symbol is specific to pylint (will be removed)
+          diagnostic.symbol or diagnostic.code or
+          user_data.symbol or user_data.code
+        )
+        if code then
+          return string.format("%s (%s)", diagnostic.message, code)
+        else return diagnostic.message
+        end
+      end,
+    }
   })
   _G.LspDiagnosticsShowPopup = function()
     return vim.diagnostic.open_float(0, {scope="cursor"})
