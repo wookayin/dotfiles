@@ -93,10 +93,16 @@ function! ToggleLineComment(str)
     call setline('.', l:line . '  ' . l:comment)
   end
 endfunction
-nmap <buffer> <leader>ti <Plug>ToggleLineCommentTypeIgnore
-nmap <silent> <Plug>ToggleLineCommentTypeIgnore
-            \ :<C-u>call ToggleLineComment("type: ignore")<CR><bar>
-            \ :<C-u>silent! call   repeat#set("\<Plug>ToggleLineCommentTypeIgnore")<CR>
+
+function! s:define_toggle_mapping(name, comment) abort
+  execute 'nmap <Plug>' . a:name . ' ' .
+        \ ':<C-u>call ToggleLineComment("' . a:comment . '")<CR><bar>' .
+        \ ':<c-u>silent! call repeat#set("\<Plug>' . a:name . '")<CR>'
+endfunction
+call s:define_toggle_mapping("ToggleLineComment_type_ignore", "type: ignore")
+nmap <buffer> <leader>ti <Plug>ToggleLineComment_type_ignore
+call s:define_toggle_mapping("ToggleLineComment_yapf_disable", "yapf: disable")
+nmap <buffer> <leader>ty <Plug>ToggleLineComment_yapf_disable
 
 
 
