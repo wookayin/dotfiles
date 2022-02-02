@@ -131,7 +131,7 @@ install_node() {
 install_tmux() {
     # install tmux (and its dependencies such as libevent) locally
     set -e
-    TMUX_VER="2.4"
+    TMUX_VER="3.2a"
 
     TMP_TMUX_DIR="/tmp/$USER/tmux/"; mkdir -p $TMP_TMUX_DIR
 
