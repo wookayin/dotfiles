@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# cursor-size: A command line utility that controls macOS pointer size.
+# Usage: see the comments below.
+usage() {
+    cat << EOF
+Usage: $0 CURSOR_SIZE
+
+CURSOR_SIZE ranges from 1 to 4, where 1 is the smallest and 4 is the largest.
+  (See System Preferences - Accessbility - Display - Pointer Size)
+EOF
+}
+
+# Ensure that this script is running on macOS
+if [ `uname` != "Darwin" ]; then
+    echo "This script can run only on macOS.";
+    exit 1;
+fi
+
+VALUE="$1"
+
+if [[ -z "$VALUE" ]]; then
+    usage;
+    exit 1;
+elif [ 1 -eq $(echo "$VALUE > 4.0" | bc -l) ] || [ 1 -eq $(echo "$VALUE < 1.0" | bc -l) ]; then
+    usage;
+    exit 1;
+fi
+
+# Based on https://apple.stackexchange.com/questions/298550/how-to-increase-cursor-size-programmatically
+osascript -l JavaScript << EOF
+function cursor_size() {
+    const isRunningSystemPreferences = Application('System Preferences').running();
+    Application('System Preferences').panes.byId('com.apple.preference.universalaccess').anchors.byName('Seeing_Cursor').reveal()
+
+    const process = Application('System Events').processes.byName('System Preferences');
+    while (process.windows.length == 0);
+
+    const window = process.windows[0]
+    while (window.groups.length == 0);
+
+    const group = window.groups[0]
+    while (group.tabGroups.length == 0);
+
+    const tabGroup = group.tabGroups[0]
+    while (tabGroup.sliders.length == 0);
+
+    const slider = tabGroup.sliders[0]
+    slider.value = $VALUE;
+
+    if (!isRunningSystemPreferences) {
+        Application('System Preferences').quit()
+    }
+}
+
+cursor_size()
+EOF
