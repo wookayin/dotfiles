@@ -140,10 +140,10 @@ fi
 
 
 #
-# Add custom config directory for Prezto.
+# Add custom config directory.
 #  (note that this line is executed before initialization of prezto.)
 #
-fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes ~/.local/share/zsh/site-functions $fpath)
+fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes ~/.zsh/functions ~/.local/share/zsh/site-functions $fpath)
 
 
 #

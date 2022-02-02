@@ -1,0 +1,7 @@
+#compdef plugged
+
+_plugged() {
+    _files -W $HOME/.vim/plugged/
+}
+
+_plugged "$@"

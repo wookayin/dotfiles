@@ -53,6 +53,11 @@ alias vimrc='vim +"cd ~/.dotfiles" +Vimrc +tabclose\ 1'
 
 alias zshrc='vim +cd\ ~/.zsh -O ~/.zsh/zshrc ~/.zsh/zsh.d/alias.zsh'
 
+function plugged() {
+    [ -z "$1" ] && { echo "plugged: args required"; return 1; }
+    cd "$HOME/.vim/plugged/$1"
+}
+
 # Tmux ========================================= {{{
 
 # create a new session with name
