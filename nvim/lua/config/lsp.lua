@@ -172,6 +172,10 @@ if vim.fn.has('nvim-0.6.0') > 0 then
   -- @see https://github.com/neovim/neovim/pull/16057 for new APIs
   vim.diagnostic.config({
     virtual_text = false,
+    underline = {
+      -- Do not underline text when severity is low (INFO or HINT).
+      severity = {min = vim.diagnostic.severity.WARN},
+    },
     float = {
       source = 'always',
       focusable = false,   -- See neovim#16425
