@@ -105,8 +105,11 @@ lsp_setup_opts['sumneko_lua'] = vim.tbl_extend('force',
   require("lua-dev").setup {}, {
     settings = {
       Lua = {
+        runtime = {
+          version = 'LuaJIT',   -- Lua 5.1/LuaJIT
+        },
         completion = { callSnippet = "Disable" },
-        workspace = { maxPreload = 2000 },
+        workspace = { maxPreload = 8000 },
       },
     },
   }
