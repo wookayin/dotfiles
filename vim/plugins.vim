@@ -171,6 +171,12 @@ if has('nvim-0.5.0')
   Plug 'nvim-telescope/telescope.nvim', PinIf(!has('nvim-0.6.0'), '80cdb00')
 endif
 
+if has('nvim-0.6.2')
+  " Treesitter (lazy loaded, see ~/.config/nvim/lua/config/treesitter.lua)
+  Plug 'nvim-treesitter/nvim-treesitter', {'on': [], 'for': [], 'do': ':TSUpdate'}
+  Plug 'nvim-treesitter/playground', {'as': 'treesitter-playground', 'on': [], 'for': []}
+endif
+
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
 
