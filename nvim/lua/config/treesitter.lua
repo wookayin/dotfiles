@@ -2,7 +2,10 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
 -- lazy-load the plugin.
-vim.fn['plug#load']('nvim-treesitter', 'treesitter-playground')
+vim.fn['plug#load'](unpack {
+  'nvim-treesitter',
+  'nvim-treesitter-playground',
+})
 
 require'nvim-treesitter.configs'.setup {
  -- one of "all", "maintained" (parsers with maintainers), or a list of languages

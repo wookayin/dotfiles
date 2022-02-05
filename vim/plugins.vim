@@ -174,7 +174,7 @@ endif
 if has('nvim-0.6.2')
   " Treesitter (lazy loaded, see ~/.config/nvim/lua/config/treesitter.lua)
   Plug 'nvim-treesitter/nvim-treesitter', {'on': [], 'for': [], 'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/playground', {'as': 'treesitter-playground', 'on': [], 'for': []}
+  Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground', 'on': [], 'for': []}
 endif
 
 " Syntax, Completion, Language Servers, etc.
