@@ -172,9 +172,9 @@ if has('nvim-0.5.0')
 endif
 
 if has('nvim-0.6.2')
-  " Treesitter (lazy loaded, see ~/.config/nvim/lua/config/treesitter.lua)
-  Plug 'nvim-treesitter/nvim-treesitter', {'on': [], 'for': [], 'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground', 'on': [], 'for': []}
+  " Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
+  Plug 'nvim-treesitter/nvim-treesitter'
+  Plug 'nvim-treesitter/playground'
 endif
 
 " Syntax, Completion, Language Servers, etc.
