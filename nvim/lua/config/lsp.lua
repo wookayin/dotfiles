@@ -318,7 +318,15 @@ cmp.setup {
         ultisnips     = "[UltiSnips]",
         nvim_lua      = "[Lua]",
         latex_symbols = "[Latex]",
-      })[entry.source.name]
+      })[entry.source.name] or string.format("[%s]", entry.source.name)
+
+      if vim_item.menu == "[LSP]" then
+        -- Display which LSP servers this item came from.
+        pcall(function()
+          vim_item.menu = " " .. entry.source.source.client.name
+        end)
+      end
+
       return vim_item
     end,
   },
