@@ -6,37 +6,26 @@ require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
 
   -- List of parsers to ignore installing
-  ignore_install = { },
-
-  highlight = {
-    -- TODO: There are many annoying issues in treesitter;
-    -- e.g., conflict with existing filetype-based vim syntax.
-    -- We disable highlight until it becomes mature enough
-    enable = false,
-
-    -- List of language that will be disabled.
-    -- For example, some non-programming-language filetypes (e.g., fzf) should be
-    -- explicitly turned off otherwise it will slow down the window.
-    disable = { "fzf", "GV", "gitmessengerpopup", "fugitive", "NvimTree" },
-
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = { "python" },
+  ignore_install = {
+    "phpdoc",      -- Not compatible with M1 mac
   },
+
   playground = {
-    toggle_query_editor = 'o',
-    toggle_hl_groups = 'i',
-    toggle_injected_languages = 't',
-    toggle_anonymous_nodes = 'a',
-    toggle_language_display = 'I',
-    focus_language = 'f',
-    unfocus_language = 'F',
-    update = 'R',
-    goto_node = '<cr>',
-    show_help = '?',
-  }
+    enable = true,
+    updatetime = 30,
+    keybindings = {
+      toggle_query_editor = 'o',
+      toggle_hl_groups = 'i',
+      toggle_injected_languages = 't',
+      toggle_anonymous_nodes = 'a',
+      toggle_language_display = 'I',
+      focus_language = 'f',
+      unfocus_language = 'F',
+      update = 'R',
+      goto_node = '<cr>',
+      show_help = '?',
+    },
+  },
 }
 
 -- Folding support
