@@ -1337,6 +1337,9 @@ local function truncate(trunc_width, trunc_len, hide_width, no_ellipsis)
     return str
   end
 end
+local function min_window_width(width)
+  return function() return vim.fn.winwidth(0) > width end
+end
 
 -- Customize statusline components
 -- https://github.com/shadmansaleh/lualine.nvim#changing-components-in-lualine-sections
@@ -1380,8 +1383,12 @@ require('lualine').setup {
   -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/config.lua
   -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/components
   sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch'},
+    lualine_a = {
+      {'mode', cond = min_window_width(40) }
+    },
+    lualine_b = {
+      {'branch', cond = min_window_width(120) }
+    },
     lualine_c = {
       custom_components.neomake_status,
       {'filename', path = 1, color = { fg = '#eeeeee' } },
@@ -1391,10 +1398,12 @@ require('lualine').setup {
       { custom_components.lsp_status, fmt = truncate(120, 20, 60) },
       { custom_components.encoding,   color = {fg = '#d70000'} },
       { custom_components.fileformat, color = {fg = '#d70000'} },
-      'filetype'
+      {'filetype', cond = min_window_width(120) },
     },
     lualine_y = {},  -- excludes 'progress'
-    lualine_z = {'location'},
+    lualine_z = {
+      {'location', cond = min_window_width(90) },
+    },
   },
   inactive_sections = {
     lualine_a = {},
