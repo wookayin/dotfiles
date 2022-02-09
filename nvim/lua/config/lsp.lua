@@ -447,11 +447,10 @@ command! -nargs=0 LspDebug  :tab drop $HOME/.cache/nvim/lsp.log
 --- Fidget.nvim (LSP status widget)
 -----------------------------------
 
-local _, fidget = pcall(require, 'fidget')
-if fidget then
+if pcall(require, 'fidget') then
   -- https://github.com/j-hui/fidget.nvim/blob/main/doc/fidget.md
   -- Note: This will override lsp-status.nvim (progress handlers).
-  fidget.setup {
+  require("fidget").setup {
     text = {
       --see ~/.vim/plugged/fidget.nvim/lua/fidget/spinners.lua
       spinner = "zip",
@@ -480,15 +479,16 @@ require("trouble").setup {
 -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md
 -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
 -- @see ~/.vim/plugged/null-ls.nvim/lua/null-ls/builtins
-local _, null_ls = pcall(require, "null-ls")
 local executable = function(cmd)
   -- @see BUILTINS.md#conditional-registration
   return function(utils)
     return vim.fn.executable(cmd)
   end
 end
-if null_ls then
+if pcall(require, "null-ls") then
+  local null_ls = require("null-ls")
   local h = require("null-ls.helpers")
+
   local _cond = function(cmd, source)
     if vim.fn.executable(cmd) > 0 then return source
     else return nil end
