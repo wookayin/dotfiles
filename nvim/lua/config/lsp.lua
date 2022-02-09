@@ -419,8 +419,9 @@ lsp_status.config({
     indicator_hint = '!',
     status_symbol = ' ',
 
-    -- Automatically sets b:lsp_current_function
-    current_function = true,
+    -- If true, automatically sets b:lsp_current_function
+    -- (no longer used in favor of treesitter + nvim-gps)
+    current_function = false,
 })
 lsp_status.register_progress()
 

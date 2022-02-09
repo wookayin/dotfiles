@@ -1362,6 +1362,14 @@ local custom_components = {
   lsp_status = function()
     return LspStatus()
   end,
+  -- GPS (https://github.com/SmiteshP/nvim-gps)
+  treesitter_context = function()
+    local ok, gps = pcall(require, "nvim-gps")
+    if ok and gps.is_available() then
+      return gps.get_location()
+    end
+    return ''
+  end
 }
 
 require('lualine').setup {
@@ -1377,6 +1385,7 @@ require('lualine').setup {
     lualine_c = {
       custom_components.neomake_status,
       {'filename', path = 1, color = { fg = '#eeeeee' } },
+      custom_components.treesitter_context,
     },
     lualine_x = {
       { custom_components.lsp_status, fmt = truncate(120, 20, 60) },

@@ -95,3 +95,13 @@ vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.cmd [[
 nnoremap <leader>tsh     :TSHighlightCapturesUnderCursor<CR>
 ]]
+
+
+-- nvim-gps
+-- https://github.com/SmiteshP/nvim-gps#%EF%B8%8F-configuration
+if pcall(require, 'nvim-gps') then
+  require("nvim-gps").setup {
+    -- Use the same separator as lualine.nvim
+    separator = '  ',
+  }
+end

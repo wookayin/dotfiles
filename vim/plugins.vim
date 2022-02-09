@@ -175,6 +175,8 @@ if has('nvim-0.6.2')
   " Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground'}
+
+  Plug 'SmiteshP/nvim-gps'
 endif
 
 " Syntax, Completion, Language Servers, etc.
