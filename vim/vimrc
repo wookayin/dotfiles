@@ -1376,7 +1376,7 @@ require('lualine').setup {
     lualine_b = {'branch'},
     lualine_c = {
       custom_components.neomake_status,
-      {'filename', path = 1},
+      {'filename', path = 1, color = { fg = '#eeeeee' } },
     },
     lualine_x = {
       { custom_components.lsp_status, fmt = truncate(120, 20, 60) },
