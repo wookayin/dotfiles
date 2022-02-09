@@ -10,6 +10,11 @@ if !filereadable('Makefile')
   endif
 endif
 
+if !exists('g:plugs')
+    " Probably not using the full vimrc/init.vim setup
+    finish
+endif
+
 if has_key(g:plugs, 'neomake')
   " Neomake's python runner only does linting. But we would rather want to run it.
   command! -buffer -bang Neomake  call neomake#ShCommand(<bang>0, &makeprg)
