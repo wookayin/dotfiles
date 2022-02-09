@@ -143,10 +143,23 @@ if exists(':CocCommand')
 endif
 
 
-function! s:method_on_cursor() abort
-  " try to automatically get the current function
+let b:gps_available = exists('*luaeval') && luaeval(
+            \ 'pcall(require, "nvim-gps") and require"nvim-gps".is_available()'
+            \ )
+
+function! s:test_suite_on_cursor() abort
+  " Automatically extract the current test method or class (suite)
   if has_key(b:, 'lsp_current_function')
     return b:lsp_current_function
+  elseif b:gps_available  " nvim-gps
+    " TODO: This relies on dirty parsing. see nvim-gps#68
+    let loc = split(luaeval('require"nvim-gps".get_location()'))
+    for i in range(len(loc) - 1, 0, -1)
+      if loc[i] =~# '^test' || loc[i] =~# '^Test'
+        return loc[i]
+      endif
+    endfor
+    return ''   " not found
   elseif exists('*CocAction')
     let l:symbol = CocAction('getCurrentFunctionSymbol')
     " coc has a bug where unicode item kind labels appear; strip it
@@ -163,7 +176,7 @@ if has_key(g:plugs, 'vim-floaterm')
     let l:CTRL_U = nr2char(21)
     let l:cmd = ExpandCmd(&makeprg)
     if get(b:, 'makeprg_pytest', 0)
-      let l:pytest_pattern = s:method_on_cursor()
+      let l:pytest_pattern = s:test_suite_on_cursor()
       if !empty(l:pytest_pattern)
         let l:cmd = printf('pytest -s -k %s', shellescape(l:pytest_pattern))
       endif
