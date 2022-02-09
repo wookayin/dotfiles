@@ -166,7 +166,7 @@ if has('nvim-0.5.0')
   " Some lua-powered plugins for neovim 0.5.0+
   Plug 'rcarriga/nvim-notify'
   Plug 'norcalli/nvim-colorizer.lua'
-  Plug 'kyazdani42/nvim-tree.lua'
+  Plug 'kyazdani42/nvim-tree.lua', PinIf(!has('nvim-0.6.0'), 'd1ff893')
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim', PinIf(!has('nvim-0.6.0'), '80cdb00')
 endif
