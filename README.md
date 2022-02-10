@@ -1,7 +1,7 @@
 Dotfiles
 ========
 
-🏠 Personal dotfiles for \*NIX (Mac OS X and Linux) systems.
+🏠 Personal dotfiles for \*NIX (macOS and Linux) systems.
 
 Installation
 ------------
@@ -110,6 +110,6 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 License
 -------
 
-The MIT License (MIT)
+[The MIT License (MIT)](LICENSE)
 
-Copyright (c) 2012-2020 Jongwook Choi (@wookayin)
+Copyright (c) 2012-2022 Jongwook Choi (@wookayin)
