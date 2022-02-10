@@ -16,11 +16,10 @@ curl -fsSL https://dotfiles.wook.kr/etc/install | bash
 💡 (Tip) You only need to remember <code>curl dotfiles.wook.kr</code> (Click to expand)
 </summary></p>
 
-Every file is accessible through `dotfiles.wook.kr` (via `curl -L` or `wget`), e.g.,
-
-* https://dotfiles.wook.kr/vimrc
-* https://dotfiles.wook.kr/vimrc?raw=true
-* https://dotfiles.wook.kr/bin/tb
+* Every file is accessible through `dotfiles.wook.kr` (via `curl -L` or `wget`), e.g.,
+  * https://dotfiles.wook.kr/vimrc
+  * https://dotfiles.wook.kr/vimrc?raw=true
+  * https://dotfiles.wook.kr/bin/tb
 
 <p></details>
 
@@ -68,16 +67,18 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 🆘 Troubleshooting
 ------------------
 
-* If something goes wrong, run **[`$ dotfiles update`][dotfiles-update]** (or [install.py]) to have everything up-to-date.
-    * *Read carefully warning messages during installation !!*
+*Please read carefully warning messages during installation !!*
+
+* If something goes wrong, please run **[`$ dotfiles update`][dotfiles-update]** (or [install.py]) to make everything up-to-date.
     * If you have your own `~/.zshrc`, `~/.vimrc`, `~/.vim`, etc., that are NOT symbolic links,
       they will not be overwritten by default.
       In such cases you should delete these files *manually*.
 
 * If you are using [**neovim**][neovim] and seeing any startup errors (e.g. `no module named neovim`):
     * Try `:checkhealth`.
-    * Use **`neovim >= 0.4.2`.**
-      To install/upgrade neovim on your system, try `dotfiles install neovim`.
+    * Try `:PlugUpdate`: some errors from vim plugin could be easily solved by running `:PlugUpdate` (in vim) or `$ dotfiles update`.
+    * Use **latset neovim** (e.g., neovim 0.6.1).
+      To install/upgrade neovim on your system, you can do `dotfiles install neovim`.
     * We require python3 version not less than 3.4.  **Python 3.6+** is recommended (semshi: 3.5+)
     * Make sure that the [`pynvim`](https://pypi.python.org/pypi/pynvim/) pypi package is installed on *local* python 3,
       i.e. the python3 on conda, virtualenv, etc.
@@ -86,16 +87,18 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
           [`:echo g:python3_host_prog`](https://github.com/wookayin/dotfiles/blob/master/nvim/init.vim).
       * If you are not sure, manually running `python3 -m pip install --user pynvim` might help.
 
-* [Powerline symbols](https://github.com/powerline/powerline#screenshots) are not displayed properly?
+* [Powerline symbols](https://github.com/powerline/powerline#screenshots) are not displayed properly? Do you see some weird letters like `⍰` due to missing fonts?
   Install [Powerline fonts](https://github.com/powerline/fonts) or
   [Nerd fonts](https://github.com/ryanoasis/nerd-fonts).
+    * Mac users can do: `brew search nerd-font`
 * Does vim color look weird (e.g. only black-and-white)?
-  * Check whether your terminal emulator supports [24-bit color](https://github.com/wookayin/dotfiles/pull/9). Use iTerm2 rather than built-in Terminal.
+  * Check whether your terminal emulator supports [24-bit color](https://github.com/wookayin/dotfiles/pull/9). Use iTerm2 or kitty rather than built-in Terminal.
+  * Mosh (1.3.x) does not support 24-bit colors yet.
   * Try `:set notermguicolors` to disable 24-bit colors.
 * Does tmux look weird? Make sure that tmux version is [2.3](etc/ubuntu-setup.sh) or higher.
     * Run `$ dotfiles install tmux` to install `tmux` into `$HOME/.local/bin`, if you do not have sudo.
-* Ruby version is shown unwantedly? A simple workaround might be to install [rvm](https://rvm.io/).
-* If you still have no idea or have found a bug, please feel free to contact me or raise an issue.
+* If you still have no idea or have found a bug, please feel free to contact me or raise an issue,
+  and I will happy to help you.
 
 
 [neovim]: https://github.com/neovim/neovim
