@@ -281,7 +281,7 @@ if g:dotfiles_completion_backend == ''
   " Legacy support for <TAB> in the completion context
   Plug 'ervandew/supertab'
   " Use ALE if no LSP support was used
-  Plug 'w0rp/ale', PlugCond(has('nvim') || v:version >= 800)
+  Plug 'w0rp/ale', PlugCond(v:version >= 800)
   " echodoc: not needed for coc.nvim and nvim-lsp
   if has('nvim')
     Plug 'Shougo/echodoc.vim'
