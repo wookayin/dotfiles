@@ -2844,8 +2844,13 @@ let g:gundo_right = 1   " show at right
 nnoremap <leader>G :GundoToggle<CR>
 
 " ---------------------------------------------------------------- }}}
-" tagbar key mappings {{{
+" tagbar {{{
+
 nnoremap <leader>T :TagbarToggle<CR>
+
+" Do not display visibility symbols (+, -, ...) which are not pretty.
+let g:tagbar_show_visibility = 0
+
 
 " ---------------------------------------------------------------- }}}
 " coc.nvim (language server completion) {{{
