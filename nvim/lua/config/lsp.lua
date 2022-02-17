@@ -281,6 +281,7 @@ local has_words_before = function()
 end
 
 local cmp = require('cmp')
+local cmp_helper = {}
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -339,11 +340,13 @@ cmp.setup {
     { name = 'buffer', priority = 10 },
   },
   sorting = {
+   -- see ~/.vim/plugged/nvim-cmp/lua/cmp/config/compare.lua
     comparators = {
       cmp.config.compare.offset,
       cmp.config.compare.exact,
       cmp.config.compare.score,
-      require("cmp-under-comparator").under,
+      function(...) return cmp_helper.compare.prioritize_argument(...) end,
+      function(...) return cmp_helper.compare.deprioritize_underscore(...) end,
       cmp.config.compare.recently_used,
       cmp.config.compare.kind,
       cmp.config.compare.sort_text,
@@ -352,6 +355,23 @@ cmp.setup {
     },
   },
 }
+
+-- Custom sorting/ranking for completion items.
+cmp_helper.compare = {
+  -- Deprioritize items starting with underscores (private or protected)
+  deprioritize_underscore = function(lhs, rhs)
+    local l = (lhs.completion_item.label:find "^_+") and 1 or 0
+    local r = (rhs.completion_item.label:find "^_+") and 1 or 0
+    if l ~= r then return l < r end
+  end,
+  -- Prioritize items that ends with "= ..." (usually for argument completion).
+  prioritize_argument = function(lhs, rhs)
+    local l = (lhs.completion_item.label:find "=$") and 1 or 0
+    local r = (rhs.completion_item.label:find "=$") and 1 or 0
+    if l ~= r then return l > r end
+  end,
+}
+
 
 -- Highlights for nvim-cmp's custom popup menu (GH-224)
 vim.cmd [[
