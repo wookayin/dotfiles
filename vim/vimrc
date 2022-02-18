@@ -2297,7 +2297,79 @@ let NERDTreeIgnore = [
 let NERDTreeRespectWildIgnore = 1   " see wildignore
 
 " ---------------------------------------------------------------- }}}
+" neotree {{{
+
+function! s:setup_neotree() abort
+lua << EOF
+  -- https://github.com/nvim-neo-tree/neo-tree.nvim#quickstart
+  require('neo-tree').setup {
+    filesystem = {
+      hijack_netrw_behavior = "open_split",
+      window = {
+        width = 30,
+
+        mappings = {
+          ["r"] = "refresh",
+          ["R"] = "rename",
+        },
+      },
+
+      -- This is a useful feature to turn on,
+      -- but should be disabled for a workaround until #111 is fixed
+      follow_current_file = false,
+      use_libuv_file_watcher = false,
+
+      -- Append trailing slashes on directories (#112)
+      components = {
+        trailing_slash = function ()
+          return {
+            text = "/",
+            highlight = "NeoTreeDirectoryIcon",
+          }
+        end,
+      },
+      renderers = {
+        directory = {
+          {"icon"},
+          {"name", use_git_status_colors = false},
+          {"trailing_slash"},
+          {"diagnostics"},
+          {"git_status"},
+        }
+      },
+    },
+
+    -- Layout (see #130)
+    default_component_configs = {
+      indent = {
+        with_markers = true,
+        indent_marker = "│",
+        last_indent_marker = "└",
+        indent_size = 2,
+        padding = 0, -- extra padding on the left hand side
+      },
+      icon = {
+        default = "",
+      },
+    },
+  }
+EOF
+
+  command! -nargs=0 NeoTree      NeoTreeReveal
+  command! -nargs=0 NeoTreeOpen  NeoTreeReveal
+endfunction
+
+if has_key(g:plugs, 'neo-tree.nvim')
+  autocmd User LazyInit      call s:setup_neotree()
+  nmap <leader>E  :NeoTreeRevealToggle<CR>
+
+  " Highlights
+  hi link NeoTreeDirectoryName Directory
+endif
+
+" ---------------------------------------------------------------- }}}
 " nvim-tree.lua {{{
+" DEPRECATED: Use neo-tree.nvim instead.
 
 function! s:setup_nvimtree() abort
   " Ignore some files
