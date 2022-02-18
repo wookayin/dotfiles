@@ -58,9 +58,25 @@ endsnippet
 ################################################################################
 
 snippet init
-def __init__(self):
-	${1:pass}
+def __init__(self, ${1}):
+	`!p
+import ast
+try:
+	T = ast.parse("def __init__({}): pass".format(t[1]))
+	args = [a.arg for a in T.body[0].args.args]
+	line = lambda arg: "self._{arg} = {arg}".format(arg=arg)
+	snip.rv = snip.mkline("super().__init__()\n")
+	if args:
+		snip.shift(1)  # no idea why I have to do this...
+		for arg in args:
+			snip.rv += snip.mkline(line(arg) + "\n")
+	else:
+		snip.rv = "pass"
+except SyntaxError:  # incomplete?
+	snip.rv = "# (SyntaxError)"
+`
 endsnippet
+
 snippet self._
 self._$1 = ${1}
 endsnippet
