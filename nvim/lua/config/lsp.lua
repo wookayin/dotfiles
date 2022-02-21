@@ -309,6 +309,11 @@ cmp.setup {
   },
   formatting = {
     format = function(entry, vim_item)
+      -- Truncate the item if it is too long
+      local max_width = 80
+      if #vim_item.abbr > max_width then
+        vim_item.abbr = string.sub(vim_item.abbr, 1, max_width) .. "…"
+      end
       -- fancy icons and a name of kind
       vim_item.kind = " " .. require("lspkind").presets.default[vim_item.kind] .. " " .. vim_item.kind
       -- set a name for each source (see the sources section below)
