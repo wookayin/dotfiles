@@ -309,16 +309,30 @@ endsnippet
 snippet pytest.param
 pytest.param(${1}, id=None, marks=${3:pytest.mark.xfail})
 endsnippet
+snippet pytest.fixture
+@pytest.fixture
+def ${1:fixture_name}($2):
+	return $3
+endsnippet
 snippet pytest.xfail
 @pytest.mark.xfail(reason="${1:xfail}")
 endsnippet
 snippet pytest.filterwarnings
 @pytest.mark.filterwarnings("${1:ignore:DeprecationWarning}")
 endsnippet
+snippet pytest.raises
+with pytest.raises(${1:ValueError}, match='.*${2:some regex}.*'):
+	${3:pass}
+endsnippet
+
 snippet unittest
 class Test${1:Example}(unittest.TestCase):
 	def testHello(self):
 		self.assertFalse("Implement me!")
+endsnippet
+
+snippet assert_array_equals
+np.testing.assert_array_equals($1, $2)
 endsnippet
 
 
