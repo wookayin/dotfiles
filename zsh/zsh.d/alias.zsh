@@ -136,6 +136,7 @@ alias gdc='gd --cached --no-prefix'
 alias gds='gd --staged --no-prefix'
 alias gs='git status'
 alias gsu='gs -u'
+alias gu='git pull --autostash'
 
 function ghad() {
   # Run gha (git history) and refresh if anything in .git/ changes
