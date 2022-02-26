@@ -2746,7 +2746,7 @@ endfunction
 nnoremap <leader>gci :Git commit --verbose<CR>
 nnoremap <leader>gcA :Git commit --amend --verbose<CR>
 
-command! -nargs=* GC :Git commit -v<args>
+command! -nargs=* GCommit :Git commit -v<args>
 
 " on commit, type 'cA' to enter in amend mode
 au FileType gitcommit nnoremap <buffer> <silent>
