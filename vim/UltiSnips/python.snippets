@@ -78,7 +78,7 @@ except SyntaxError:  # incomplete?
 endsnippet
 
 snippet self._
-self._$1 = ${1}
+self._${1} = $1
 endsnippet
 snippet @property
 @property
@@ -88,6 +88,11 @@ endsnippet
 snippet repr
 def __repr__(self):
 	return ${1:str(self)}
+endsnippet
+snippet "@?dataclass" "@dataclasse.dataclass" r
+@dataclasses.dataclass
+class ${1}:
+	pass
 endsnippet
 
 ################################################################################
