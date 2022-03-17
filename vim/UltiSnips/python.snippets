@@ -128,10 +128,10 @@ snippet pdb
 import pdb; pdb.set_trace()  # XXX DEBUG  # yapf: disable
 endsnippet
 snippet ipdb
-import ipdb; ipdb.set_trace()  # XXX DEBUG  # yapf: disable
+import ipdb; ipdb.set_trace(cond=True)  # XXX DEBUG  # yapf: disable
 endsnippet
 snippet pudb
-import pudb; pudb.set_trace()  # XXX DEBUG  # yapf: disable
+import pudb; pudb.set_trace(paused=True)  # XXX DEBUG  # yapf: disable
 endsnippet
 
 
