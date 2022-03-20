@@ -2302,9 +2302,10 @@ let NERDTreeRespectWildIgnore = 1   " see wildignore
 function! s:setup_neotree() abort
 lua << EOF
   -- https://github.com/nvim-neo-tree/neo-tree.nvim#quickstart
+  -- ~/.vim/plugged/neo-tree.nvim/lua/neo-tree/defaults.lua
   require('neo-tree').setup {
     filesystem = {
-      hijack_netrw_behavior = "open_split",
+      hijack_netrw_behavior = "open_current",
       window = {
         width = 30,
 
@@ -2351,6 +2352,13 @@ lua << EOF
       icon = {
         default = "",
       },
+      git_status = {
+        symbols = {
+          untracked = "?",
+          unstaged = "*",
+          staged = "✚",
+        }
+      },
     },
   }
 EOF
@@ -2360,8 +2368,11 @@ EOF
 endfunction
 
 if has_key(g:plugs, 'neo-tree.nvim')
+  " Use 2.x compatibility mode
+  let g:neo_tree_remove_legacy_commands = 1
+
   autocmd User LazyInit      call s:setup_neotree()
-  nmap <leader>E  :NeoTreeRevealToggle<CR>
+  nmap <leader>E  :Neotree toggle<CR>
 
   " Highlights
   hi link NeoTreeDirectoryName Directory
