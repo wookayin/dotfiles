@@ -2363,15 +2363,19 @@ lua << EOF
   }
 EOF
 
-  command! -nargs=0 NeoTree      NeoTreeReveal
-  command! -nargs=0 NeoTreeOpen  NeoTreeReveal
 endfunction
 
 if has_key(g:plugs, 'neo-tree.nvim')
   " Use 2.x compatibility mode
   let g:neo_tree_remove_legacy_commands = 1
 
-  autocmd User LazyInit      call s:setup_neotree()
+  if luaeval('vim.tbl_contains(vim.tbl_map(vim.fn.isdirectory, vim.fn.argv()), 1)')
+    " If any of the startup argument is a directory,
+    " we don't lazy-load neotree so it can hijack netrw.
+    call s:setup_neotree()
+  else
+    autocmd User LazyInit      call s:setup_neotree()
+  endif
   nmap <leader>E  :Neotree toggle<CR>
 
   " Highlights
