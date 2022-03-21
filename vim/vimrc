@@ -2380,7 +2380,7 @@ if has_key(g:plugs, 'neo-tree.nvim')
 
   " Highlights
   hi link NeoTreeDirectoryName Directory
-  hi NeoTreeGitUntracked guifg=#797f83
+  hi NeoTreeGitUntracked guifg=#E3DB88
 endif
 
 " ---------------------------------------------------------------- }}}
