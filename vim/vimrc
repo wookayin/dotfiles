@@ -277,6 +277,13 @@ if has('nvim') && executable('nvr')
   autocmd FileType gitcommit set bufhidden=delete
 endif
 
+" python
+if !has('nvim') && !has('python3')
+  autocmd VimEnter * echohl WarningMsg |
+        \ echom 'WARNING: This version of vim is unsupported, lacking +python3. Install vim from brew/apt or use neovim.' |
+        \ echohl None
+endif
+
 " For debugging
 function! ToggleVerbose()
   if !&verbose

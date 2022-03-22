@@ -267,9 +267,13 @@ if g:dotfiles_completion_backend == '@coc'
 
   " automatically install CocExtensions by default
   let g:coc_global_extensions = [
-        \ 'coc-json', 'coc-highlight', 'coc-snippets', 'coc-explorer',
-        \ 'coc-python', 'coc-vimlsp', 'coc-texlab'
+        \ 'coc-json', 'coc-highlight', 'coc-explorer',
+        \ 'coc-vimlsp', 'coc-texlab',
         \ ]
+  if has('python3')
+    let g:coc_global_extensions += [
+        \ 'coc-python', 'coc-snippets']
+  endif
 
   UnPlug 'kyazdani42/nvim-tree.lua'   " use coc-explorer
 endif
@@ -290,8 +294,10 @@ endif
 
 " Other language-specific plugins supplementary and orthogonal to LSP, coc, etc.
 " ------------------------------------------------------------------------------
-Plug 'klen/python-mode', { 'branch': 'develop' }
-Plug 'wookayin/vim-python-enhanced-syntax'
+if has('python3')
+  Plug 'klen/python-mode', { 'branch': 'develop' }
+  Plug 'wookayin/vim-python-enhanced-syntax'
+endif
 
 " polyglot: cannot use latest version (see GH-608, GH-613)
 Plug 'sheerun/vim-polyglot', {'tag': 'v4.2.1'}
