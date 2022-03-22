@@ -288,8 +288,17 @@ cmp.setup {
       vim.fn["UltiSnips#Anon"](args.body)
     end,
   },
+  -- Deprecated (moved to under window)
   documentation = {
     border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'}  -- in a clockwise order
+  },
+  window = {
+    documentation = {
+      border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'},
+    },
+    completion = {
+      border = {'┌', '─', '┐', '│', '┘', '─', '└', '│'},
+    }
   },
   mapping = {
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -380,15 +389,53 @@ cmp_helper.compare = {
 
 -- Highlights for nvim-cmp's custom popup menu (GH-224)
 vim.cmd [[
-  " To be compatible with Pmenu (#fff3bf)
-  hi CmpItemAbbr           guifg=#111111
-  hi CmpItemAbbrMatch      guifg=#f03e3e gui=bold
-  hi CmpItemAbbrMatchFuzzy guifg=#fd7e14 gui=bold
-  hi CmpItemAbbrDeprecated guifg=#adb5bd
-  hi CmpItemKindDefault    guifg=#cc5de8
-  hi! def link CmpItemKind CmpItemKindDefault
-  hi CmpItemMenu           guifg=#cfa050
+  " Light theme: Compatible with Pmenu (#fff3bf)
+  hi! CmpItemAbbr           guifg=#111111
+  hi! CmpItemAbbrMatch      guifg=#f03e3e gui=bold
+  hi! CmpItemAbbrMatchFuzzy guifg=#fd7e14 gui=bold
+  hi! CmpItemAbbrDeprecated guifg=#adb5bd
+  hi! CmpItemKindDefault    guifg=#cc5de8
+  hi! link CmpItemKind      CmpItemKindDefault
+  hi! CmpItemMenu           guifg=#cfa050
 ]]
+
+-- Highlights with bordered completion window (GH-472)
+if vim.fn.hlexists("CmpBorderedWindow_Normal") ~= 0 then
+  vim.cmd [[
+    " Dark theme (needs CmpBorderedWindow_Normal custom group)
+    " dark background, and white-ish foreground
+    highlight! CmpBorderedWindow_Normal       guibg=#242a30
+    highlight! CmpBorderedWindow_FloatBorder  guibg=#242a30
+    highlight! CmpItemAbbr                    guifg=#eeeeee
+    " gray
+    highlight! CmpItemAbbrDeprecated    guibg=NONE gui=strikethrough guifg=#808080
+    " fuzzy matching
+    highlight! CmpItemAbbrMatch         guibg=NONE guifg=#f03e3e gui=bold
+    highlight! CmpItemAbbrMatchFuzzy    guibg=NONE guifg=#fd7e14 gui=bold
+
+    " Item Kinds. defaults to CmpItemKind (#cc5de8)
+    " see ~/.vim/plugged/nvim-cmp/lua/cmp/types/lsp.lua
+    " {✅Class, ✅Module, ✅Interface, Struct, ✅Function, ✅Method, ✅Constructor,
+    "  ✅Variable, ✅Property, Field, ✅Unit, Value, Enum, EnumMember, Event,
+    "  ✅Keyword, Color, File, Reference, Folder, Constant, Operator, TypeParameter,
+    "  ✅Snippet, ✅Text}
+
+    " see SemshiGlobal
+    highlight!      CmpItemKindModule        guibg=NONE guifg=#FF7F50
+    highlight!      CmpItemKindClass         guibg=NONE guifg=#FFAF00
+    highlight! link CmpItemKindStruct        CmpItemKindClass
+    highlight!      CmpItemKindVariable      guibg=NONE guifg=#9CDCFE
+    highlight!      CmpItemKindProperty      guibg=NONE guifg=#9CDCFE
+    highlight!      CmpItemKindFunction      guibg=NONE guifg=#C586C0
+    highlight! link CmpItemKindConstructor   CmpItemKindFunction
+    highlight! link CmpItemKindMethod        CmpItemKindFunction
+    highlight!      CmpItemKindKeyword       guibg=NONE guifg=#FF5FFF
+    highlight!      CmpItemKindText          guibg=NONE guifg=#D4D4D4
+    highlight!      CmpItemKindUnit          guibg=NONE guifg=#D4D4D4
+    highlight!      CmpItemKindConstant      guibg=NONE guifg=#409F31
+    highlight!      CmpItemKindSnippet       guibg=NONE guifg=#E3E300
+  ]]
+end
 
 -----------------------------
 -- Configs for PeekDefinition
