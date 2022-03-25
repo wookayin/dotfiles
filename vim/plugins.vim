@@ -44,7 +44,7 @@ Plug 'dstein64/vim-startuptime', { 'on': ['StartupTime'] }
 
 " Vim Interfaces
 " -------------------------------------
-if has('nvim-0.5.0')
+if has('nvim-0.6.0')
   " Status line: use lualine.nvim (fork)
   Plug 'nvim-lualine/lualine.nvim'
   ForcePlugURI 'lualine.nvim'
