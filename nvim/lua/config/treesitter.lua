@@ -79,7 +79,7 @@ local function throttle(fn, ms)
     end
   end
 end
-if not ts_configs.get_module('highlight').enable then
+if not (ts_configs.get_module('highlight') or {}).enable then
   _G.TreesitterParseDebounce = throttle(_G.TreesitterParse, 100)  -- 100 ms
   vim.cmd [[
     augroup TreesitterUpdateParsing
