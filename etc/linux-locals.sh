@@ -345,8 +345,10 @@ install_fd() {
     # install fd
     set -e
 
+    local FD_VERSION="v8.3.2"
+
     TMP_FD_DIR="/tmp/$USER/fd"; mkdir -p $TMP_FD_DIR
-    FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/v6.0.0/fd-v6.0.0-x86_64-unknown-linux-musl.tar.gz"
+    FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/${FD_VERSION}/fd-${FD_VERSION}-x86_64-unknown-linux-musl.tar.gz"
     echo $FD_DOWNLOAD_URL
 
     cd $TMP_FD_DIR
