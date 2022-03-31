@@ -66,6 +66,10 @@ fi
 # in order that zsh plugins are also provisioned with exectuables from $PATH.
 # Entries listed here may not be visible from zsh plugins and source scripts.
 
+# Rust (cargo) {{{
+path=( $path $HOME/.cargo/bin )
+# }}}
+
 # GO {{{
 export GOROOT=$HOME/.go
 export GOPATH=$GOROOT/packages
