@@ -2938,6 +2938,19 @@ let g:flog_permanent_default_arguments = {
 hi flogHash  guifg=#ffd43b
 
 " ---------------------------------------------------------------- }}}
+" diffview.nvim {{{
+if IsPlugInstalled('diffview.nvim')
+lua << EOF
+  require('diffview').setup {
+    default_args = {
+      DiffviewOpen = { '--untracked-files=no' },
+    }
+  }
+EOF
+  command! -nargs=? -complete=file GHistory   DiffviewFileHistory <args>
+endif
+
+" ---------------------------------------------------------------- }}}
 " gundo key mappings and options {{{
 let g:gundo_right = 1   " show at right
 nnoremap <leader>G :GundoToggle<CR>

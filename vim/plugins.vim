@@ -98,6 +98,9 @@ if has('nvim-0.5.0')
 else
   Plug 'airblade/vim-gitgutter'
 endif
+if has('nvim-0.5.0')
+  Plug 'sindrets/diffview.nvim'
+endif
 if has('nvim-0.4.0') && exists('*nvim_open_win')
   " git blame with floating window (requires nvim 0.4.0+)
   Plug 'rhysd/git-messenger.vim'
