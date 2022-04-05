@@ -1279,6 +1279,28 @@ hi WhichKeyFloat  guibg=#1a2a3a
 
 
 " ---------------------------------------------------------------- }}}
+" vim-peekaboo {{{
+
+" Use floating window instead of vsplit for peeking registers.
+" https://github.com/junegunn/vim-peekaboo/issues/68
+if has('nvim-0.5.0')
+  let g:peekaboo_window = "call CreateCenteredFloatingWindow()"
+  function! CreateCenteredFloatingWindow()
+    let width = float2nr(&columns * 0.8)
+    let height = float2nr(&lines * 0.7)
+    let top = ((&lines - height) / 2) - 1
+    let left = (&columns - width) / 2
+    let opts = {
+          \ 'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height,
+          \ 'style': 'minimal', 'border': 'rounded'}
+
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    setlocal winblend=10
+  endfunction
+endif
+
+
+" ---------------------------------------------------------------- }}}
 " editorconfig {{{
 
 let g:EditorConfig_core_mode = 'vim_core'
