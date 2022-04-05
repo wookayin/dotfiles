@@ -639,17 +639,21 @@ if pcall(require, "null-ls") then
   vim.cmd [[
     augroup LspAutoFormatting
     augroup END
-    command! LspAutoFormattingOn      lua _G.LspAutoFormattingStart()
-    command! LspAutoFormattingOff     lua _G.LspAutoFormattingStop()
+    command! -nargs=? LspAutoFormattingOn      lua _G.LspAutoFormattingStart(<q-args>)
+    command!          LspAutoFormattingOff     lua _G.LspAutoFormattingStop()
   ]]
-  _G.LspAutoFormattingStart = function ()
+  _G.LspAutoFormattingStart = function (misc)
     vim.cmd [[
     augroup LspAutoFormatting
       autocmd!
       autocmd BufWritePre *    :lua _G.LspAutoFormattingTrigger()
     augroup END
     ]]
-    vim.notify("Lsp Auto-Formatting has been turned on.")
+    local msg = "Lsp Auto-Formatting has been turned on."
+    if misc and misc ~= '' then
+      msg = msg .. string.format("\n(%s)", misc)
+    end
+    vim.notify(msg, 'info', {timeout = 2000})
   end
   _G.LspAutoFormattingTrigger = function ()
     -- Disable on some files (e.g., external packages)

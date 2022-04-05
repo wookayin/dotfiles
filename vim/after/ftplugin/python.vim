@@ -125,7 +125,7 @@ if exists(':LspAutoFormattingOn')
       let s:style_yapf = s:project_root . '/.style.yapf'
       if filereadable(s:style_yapf)
         " TODO: Do not affect files outside the project!!
-        :LspAutoFormattingOn
+        execute ":LspAutoFormattingOn " . s:style_yapf
       endif
     endif
   endif
