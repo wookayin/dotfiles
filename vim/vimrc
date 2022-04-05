@@ -2031,7 +2031,7 @@ nnoremap <leader>FG :Commits<CR>
 nnoremap <leader>FH :History<CR>
 nnoremap <leader>H  :History<CR>
 " :GS -> Git status (open modified file, etc.)
-command! GS GFiles?
+command! GStatus GFiles?
 " :H goes to :History
 command! H History
 
@@ -2969,7 +2969,25 @@ lua << EOF
     }
   }
 EOF
-  command! -nargs=? -complete=file GHistory   DiffviewFileHistory <args>
+  " :GHistory <files>
+  command! -nargs=* -complete=file GHistory   DiffviewFileHistory <args>
+  " :GDiff <revision>     to HEAD
+  command! -nargs=* -complete=customlist,DiffviewCmdCompletion  GDiff  DiffviewOpen <args>
+  " :GShow <revision>
+  command! -nargs=+ -complete=customlist,DiffviewCmdCompletion  GShow  DiffviewOpen <args>^1..<args>
+
+  " cmd completion functions for aliased commands.
+  function DiffviewCmdCompletion(argLead, cmdLine, curPos)
+    return luaeval("require'diffview'.completion("
+          \ . "vim.fn.eval('a:argLead'),"
+          \ . "vim.fn.eval('a:cmdLine'),"
+          \ . "vim.fn.eval('a:curPos'))")
+  endfunction
+lua << EOF
+  local completers = require('diffview').completers
+  completers.GDiff = completers.DiffviewOpen
+  completers.GShow = completers.DiffviewOpen
+EOF
 endif
 
 " ---------------------------------------------------------------- }}}
