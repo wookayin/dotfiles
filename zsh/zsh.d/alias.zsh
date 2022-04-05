@@ -362,6 +362,11 @@ rgfzf () {
 
 alias iterm-tab-color="noglob iterm-tab-color"
 
+if (( $+commands[http-server] )); then
+    # Disable cache for the http server.
+    alias http-server="http-server -c-1"
+fi
+
 if (( $+commands[pydf] )); then
     # pip install --user pydf
     # pydf: a colorized df
