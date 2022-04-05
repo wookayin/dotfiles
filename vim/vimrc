@@ -845,6 +845,16 @@ function! WinDo(command) abort
 endfunction
 command! -nargs=* WinDo   call WinDo(<q-args>)
 
+" :Q -- close tab
+function! s:Q() abort
+  if tabpagenr('$') == 1
+    qall
+  else
+    tabclose
+  endif
+endfunction
+command! -nargs=0 Q   call s:Q()
+
 " Lua utilities (helpful for debugging)
 if has('nvim-0.5.0')
   function! LuaEcho(expr) abort
