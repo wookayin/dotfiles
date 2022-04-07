@@ -2780,6 +2780,8 @@ augroup END
 " ---------------------------------------------------------------- }}}
 " fugitive {{{
 
+let g:fugitive_legacy_commands = 0
+
 " Custom Fugitive Commands
 " GitThreeWayDiff: open a 3-way diff window among {HEAD, index, working copy}
 command! GitThreeWayDiff        call GitThreeWayDiff()
@@ -2792,6 +2794,13 @@ function! GitThreeWayDiff() abort
   call win_gotoid(current_win)  " [right]  working copy
 endfunction
 
+" command aliases
+command! -nargs=* GCommit :Git commit -v<args>
+
+" Remove some fugitive commands
+augroup FugitiveRemoveCommands
+  autocmd CmdlineEnter * ++once silent delcommand! GDelete
+augroup END
 
 " fugitive key mappings
 nnoremap <leader>gd :Gvdiff<CR>
@@ -2804,8 +2813,6 @@ function! FugitiveResizeGblame() abort
 endfunction
 nnoremap <leader>gci :Git commit --verbose<CR>
 nnoremap <leader>gcA :Git commit --amend --verbose<CR>
-
-command! -nargs=* GCommit :Git commit -v<args>
 
 " on commit, type 'cA' to enter in amend mode
 au FileType gitcommit nnoremap <buffer> <silent>
