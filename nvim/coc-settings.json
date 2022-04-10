@@ -1,4 +1,5 @@
 {
+    // vim: set ft=jsonc:
     // References:
     //  :help coc#config()
     //  https://github.com/neoclide/coc.nvim/blob/master/data/schema.json
