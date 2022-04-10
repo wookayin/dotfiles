@@ -2799,7 +2799,7 @@ command! -nargs=* GCommit :Git commit -v<args>
 
 " Remove some fugitive commands
 augroup FugitiveRemoveCommands
-  autocmd CmdlineEnter * ++once silent delcommand! GDelete
+  autocmd CmdlineEnter * ++once silent delcommand GDelete
 augroup END
 
 " fugitive key mappings
