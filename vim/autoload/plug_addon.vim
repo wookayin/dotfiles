@@ -19,11 +19,15 @@ function! s:force_plug_uri(plug_name) abort
   let dir = g:plugs[a:plug_name].dir
   let expected_uri = substitute(g:plugs[a:plug_name].uri,
         \ '^https://git::@github\.com', 'https://github.com', '')
+  let expected_uri = substitute(expected_uri,
+        \ '^git@github.com:', 'https://github.com/', '')
   let actual_uri = system(printf('git config -f %s remote.origin.url',
         \ shellescape(dir . '/.git/config')))
   let actual_uri = substitute(actual_uri, '[[:cntrl:]]', '', 'g')  " strip null characters
   let actual_uri = substitute(actual_uri,
         \ '^https://git::@github\.com', 'https://github.com', '')
+  let actual_uri = substitute(actual_uri,
+        \ '^git@github.com:', 'https://github.com/', '')
 
   if !v:shell_error && actual_uri != expected_uri
       " Update the remote repository URI.
