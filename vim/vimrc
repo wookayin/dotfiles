@@ -2555,6 +2555,51 @@ let g:scrollview_mode = 'virtual'
 let g:scrollview_excluded_filetypes = ['vim-plug', 'GV', 'git']
 
 " ---------------------------------------------------------------- }}}
+" pretty-fold {{{
+
+autocmd User LazyInit  call s:setup_prettyfold()
+function! s:setup_prettyfold() abort
+lua << EOF
+  -- Configuration
+  -- https://github.com/anuvyklack/pretty-fold.nvim#foldtext-configuration
+  local number_of_folded_lines = function()
+    return string.format('%3d lines', vim.v.foldend - vim.v.foldstart + 1)
+  end
+  local rep_fill_char = function(times)
+    return function(config) return config.fill_char:rep(times) end
+  end
+  require("pretty-fold").setup {
+    fill_char = '─',
+    sections = {
+      left = {
+        'content',
+      },
+      right = {
+         ' ', 'number_of_folded_lines', ' ', rep_fill_char(3),
+      }
+    },
+    process_comment_signs = false,
+  }
+
+  -- Preview closed folds
+  -- https://github.com/anuvyklack/pretty-fold.nvim#preview
+  -- Note: help 'foldopen' to specify when fold will be opened upon actions
+  require('pretty-fold.preview').setup {
+    border = 'single',
+
+    -- Disable default keybindings (h/l) which are confusing. Use `zp` instead
+    key = false,
+  }
+
+  _G.PreviewFold = function()
+    require('pretty-fold.preview').show_preview()
+  end
+EOF
+  command! -nargs=0 PreviewFold :lua _G.PreviewFold()
+  nnoremap zp <cmd>PreviewFold<CR>
+endfunction
+
+" ---------------------------------------------------------------- }}}
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:UltiSnipsJumpForwardTrigger = '<c-j>'
