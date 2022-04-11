@@ -98,6 +98,11 @@ vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 -- Playground keymappings
 vim.cmd [[
 nnoremap <leader>tsh     :TSHighlightCapturesUnderCursor<CR>
+
+augroup TSPlaygroundConfig
+  autocmd!
+  autocmd FileType tsplayground  setlocal ts=2 sts=2 sw=2
+augroup END
 ]]
 
 
