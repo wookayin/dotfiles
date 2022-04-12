@@ -2569,7 +2569,7 @@ lua << EOF
     return function(config) return config.fill_char:rep(times) end
   end
   require("pretty-fold").setup {
-    fill_char = '─',
+    fill_char = '╶',
     sections = {
       left = {
         'content',
