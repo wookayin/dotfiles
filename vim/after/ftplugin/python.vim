@@ -178,7 +178,7 @@ if has_key(g:plugs, 'vim-floaterm')
     if get(b:, 'makeprg_pytest', 0)
       let l:pytest_pattern = s:test_suite_on_cursor()
       if !empty(l:pytest_pattern)
-        let l:cmd = printf('pytest -s -k %s', shellescape(l:pytest_pattern))
+        let l:cmd = printf('pytest -s %s -k %s', expand('%:.'), shellescape(l:pytest_pattern))
       endif
     endif
     if l:bufnr == -1
