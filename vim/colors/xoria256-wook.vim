@@ -38,6 +38,8 @@ highlight PreProc       ctermfg=219 guifg=#ffafff
 highlight SpecialKey    ctermfg=242 guifg=#666666
 highlight Folded        ctermbg=60  guibg=#404056
 
+highlight FoldColumn    ctermfg=236 guifg=#495057
+
 " colors for gui/24bit mode {{
 " DiffAdd - inserted lines (dark green)
 highlight DiffAdd       guibg=#103a05 guifg=NONE

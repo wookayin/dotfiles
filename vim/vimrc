@@ -139,6 +139,9 @@ set nofoldenable
 " When jumping to line, folds on the line should be opened (:help 'foldopen')
 set foldopen+=jump
 
+" foldcolumn display
+set foldcolumn=auto
+
 " use spaces for tabbing, by default
 set expandtab
 
