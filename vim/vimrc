@@ -3021,6 +3021,15 @@ let g:git_messenger_include_diff = 'current'
 " Use git blame -w (ignore-whitespaces).
 let g:git_messenger_extra_blame_args = '-w'
 
+" Use border for the popup window.
+if has('nvim-0.5.0')
+lua << EOF
+  vim.g.git_messenger_floating_win_opts = {
+    border = 'single',
+  }
+EOF
+endif
+
 " ---------------------------------------------------------------- }}}
 " vim-flog {{{
 " https://github.com/rbong/vim-flog/blob/master/EXAMPLES.md
