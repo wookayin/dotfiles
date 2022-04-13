@@ -282,15 +282,12 @@ end
 
 local cmp = require('cmp')
 local cmp_helper = {}
+local cmp_types = require('cmp.types.cmp')
 cmp.setup {
   snippet = {
     expand = function(args)
       vim.fn["UltiSnips#Anon"](args.body)
     end,
-  },
-  -- Deprecated (moved to under window)
-  documentation = {
-    border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'}  -- in a clockwise order
   },
   window = {
     documentation = {
@@ -301,10 +298,16 @@ cmp.setup {
     }
   },
   mapping = {
+    -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/mapping.lua
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-y>'] = cmp.config.disable,
     ['<C-e>'] = cmp.mapping.close(),
+    ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp_types.SelectBehavior.Select }),
+    ['<Up>'] = cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Select }),
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp_types.SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Insert }),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
     ['<Tab>'] = {
       i = function(fallback)  -- see GH-231, GH-286
