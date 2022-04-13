@@ -283,6 +283,8 @@ end
 local cmp = require('cmp')
 local cmp_helper = {}
 local cmp_types = require('cmp.types.cmp')
+local cmp_theme = cmp.config.window and 'dark' or 'light'
+-- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -294,8 +296,9 @@ cmp.setup {
       border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'},
     },
     completion = {
-      border = {'┌', '─', '┐', '│', '┘', '─', '└', '│'},
-    }
+      border = (cmp_theme == 'dark' and {'┌', '─', '┐', '│', '┘', '─', '└', '│'} or nil),
+      winhighlight = 'Normal:CmpPmenu,FloatBorder:CmpPmenuBorder,CursorLine:PmenuSel,Search:None',
+    },
   },
   mapping = {
     -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/mapping.lua
@@ -399,6 +402,9 @@ cmp_helper.compare = {
 -- Highlights for nvim-cmp's custom popup menu (GH-224)
 vim.cmd [[
   " Light theme: Compatible with Pmenu (#fff3bf)
+  hi! link CmpPmenu         Pmenu
+  hi! link CmpPmenuBorder   Pmenu
+
   hi! CmpItemAbbr           guifg=#111111
   hi! CmpItemAbbrMatch      guifg=#f03e3e gui=bold
   hi! CmpItemAbbrMatchFuzzy guifg=#fd7e14 gui=bold
@@ -409,13 +415,12 @@ vim.cmd [[
 ]]
 
 -- Highlights with bordered completion window (GH-472)
-if vim.fn.hlexists("CmpBorderedWindow_Normal") ~= 0 then
+if cmp_theme == 'dark' then
   vim.cmd [[
-    " Dark theme (needs CmpBorderedWindow_Normal custom group)
-    " dark background, and white-ish foreground
-    highlight! CmpBorderedWindow_Normal       guibg=#242a30
-    highlight! CmpBorderedWindow_FloatBorder  guibg=#242a30
-    highlight! CmpItemAbbr                    guifg=#eeeeee
+    " Dark background, and white-ish foreground
+    highlight! CmpPmenu         guibg=#242a30
+    highlight! CmpPmenuBorder   guibg=#242a30
+    highlight! CmpItemAbbr      guifg=#eeeeee
     " gray
     highlight! CmpItemAbbrDeprecated    guibg=NONE gui=strikethrough guifg=#808080
     " fuzzy matching
