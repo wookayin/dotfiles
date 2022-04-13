@@ -2884,6 +2884,7 @@ augroup FugitiveAddon
 
   " [?] show help  / [ci] commit -v
   autocmd FileType fugitive    nnoremap <buffer> <silent> ?  :<C-u>vertical help fugitive-maps<CR>:wincmd p<CR>
+  autocmd FileType fugitive    nmap     <buffer> <silent> g? ?
   autocmd FileType fugitive    nmap     <buffer> ci          cvc
   " [g=] Toggle inline diffs for all files
   " [space] same as = (toggle inline diffs for the current file)
