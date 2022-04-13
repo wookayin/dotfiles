@@ -2850,9 +2850,14 @@ endfunction
 " command aliases
 command! -nargs=* GCommit :Git commit -v<args>
 
-" Remove some fugitive commands
-augroup FugitiveRemoveCommands
+" Remove or replace some fugitive commands
+augroup FugitiveCustomizeCommands
   autocmd CmdlineEnter * ++once silent delcommand GDelete
+
+ " :G -> :GDiff + :Git
+  autocmd CmdlineEnter * ++once command! -nargs=0 G
+        \ execute 'GDiff' | execute 'Git'
+
 augroup END
 
 " fugitive key mappings
@@ -2874,8 +2879,8 @@ au FileType gitcommit nnoremap <buffer> <silent>
 " Git: more configuration and keymaps for fugitive index buffers
 augroup FugitiveAddon
   autocmd!
-  " Fix window height to be 20
-  autocmd FileType fugitive    if !&winfixheight | resize 20 | setlocal winfixheight | endif
+  " Fix window height to be 16
+  autocmd FileType fugitive    if !&winfixheight | resize 16 | setlocal winfixheight | endif
 
   " [?] show help  / [ci] commit -v
   autocmd FileType fugitive    nnoremap <buffer> <silent> ?  :<C-u>vertical help fugitive-maps<CR>:wincmd p<CR>
@@ -3031,6 +3036,8 @@ hi flogHash  guifg=#ffd43b
 
 " ---------------------------------------------------------------- }}}
 " diffview.nvim {{{
+" Assumed fugitive is always available.
+
 if IsPlugInstalled('diffview.nvim')
 lua << EOF
   require('diffview').setup {
