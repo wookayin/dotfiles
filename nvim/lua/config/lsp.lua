@@ -306,15 +306,21 @@ cmp.setup {
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.close(),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
-    ['<Tab>'] = function(fallback)  -- see GH-231, GH-286
-      if cmp.visible() then cmp.select_next_item()
-      elseif has_words_before() then cmp.complete()
-      else fallback() end
-    end,
-    ['<S-Tab>'] = function(fallback)
-      if cmp.visible() then cmp.select_prev_item()
-      else fallback() end
-    end,
+    ['<Tab>'] = {
+      i = function(fallback)  -- see GH-231, GH-286
+        if cmp.visible() then cmp.select_next_item()
+        elseif has_words_before() then cmp.complete()
+        else fallback() end
+      end,
+      c = cmp.config.disable, -- see GH-880
+    },
+    ['<S-Tab>'] = {
+      i = function(fallback)
+        if cmp.visible() then cmp.select_prev_item()
+        else fallback() end
+      end,
+      c = cmp.config.disable,
+    },
   },
   formatting = {
     format = function(entry, vim_item)
