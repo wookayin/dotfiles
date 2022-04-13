@@ -1664,8 +1664,13 @@ if has('nvim-0.4')
           \ 'width': width,
           \ 'height': height,
           \ }
+    let winhl = 'Normal:FZFFloatNormal'
+    if has('nvim-0.5')
+      let opts['border'] = 'rounded'
+      let winhl = winhl . ',FloatBorder:FZFFloatNormal'
+    end
     let fwinnr = nvim_open_win(buf, v:true, opts)
-    call setwinvar(fwinnr, '&winhl', 'Normal:FZFFloatNormal')
+    call setwinvar(fwinnr, '&winhl', winhl)
 
     " Additional keymappings on the floating terminal buffer for fzf
     " e.g. make <C-W>{H, J, K, L} work as if it were normal vim windows
