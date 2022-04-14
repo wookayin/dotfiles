@@ -239,7 +239,7 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/lua-dev.nvim'
 
-  Plug 'hrsh7th/nvim-cmp'
+  Plug 'hrsh7th/nvim-cmp', {'commit': 'dbc7229'}  " GH-899
   Plug 'hrsh7th/cmp-buffer'
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-path'
