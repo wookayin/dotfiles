@@ -2207,7 +2207,7 @@ function! s:setup_wilder()
   let l:pipeline.noop = [{_ -> v:false}]
   let l:pipeline.cmdline = wilder#cmdline_pipeline({
         \ 'fuzzy' : 2, 'fuzzy_filter': wilder#lua_fzy_filter() })
-  let l:pipeline.search_history = [ wilder#check({_, x -> empty(x)}), wilder#history() ]
+  let l:pipeline.history = [ wilder#check({_, x -> empty(x)}), wilder#history() ]
 
   let l:pipeline.file_fuzzy = executable('fd') && has('nvim-0.5.0') ?
         \ wilder#python_file_finder_pipeline({
@@ -2260,8 +2260,8 @@ EOF
   call wilder#set_option('pipeline', [
         \ wilder#branch(
         \   l:pipeline.file_fuzzy,
+        \   l:pipeline.history,
         \   l:pipeline.cmdline,
-        \   l:pipeline.search_history,
         \   wilder#vim_search_pipeline(),
         \ )])
 
