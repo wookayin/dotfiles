@@ -468,7 +468,7 @@ function PeekDefinition()
     local def_uri = def_result.uri or def_result.targetUri
     local def_range = def_result.range or def_result.targetSelectionRange
     vim.fn['quickui#preview#open'](vim.uri_to_fname(def_uri), {
-        cursor = def_range.start.line,
+        cursor = def_range.start.line + 1,
         number = 1,   -- show line number
         persist = 0,
       })
