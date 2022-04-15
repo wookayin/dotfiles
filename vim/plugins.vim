@@ -1,3 +1,5 @@
+" Utilities and Helpers {{{
+
 runtime autoload/plug_addon.vim
 
 let s:darwin = has('mac')
@@ -30,6 +32,7 @@ endfunction
 " Detect (neo)vim features
 let s:floating_available = exists('*nvim_open_win') &&
       \ (exists('##MenuPopupChanged') || exists('##CompleteChanged'))
+" }}}
 
 "==============================================
 call plug#begin('~/.vim/plugged')
@@ -191,7 +194,7 @@ endif
 
 Plug 'editorconfig/editorconfig-vim'
 
-" [Completion Engine or LSP backend]
+" [Completion Engine or LSP backend] {{{
 " We have a long history and I want to make completion work for legacy and
 " older vim as well. Choose the completion or LSP engine in the order of
 " preferred and up-to-date technology with a fallback manner.
@@ -229,7 +232,7 @@ function! s:choose_completion_backend()
 
   " No completion available :(
   return ''
-endfunction
+endfunction " }}}
 let g:dotfiles_completion_backend = s:choose_completion_backend()
 
 " 1. [Neovim 0.5.0 LSP]
@@ -256,7 +259,7 @@ if g:dotfiles_completion_backend == '@lsp'
 
 endif
 
-" 2. [coc.nvim]
+" 2. [coc.nvim] (deprecated) {{{
 " Note: coc.nvim is not tested since my migration to nvim-lsp,
 " so it may not work properly with the recent versions of nvim and coc.
 if g:dotfiles_completion_backend == '@coc'
@@ -284,7 +287,8 @@ if g:dotfiles_completion_backend == '@coc'
   UnPlug 'kyazdani42/nvim-tree.lua'   " use coc-explorer
 endif
 
-" no LSP/coc support (legacy)
+" }}}
+" 3. [no LSP/coc support] (legacy) {{{
 if g:dotfiles_completion_backend == ''
   " Use jedi-vim, only if we are not using coc.nvim or LSP.
   Plug 'davidhalter/jedi-vim'
@@ -297,6 +301,7 @@ if g:dotfiles_completion_backend == ''
     Plug 'Shougo/echodoc.vim'
   endif
 endif
+" }}}
 
 " Other language-specific plugins supplementary and orthogonal to LSP, coc, etc.
 " ------------------------------------------------------------------------------
@@ -337,10 +342,12 @@ endif
 
 call plug#end()
 
+" Cleanup {{{
 delcom UnPlug
 delcom ForcePlugURI
 silent delfunction PlugCond
 silent delfunction PinIf
 silent unlet g:_nerdtree_lazy_events
+" }}}
 
-" vim: set ts=2 sts=2 sw=2:
+" vim: set ts=2 sts=2 sw=2 foldmethod=marker:
