@@ -75,10 +75,10 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
       In such cases you should delete these files *manually*.
 
 * If you are using [**neovim**][neovim] and seeing any startup errors (e.g. `no module named neovim`):
+    * Use **latest neovim** (e.g., neovim 0.7.0).
+      To install/upgrade neovim on your system, you can do `dotfiles install neovim`.
     * Try `:checkhealth`.
     * Try `:PlugUpdate`: some errors from vim plugin could be easily solved by running `:PlugUpdate` (in vim) or `$ dotfiles update`.
-    * Use **latset neovim** (e.g., neovim 0.6.1).
-      To install/upgrade neovim on your system, you can do `dotfiles install neovim`.
     * We require python3 version not less than 3.4.  **Python 3.6+** is recommended (semshi: 3.5+)
     * Make sure that the [`pynvim`](https://pypi.python.org/pypi/pynvim/) pypi package is installed on *local* python 3,
       i.e. the python3 on conda, virtualenv, etc.

@@ -185,24 +185,6 @@ post_actions += [
 
 post_actions += [
     r'''#!/bin/bash
-    # Setting up for coc.nvim (~/.config/coc, node.js)
-
-    # (i) create ~/.config/coc directory if not exists
-    GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m";
-    coc_dir="$HOME/.config/coc/"
-    if [ ! -d "$coc_dir" ]; then
-        mkdir -p "$coc_dir" || exit 1;
-        echo "Created: $coc_dir"
-    else
-        echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
-    fi
-
-    # (ii) validate or auto-install node.js locally
-    bash "etc/install-node.sh" || exit 1;
-''']
-
-post_actions += [
-    r'''#!/bin/bash
     # Change default shell to zsh
     /bin/zsh --version >/dev/null || (\
         echo -e "\033[0;31mError: /bin/zsh not found. Please install zsh.\033[0m"; exit 1)

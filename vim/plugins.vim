@@ -209,28 +209,10 @@ function! s:choose_completion_backend()
     return '@lsp'
   endif
 
-  " 2. Neovim 0.4.0+ or vim 8.0.1453+: coc.nvim
-  "   (i) Proper neovim/vim8 version and python3
-  "   (ii) 'node' and 'npm' are installed
-  "   (iii) Directory ~/.config/coc exists (opt-in)
-  if (has('nvim-0.4.0') || (!has('nvim') && has('patch-8.0.1453'))) &&
-        \ executable('npm') && executable('python3') &&
-        \ isdirectory(expand("\~/.config/coc/"))
-    " Check minimum node version
-    let node_version = system('node --version')
-    if !plug_addon#version_lessthan(node_version, 'v8.10')
-      return '@coc'
-    else
-      autocmd VimEnter * echohl WarningMsg | echom
-            \ 'WARNING: Node v8.10.0+ is required for coc.nvim. '
-            \ . '(Try: dotfiles install node)' | echohl None
-    endif
-  endif
-
-  " (At this point, apparently we are maybe using legacy (neo)vim. Warn users!)
+  " Apparently you are using legacy (neo)vim. Upgrade!!
   if has('nvim') && !has('nvim-0.4.0')
     autocmd VimEnter * echohl WarningMsg | echom
-          \ 'WARNING: Neovim version is too old. Please install latest neovim (0.5.1+). '
+          \ 'WARNING: Neovim version is too old. Please upgrade to latest neovim (0.7.0+). '
           \ . '(Try: dotfiles install neovim)' | echohl None
   endif
 
@@ -242,6 +224,7 @@ let g:dotfiles_completion_backend = s:choose_completion_backend()
 " 1. [Neovim 0.5.0 LSP]
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
 if g:dotfiles_completion_backend == '@lsp'
+  " TODO: by 2022/04/30, minimum neovim version will be bumped to 0.7.0+
   Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/lua-dev.nvim'
@@ -263,52 +246,21 @@ if g:dotfiles_completion_backend == '@lsp'
 
 endif
 
-" 2. [coc.nvim] (deprecated) {{{
-" Note: coc.nvim is not tested since my migration to nvim-lsp,
-" so it may not work properly with the recent versions of nvim and coc.
-if g:dotfiles_completion_backend == '@coc'
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'neoclide/jsonc.vim'
-  if has('nvim-0.4.0')
-    Plug 'antoinemadec/coc-fzf'
-  endif
-
-  if s:floating_available
-    " disable vim-which-key if floating windows are used (have some conflicts)
-    UnPlug 'liuchengxu/vim-which-key'
-  endif
-
-  " automatically install CocExtensions by default
-  let g:coc_global_extensions = [
-        \ 'coc-json', 'coc-highlight', 'coc-explorer',
-        \ 'coc-vimlsp', 'coc-texlab',
-        \ ]
-  if has('python3')
-    let g:coc_global_extensions += [
-        \ 'coc-python', 'coc-snippets']
-  endif
-
-  UnPlug 'kyazdani42/nvim-tree.lua'   " use coc-explorer
-endif
-
-" }}}
-" 3. [no LSP/coc support] (legacy) {{{
+" 2. [no LSP/coc support] (legacy) {{{
 if g:dotfiles_completion_backend == ''
-  " Use jedi-vim, only if we are not using coc.nvim or LSP.
   Plug 'davidhalter/jedi-vim'
   " Legacy support for <TAB> in the completion context
   Plug 'ervandew/supertab'
   " Use ALE if no LSP support was used
   Plug 'w0rp/ale', PlugCond(v:version >= 800)
-  " echodoc: not needed for coc.nvim and nvim-lsp
   if has('nvim')
     Plug 'Shougo/echodoc.vim'
   endif
 endif
 " }}}
 
-" Other language-specific plugins supplementary and orthogonal to LSP, coc, etc.
-" ------------------------------------------------------------------------------
+" Other language-specific plugins (supplementary and orthogonal to LSP)
+" ---------------------------------------------------------------------
 if has('python3')
   Plug 'klen/python-mode', { 'branch': 'develop' }
   Plug 'wookayin/vim-python-enhanced-syntax'

@@ -1002,7 +1002,7 @@ else
 endif
 
 " show cursorline for active window only
-let g:NrHighlight_preserve_filetypes = ['nerdtree', 'coc-explorer']
+let g:NrHighlight_preserve_filetypes = ['nerdtree']
 augroup NrHighlight
   autocmd!
   autocmd WinEnter * setlocal cursorline
@@ -1485,24 +1485,22 @@ let g:airline_powerline_fonts=1
 autocmd User AirlineAfterInit call AirlineSectionInit()
 function! AirlineSectionInit()
   " define minwidth for some parts
-  call airline#parts#define_minwidth('coc_status', 100)
   call airline#parts#define_minwidth('branch', 120)
 
   " section b: git info (need to call again after define_minwidth/branch)
   let g:airline_section_b = airline#section#create(['hunks', 'branch'])
 
-  " section c: -coc_status
+  " section c:
   let g:airline_section_c = airline#section#create([
         \ '%<', 'file', g:airline_symbols.space, 'readonly',
         \ ])
 
-  " LSP or coc.nvim support (this should run after airline#extensions#coc#init is called)
-  if exists(':CocCommand') | call airline#parts#define_function('coc_status', 'AirlineCocStatusSimple') | endif
+  " LSP support (this should run after those plugin has been initialized)
   if exists(':LspStatus')  | call airline#parts#define_function('lsp_status', 'AirlineLspStatus') | endif
 
-  " section y: +coc_status, -filetype
+  " section y: +lsp status, -filetype
   let g:airline_section_x = airline#section#create_right([
-        \ 'coc_status', 'lsp_status',
+        \ 'lsp_status',
         \ 'bookmark', 'tagbar', 'vista', 'gutentags', 'grepper',
         \ ])               " excludes filetype
 
@@ -1511,20 +1509,6 @@ endfunction
 " airline + lsp-status
 function! AirlineLspStatus() abort
   return v:lua.LspStatus()
-endfunction
-
-" airline-coc customization
-function! AirlineCocStatusSimple() abort
-  " @see airline#extensions#coc#get_status for the original behavior
-  let l:status = get(g:, 'coc_status', '')
-
-  if &filetype == 'python'
-    " Strip "Python x.y.z. 64-bit ..." which I don't want to see
-    " trim() : nvim 0.3.2+ but we can safely assume it exists if coc.nvim does.
-    let l:status = ' ' . Trim(substitute(l:status, "Python.*-bit\s*", "", ""))
-  endif
-
-  return airline#util#shorten(l:status, 160, 33)
 endfunction
 
 
@@ -1755,8 +1739,6 @@ function! s:fzf_smart(qargs) abort
       wincmd w   " we need to move the focus outside nerdtree
     endif
     call fzf#vim#files(l:target_path, fzf#vim#with_preview()) | return
-  elseif &filetype == 'coc-explorer'
-    wincmd w
   endif
   " (2) in a git repo, invoke :GFiles (plus untracked files)
   let l:git_dir = s:get_git_dir()
@@ -2547,7 +2529,7 @@ if has_key(g:plugs, 'indentLine')
   let g:indentLine_conceallevel = 1
 
   " conceal values might not work well for tex files (hides some characters)
-  let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc', 'NvimTree', 'coc-explorer', 'floaterm', 'tagbar']
+  let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc', 'NvimTree', 'floaterm', 'tagbar']
 
   " command alias
   command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
@@ -2652,7 +2634,7 @@ endif
 " ---------------------------------------------------------------- }}}
 " vim-verdict {{{
 
-" cooperative mode required to make it work with coc.nvim, YCM, etc.
+" cooperative mode required to make it work with LSP engines, YCM, etc.
 let g:Verdin#cooperativemode = 1
 
 " ---------------------------------------------------------------- }}}
@@ -2730,9 +2712,7 @@ let g:pymode_run = 0
 let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
 
 " show documentation: disable default keymap (K) if better plugins are present
-if has_key(g:plugs, 'coc.nvim')
-    let g:pymode_doc_bind = '<leader>PK'
-endif
+let g:pymode_doc_bind = '<leader>PK'
 
 " Hanging indent of 4 spaces, in which case there should be nothing after
 " the open parenthesis or bracket on the first line.
@@ -2770,7 +2750,7 @@ let g:pymode_lint_cwindow = 0
 let g:pymode_lint_ignore = ['E401', 'E501']
 
 
-" Deprecated: LEGACY jedi-vim support (without LSP, coc.nvim)
+" Deprecated: LEGACY jedi-vim support (without LSP)
 
 " Make jedi's completeopt not to include 'longest',
 " to prevent underscore prefix auto-completion (e.g. self.__)
@@ -3096,211 +3076,11 @@ let g:tagbar_show_visibility = 0
 
 
 " ---------------------------------------------------------------- }}}
-" coc.nvim (language server completion) {{{
-
-if has_key(g:plugs, 'coc.nvim')
-
-  " For general settings, try :CocConfig
-  " (or ~/.config/nvim/coc-settings.json)
-
-  " Appearance and highlight groups  (see also: NormalFloat)
-  highlight CocFloating       ctermbg=236 guibg=#292c3a
-
-  " <C-space> trigger/refresh completion popup menu, or show again signature help window
-  inoremap <expr><silent> <c-space>
-        \ pumvisible() ? coc#refresh() :
-        \ "<c-\><c-o>:call CocShowSignatureHelpAsync()<CR>"
-  function! CocShowSignatureHelpAsync() abort
-    " when showSignature failed, re-trigger coc completion as fallback
-    " using coc#start() or CocActionAsync('startCompletion')
-    call CocActionAsync('showSignatureHelp', {
-          \ error, response -> empty(response) ? timer_start(0, { -> coc#start() }) : ''
-          \ })
-  endfunction
-
-  nnoremap <silent> <c-space>
-        \ :call CocActionAsync('showSignatureHelp')<CR>
-
-  " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
-  " Coc only does snippet and additional edit on confirm.
-  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-  " If coc.nvim is available, supertab would have been disabled/unplugged
-  if !has_key(g:plugs, 'supertab') && has_key(g:plugs, 'coc.nvim')
-    " Use <tab> for trigger completion with characters ahead and navigate.
-    inoremap <silent><expr> <TAB>
-          \ pumvisible() ? "\<C-n>" :
-          \ <SID>check_back_space() ? "\<TAB>" :
-          \ coc#refresh()
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-    function! s:check_back_space() abort
-      let col = col('.') - 1
-      return col == 0 || getline('.')[col - 1] =~# '\s'
-    endfunction
-  endif
-
-  " [Optional language servers]
-  " See ~/.config/nvim/coc-settings.json
-  " ------------------------------------
-
-  " clangd: C/C++
-  if executable('clangd')
-    call coc#config('languageserver.clangd', {
-          \ "command": "clangd",
-          \ "args": ["--background-index"],
-          \ "rootPatterns": ["compile_flags.txt", "compile_commands.json", ".vim/", ".git/", ".hg/"],
-          \ "filetypes": ["c", "cpp", "objc", "objcpp"]
-          \ })
-  endif
-
-  " [Command alias]
-  " ---------------
-  call CommandAlias('CC', 'CocCommand')
-  "call CommandAlias('CF', 'CocFzfList')    " (not here, see coc-fzf section below)
-
-  " [Custom keymappings] see plugin/coc.vim
-  " ---------------------------------------
-
-  " Go to definitions
-  " (Note: If you are using LSP instead of coc, see config/lsp.lua for keymappings)
-  noremap <silent> <F3> :CocJumpDefinition<CR>
-  noremap <silent> <F12> :CocJumpDefinition<CR>
-  command! -nargs=0 CocJumpDefinition :call CocActionAsync('jumpDefinition')
-  command! -nargs=0 JumpDefinition :call CocActionAsync('jumpDefinition')
-
-  " Remap keys for gotos
-  nmap <silent> gd <Plug>(coc-definition)
-  nmap <silent> gr <Plug>(coc-references)
-  nmap <silent> gy <Plug>(coc-type-definition)
-  nmap <silent> gi <Plug>(coc-implementation)
-
-  " Map 'K' for showing documentation in preview window
-  " Use command ':verbose map K' to make sure it does not have conflict
-  " with other plugins (e.g. python-mode, jedi-vim)
-  nnoremap <silent> K :call <SID>show_documentation()<CR>
-  function! s:show_documentation()
-    if &filetype == 'vim'
-      execute 'h '.expand('<cword>')
-    else
-      call CocActionAsync('doHover')
-    endif
-  endfunction
-
-  " Experimental feature (preview definition): gp, `<leader>K`, <Alt-F12> or <Shift-F12>:
-  " Peek into the definition in a floating window.
-  " TODO: If there are 2+ definitions, it does not work with floating windows (coc.nvim problem)
-  command! -nargs=0 PreviewDefinition :call CocActionAsync('jumpDefinition', ':OpenAsPreview')
-  command! -nargs=* OpenAsPreview :call s:open_as_preview("<args>")
-  function! s:open_as_preview(callstr)
-    " e.g. the string should look like: +call cursor(<line>,<col>) <filename>
-    let m = matchlist(a:callstr, '^+call cursor(\(\d\+\),\s*\(\d\+\))\s\+\(.*\)')
-    if len(m) < 4   " TODO: more robust error handling
-      echohl WarningMsg | echom "ERROR: Invalid callstr format" | echohl None
-      return
-    endif
-    let linenr = m[1]
-    let filename = expand(m[3])
-    call quickui#preview#open(filename, {
-          \ 'cursor': linenr,
-          \ 'number' : 1,
-          \ 'persist': 0,
-          \ })
-  endfunction
-  " <F24> = <Shift-F12>
-  " TODO: Change to list usage/references (LSP)
-  nmap <F24>         :<C-U>PreviewDefinition<CR>
-  nmap <S-F12>       :<C-U>PreviewDefinition<CR>
-  nmap <D-F12>       :<C-U>PreviewDefinition<CR>
-  nmap <leader>K     :<C-U>PreviewDefinition<CR>
-  nmap <silent> gp   :<C-U>PreviewDefinition<CR>
-
-  " additional coc-featured commands
-  command! -nargs=0 CocExtensions :CocList extensions
-  command! -nargs=0 CocSnippets :CocList snippets
-
-  " Quickfix (Alt-Enter)
-  " Note that some ftplugin can override <M-CR> mappings
-  " (e.g., ~/.vim/after/ftplugin/python.vim)
-  command! -nargs=0 CocQuickfix :call CocActionAsync('doQuickfix')
-  nmap <silent> <M-CR>  <Plug>(coc-fix-current)
-  imap <silent> <M-CR>  <Esc>:update<CR><plug>(coc-fix-current)a
-
-  " Automatic formatting (selected range or entire buffer)
-  command! -range=% CocFormat    :call CocActionAsync('formatSelected', visualmode())
-  command! -range=% Format       :<line1>,<line2>CocFormat
-  xmap <silent> <leader>f        <Plug>(coc-format-selected)
-
-  " by default, turn off coc status
-  let g:coc_status_enabled = 0
-  command! -nargs=0 CocStatus   :let g:coc_status_enabled = 1 | call s:coc_show_status_commandline(1)
-
-  " Display coc.nvim status message in the command line
-  let g:coc_suppress_status_delay = 2000
-  hi CocStatusCommandLine  ctermfg=240 guifg=#585858
-  augroup coc_status_change
-    autocmd!
-    autocmd User CocStatusChange call s:coc_show_status_commandline()
-    if exists('##CmdlineLeave')
-      " if user enters a command line, suppress coc status for a short moment
-      autocmd CmdlineEnter * call s:coc_suppress_status_switch(1)
-      autocmd CmdlineLeave * call s:coc_suppress_status_switch(1)
-    endif
-  augroup END
-
-  let s:carriage_return = nr2char(13)  " 0x13 (^M)
-  function! s:coc_show_status_commandline(force)
-    if !a:force && get(s:, 'coc_suppress_status_commandline', 0) || !get(g:, 'coc_status_enabled', 1)
-      return
-    endif
-    let l:status = trim(get(g:, 'coc_status', ''))
-    if empty(l:status) | echon '' | return | endif
-    echohl CocStatusCommandLine
-    echon  s:carriage_return . '[coc.nvim] ' . l:status
-    echohl NONE
-  endfunction
-  function! s:coc_suppress_status_switch(value)
-    let s:coc_suppress_status_commandline = a:value
-    if a:value
-      " when turning on, set a timer to automatically turn off in few seconds
-      if get(s:, 'coc_cmdline_timer', -1) >= 0
-        call timer_stop(s:coc_cmdline_timer)
-      endif
-      let s:coc_cmdline_timer = timer_start(g:coc_suppress_status_delay, {-> s:coc_suppress_status_switch(0)})
-    endif
-  endfunction
-
-  " coc-explorer (see coc-settings.json)
-  command! -nargs=0 CocExplorer  :CocCommand explorer
-  nmap <leader>E  :CocExplorer<CR>
-
-endif
-
-" ---------------------------------------------------------------- }}}
-" coc-fzf {{{
-
-if has_key(g:plugs, 'coc-fzf')
-
-  call CommandAlias('CF', 'CocFzfList')
-  call CommandAlias('CC', 'CocFzfList commands')
-  call CommandAlias('CA', 'CocFzfList actions')
-
-endif
-
-" ---------------------------------------------------------------- }}}
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " Extra Settings {{{
 """""""""""""""""""""""""""""""""""""""""
-
-" Work around neovim 0.4.0+ bug
-" https://github.com/neovim/neovim/issues/9881
-" https://github.com/neoclide/coc.nvim/issues/668
-augroup secure_modeline_conflict_workaround
-  autocmd!
-  autocmd FileType help setlocal nomodeline
-  autocmd FileType GV setlocal nomodeline
-augroup END
 
 " Use local vimrc if available
 if filereadable(expand('~/.vimrc.local'))

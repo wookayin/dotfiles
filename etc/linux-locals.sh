@@ -288,7 +288,7 @@ install_neovim() {
     local NEOVIM_VERSION=$(\
         curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
         python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
-    )   # starts with "v", e.g. "v0.6.1"
+    )   # starts with "v", e.g. "v0.7.0"
     test -n "$NEOVIM_VERSION"
 
     local VERBOSE=""

@@ -56,7 +56,7 @@ set completeopt-=longest
 " https://stackoverflow.com/questions/2360249/
 inoremap <buffer> # X<BS>#
 
-" LSP (coc.nvim) is used but just in case...
+" omnifunc is not used in favor of LSP, but just in case...
 if has('python3')
   setlocal omnifunc=python3complete#Complete
 endif
@@ -75,7 +75,7 @@ if has_key(g:, 'plugs') && has_key(g:plugs, 'vim-surround')
 endif
 
 " Fallback to jedi for providing gd/gr command
-if has_key(g:, 'plugs') && !has_key(g:plugs, 'coc.nvim') && has_key(g:plugs, 'jedi-vim')
+if has_key(g:, 'plugs') && has_key(g:plugs, 'jedi-vim')
   " goto definition (gd)
   noremap  <buffer> <F12>  :call jedi#goto_assignments()<CR>
   nmap     <buffer> <F3>   :call jedi#goto_assignments()<CR>
@@ -131,15 +131,10 @@ if exists(':LspAutoFormattingOn')
   endif
 endif
 
-" <M-CR> for auto import symbol (replacing coc.nvim)
+" <Alt-Enter> for auto import symbol
 if exists(':ImportSymbol')   " plugin vim-autoimport
   nmap <silent> <buffer>  <M-CR>   :ImportSymbol<CR>
   imap <silent> <buffer>  <M-CR>   <Esc>:ImportSymbol<CR>a
-endif
-if exists(':CocCommand')
-  command! -buffer SortImport        :CocCommand python.sortImports
-  command! -buffer ImportSort        :SortImport
-  command! -buffer ImportOrganize    :SortImport
 endif
 
 
@@ -160,10 +155,6 @@ function! s:test_suite_on_cursor() abort
       endif
     endfor
     return ''   " not found
-  elseif exists('*CocAction')
-    let l:symbol = CocAction('getCurrentFunctionSymbol')
-    " coc has a bug where unicode item kind labels appear; strip it
-    return substitute(l:symbol, '^[^a-z]\s*', '', '')
   else | return '' | endif
 endfunction
 
