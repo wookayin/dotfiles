@@ -95,6 +95,29 @@ vim.o.foldmethod = 'expr'
 vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 
 
+-- Language-specific Overrides of query files (see GH-1441, GH-1513) {{{
+
+local function readfile(path)
+  local f = io.open(path, 'r')
+  local content = f:read('*a')
+  f:close()
+  return content
+end
+function _G.TreesitterLoadCustomQuery(lang, query_name)
+  -- See ~/.config/nvim/queries/
+  local return_all_matches = false
+  local query_path = string.format("queries/%s/%s.scm", lang, query_name)
+  local query_file = vim.api.nvim_get_runtime_file(query_path, return_all_matches)[1]
+
+  require("vim.treesitter.query").set_query(lang, query_name, readfile(query_file))
+end
+
+-- python(fold): until GH-1451 is merged
+_G.TreesitterLoadCustomQuery("python", "folds")
+
+-- }}}
+
+
 -- Playground keymappings
 vim.cmd [[
 nnoremap <leader>tsh     :TSHighlightCapturesUnderCursor<CR>
