@@ -1,3 +1,7 @@
+"-------------
+" plugins.vim
+"-------------
+
 " Utilities and Helpers {{{
 
 runtime autoload/plug_addon.vim
@@ -350,4 +354,4 @@ silent delfunction PinIf
 silent unlet g:_nerdtree_lazy_events
 " }}}
 
-" vim: set ts=2 sts=2 sw=2 foldmethod=marker:
+" vim: set ts=2 sts=2 sw=2 foldenable foldmethod=marker:
