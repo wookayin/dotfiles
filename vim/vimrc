@@ -140,7 +140,9 @@ set nofoldenable
 set foldopen+=jump
 
 " foldcolumn display
-set foldcolumn=auto
+if has('nvim-0.5.0')
+  set foldcolumn=auto
+endif
 
 " use spaces for tabbing, by default
 set expandtab
@@ -2565,7 +2567,9 @@ let g:scrollview_excluded_filetypes = ['vim-plug', 'GV', 'git']
 " ---------------------------------------------------------------- }}}
 " pretty-fold {{{
 
-autocmd User LazyInit  call s:setup_prettyfold()
+if HasPlug('pretty-fold.nvim')
+  autocmd User LazyInit  call s:setup_prettyfold()
+endif
 function! s:setup_prettyfold() abort
 lua << EOF
   -- Configuration
