@@ -72,6 +72,10 @@ function! PlugCond(cond, ...)
   return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
 endfunction
 
-function! PinIf(cond, hash)
-  return a:cond ? {'commit': a:hash} : {}
+function! PinIf(cond, version_spec)
+  let opts = get(a:000, 0, {})
+  if a:cond
+    let opts = extend(opts, a:version_spec)
+  endif
+  return opts
 endfunction

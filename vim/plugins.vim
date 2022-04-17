@@ -182,12 +182,16 @@ if has('nvim-0.5.0')
   Plug 'nvim-neo-tree/neo-tree.nvim', {'branch': 'main'}
   Plug 'MunifTanjim/nui.nvim'
   Plug 'nvim-lua/plenary.nvim'
-  Plug 'nvim-telescope/telescope.nvim', PinIf(!has('nvim-0.6.0'), '80cdb00')
+  Plug 'nvim-telescope/telescope.nvim', PinIf(!has('nvim-0.6.0'), {'commit': '80cdb00'})
 endif
 
 if has('nvim-0.6.1')
   " Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  let g:_plug_ts_config = {'do': ':TSUpdate'}
+  if !has('nvim-0.7')
+    let g:_plug_ts_config['commit'] = '8a1acc00'  " Since a1893234, 0.7.0+ required
+  endif
+  Plug 'nvim-treesitter/nvim-treesitter', g:_plug_ts_config
   Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground'}
 
   Plug 'SmiteshP/nvim-gps'
@@ -224,8 +228,7 @@ let g:dotfiles_completion_backend = s:choose_completion_backend()
 " 1. [Neovim 0.5.0 LSP]
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
 if g:dotfiles_completion_backend == '@lsp'
-  " TODO: by 2022/04/30, minimum neovim version will be bumped to 0.7.0+
-  Plug 'neovim/nvim-lspconfig'
+  Plug 'neovim/nvim-lspconfig', PinIf(!has('nvim-0.7'), {'tag': 'v0.1.3'})
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/lua-dev.nvim'
 
@@ -236,7 +239,7 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
   Plug 'ray-x/lsp_signature.nvim'
-  Plug 'nvim-lua/lsp-status.nvim', PinIf(!has('nvim-0.6.0'), 'e8e5303')
+  Plug 'nvim-lua/lsp-status.nvim', PinIf(!has('nvim-0.6.0'), {'commit': 'e8e5303'})
   Plug 'j-hui/fidget.nvim', PlugCond(has('nvim-0.6.0'))
   Plug 'folke/trouble.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
