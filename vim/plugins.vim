@@ -200,30 +200,7 @@ endif
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
 
-Plug 'editorconfig/editorconfig-vim'
-
-" [Completion Engine or LSP backend] {{{
-" We have a long history and I want to make completion work for legacy and
-" older vim as well. Choose the completion or LSP engine in the order of
-" preferred and up-to-date technology with a fallback manner.
-" (Read g:dotfiles_completion_backend to see which one has been chosen)
-function! s:choose_completion_backend()
-  " 1. Neovim 0.5.0+: built-in LSP
-  if has('nvim-0.5.0')
-    return '@lsp'
-  endif
-
-  " Apparently you are using legacy (neo)vim. Upgrade!!
-  if has('nvim') && !has('nvim-0.4.0')
-    autocmd VimEnter * echohl WarningMsg | echom
-          \ 'WARNING: Neovim version is too old. Please upgrade to latest neovim (0.7.0+). '
-          \ . '(Try: dotfiles install neovim)' | echohl None
-  endif
-
-  " No completion available :(
-  return ''
-endfunction " }}}
-let g:dotfiles_completion_backend = s:choose_completion_backend()
+let g:dotfiles_completion_backend = has('nvim-0.5.0') ? '@lsp' : ''
 
 " 1. [Neovim 0.5.0 LSP]
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
@@ -264,6 +241,8 @@ endif
 
 " Other language-specific plugins (supplementary and orthogonal to LSP)
 " ---------------------------------------------------------------------
+Plug 'editorconfig/editorconfig-vim'
+
 if has('python3')
   Plug 'klen/python-mode', { 'branch': 'develop' }
   Plug 'wookayin/vim-python-enhanced-syntax'

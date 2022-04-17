@@ -14,6 +14,13 @@ else  " No timer support, this will run during VimEnter (before UI draws)
   autocmd! VimEnter * call execute('doautocmd User LazyInit')
 endif
 
+" Check neovim version.
+if has('nvim') && !has('nvim-0.7.0')
+  let s:warning_msg = 'Please upgrade to latest neovim (0.7.0+). Support for neovim <= 0.6 will be dropped soon. '
+  let s:install_command_hint = printf('(Try: %s install neovim)', has('mac') ? 'brew' : 'dotfiles')
+  autocmd VimEnter * echohl WarningMsg | echom s:warning_msg . s:install_command_hint | echohl None
+endif
+
 """""""""""""""""""""""""""""""""""""""""
 " 0. Load Plugin {{{
 """""""""""""""""""""""""""""""""""""""""
