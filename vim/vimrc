@@ -416,8 +416,11 @@ let g:maximizer_set_default_mapping = 0         " do not map <F3>
 inoremap <C-C> <ESC>
 
 " folding and unfolding:
-" z<space> is an alias for zO (open the current fold recursively)
-nnoremap z<space> zO
+
+" z<space> toggles folding.
+" It will open the current fold recursively when fold is closed,
+" or close (the narrow one) when fold is open at the cursor.
+nnoremap <expr>  z<space>   foldclosed(line(".")) >= 0 ? "zO" : "zc"
 
 
 " in terminal mode (neovim)
