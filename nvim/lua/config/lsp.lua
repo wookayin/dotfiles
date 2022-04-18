@@ -285,6 +285,7 @@ local cmp = require('cmp')
 local cmp_helper = {}
 local cmp_types = require('cmp.types.cmp')
 local cmp_theme = cmp.config.window and 'dark' or 'light'
+
 -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
 cmp.setup {
   snippet = {
@@ -335,7 +336,9 @@ cmp.setup {
         vim_item.abbr = string.sub(vim_item.abbr, 1, max_width) .. "…"
       end
       -- fancy icons and a name of kind
-      vim_item.kind = " " .. require("lspkind").presets.default[vim_item.kind] .. " " .. vim_item.kind
+      pcall(function()  -- protect the call against potential API breakage (lspkind GH-45).
+        vim_item.kind = " " .. require("lspkind").get_symbol(vim_item.kind) .. " " .. vim_item.kind
+      end)
       -- set a name for each source (see the sources section below)
       vim_item.menu = ({
         buffer        = "[Buffer]",
