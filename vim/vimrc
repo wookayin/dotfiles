@@ -836,11 +836,19 @@ else
 endif
 
 " Command aliases or abbrevations
-function! CommandAlias(aliasname, target)
+" CommandAlias(aliasname, target, [register_cmd = v:false])
+function! CommandAlias(aliasname, target, ...)
+  let l:register_cmd = get(a:000, 0, )
+
   " :aliasname => :target  (only applicable at the beginning of the command line)
   exec printf('cnoreabbrev <expr> %s ', a:aliasname)
     \ .printf('((getcmdtype() ==# ":" && getcmdline() ==# "%s") ? ', a:aliasname)
     \ .printf('("%s") : ("%s"))', escape(a:target, '"'), escape(a:aliasname, '"'))
+
+  " optionally, make a dummy command to facilitate cmdline completion
+  if l:register_cmd
+    exec printf(':command! -nargs=0 %s %s', a:aliasname, a:target)
+  endif
 endfunction
 
 " some basic command abbrs
@@ -930,8 +938,7 @@ if has('lambda') && exists('##CmdlineEnter')
     for cmd in command_list
       let new_cmd = 'Toggle' . substitute(cmd, 'Toggle$', '', '')
       " register both alias and command (to make tab completion work)
-      exec printf(':command! -nargs=0 %s %s', new_cmd, cmd)
-      call CommandAlias(new_cmd, cmd)
+      call CommandAlias(new_cmd, cmd, v:true)
     endfor
   endfunction
 endif
