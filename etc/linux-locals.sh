@@ -318,8 +318,10 @@ install_neovim() {
 
     # copy and merge into ~/.local/bin
     echo -e "${COLOR_GREEN}[*] Copying to $PREFIX ... ${COLOR_NONE}"
-    cp -RT $VERBOSE "nvim-linux64/" "$PREFIX" >/dev/null \
-        || (echo -e "${COLOR_RED}Copy failed, please kill all nvim instances.${COLOR_NONE}"; exit 1)
+    mkdir -p "$PREFIX/bin/"
+    cp $VERBOSE "nvim-linux64/bin/nvim" $PREFIX/bin/nvim \
+        || (echo -e "${COLOR_RED}Copy failed, please kill all nvim instances. (killall nvim)${COLOR_NONE}"; exit 1)
+    cp -RT $VERBOSE "nvim-linux64/" "$PREFIX"
 
     $PREFIX/bin/nvim --version
 }
