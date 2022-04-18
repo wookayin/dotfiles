@@ -2846,7 +2846,7 @@ command! -nargs=* GCommit :Git commit -v<args>
 
 " Remove or replace some fugitive commands
 augroup FugitiveCustomizeCommands
-  autocmd CmdlineEnter * ++once silent delcommand GDelete
+  autocmd CmdlineEnter * ++once silent! delcommand GDelete
 
  " :G -> :GDiff + :Git
   autocmd CmdlineEnter * ++once command! -nargs=0 G
@@ -3058,7 +3058,7 @@ EOF
   command! -nargs=+ -complete=customlist,DiffviewCmdCompletion  GShow  DiffviewOpen <args>^1..<args>
 
   " cmd completion functions for aliased commands.
-  function DiffviewCmdCompletion(argLead, cmdLine, curPos)
+  function! DiffviewCmdCompletion(argLead, cmdLine, curPos)
     return luaeval("require'diffview'.completion("
           \ . "vim.fn.eval('a:argLead'),"
           \ . "vim.fn.eval('a:cmdLine'),"
