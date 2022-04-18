@@ -2589,7 +2589,7 @@ lua << EOF
   -- https://github.com/anuvyklack/pretty-fold.nvim#preview
   -- Note: help 'foldopen' to specify when fold will be opened upon actions
   require('pretty-fold.preview').setup {
-    border = 'single',
+    border = 'none',
 
     -- Disable default keybindings (h/l) which are confusing. Use `zp` instead
     key = false,
