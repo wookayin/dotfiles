@@ -187,7 +187,13 @@ endif
 
 if has('nvim-0.6.1')
   " Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
-  let g:_plug_ts_config = {'do': ':TSUpdate'}
+  function! TSUpdate(arg) abort
+    if luaeval('pcall(require, "nvim-treesitter")')
+      TSUpdate
+    endif
+  endfunction
+
+  let g:_plug_ts_config = {'do': function('TSUpdate')}
   if !has('nvim-0.7')
     let g:_plug_ts_config['commit'] = '8a1acc00'  " Since a1893234, 0.7.0+ required
   endif

@@ -109,6 +109,11 @@ function _G.TreesitterLoadCustomQuery(lang, query_name)
   local query_path = string.format("queries/%s/%s.scm", lang, query_name)
   local query_file = vim.api.nvim_get_runtime_file(query_path, return_all_matches)[1]
 
+  if not ts_parsers.has_parser(lang) then
+    local msg = string.format("Warning: treesitter parser %s not found. Restart vim or run :TSUpdate?", lang)
+    vim.notify(msg, 'WARN', { title = "nvim/lua/config/treesitter.lua" })
+    return
+  end
   require("vim.treesitter.query").set_query(lang, query_name, readfile(query_file))
 end
 
