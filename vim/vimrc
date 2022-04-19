@@ -703,7 +703,7 @@ endif
 command! -nargs=0 Vimrc   call s:open_vimrc_tab()
 function! s:open_vimrc_tab()
   let l:plug_width = max([5, float2nr(0.333 * &columns)])
-  let l:addon_height = max([2, float2nr(0.2 * &lines)])
+  let l:addon_height = max([2, float2nr(0.1 * &lines)])
 
   exec ":tabnew " . resolve(expand("~/.vim/vimrc"))
   if filereadable(expand("~/.config/nvim/lua/config/lsp.lua"))
