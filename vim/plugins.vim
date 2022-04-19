@@ -20,18 +20,8 @@ if has('nvim')
   endfunction
 endif
 
-let s:_python3_version = ''
-function! s:python3_version()
-  if has('nvim')
-    return get(g:, 'python3_host_version', '')
-  elseif has('python3')
-    if empty(s:_python3_version)
-      let s:_python3_version = join(py3eval('sys.version_info'), ".")
-    endif
-    return s:_python3_version
-  else | return ''
-  endif
-endfunction
+" python version check
+let s:has_py35 = py3eval('sys.version_info >= (3, 5)')
 
 " Detect (neo)vim features
 let s:floating_available = exists('*nvim_open_win') &&
@@ -152,7 +142,7 @@ endif
 Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/vim-peekaboo'
 Plug 'sjl/gundo.vim'
-if has('python3') && s:python3_version() >= '3.5'
+if has('python3') && s:has_py35
   Plug 'SirVer/ultisnips'
 endif
 Plug 'vim-scripts/matchit.zip'
@@ -259,7 +249,7 @@ Plug 'sheerun/vim-polyglot', {'tag': 'v4.2.1'}
 Plug 'tmux-plugins/vim-tmux'
 Plug 'fladson/vim-kitty', { 'for': ['kitty'] }
 
-if has('nvim') && s:python3_version() >= '3.5'
+if has('nvim') && s:has_py35
   " Semshi is no longer being maintained. Use my own fork
   Plug 'wookayin/semshi', { 'do': function('UpdateRemote') }
   ForcePlugURI 'semshi'

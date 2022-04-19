@@ -54,7 +54,9 @@ if executable("python3")
       " auto-install 'neovim' python package for the current python3 (virtualenv, anaconda, or system-wide)
       let s:pip_options = Python3_determine_pip_options()
       execute ("!" . g:python3_host_prog . " -m pip install " . s:pip_options . " pynvim")
-      if v:shell_error != 0
+      if v:shell_error == 0
+        echohl MoreMsg | echom "Successfully installed pynvim. Please restart neovim." | echohl NONE
+      else
         call s:show_warning_message('ErrorMsg', "Installation of pynvim failed. Python-based features may not work.")
       endif
     endif
@@ -72,26 +74,24 @@ if !filereadable(g:python3_host_prog) | let g:python3_host_prog = '/usr/local/bi
 if !filereadable(g:python3_host_prog) | let g:python3_host_prog = '/usr/bin/python3'       | endif
 if !filereadable(g:python3_host_prog) | let g:python3_host_prog = s:python3_local          | endif
 
-" Get and validate python version
-try
-  if executable('python3')
-    let g:python3_host_version = split(system("python3 --version 2>&1"))[1]   " e.g. Python 3.7.0 :: Anaconda, Inc.
-  else | let g:python3_host_version = ''
-  endif
-catch
-  let g:python3_host_version = ''
-endtry
-
 " Warn users if modern python3 is not found.
 " (with timer, make it shown frontmost over other warning messages)
-if empty(g:python3_host_version)
+if empty(g:python3_host_prog)
   call timer_start(0, { -> s:show_warning_message('ErrorMsg',
         \ "ERROR: You don't have python3 on your $PATH. Check $PATH or $SHELL. Most features are disabled.")
         \ })
-elseif g:python3_host_version < '3.6.1'
-  call timer_start(0, { -> s:show_warning_message('WarningMsg',
-        \ printf("Warning: Please use python 3.6.1+ to enable intellisense features. (Current: %s)", g:python3_host_version))
-        \ })
+else
+  " Get and validate python version
+  " Make a dummy call first, to workaround a bug #14438
+  call py3eval("None")
+  function! s:python3_version_check() abort
+    if py3eval('sys.version_info < (3, 6)')
+      call s:show_warning_message('ErrorMsg', "Your python version (" .
+            \ py3eval('".".join(str(x) for x in sys.version_info)')
+            \ . ") is too old; 3.6+ is required. Most features are disabled.")
+    endif
+  endfunction
+  call timer_start(0, { -> s:python3_version_check() })
 endif
 
 
