@@ -82,7 +82,7 @@ if empty(g:python3_host_prog)
         \ })
 else
   " Get and validate python version
-  " Make a dummy call first, to workaround a bug #14438
+  " Make a dummy call first, to workaround a bug neovim#14438
   call py3eval("None")
   function! s:python3_version_check() abort
     if py3eval('sys.version_info < (3, 6)')

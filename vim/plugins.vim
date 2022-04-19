@@ -21,7 +21,7 @@ if has('nvim')
 endif
 
 " python version check
-let s:has_py35 = py3eval('sys.version_info >= (3, 5)')
+let s:has_py35 = has('python3') && py3eval('sys.version_info >= (3, 5)')
 
 " Detect (neo)vim features
 let s:floating_available = exists('*nvim_open_win') &&
