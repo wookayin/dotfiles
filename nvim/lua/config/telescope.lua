@@ -46,7 +46,10 @@ command! -nargs=0 CodeActions   :Telescope lsp_code_actions
 call CommandAlias("CA", "CodeActions")
 call CommandAlias("Te", "Telescope")
 
-command! -nargs=? -complete=help  Help     :lua require"telescope.builtin".help_tags({default_text = '<args>'})
+command! -nargs=?                 LspSymbols  :lua require"telescope.builtin".lsp_dynamic_workspace_symbols({default_text = '<args>'})
+call CommandAlias("Sym", "LspSymbols")
+
+command! -nargs=? -complete=help  Help        :lua require"telescope.builtin".help_tags({default_text = '<args>'})
 ]]
 
 -- Telescope extensions
