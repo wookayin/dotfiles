@@ -6,3 +6,6 @@ if expand("%:p") =~ "nvim/lua/config/"
   noremap <buffer> <F5>
         \ <cmd>source %<CR><cmd>call VimNotify("Sourced " . bufname('%'))<CR>
 endif
+
+" Make goto-file (gf, ]f) detect lua config files.
+setlocal path+=~/.config/nvim/lua
