@@ -887,6 +887,7 @@ if has('nvim-0.5.0')
   call CommandAlias('Luaecho', 'LuaEcho')
   call CommandAlias('luaecho', 'LuaEcho')
   call CommandAlias('luae', 'LuaEcho')
+  call CommandAlias('l', 'LuaEcho')
 endif
 
 " ----------------------------------------------------------------------------
