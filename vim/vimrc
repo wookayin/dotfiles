@@ -842,7 +842,7 @@ function! CommandAlias(aliasname, target, ...)
 
   " :aliasname => :target  (only applicable at the beginning of the command line)
   exec printf('cnoreabbrev <expr> %s ', a:aliasname)
-    \ .printf('((getcmdtype() ==# ":" && getcmdline() ==# "%s") ? ', a:aliasname)
+    \ .printf('((getcmdtype() ==# ":" && getcmdline() =~# "^%s") ? ', a:aliasname)
     \ .printf('("%s") : ("%s"))', escape(a:target, '"'), escape(a:aliasname, '"'))
 
   " optionally, make a dummy command to facilitate cmdline completion
