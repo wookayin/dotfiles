@@ -80,7 +80,7 @@ def update(fast=False,
         git fetch origin
         git stash push -m "DOTFILES_UPDATE"
         git merge --ff-only && python install.py {install_args}
-        git stash list | grep "DOTFILES_UPDATE" && git stash pop --index
+        git stash list | grep "DOTFILES_UPDATE" && git stash pop --index -q
     '''.format(install_args=install_args)
     subprocess.call(['bash', '-c', action])
 
