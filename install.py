@@ -353,8 +353,9 @@ for target, source in sorted(tasks.items()):
     # make a symbolic link if available
     if not os.path.lexists(target):
         mkdir_target = os.path.split(target)[0]
-        makedirs(mkdir_target, exist_ok=True)
-        log(GREEN('Created directory : %s' % mkdir_target))
+        if not os.path.isdir(mkdir_target):
+            makedirs(mkdir_target)
+            log(GREEN('Created directory : %s' % mkdir_target))
         os.symlink(source, target)
         log("{:50s} : {}".format(
             BLUE(target),
