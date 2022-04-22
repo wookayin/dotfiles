@@ -155,12 +155,15 @@ post_actions += [
     bash "etc/install-neovim-py.sh"
 ''']
 
-vim = 'nvim' if find_executable('nvim') else 'vim'
+vim_options = dict(
+    nvim=dict(vim='nvim', flag='--headless'),
+    vim=dict(vim='vim', flag=''),
+)[find_executable('nvim') and 'nvim' or 'vim']
 post_actions += [
     # Run vim-plug installation
-    {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
-     'update'  : '{vim} +PlugUpdate  +qall'.format(vim=vim),
-     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
+    {'install' : '{vim} {flag} +"set nonumber" +"PlugInstall --sync" +%print +"echo\'\'" +qall'.format(**vim_options),
+     'update'  : '{vim} {flag} +"set nonumber" +"PlugUpdate  --sync" +%print +"echo\'\'" +qall'.format(**vim_options),
+     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(**vim_options)
      }['update' if not args.skip_vimplug else 'none']
 ]
 
