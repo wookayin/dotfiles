@@ -2390,6 +2390,11 @@ lua << EOF
       follow_current_file = false,
       use_libuv_file_watcher = false,
 
+      -- #320: Do not hide hidden files when the root folder is otherwise empty
+      filtered_items = {
+        force_visible_in_empty_folder = true,
+      },
+
       -- Append trailing slashes on directories (#112)
       components = {
         trailing_slash = function ()
