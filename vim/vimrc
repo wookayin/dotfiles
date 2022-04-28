@@ -25,19 +25,12 @@ endif
 " 0. Load Plugin {{{
 """""""""""""""""""""""""""""""""""""""""
 
-" All the vim plugins, powered by 'vim-plug', are
-" listed up in the separate file 'plugins.vim'.
-" It is for making this vimrc could also work out-of-box
-" even if not managed by dotfiles.
+" All the vim plugins are managed by 'vim-plug'
+" and listed up in the separate file 'plugins.vim',
+" so that this vimrc would still work standalone without plugins.
 let g:plugs = {}
 if filereadable(expand('~/.vim/plugins.vim'))
   source \~/.vim/plugins.vim
-endif
-
-" Automatically install missing plugins on startup
-let g:plugs_missing = filter(values(g:plugs), '!isdirectory(v:val.dir)')
-if len(g:plugs_missing) > 0
-  PlugInstall --sync | q
 endif
 
 " Utilities to tell whether a plugin is configured or installed.

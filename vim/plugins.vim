@@ -284,4 +284,11 @@ silent delfunction PinIf
 silent unlet g:_nerdtree_lazy_events
 " }}}
 
+
+" Automatically install missing plugins on startup
+let g:plugs_missing_on_startup = filter(values(g:plugs), '!isdirectory(v:val.dir)')
+if len(g:plugs_missing_on_startup) > 0
+  PlugInstall --sync | q
+endif
+
 " vim: set ts=2 sts=2 sw=2 foldenable foldmethod=marker:
