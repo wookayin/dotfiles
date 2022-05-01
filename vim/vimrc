@@ -2618,6 +2618,7 @@ lua << EOF
 
     -- Disable default keybindings (h/l) which are confusing. Use `zp` instead
     key = false,
+    default_keybindings = false,
   }
 
   _G.PreviewFold = function()
