@@ -115,7 +115,7 @@ if exists('##WinScrolled')  " neovim nightly (0.5.0+)
   Plug 'dstein64/nvim-scrollview'
 endif
 if has('nvim-0.5.0')
-  Plug 'anuvyklack/pretty-fold.nvim'
+  Plug 'anuvyklack/pretty-fold.nvim', {'commit': 'eba8996'}
 end
 
 " Miscellanious Utilities
