@@ -62,6 +62,12 @@ configure_finder() {
 
   # Finder: show path bar
   defaults write com.apple.finder ShowPathbar -bool true
+
+  # Always show file extensions
+  defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+  # Disable the warning when changing a file extension
+  defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 }
 
 ################################################################
