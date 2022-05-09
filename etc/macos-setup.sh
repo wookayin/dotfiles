@@ -9,15 +9,29 @@ if [ `uname` != "Darwin" ]; then
   echo "Run on macOS !"; exit 1
 fi
 
-# Ask for the administrator password upfront
-sudo -v
+# Ask for the administrator password upfront (when args are giveN)
+if [ -n "$1" ]; then
+  sudo -v --prompt "Administrator privilege required. Please type your local password: "
 
-# Keep-alive: update existing `sudo` time stamp until `.osx` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+  # Keep-alive: update existing `sudo` time stamp until `.osx` has finished
+  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+fi
 
 ################################################################
 # General settings
 ################################################################
+
+_set_hostname() {
+  local hostname="$1"
+
+  if [[ -z "$hostname" ]]; then
+    echo "Single argument required"
+  fi
+  sudo scutil --set ComputerName "$hostname"
+  sudo scutil --set HostName "$hostname"
+  sudo scutil --set LocalHostName "$hostname"
+  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$hostname"
+}
 
 configure_general() {
   # Faster key repeat
@@ -115,8 +129,9 @@ all() {
 }
 
 if [ -n "$1" ]; then
+  cmd="$1"; shift;
   set -x
-  $1
+  $cmd "$@"
 else
   echo "Usage: $0 [command], where command is one of the following:"
   declare -F | cut -d" " -f3 | grep -v '^_'
