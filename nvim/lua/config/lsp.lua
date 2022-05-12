@@ -645,10 +645,17 @@ if pcall(require, "null-ls") then
     debug = false,
   })
 
+  if vim.lsp.buf.format == nil then
+    -- For neovim < 0.8.0, use the legacy formatting_sync API as fallback
+    vim.lsp.buf.format = function(opts)
+      return vim.lsp.buf.formatting_sync(opts, opts.timeout_ms)
+    end
+  end
+
   -- Commands for LSP formatting. :Format
   -- FormattingOptions: @see https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#formattingOptions
   vim.cmd [[
-    command! LspFormatSync        lua vim.lsp.buf.formatting_sync({}, 5000)
+    command! LspFormatSync        lua vim.lsp.buf.format({timeout_ms = 5000})
     command! -range=0 Format      LspFormat
   ]]
 
@@ -679,8 +686,8 @@ if pcall(require, "null-ls") then
       return false
     end
     -- TODO: Enable only on the current project specified by PATH.
-    if vim.tbl_count(vim.lsp.buf_get_clients()) > 0 then
-      vim.lsp.buf.formatting_sync({}, 1000)
+    if vim.tbl_count(vim.lsp.buf_get_clients(0)) > 0 then
+      vim.lsp.buf.format({timeout_ms = 1000})
       return true
     end
     return false
