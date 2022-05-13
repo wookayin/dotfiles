@@ -1970,6 +1970,8 @@ let g:python_package_alias = {
 function! PythonSitePackagesDir()
   return systemlist('python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"')[0]
 endfunction
+
+" Command line completion for python modules in site-packages.
 function! CompletePythonSitePackages(...)
   let l:prefix = get(a:, 1, '')
   let l:cmdline = get(a:, 2, '')
@@ -1977,18 +1979,22 @@ function! CompletePythonSitePackages(...)
   if l:cmdwords >= 3 || (l:cmdwords == 2 && l:cmdline =~ ' $')
     return []  " from the second argument, no completion
   endif
-  " TODO: can we cache it, storing into the current buffer?
-  let packages = systemlist(
-        \ 'python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())" ' .
-        \ ' | xargs -I{} find {}/ -maxdepth 1 -type d ' .
-        \ ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" | sort ' .
-        \ ' | sed -e "s#\(.*\)/\(.*\)#\2#"'
-        \)
+  if empty(get(g:, 'python_site_packages_cache', []))
+    " Listing of the site-packages directory (cached)
+    autocmd CmdlineLeave * ++once  let g:python_site_packages_cache = []
+    let g:python_site_packages_cache = systemlist(
+          \ 'python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())" ' .
+          \ ' | xargs -I{} find {}/ -maxdepth 1 -type d ' .
+          \ ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" | grep -v "__pycache__" ' .
+          \ ' | sort ' .
+          \ ' | sed -e "s#\(.*\)/\(.*\)#\2#"'
+          \)
+  endif
   let filter_expr = '!empty(v:val)'
   if !empty(l:prefix)
     let filter_expr .= printf(' && v:val =~# "^%s"', escape(l:prefix, "'\""))
   endif
-  return filter(packages, filter_expr)
+  return filter(copy(g:python_site_packages_cache), filter_expr)
 endfunction
 
 
