@@ -956,6 +956,33 @@ lua << EOF
 EOF
 endif
 
+" Open python libraries/modules easily.
+" :Pyedit (:pye) -- open the file for the python module
+" :Pysplit (:pysp), :Pyvsplit (:pyvs) -- similar, but in :split, :vsplit
+" e.g., :Pyedit numpy.core will open $(site-packages)/numpy/core/__init__.py
+if has('python3')
+  function! PyModulePath(module) abort
+    return py3eval(printf("__import__('importlib').import_module('%s').__file__", a:module))
+  endfunction
+  function! s:edit_python_file(cmd, module) abort
+    try
+      exe a:cmd . " " . PyModulePath(a:module)
+    catch
+      echohl WarningMsg | echom 'Cannot import python module "' . a:module . '"' | echohl NONE
+    endtry
+  endfunction
+  command! -nargs=1 -complete=customlist,CompletePythonSitePackages
+        \ Pyedit      call s:edit_python_file("edit", <q-args>)
+  command! -nargs=1 -complete=customlist,CompletePythonSitePackages
+        \ Pysplit     call s:edit_python_file("split", <q-args>)
+  command! -nargs=1 -complete=customlist,CompletePythonSitePackages
+        \ Pyvsplit    call s:edit_python_file("vsplit", <q-args>)
+  call CommandAlias('pye', 'Pyedit')
+  call CommandAlias('pysp', 'Pysplit')
+  call CommandAlias('pyvs', 'Pyvsplit')
+endif
+
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " 4. Appearance (e.g. Colors, Syntax) {{{
