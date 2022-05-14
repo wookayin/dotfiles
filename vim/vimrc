@@ -960,26 +960,54 @@ endif
 " :Pyedit (:pye) -- open the file for the python module
 " :Pysplit (:pysp), :Pyvsplit (:pyvs) -- similar, but in :split, :vsplit
 " e.g., :Pyedit numpy.core will open $(site-packages)/numpy/core/__init__.py
-if has('python3')
+if has('nvim') && has('python3')
+  " This feature requires jedi installed on the host python.
+python3 << EOF
+try:
+  import jedi
+  vim.command('let g:python_jedi_available = 1')
+except ImportError:
+  vim.command('let g:python_jedi_available = 0')
+EOF
+
+  " Get module path for the given module (e.g., numpy.core) *without* actually importing it.
   function! PyModulePath(module) abort
-    return py3eval(printf("__import__('importlib').import_module('%s').__file__", a:module))
+    return py3eval(printf('__import__("jedi").Script("import %s").infer()[0].module_path.__str__()', a:module))
   endfunction
+
   function! s:edit_python_file(cmd, module) abort
+    if !g:python_jedi_available
+      echohl WarningMsg | echom 'This feature requires jedi. Please pip install jedi.' | echohl NONE
+      return
+    end
     try
       exe a:cmd . " " . PyModulePath(a:module)
     catch
-      echohl WarningMsg | echom 'Cannot import python module "' . a:module . '"' | echohl NONE
+      echohl WarningMsg | echom 'Cannot find python module "' . a:module . '"' | echohl NONE
     endtry
   endfunction
-  command! -nargs=1 -complete=customlist,CompletePythonSitePackages
-        \ Pyedit      call s:edit_python_file("edit", <q-args>)
-  command! -nargs=1 -complete=customlist,CompletePythonSitePackages
-        \ Pysplit     call s:edit_python_file("split", <q-args>)
-  command! -nargs=1 -complete=customlist,CompletePythonSitePackages
-        \ Pyvsplit    call s:edit_python_file("vsplit", <q-args>)
+  command! -nargs=1 -complete=customlist,CompletePythonModules Pyedit    call s:edit_python_file("edit", <q-args>)
+  command! -nargs=1 -complete=customlist,CompletePythonModules Pysplit   call s:edit_python_file("split", <q-args>)
+  command! -nargs=1 -complete=customlist,CompletePythonModules Pyvsplit  call s:edit_python_file("vsplit", <q-args>)
   call CommandAlias('pye', 'Pyedit')
   call CommandAlias('pysp', 'Pysplit')
   call CommandAlias('pyvs', 'Pyvsplit')
+
+  " Jedi-based completion for the current python interpreter.
+  function! CompletePythonModules(...)
+    if !g:python_jedi_available
+      return []
+    endif
+
+    let l:prefix = get(a:, 1, '')
+    let l:cmdline = get(a:, 2, '')
+    let l:cmdwords = len(split(l:cmdline, ' '))
+
+    let query = l:prefix
+    let completions = py3eval(
+          \ printf('[c.full_name for c in __import__("jedi").Script("import %s").complete(line=1)]', query))
+    return completions
+  endfunction
 endif
 
 
