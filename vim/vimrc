@@ -1077,6 +1077,10 @@ augroup NrHighlight
         \ | endif
 augroup END
 
+" vim syntax: embedded python (P) and lua (l) scripts
+" see $VIMRUNTIME/syntax/vim.vim
+let g:vimsyn_embed = 'lP'
+
 " filetype detections
 au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
 au BufRead,BufNewFile *.prototxt if &ft == '' | setfiletype yaml | endif
