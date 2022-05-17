@@ -377,8 +377,13 @@ function site-packages() {
     # print the path to the site packages from current python environment,
     # e.g. ~/.anaconda3/envs/XXX/lib/python3.6/site-packages/
 
-    python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
-    # python -c "import site; print('\n'.join(site.getsitepackages()))"
+    local base=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+    if [[ -n "$1" ]] && [[ ! -d "$base/$1" ]]; then
+        echo "Does not exist: $base/$1" >&2;
+        return 1
+    else
+        echo "$base/$1"
+    fi;
 }
 
 function vimpy() {
