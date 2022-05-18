@@ -62,12 +62,10 @@ endglobal
 snippet "% !TEX root" "Inserts `% !TEX root = ...` directive"
 %!TEX root = `!p snip.rv = detect_root_texfile()`
 endsnippet
-
 snippet hyperref "Import hyperref package with color settings."
 \usepackage[pagebackref=true,breaklinks=true,colorlinks,bookmarks=false]{hyperref}
 \hypersetup{linkcolor=red,citecolor=green,urlcolor=magenta,menucolor=red}
 endsnippet
-
 snippet lineno "Adds line numbers for draft mode."
 \usepackage{lineno}
 \linenumbers
@@ -103,49 +101,42 @@ snippet "\\?left" "\left..\right" r
 \left${1:}\right`!p snip.rv = get_matching_pair(t[1])`
 endsnippet
 
-context "is_math()"
-snippet cal "\mathcal" wA
+# math mode snippets (e: custom context)
+# wAe means -- w: word boundary, A: Automatic trigger, e: custom context (:h Ultisnips-snippet-options)
+# Note: ultisnip syntax is currently wrong, which needs to be fixed (see #1463)
+
+snippet cal "\mathcal" "is_math()" wAe
 \mathcal{$1}$0
 endsnippet
-context "is_math()"
-snippet bf "\mathbf" wA
+snippet bf "\mathbf" "is_math()" wAe
 \mathbf{$1}$0
 endsnippet
-context "is_math()"
-snippet bb "\mathbb" wA
+snippet bb "\mathbb" "is_math()" wAe
 \mathbb{$1}$0
 endsnippet
 
-context "is_math()"
-snippet -> "\rightarrow" wA
+snippet -> "\rightarrow" "is_math()" wAe
 \rightarrow
 endsnippet
-context "is_math()"
-snippet <- "\leftarrow" wA
+snippet <- "\leftarrow" "is_math()" wAe
 \leftarrow
 endsnippet
-context "is_math()"
-snippet => "\Rightarrow" wA
+snippet => "\Rightarrow" "is_math()" wAe
 \Rightarrow
 endsnippet
-context "is_math()"
-snippet <= "\Leftarrow" wA
+snippet <= "\Leftarrow" "is_math()" wAe
 \Leftarrow
 endsnippet
-context "is_math()"
-snippet ==> "\Longrightarrow" wA
+snippet ==> "\Longrightarrow" "is_math()" wAe
 \Longrightarrow
 endsnippet
-context "is_math()"
-snippet <== "\Longleftarrow" wA
+snippet <== "\Longleftarrow" "is_math()" wAe
 \Longleftarrow
 endsnippet
 
-context "is_math()"
-snippet _t+1 "_{t+1}" iA
+snippet _t+1 "_{t+1}" "is_math()" iAe
 _{t+1}
 endsnippet
-context "is_math()"
-snippet _t-1 "_{t-1}" iA
+snippet _t-1 "_{t-1}" "is_math()" iAe
 _{t-1}
 endsnippet
