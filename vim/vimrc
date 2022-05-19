@@ -177,7 +177,10 @@ endtry
 set wildignore=*.swp,*.swo,*.class,*.pyc,__pycache__,
 
 " status line
-set laststatus=2            " show anytime
+" Neovim(0.8+): lualine will override with laststatus=3,
+" see ~/.config/nvim/lua/config/statusline.lua
+set laststatus=2            " show anytime (legacy vim behavior)
+
 set noshowmode              " don't display mode, e.g. '-- INSERT --'
 set showcmd
 
@@ -1435,6 +1438,13 @@ endif
 " lualine.nvim (Airline replacement) {{{
 
 " See ~/.config/nvim/lua/config/statusline.lua
+
+if has('nvim-0.8') && HasPlug('lualine.nvim')
+  " We will be using global statusline (laststatus=3) and winbar, configured lazily.
+  " To avoid vertical shifting and flickering which is quite noticeable,
+  " we can have a dummy winbar line until the config kicks in (see _G.winbarline)
+  lua vim.opt.winbar = " "
+endif
 
 " ---------------------------------------------------------------- }}}
 " Airline {{{

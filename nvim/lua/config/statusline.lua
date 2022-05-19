@@ -21,8 +21,29 @@ local function truncate(trunc_width, trunc_len, hide_width, trunc_right)
     return str
   end
 end
-local function min_window_width(width)
-  return function() return vim.fn.winwidth(0) > width end
+
+local function using_global_statusline()
+  return vim.opt.laststatus:get() == 3
+end
+
+local function min_statusline_width(width)
+  return function()
+    local statusline_width
+    if using_global_statusline() then
+      -- global statusline: editor width
+      statusline_width = vim.opt.columns:get()
+    else
+      -- local statusline: window width
+      statusline_width = vim.fn.winwidth(0)
+    end
+    return statusline_width > width
+  end
+end
+
+local function min_window_with(width)
+  return function()
+    return vim.fn.winwidth(0) > width
+  end
 end
 
 -- Customize statusline components
@@ -60,8 +81,14 @@ local custom_components = {
 }
 _G.lualine_components = custom_components
 
+-- With neovim 0.8.0+, we can use laststatus = 3 and winbar.
+-- Configure winbar here for the time being, re-using lualine components.
+use_global_statusline = vim.fn.has('nvim-0.8.0') > 0
+
 require('lualine').setup {
   options = {
+    globalstatus = use_global_statusline,
+
     -- https://github.com/shadmansaleh/lualine.nvim/blob/master/THEMES.md
     theme = 'onedark'
   },
@@ -69,25 +96,28 @@ require('lualine').setup {
   -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/components
   sections = {
     lualine_a = {
-      { 'mode', cond = min_window_width(40) },
+      { 'mode', cond = min_statusline_width(40) },
     },
     lualine_b = {
-      { 'branch', cond = min_window_width(120) },
+      { 'branch', cond = min_statusline_width(120) },
     },
     lualine_c = {
       custom_components.neomake_status,
       { 'filename', path = 1, color = { fg = '#eeeeee' } },
-      custom_components.treesitter_context,
+      { custom_components.treesitter_context, fmt = truncate(120, 20, 60, true) },
     },
     lualine_x = {
       --{ custom_components.lsp_status, fmt = truncate(120, 20, 60, false) },
       { custom_components.encoding,   color = { fg = '#d70000' } },
       { custom_components.fileformat, color = { fg = '#d70000' } },
-      { 'filetype', cond = min_window_width(120) },
+      { 'filetype', cond = min_statusline_width(120) },
     },
-    lualine_y = {},  -- excludes 'progress'
+    lualine_y = { -- excludes 'progress'
+      { 'diff', cond = using_global_statusline },
+      'diagnostics',
+    },
     lualine_z = {
-      { 'location', cond = min_window_width(90) },
+      { 'location', cond = min_statusline_width(90) },
     },
   },
   inactive_sections = {
@@ -101,3 +131,47 @@ require('lualine').setup {
     lualine_z = {}
   },
 }
+
+-- Now configure winbar, if laststatus = 3 is used.
+if use_global_statusline then
+  -- Define winbar using lualine components (see lualine.config.apply_configuration)
+  local winbar_config = {
+    sections = {
+      lualine_w = {
+        { 'vim.fn.winnr()', color = { fg = 'white', bg = '#37b24d' } },
+        { 'filename', path = 1, color = { fg = '#c92a2a', bg = '#eeeeee', gui = 'bold' } },
+        'diagnostics',
+        { custom_components.treesitter_context, fmt = truncate(80, 20, 60, true) },
+        function() return ' ' end,
+      },
+    },
+    inactive_sections = {
+      lualine_w = {
+        { 'vim.fn.winnr()', color = { fg = '#eeeeee' } },
+        { 'filename', path = 1 },
+        'diagnostics',
+        { custom_components.treesitter_context, fmt = truncate(80, 20, 60, true) },
+        function() return ' ' end,
+      },
+    },
+    options = {
+      component_separators = '',
+    },
+    tabline = {},
+    extensions = {},
+  }
+  require 'lualine.utils.loader'.load_all(winbar_config)
+
+  -- The custom winbar function.
+  -- seealso ~/.vim/plugged/lualine.nvim/lua/lualine.lua, function statusline
+  _G.winbarline = function()
+    local is_focused = require 'lualine.utils.utils'.is_focused()
+    return require 'lualine.utils.section'.draw_section(
+      winbar_config[is_focused and 'sections' or 'inactive_sections'].lualine_w,
+      'c', -- 'w' is undefined, so re-use highlight of lualine_c for lualine_w (winbar)
+      is_focused
+    )
+  end
+
+  vim.opt.winbar = "%{%v:lua.winbarline()%}"
+end
