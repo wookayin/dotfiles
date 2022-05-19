@@ -114,6 +114,7 @@ set rtp+=~/.vim
 if has('nvim-0.5')
   function! s:source_lua_configs(...)
 lua << EOF
+    require 'config/statusline'
     require 'config/lsp'
     require 'config/treesitter'
     require 'config/telescope'
