@@ -2144,20 +2144,28 @@ autocmd VimEnter * hi QuickPreview guibg=#262d2d
 
 let g:xtabline_settings = {}
 
-" Use tabs mode if there are 2+ tabs, or buffers mode if there is only one
 if has("patch-7.4.1658") && has_key(g:plugs, 'vim-xtabline')
-  augroup TablineHybridMode
-    autocmd!
-    autocmd TabNew,TabClosed * call s:tabline_automode()
-  augroup end
-  function! s:tabline_automode(...) abort
-    if !v:vim_did_enter | return | endif
-    if tabpagenr('$') >= 2
-      silent XTabMode tabs
-    else
-      silent XTabMode buffers
-    endif
-  endfunction
+  if has('nvim-0.8')
+    " Using global statusline, so always prefer tabs mode
+    augroup TablineHybridMode
+      autocmd!
+      autocmd VimEnter * silent XTabMode tabs
+    augroup end
+  else
+    " Use tabs mode if there are 2+ tabs, or buffers mode if there is only one
+    augroup TablineHybridMode
+      autocmd!
+      autocmd TabNew,TabClosed * call s:tabline_automode()
+    augroup end
+    function! s:tabline_automode(...) abort
+      if !v:vim_did_enter | return | endif
+      if tabpagenr('$') >= 2
+        silent XTabMode tabs
+      else
+        silent XTabMode buffers
+      endif
+    endfunction
+  end
 
   " Use 'buffers' as the default xtabline mode (when there is only one tab)
   let g:xtabline_settings.tabline_modes = ['buffers', 'tabs', 'arglist']
