@@ -13,6 +13,7 @@ alias reload!="command -v zgen 2>&1 > /dev/null && zgen reset; \
     source ~/.zshrc && echo 'sourced ~/.zshrc' again"
 alias c='command'
 alias ZQ='exit'
+alias QQ='exit'
 
 alias cp='nocorrect cp -iv'
 alias mv='nocorrect mv -iv'
