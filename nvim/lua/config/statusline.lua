@@ -104,7 +104,7 @@ require('lualine').setup {
     lualine_c = {
       custom_components.neomake_status,
       { 'filename', path = 1, color = { fg = '#eeeeee' } },
-      { custom_components.treesitter_context, fmt = truncate(120, 20, 60, true) },
+      { custom_components.treesitter_context },
     },
     lualine_x = {
       --{ custom_components.lsp_status, fmt = truncate(120, 20, 60, false) },
@@ -155,6 +155,8 @@ if use_global_statusline then
       },
     },
     options = {
+      -- component_separators = { left = '', right = ''},
+      -- Component separators are stripped when background color is specified. Weird, so not using it :(
       component_separators = '',
     },
     tabline = {},
@@ -166,11 +168,12 @@ if use_global_statusline then
   -- seealso ~/.vim/plugged/lualine.nvim/lua/lualine.lua, function statusline
   _G.winbarline = function()
     local is_focused = require 'lualine.utils.utils'.is_focused()
-    return require 'lualine.utils.section'.draw_section(
+    local line = require 'lualine.utils.section'.draw_section(
       winbar_config[is_focused and 'sections' or 'inactive_sections'].lualine_w,
       'c', -- 'w' is undefined, so re-use highlight of lualine_c for lualine_w (winbar)
       is_focused
     )
+    return line
   end
 
   vim.opt.winbar = "%{%v:lua.winbarline()%}"
