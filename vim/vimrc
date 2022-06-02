@@ -460,6 +460,9 @@ if has('nvim')
   " Ctrl-E, Ctrl-Y: Scroll window in terminal-normal mode
   tmap <silent> <C-e> <C-\><C-n><C-e>
   tmap <silent> <C-y> <C-\><C-n><C-y>
+
+  " Ctrl-/ requires key remapping (neovim 0.8.0, see #18735)
+  tnoremap <c-/> <c-_>
 endif
 
 if has('nvim')
