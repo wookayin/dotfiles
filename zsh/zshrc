@@ -54,10 +54,10 @@ zstyle ":prezto:module:completion" loaded 'yes'
 zstyle ':completion:*' users root $USER
 
 
-# virtualenvwrapper -- use lazy load (see prezto#669)
-if (( $+commands[virtualenvwrapper_lazy.sh] )); then
-    source "$commands[virtualenvwrapper_lazy.sh]"
-fi
+# # virtualenvwrapper -- use lazy load (see prezto#669)
+# if (( $+commands[virtualenvwrapper_lazy.sh] )); then
+#     source "$commands[virtualenvwrapper_lazy.sh]"
+# fi
 
 # nvm -- sourcing is very slow, use lazy load
 if [[ -f "$HOME/.nvm/nvm.sh" ]]; then
@@ -83,7 +83,7 @@ export FZF_MARKS_JUMP='^b'
 
 # ------------------------------------------------------ }}}
 
-# Cleanup obsolete zgen plugins (zgen reset doesn't ignore)
+# Cleanupobsolete zgen plugins (zgen reset doesn't ignore)
 if [[ -n "${DOTFILES_UPDATE}" ]]; then
   rm -rf ~/.zgen/zdharma/fast-syntax-highlighting-master
 fi
@@ -193,3 +193,12 @@ conda() {
   _conda_initialize
   conda "$@"
 }
+
+#Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
+
+if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"
+fi
+pyenv virtualenvwrapper_lazy
