@@ -176,3 +176,4 @@ export COPYFILE_DISABLE=true
 if [ -f "$HOME/.zshenv.local" ]; then
   source "$HOME/.zshenv.local"
 fi
+export PYENV_ROOT="$HOME/.pyenv"

@@ -13,3 +13,4 @@ path=(
 if ! (( ${path[(I)$HOME/.local/bin]} )); then
   path=( $HOME/.local/bin $path )
 fi
+eval "$(/opt/homebrew/bin/brew shellenv)"
