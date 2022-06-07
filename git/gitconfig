@@ -140,7 +140,7 @@ lg = !"git lg1"
 [credential]
 	# Enable HTTP(S) auth credential caching
 	# for 60 seconds (requires git 1.7.9+)
-	helper = cache --timeout 60
-[user]
+	helper = cache --timeout 60m
 	name = Amelie Schmidt-Colberg
 	email = amelie.schmidtcolberg@gmail.com
+

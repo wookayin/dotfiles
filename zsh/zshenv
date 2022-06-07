@@ -146,9 +146,9 @@ fi
 fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes ~/.zsh/functions ~/.local/share/zsh/site-functions $fpath)
 
 
-#
-# Python - Virtualenv, etc.
-#
+# #
+# # Python - Virtualenv, etc.
+# # 
 
 if [[ "$(uname)" == "Darwin" ]]; then
     # Mac OS X: use python shipped by Homebrew for virtualenv.
@@ -158,9 +158,9 @@ else
     export VIRTUALENVWRAPPER_PYTHON='/usr/bin/python'
 fi
 
-# Set the directory where virtual environments are stored.
-export WORKON_HOME="$HOME/.virtualenvs"
-export VIRTUAL_ENV_DISABLE_PROMPT=1
+# # Set the directory where virtual environments are stored.
+ export WORKON_HOME="$HOME/.virtualenvs"
+ export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # ensure that all new virtual environments are isolated from the system site-packages.
 # (--no-site-packages has been removed since virtualenv >= 20, which has been the default option)
@@ -176,4 +176,8 @@ export COPYFILE_DISABLE=true
 if [ -f "$HOME/.zshenv.local" ]; then
   source "$HOME/.zshenv.local"
 fi
-export PYENV_ROOT="$HOME/.pyenv"
+
+FPATH=~/.zsh/misc:$FPATH
+PATH=~/.zsh/misc:$PATH
+autoload -Uz module_init
+
