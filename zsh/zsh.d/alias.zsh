@@ -9,8 +9,10 @@ _version_check() {
 # -----------------------------
 
 # Basic
-alias reload!=". ~/.zshrc && echo 'sourced ~/.zshrc' again"
+alias reload!="command -v zgen 2>&1 > /dev/null && zgen reset; \
+    source ~/.zshrc && echo 'sourced ~/.zshrc' again"
 alias c='command'
+alias ZQ='exit'
 
 alias cp='nocorrect cp -iv'
 alias mv='nocorrect mv -iv'
@@ -47,14 +49,20 @@ alias v='vim'
 
 # Just open ~/.vimrc, ~/.zshrc, etc.
 alias vimrc='vim +"cd ~/.dotfiles" +Vimrc +tabclose\ 1'
-#alias vimrc='vim +cd\ ~/.vim -O ~/.vim/vimrc ~/.vim/plugins.vim'
+alias plugs='vim +"cd ~/.dotfiles" ~/.dotfiles/vim/plugins.vim'
 
 alias zshrc='vim +cd\ ~/.zsh -O ~/.zsh/zshrc ~/.zsh/zsh.d/alias.zsh'
+
+function plugged() {
+    [ -z "$1" ] && { echo "plugged: args required"; return 1; }
+    cd "$HOME/.vim/plugged/$1"
+}
 
 # Tmux ========================================= {{{
 
 # create a new session with name
 alias tmuxnew='tmux new -s'
+alias tnew='tmuxnew'
 # list sessions
 alias tmuxl='tmux list-sessions'
 # tmuxa <session> : attach to <session> (force 256color and detach others)
@@ -113,6 +121,8 @@ compdef '_hosts' ssh-tmuxa
 
 GIT_VERSION=$(git --version | awk '{print $3}')
 
+alias github='\gh'
+
 alias gh='git history'
 alias ghA='gh --all'
 if _version_check $GIT_VERSION "2.0"; then
@@ -126,6 +136,7 @@ alias gdc='gd --cached --no-prefix'
 alias gds='gd --staged --no-prefix'
 alias gs='git status'
 alias gsu='gs -u'
+alias gu='git pull --autostash'
 
 function ghad() {
   # Run gha (git history) and refresh if anything in .git/ changes
@@ -183,7 +194,7 @@ function gsd() {
   return 0
 }
 
-# using the vim plugin 'GV'!
+# using the vim plugin GV/Flog
 function _vim_gv {
     vim -c ":GV $1"
 }
@@ -211,6 +222,16 @@ function deactivate() {
   [[ -n "$CONDA_DEFAULT_ENV" ]] && conda deactivate || source deactivate
 }
 
+function conda-activate.d() {
+    # Ensure the current conda environment's activate.d directory.
+    if [[ -z "$CONDA_PREFIX" ]]; then
+        >&2 echo "conda environment not found."
+        return 1;
+    fi
+    mkdir -p $CONDA_PREFIX/etc/conda/activate.d
+    echo $CONDA_PREFIX/etc/conda/activate.d/$1
+}
+
 # virtualenv
 alias wo='workon'
 
@@ -222,6 +243,12 @@ alias pip3='python3 -m pip'
 alias mypy='python -m mypy'
 alias pycodestyle='python -m pycodestyle'
 alias pylint='python -m pylint'
+
+# pip
+function pip-search() {
+  (( $+commands[pip_search] )) || python -m pip install pip_search
+  pip_search "$@"
+}
 
 # PREFIX/bin/python -> PREFIX/bin/ipython, etc.
 alias ipdb='${$(which python)%/*}/ipdb'
@@ -260,8 +287,10 @@ function pip-list-fzf() {
   pip list "$@" | fzf --header-lines 2 --reverse --nth 1 --multi | awk '{print $1}'
 }
 function pip-search-fzf() {
+  # 'pip search' is gone; try: pip install pip_search
+  if ! (( $+commands[pip_search] )); then echo "pip_search not found (Try: pip install pip_search)."; return 1; fi
   if [[ -z "$1" ]]; then echo "argument required"; return 1; fi
-  pip search "$@" | grep '^[a-z]' | fzf --reverse --nth 1 --multi --no-sort | awk '{print $1}'
+  pip-search "$@" | fzf --reverse --multi --no-sort --header-lines=4 | awk '{print $3}'
 }
 function conda-list-fzf() {
   conda list "$@" | fzf --header-lines 3 --reverse --nth 1 --multi | awk '{print $1}'
@@ -314,9 +343,29 @@ function gcp-instances-fzf() {
 # }}}
 
 
+# FZF magics ======================================= {{{
+
+rgfzf () {
+    # ripgrep
+    if [ ! "$#" -gt 0 ]; then
+        echo "Usage: rgfzf <query>"
+        return 1
+    fi
+    rg --files-with-matches --no-messages "$1" | \
+        fzf --prompt "$1 > " \
+        --reverse --multi --preview "rg --ignore-case --pretty --context 10 '$1' {}"
+}
+
+# }}}
+
 # Etc ======================================= {{{
 
 alias iterm-tab-color="noglob iterm-tab-color"
+
+if (( $+commands[http-server] )); then
+    # Disable cache for the http server.
+    alias http-server="http-server -c-1"
+fi
 
 if (( $+commands[pydf] )); then
     # pip install --user pydf
@@ -328,8 +377,13 @@ function site-packages() {
     # print the path to the site packages from current python environment,
     # e.g. ~/.anaconda3/envs/XXX/lib/python3.6/site-packages/
 
-    python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
-    # python -c "import site; print('\n'.join(site.getsitepackages()))"
+    local base=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+    if [[ -n "$1" ]] && [[ ! -d "$base/$1" ]]; then
+        echo "Does not exist: $base/$1" >&2;
+        return 1
+    else
+        echo "$base/$1"
+    fi;
 }
 
 function vimpy() {
@@ -337,15 +391,24 @@ function vimpy() {
     # e.g. $ vimpy numpy.core    --> opens $(site-package)/numpy/core/__init__.py
     if [[ -z "$1" ]]; then; echo "Argument required"; return 1; fi
 
-    local _module_path=$(python -c "import $1; print($1.__file__)")
-    if [[ -n "$module_path" ]]; then
-      echo $module_path
-      vim "$module_path"
+    local _module_path=$(python -c "import $1; print($1.__file__)" 2>/dev/null)
+    if [[ -n "$_module_path" ]]; then
+        echo $_module_path
+        vim "$_module_path"
+     else
+        echo "Cannot import module: $1"
+        return 1;
     fi
 }
 
 # open some macOS applications
 if [[ "$(uname)" == "Darwin" ]]; then
+
+    # Force run under Rosetta 2 (for M1 mac)
+    alias rosetta2='arch -x86_64'
+
+    # brew for intel
+    alias ibrew='arch -x86_64 /usr/local/bin/brew'
 
     # typora
     function typora   { open -a Typora "$@" }

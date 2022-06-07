@@ -50,6 +50,31 @@ for asset in J[0]['assets']:
 
 #---------------------------------------------------------------------------------------------------
 
+install_git() {
+    # installs a modern version of git locally.
+    set -e
+
+    GIT_VER="2.30.0"
+    TMP_GIT_DIR="/tmp/$USER/git"; mkdir -p $TMP_GIT_DIR
+
+    wget -N -O $TMP_GIT_DIR/git.tar.gz "https://github.com/git/git/archive/v${GIT_VER}.tar.gz"
+    tar -xvzf $TMP_GIT_DIR/git.tar.gz -C $TMP_GIT_DIR --strip-components 1
+    cd $TMP_GIT_DIR
+
+    make configure
+    ./configure --prefix="$PREFIX" --with-curl --with-expat
+    make clean
+    make -j8 && make install
+
+    ~/.local/bin/git --version
+
+    if [[ ! -f "$(~/.local/bin/git --exec-path)/git-remote-https" ]]; then
+        echo -e "${COLOR_YELLOW}Warning: $(~/.local/bin/git --exec-path)/git-remote-https not found. "
+        echo -e "https:// git url will not work. Please install libcurl-dev and try again.${COLOR_NONE}"
+        false;
+    fi
+}
+
 install_ncurses() {
     # installs ncurses (shared libraries and headers) into local namespaces.
     set -e
@@ -98,13 +123,15 @@ install_node() {
     node --version
 
     # install some useful nodejs based utility (~/.local/lib/node_modules)
+    $HOME/.local/bin/npm install -g yarn
+    which yarn && yarn --version
     $HOME/.local/bin/npm install -g http-server diff-so-fancy || true;
 }
 
 install_tmux() {
     # install tmux (and its dependencies such as libevent) locally
     set -e
-    TMUX_VER="2.4"
+    TMUX_VER="3.2a"
 
     TMP_TMUX_DIR="/tmp/$USER/tmux/"; mkdir -p $TMP_TMUX_DIR
 
@@ -141,9 +168,10 @@ install_tmux() {
 install_bazel() {
     set -e
 
+    # install the 'latest' stable release (no pre-releases.)
     BAZEL_LATEST_VERSION=$(\
-        curl -L https://api.github.com/repos/bazelbuild/bazel/tags 2>/dev/null | \
-        python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+        curl -L https://api.github.com/repos/bazelbuild/bazel/releases/latest 2>/dev/null | \
+        python -c 'import json, sys; print(json.load(sys.stdin)["name"])'\
     )
     test -n $BAZEL_LATEST_VERSION
     BAZEL_VER="${BAZEL_LATEST_VERSION}"
@@ -172,9 +200,10 @@ install_bazel() {
 
 install_anaconda() {
     # installs Anaconda-python3. (Deprecated: Use miniconda)
-    # https://www.anaconda.com/download/#linux
+    # https://www.anaconda.com/products/individual
+    # https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
     set -e
-    ANACONDA_VERSION="5.2.0"
+    ANACONDA_VERSION="2021.05"
 
     if [ "$1" != "--force" ]; then
         echo "Please use miniconda instead. Use --force option to proceed." && exit 1;
@@ -182,7 +211,7 @@ install_anaconda() {
 
     # https://www.anaconda.com/download/
     TMP_DIR="/tmp/$USER/anaconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
-    wget -nc "https://repo.continuum.io/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh"
+    wget -nc "https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh"
 
     # will install at $HOME/.anaconda3 (see zsh config for PATH)
     ANACONDA_PREFIX="$HOME/.anaconda3/"
@@ -203,14 +232,9 @@ install_miniconda() {
     MINICONDA_PREFIX="$HOME/.miniconda3/"
     bash "Miniconda3-latest-Linux-x86_64.sh" -b -p ${MINICONDA_PREFIX}
 
-    # 3.7 as of July 2020
+    # 3.9.5 as of Nov 2021
     $MINICONDA_PREFIX/bin/python --version
-
-    #echo "${COLOR_YELLOW}Will downgrade python from 3.7 to 3.6.${COLOR_NONE}"
-    #$MINICONDA_PREFIX/bin/conda install -y 'python==3.6.*'
-
-    $MINICONDA_PREFIX/bin/python --version
-    echo "${COLOR_GREEN}All set!${COLOR_NONE}"
+    echo -e "${COLOR_GREEN}All set!${COLOR_NONE}"
 }
 
 install_vim() {
@@ -258,11 +282,16 @@ install_vim() {
 }
 
 install_neovim() {
-    # install neovim nightly
+    # install neovim stable or nightly
     set -e
 
-    NEOVIM_VERSION="v0.4.3"
-    VERBOSE=""
+    local NEOVIM_VERSION=$(\
+        curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
+        python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
+    )   # starts with "v", e.g. "v0.7.0"
+    test -n "$NEOVIM_VERSION"
+
+    local VERBOSE=""
     for arg in "$@"; do
       if [ "$arg" == "--nightly" ]; then
         NEOVIM_VERSION="nightly";
@@ -279,8 +308,8 @@ install_neovim() {
     fi
     sleep 1;  # allow users to read above comments
 
-    TMP_NVIM_DIR="/tmp/$USER/neovim"; mkdir -p $TMP_NVIM_DIR
-    NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim-linux64.tar.gz"
+    local TMP_NVIM_DIR="/tmp/$USER/neovim"; mkdir -p $TMP_NVIM_DIR
+    local NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim-linux64.tar.gz"
 
     cd $TMP_NVIM_DIR
     wget --backups=1 $NVIM_DOWNLOAD_URL      # always overwrite, having only one backup
@@ -289,8 +318,10 @@ install_neovim() {
 
     # copy and merge into ~/.local/bin
     echo -e "${COLOR_GREEN}[*] Copying to $PREFIX ... ${COLOR_NONE}"
-    cp -RT $VERBOSE "nvim-linux64/" "$PREFIX" >/dev/null \
-        || (echo -e "${COLOR_RED}Copy failed, please kill all nvim instances.${COLOR_NONE}"; exit 1)
+    mkdir -p "$PREFIX/bin/"
+    cp $VERBOSE "nvim-linux64/bin/nvim" $PREFIX/bin/nvim \
+        || (echo -e "${COLOR_RED}Copy failed, please kill all nvim instances. (killall nvim)${COLOR_NONE}"; exit 1)
+    cp -RT $VERBOSE "nvim-linux64/" "$PREFIX"
 
     $PREFIX/bin/nvim --version
 }
@@ -316,8 +347,10 @@ install_fd() {
     # install fd
     set -e
 
+    local FD_VERSION="v8.3.2"
+
     TMP_FD_DIR="/tmp/$USER/fd"; mkdir -p $TMP_FD_DIR
-    FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/v6.0.0/fd-v6.0.0-x86_64-unknown-linux-musl.tar.gz"
+    FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/${FD_VERSION}/fd-${FD_VERSION}-x86_64-unknown-linux-musl.tar.gz"
     echo $FD_DOWNLOAD_URL
 
     cd $TMP_FD_DIR
@@ -417,6 +450,68 @@ install_lazygit() {
 
   echo -e "\n\n${COLOR_WHITE}$(which lazydocker)${COLOR_NONE}"
   $PREFIX/bin/lazygit --version
+}
+
+install_rsync() {
+  set -e
+
+  local URL="https://rsync.samba.org/ftp/rsync/rsync-3.2.3.tar.gz"
+  local TMP_DIR="/tmp/$USER/rsync"; mkdir -p $TMP_DIR
+
+  wget -N -O $TMP_DIR/rsync.tar.gz "$URL"
+  tar -xvzf $TMP_DIR/rsync.tar.gz -C $TMP_DIR --strip-components 1
+  cd $TMP_DIR
+
+  ./configure --prefix="$PREFIX"
+  make install
+  $PREFIX/bin/rsync --version
+}
+
+install_mosh() {
+  set -e; set -x
+  mkdir -p /tmp/$USER && cd /tmp/$USER/
+  rm -rf mosh || true
+  git clone https://github.com/mobile-shell/mosh --depth=1
+  cd mosh
+
+  # bump up mosh version to indicate this is a HEAD version
+  sed -i -e 's/1\.3\.2/1.4.0/g' configure.ac
+
+  ./autogen.sh
+  ./configure --prefix="$PREFIX"
+  make install
+  $PREFIX/bin/mosh-server --version
+}
+
+install_mujoco() {
+  # https://mujoco.org/download
+  set -e; set -x
+  local mujoco_version="mujoco210"
+
+  local MUJOCO_ROOT=$HOME/.mujoco/$mujoco_version
+  if [[ -d "$MUJOCO_ROOT" ]]; then
+    echo -e "${COLOR_YELLOW}Error: $MUJOCO_ROOT already exists.${COLOR_NONE}"
+    return 1;
+  fi
+
+  local tmpdir="/tmp/$USER/mujoco"
+  mkdir -p $tmpdir && cd $tmpdir
+  mkdir -p $HOME/.mujoco
+
+  local download_url="https://mujoco.org/download/${mujoco_version}-linux-x86_64.tar.gz"
+  local filename="$(basename $download_url)"
+  wget -N -O $tmpdir/$filename "$download_url"
+  tar -xvzf "$filename" -C $tmpdir
+
+  mv $tmpdir/$mujoco_version $HOME/.mujoco/
+  test -d $MUJOCO_ROOT
+
+  $MUJOCO_ROOT/bin/testspeed $MUJOCO_ROOT/model/scene.xml 1000
+  set +x
+
+  echo -e "${COLOR_GREEN}MUJOCO_ROOT = $MUJOCO_ROOT${COLOR_NONE}"
+  echo -e "${COLOR_WHITE}Done. Please don't forget to set LD_LIBRARY_PATH \
+   (should include $MUJOCO_ROOT/bin).${COLOR_NONE}\n"
 }
 
 

@@ -107,6 +107,9 @@
 [merge]
 	conflictstyle = diff3
 
+[rebase]
+	autosquash = true
+
 [format]
 	# based on 'fuller' format, but adds color customization
 	pretty = "%C(bold)commit%C(reset) %C(yellow)%H%C(auto)%d%n\
@@ -120,9 +123,17 @@
 	# Adopt the new default in Git 2.x
 	default = simple
 
+[fetch]
+	# Use parallel jobs for fetching submodules
+	parallel = 0
+
 [branch]
 	# Make all new branches to automatically use rebase rather than merge, on pull
 	autosetuprebase = always
+
+[submodule]
+	# Git 2.15+: Update submodules recursively when pulling changes
+	recurse = true
 
 [credential]
 	# Enable HTTP(S) auth credential caching

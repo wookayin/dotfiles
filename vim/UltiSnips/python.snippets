@@ -3,8 +3,21 @@
 # seealso :help snippet-options
 
 global !p
-def collect_ale_lint_codes(linter_name):
-    if not vim.eval('get(g:, "ale_enabled", 0)'):
+import re
+
+def toCamelCase(s):
+    return ''.join(x for x in s.title() if x.isalnum())
+
+def snip_expand(snip, jump_pos=1, jump_forward=False):
+    # See 'snippets-aliasing' in doc
+    if snip.tabstop != jump_pos:
+        return
+    vim.eval('feedkeys("\<C-R>=UltiSnips#ExpandSnippet()\<CR>")')
+    if jump_forward:
+        vim.eval('feedkeys("\<C-R>=UltiSnips#JumpForwards()\<CR>")')
+
+def collect_ale_lint_codes(linter_name: str):
+    if not int(vim.eval('get(g:, "ale_enabled", 0)')):
         # works only if ALE is installed and enabled
         return ''
 
@@ -27,14 +40,114 @@ def collect_ale_lint_codes(linter_name):
 
 endglobal
 
+
+################################################################################
+# General
+################################################################################
+
 snippet TODO  "# TODO"
 # TODO
 endsnippet
+snippet utf8
+# -*- coding: utf-8 -*-
+endsnippet
+
+
+################################################################################
+# Class
+################################################################################
+
+snippet init
+def __init__(self, ${1}):
+	`!p
+import ast
+try:
+	T = ast.parse("def __init__({}): pass".format(t[1]))
+	args = [a.arg for a in T.body[0].args.args]
+	line = lambda arg: "self._{arg} = {arg}".format(arg=arg)
+	snip.rv = snip.mkline("super().__init__()\n")
+	if args:
+		snip.shift(1)  # no idea why I have to do this...
+		for arg in args:
+			snip.rv += snip.mkline(line(arg) + "\n")
+	else:
+		snip.rv = "pass"
+except SyntaxError:  # incomplete?
+	snip.rv = "# (SyntaxError)"
+`
+endsnippet
+
+snippet self._
+self._${1} = $1
+endsnippet
+snippet @property
+@property
+def ${1}(self):
+	return self._$1
+endsnippet
+snippet repr
+def __repr__(self):
+	return ${1:str(self)}
+endsnippet
+snippet "@?dataclass" "@dataclasse.dataclass" r
+@dataclasses.dataclass
+class ${1}:
+	pass
+endsnippet
+
+################################################################################
+# Linting
+################################################################################
+
 snippet "(#\s*)?pylint"  "'pylint: disable=...' marker" r
 # pylint: disable=${1:`!p snip.rv = collect_ale_lint_codes("pylint")`}
 endsnippet
-snippet "#\s*type"  "'type: ignore' marker (mypy)" r
+
+snippet "#\s*type"  "'type: ignore' marker (mypy, pyright)" r
 # type: ignore
+endsnippet
+snippet "ignore" "'type: ignore' marker (mypy, pyright)" r
+# type: ignore
+endsnippet
+snippet "type:?" "'type: ignore' marker (mypy, pyright)" r
+# type: ignore
+endsnippet
+snippet "yapf"  "yapf: disable/enable" r
+# yapf: disable
+endsnippet
+
+
+################################################################################
+# Debugging
+################################################################################
+
+snippet embed
+from IPython import embed; embed(colors="neutral")  # XXX DEBUG  # yapf: disable
+endsnippet
+snippet pdb
+import pdb; pdb.set_trace()  # XXX DEBUG  # yapf: disable
+endsnippet
+snippet ipdb
+import ipdb; ipdb.set_trace(cond=True)  # XXX DEBUG  # yapf: disable
+endsnippet
+snippet pudb
+import pudb; pudb.set_trace(paused=True)  # XXX DEBUG  # yapf: disable
+endsnippet
+
+
+################################################################################
+# Common Snippets and Boilerplates
+################################################################################
+
+snippet main
+def main():
+	${1:pass}
+
+if __name__ == '__main__':
+	main()
+endsnippet
+snippet PATH
+__PATH__ = os.path.abspath(os.path.dirname(__file__))
 endsnippet
 
 # Add a typecheck if-raise statement.
@@ -43,7 +156,7 @@ snippet typecheck
 if not isinstance(${1}, ${2:object}):
 	raise TypeError("\`$1\` must be a {}, but given {}".format($2, type($1)))
 endsnippet
-snippet TypeError(
+snippet TypeError
 TypeError("\`$1\` must be a ${2:object}, but given {}".format($2, type($1)))
 endsnippet
 
@@ -63,8 +176,132 @@ endsnippet
 snippet filterwarnings
 warnings.filterwarnings("ignore", category=${1:DeprecationWarning}, message="$2")
 endsnippet
+snippet argparse
+import argparse
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('${1:-o}', ${2:'--outfile',} default=${3:None}, type=${4:str})
+args = parser.parse_args()
+endsnippet
+snippet jsondump
+json.dumps(${1:object}, sort_keys=True, indent=4, separators=(',', ': '))
+endsnippet
+snippet easydict
+from easydict import EasyDict as edict
+endsnippet
+snippet osp
+import os.path as osp
+endsnippet
 
-# test {{{
+# for competitive programming
+snippet freopen
+sys.stdin = file('${1:input.txt}', 'r')
+sys.stdout = file('${2:output.txt}', 'w')
+rl = sys.stdin.readline
+endsnippet
+
+# rich
+snippet rich.console
+from rich.console import Console
+console = Console(markup=False)
+rich_print = console.log
+endsnippet
+snippet rich.traceback
+import rich.traceback; rich.traceback.install(width=None, show_locals=True)
+endsnippet
+
+# misc utilities
+snippet strftime
+time.strftime(${1:'%Y%m%d-%H%M%S'})
+endsnippet
+snippet timer
+from contextlib import contextmanager
+
+@contextmanager
+def timer(name=""):
+	import time
+	_start = time.time()
+	yield
+	_end = time.time()
+	print("[%s] Elapsed time : %.3f sec" % (name, _end - _start))
+endsnippet
+
+################################################################################
+# Logging
+################################################################################
+snippet p
+print($1)
+endsnippet
+snippet log
+log.info($1)
+endsnippet
+snippet logw
+log.warning($1)
+endsnippet
+snippet loge
+log.error($1)
+endsnippet
+
+snippet loguru
+from loguru import logger
+endsnippet
+snippet loguru.configure
+logger.configure(handlers=[])
+LOG_FORMAT = (   # see loguru._defaults.LOG_FORMAT
+    "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
+    "<level>{level: <8}</level> | "
+    #"<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+    "<level>{message}</level>"
+)
+logger.add(sink=sys.stdout, format=LOG_FORMAT)
+endsnippet
+
+snippet logging
+import logging
+formatter = logging.Formatter('[%(levelname)s %(asctime)s] %(message)s')   # colorlog?
+ch = logging.StreamHandler()
+ch.setFormatter(formatter)
+ch.setLevel(logging.DEBUG)
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.handlers = []       # No duplicated handlers
+log.propagate = False   # workaround for duplicated logs in ipython
+log.addHandler(ch)
+endsnippet
+
+snippet colorlog
+from colorlog import ColoredFormatter   # pip install colorlog
+formatter = ColoredFormatter(
+    "%(log_color)s[%(asctime)s] %(message)s",
+    datefmt=None, reset=True, style='%',
+    log_colors={
+        'DEBUG':    'cyan',
+        'INFO':     'white,bold',
+        'INFOV':    'cyan,bold',
+        'WARNING':  'yellow',
+        'ERROR':    'red,bold',
+        'CRITICAL': 'red,bg_white',
+    })
+endsnippet
+
+
+################################################################################
+# Test
+################################################################################
+post_jump "snip_expand(snip, jump_forward=True)"
+snippet pytest
+import sys
+import pytest
+
+
+class Test${2:`!p snip.rv = toCamelCase(re.sub("_test$", "", snip.basename))`}:
+	def test_hello(self):
+		assert False, "A test case."
+
+
+pytest.main$1
+endsnippet
+
 snippet pytest.main
 if __name__ == '__main__':
 	sys.exit(pytest.main(["-s", "-v"] + sys.argv))
@@ -77,21 +314,50 @@ endsnippet
 snippet pytest.param
 pytest.param(${1}, id=None, marks=${3:pytest.mark.xfail})
 endsnippet
+snippet pytest.fixture
+@pytest.fixture
+def ${1:fixture_name}($2):
+	return $3
+endsnippet
 snippet pytest.xfail
 @pytest.mark.xfail(reason="${1:xfail}")
 endsnippet
 snippet pytest.filterwarnings
 @pytest.mark.filterwarnings("${1:ignore:DeprecationWarning}")
 endsnippet
+snippet pytest.raises
+with pytest.raises(${1:ValueError}, match='.*${2:some regex}.*'):
+	${3:pass}
+endsnippet
+
 snippet unittest
 class Test${1:Example}(unittest.TestCase):
 	def testHello(self):
 		self.assertFalse("Implement me!")
 endsnippet
-# }}}
 
-# ipython {{{
+snippet assert_array_equals
+np.testing.assert_array_equals($1, $2)
+endsnippet
+
+
+################################################################################
+# Ipython
+################################################################################
+
 snippet ipython.system "Import system from ipython (same as !shell execute magic)" b
 from IPython.utils._process_posix import system, getoutput
 endsnippet
-# }}}
+
+
+################################################################################
+# ML & Data Science
+################################################################################
+
+# matplotlib
+snippet mpl_colorbar
+from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
+from mpl_toolkits.axes_grid1.colorbar import colorbar
+cax = make_axes_locatable(${1:ax}).append_axes("right", size="5%", pad=0.05)
+colorbar(${2:im}, cax=cax)
+endsnippet

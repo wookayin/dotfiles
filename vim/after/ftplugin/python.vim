@@ -10,6 +10,11 @@ if !filereadable('Makefile')
   endif
 endif
 
+if !exists('g:plugs')
+    " Probably not using the full vimrc/init.vim setup
+    finish
+endif
+
 if has_key(g:plugs, 'neomake')
   " Neomake's python runner only does linting. But we would rather want to run it.
   command! -buffer -bang Neomake  call neomake#ShCommand(<bang>0, &makeprg)
@@ -19,6 +24,21 @@ setlocal expandtab
 setlocal ts=4
 setlocal sw=4
 setlocal sts=4
+
+if exists('*timer_start')
+  function! AutoTabsizePython(...) abort
+    let l:project_root = DetermineProjectRoot()
+    if !filereadable(l:project_root . '/.pylintrc')
+      return -1  " no pylintrc found
+    endif
+    if !empty(systemlist("grep \"indent-string='  '\" " .. shellescape(l:project_root . '/.pylintrc')))
+      setlocal ts=2 sw=2 sts=2
+      return 2  " Use tabsize 2
+    endif
+    return 0   " no config found, don't touch tabsize
+  endfunction
+  call timer_start(0, function('AutoTabsizePython'))
+endif
 
 setlocal cc=80
 setlocal tw=100
@@ -36,7 +56,7 @@ set completeopt-=longest
 " https://stackoverflow.com/questions/2360249/
 inoremap <buffer> # X<BS>#
 
-" LSP (coc.nvim) is used but just in case...
+" omnifunc is not used in favor of LSP, but just in case...
 if has('python3')
   setlocal omnifunc=python3complete#Complete
 endif
@@ -54,39 +74,87 @@ if has_key(g:, 'plugs') && has_key(g:plugs, 'vim-surround')
   vmap <buffer>  <leader>repr  Sfrepr<CR>
 endif
 
-" if coc.nvim is available, use the global shortcut
-" (see ~/.vimrc for the global mapping of <F3> key)
-if !has_key(g:, 'plugs') || !has_key(g:plugs, 'coc.nvim')
-    " goto definition
-    map  <F3> :call jedi#goto_assignments()<CR>
-    imap <F3> <ESC>:call jedi#goto_assignments()<CR>
-    " show usages
-    map <F7> :call jedi#usages()<CR>
-    imap <F7> <ESC>:call jedi#usages()<CR>
+" Fallback to jedi for providing gd/gr command
+if has_key(g:, 'plugs') && has_key(g:plugs, 'jedi-vim')
+  " goto definition (gd)
+  noremap  <buffer> <F12>  :call jedi#goto_assignments()<CR>
+  nmap     <buffer> <F3>   :call jedi#goto_assignments()<CR>
+  inoremap <buffer> <F12>  :call jedi#goto_assignments()<CR>
+  imap     <buffer> <F3>   :call jedi#goto_assignments()<CR>
+  " show usages (gr)
+  noremap  <buffer> <F24>  :call jedi#usages()<CR>
+  inoremap <buffer> <F24>  :call jedi#usages()<CR>
 endif
+
+" comment annotations
+function! ToggleLineComment(str)
+  let l:comment = '# ' . a:str
+  let l:line = getline('.')
+  if l:line =~ (l:comment) . '$'
+    " Already exists at the end: strip the comment
+    call setline('.', TrimRight(l:line[:-(len(l:comment) + 1)]))
+  else
+    " or append it if there wasn't
+    call setline('.', l:line . '  ' . l:comment)
+  end
+endfunction
+
+function! s:define_toggle_mapping(name, comment) abort
+  execute 'nmap <Plug>' . a:name . ' ' .
+        \ ':<C-u>call ToggleLineComment("' . a:comment . '")<CR><bar>' .
+        \ ':<c-u>silent! call repeat#set("\<Plug>' . a:name . '")<CR>'
+endfunction
+call s:define_toggle_mapping("ToggleLineComment_type_ignore", "type: ignore")
+nmap <buffer> <leader>ti <Plug>ToggleLineComment_type_ignore
+call s:define_toggle_mapping("ToggleLineComment_yapf_disable", "yapf: disable")
+nmap <buffer> <leader>ty <Plug>ToggleLineComment_yapf_disable
+
 
 
 " Experimental
 " ============
 
-" <M-CR> for auto import symbol (replacing coc.nvim)
+" LSP: turn on auto formatting by default for a 'project'
+" condition: when one have .style.yapf file in a git repository.
+" Executed only once for the current vim session.
+if exists(':LspAutoFormattingOn')
+  if get(g:, '_python_autoformatting_detected', 0) == 0
+    let g:_python_autoformatting_detected = 1  " do not auto-turn on any more
+    let s:project_root = DetermineProjectRoot()
+    if !empty(s:project_root)
+      let s:style_yapf = s:project_root . '/.style.yapf'
+      if filereadable(s:style_yapf)
+        " TODO: Do not affect files outside the project!!
+        execute ":LspAutoFormattingOn " . s:style_yapf
+      endif
+    endif
+  endif
+endif
+
+" <Alt-Enter> for auto import symbol
 if exists(':ImportSymbol')   " plugin vim-autoimport
   nmap <silent> <buffer>  <M-CR>   :ImportSymbol<CR>
   imap <silent> <buffer>  <M-CR>   <Esc>:ImportSymbol<CR>a
 endif
-if exists(':CocCommand')
-  command! -buffer SortImport        :CocCommand python.sortImports
-  command! -buffer ImportSort        :SortImport
-  command! -buffer ImportOrganize    :SortImport
-endif
 
 
-function! s:method_on_cursor() abort
-  " try to automatically get the current function
-  if exists('*CocAction')
-    let l:symbol = CocAction('getCurrentFunctionSymbol')
-    " coc has a bug where unicode item kind labels appear; strip it
-    return substitute(l:symbol, '^[^a-z]\s*', '', '')
+let b:gps_available = exists('*luaeval') && luaeval(
+            \ 'pcall(require, "nvim-gps") and require"nvim-gps".is_available()'
+            \ )
+
+function! s:test_suite_on_cursor() abort
+  " Automatically extract the current test method or class (suite)
+  if has_key(b:, 'lsp_current_function')
+    return b:lsp_current_function
+  elseif b:gps_available  " nvim-gps
+    " TODO: This relies on dirty parsing. see nvim-gps#68
+    let loc = split(luaeval('require"nvim-gps".get_location()'))
+    for i in range(len(loc) - 1, 0, -1)
+      if loc[i] =~# '^test' || loc[i] =~# '^Test'
+        return loc[i]
+      endif
+    endfor
+    return ''   " not found
   else | return '' | endif
 endfunction
 
@@ -99,31 +167,35 @@ if has_key(g:plugs, 'vim-floaterm')
     let l:CTRL_U = nr2char(21)
     let l:cmd = ExpandCmd(&makeprg)
     if get(b:, 'makeprg_pytest', 0)
-      let l:pytest_pattern = s:method_on_cursor()
+      let l:pytest_pattern = s:test_suite_on_cursor()
       if !empty(l:pytest_pattern)
-        let l:cmd = printf('pytest -s -k %s', shellescape(l:pytest_pattern))
+        let l:cmd = printf('pytest -s %s -k %s', expand('%:.'), shellescape(l:pytest_pattern))
       endif
     endif
     if l:bufnr == -1
       " floaterm#new(bang, cmd, winopts, jobopts)
+      " floaterm API is fucking capricious and not sensible :(
       if &columns / (&lines + 0.0) >= 1.6
-        let l:winopt = {'position': 'right', 'width': float2nr(&columns / 3.0)}
+        " vertical split (put in the right)
+        let l:winopt = {
+              \ 'position': 'right', 'wintype': 'vsplit',
+              \ 'width': float2nr(&columns / 3.0)}
       else
-        let l:winopt = {'position': 'below', 'height': float2nr(&lines / 5.0)}
+        " horizontal split (put in the below)
+        let l:winopt = {
+              \ 'position': 'below', 'wintype': 'split',
+              \ 'height': float2nr(&lines / 5.0)}
       endif
-      let l:bufnr = floaterm#new(1, l:cmd,
-            \ extend(l:winopt, {
-            \   'name': s:ftname, 'wintype': 'normal',
-            \   'autoclose': 1}),
-            \ {}
-            \)
+      " floaterm#new(bang, cmd, jobopts, opts) -- this API keeps changing...  :(
+      let l:winopt = extend(l:winopt, {'name': s:ftname, 'autoclose': 1})
+      let l:bufnr = floaterm#new(1, l:cmd, {}, l:winopt)
       tnoremap <buffer> <silent> <F6>  <c-\><c-n>:FloatermHide<CR>
       wincmd p        " move back to the python buf
     else
       call floaterm#terminal#send(l:bufnr, [l:CTRL_U . l:cmd])
       " show the window (it could be either hidden or visible)
       " this works as we are currently on the 'python' buffer
-      call floaterm#toggle(0, s:ftname)
+      call floaterm#toggle(0, 0, s:ftname)
       wincmd p        " move back to the python buf
     endif
   endfunction

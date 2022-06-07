@@ -19,34 +19,54 @@
                         "description": "Left option <-> left command On Realforce",
                         "manipulators": [
                             {
-                                "conditions": [ {
-                                    "identifiers": [ { "vendor_id": 2131 } ],
-                                    "type": "device_if"
-                                } ],
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "vendor_id": 2131
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "left_option",
                                     "modifiers": {
-                                        "optional": [ "any" ]
+                                        "optional": [
+                                            "any"
+                                        ]
                                     }
                                 },
                                 "to": [
-                                    { "key_code": "left_command" }
+                                    {
+                                        "key_code": "left_command"
+                                    }
                                 ],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [ {
-                                    "identifiers": [ { "vendor_id": 2131 } ],
-                                    "type": "device_if"
-                                } ],
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "vendor_id": 2131
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "left_command",
                                     "modifiers": {
-                                        "optional": [ "any" ]
+                                        "optional": [
+                                            "any"
+                                        ]
                                     }
                                 },
                                 "to": [
-                                    { "key_code": "left_option" }
+                                    {
+                                        "key_code": "left_option"
+                                    }
                                 ],
                                 "type": "basic"
                             }
@@ -56,22 +76,30 @@
                         "description": "Right option -> f18 (for Realforce)",
                         "manipulators": [
                             {
-                                "conditions": [ {
-                                    "identifiers": [ { "vendor_id": 2131 } ],
-                                    "type": "device_if"
-                                } ],
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "vendor_id": 2131
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "right_option"
                                 },
                                 "to": [
-                                    { "key_code": "f18" }
+                                    {
+                                        "key_code": "f18"
+                                    }
                                 ],
                                 "type": "basic"
                             }
                         ]
                     },
                     {
-                        "description": "Home/End to Command + Left/Right",
+                        "description": "Remap Home/End and Shift+Home/End",
                         "manipulators": [
                             {
                                 "from": {
@@ -80,7 +108,9 @@
                                 "to": [
                                     {
                                         "key_code": "left_arrow",
-                                        "modifiers": [ "left_command" ]
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -92,7 +122,49 @@
                                 "to": [
                                     {
                                         "key_code": "right_arrow",
-                                        "modifiers": [ "left_command" ]
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "home",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "a",
+                                        "modifiers": [
+                                            "left_control",
+                                            "left_shift"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "end",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "e",
+                                        "modifiers": [
+                                            "left_control",
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -113,7 +185,62 @@
                     },
                     "ignore": false,
                     "manipulate_caps_lock_led": false,
-                    "simple_modifications": []
+                    "simple_modifications": [
+                        {
+                            "from": {
+                                "key_code": "pause"
+                            },
+                            "to": [
+                                {
+                                    "consumer_key_code": "volume_increment"
+                                }
+                            ]
+                        },
+                        {
+                            "from": {
+                                "key_code": "print_screen"
+                            },
+                            "to": [
+                                {
+                                    "consumer_key_code": "volume_decrement"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 326,
+                        "vendor_id": 2131
+                    },
+                    "ignore": false,
+                    "manipulate_caps_lock_led": true,
+                    "simple_modifications": [
+                        {
+                            "from": {
+                                "key_code": "pause"
+                            },
+                            "to": [
+                                {
+                                    "consumer_key_code": "volume_increment"
+                                }
+                            ]
+                        },
+                        {
+                            "from": {
+                                "key_code": "print_screen"
+                            },
+                            "to": [
+                                {
+                                    "consumer_key_code": "volume_decrement"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
                     "disable_built_in_keyboard_if_exists": false,
@@ -122,6 +249,19 @@
                         "is_keyboard": true,
                         "is_pointing_device": false,
                         "product_id": 632,
+                        "vendor_id": 1452
+                    },
+                    "ignore": false,
+                    "manipulate_caps_lock_led": true,
+                    "simple_modifications": []
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 834,
                         "vendor_id": 1452
                     },
                     "ignore": false,
@@ -155,104 +295,7 @@
                     "simple_modifications": []
                 }
             ],
-            "fn_function_keys": [
-                {
-                    "from": {
-                        "key_code": "f1"
-                    },
-                    "to": {
-                        "key_code": "f1"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f2"
-                    },
-                    "to": {
-                        "key_code": "f2"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f3"
-                    },
-                    "to": {
-                        "key_code": "f3"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f4"
-                    },
-                    "to": {
-                        "key_code": "f4"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f5"
-                    },
-                    "to": {
-                        "key_code": "f5"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f6"
-                    },
-                    "to": {
-                        "key_code": "f6"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f7"
-                    },
-                    "to": {
-                        "key_code": "f7"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f8"
-                    },
-                    "to": {
-                        "key_code": "f8"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f9"
-                    },
-                    "to": {
-                        "key_code": "f9"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f10"
-                    },
-                    "to": {
-                        "key_code": "f10"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f11"
-                    },
-                    "to": {
-                        "key_code": "f11"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f12"
-                    },
-                    "to": {
-                        "key_code": "f12"
-                    }
-                }
-            ],
+            "fn_function_keys": [],
             "name": "Default profile",
             "parameters": {
                 "delay_milliseconds_before_open_device": 1000
@@ -263,22 +306,27 @@
                     "from": {
                         "key_code": "caps_lock"
                     },
-                    "to": {
-                        "key_code": "left_control"
-                    }
+                    "to": [
+                        {
+                            "key_code": "left_control"
+                        }
+                    ]
                 },
                 {
                     "from": {
                         "key_code": "right_command"
                     },
-                    "to": {
-                        "key_code": "f18"
-                    }
+                    "to": [
+                        {
+                            "key_code": "f18"
+                        }
+                    ]
                 }
             ],
             "virtual_hid_keyboard": {
                 "caps_lock_delay_milliseconds": 0,
                 "country_code": 0,
+                "indicate_sticky_modifier_keys_state": true,
                 "keyboard_type": "ansi",
                 "mouse_key_xy_scale": 100
             }

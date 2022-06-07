@@ -13,6 +13,8 @@ hi texIfFalseRegion             ctermfg=241 guifg=#626262
 
 syn cluster texFoldGroup        add=texCommentRegion,texIfFalseRegion
 
+syn match texCmdNum     '\\[0-9]\+'
+hi def link texCmdNum   Special
 " }}}
 
 

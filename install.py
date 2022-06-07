@@ -100,7 +100,7 @@ except ImportError:
 
 
 post_actions = []
-post_actions += [
+post_actions += [  # Check symbolic link at $HOME
     '''#!/bin/bash
     # Check whether ~/.vim and ~/.zsh are well-configured
     for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
@@ -116,7 +116,7 @@ Please remove your local folder/file $f and try again.\033[0m"
     done
 ''']
 
-post_actions += [
+post_actions += [  # video2gif
     '''#!/bin/bash
     # Download command line scripts
     mkdir -p "$HOME/.local/bin/"
@@ -129,7 +129,7 @@ post_actions += [
     exit $ret;
 ''']
 
-post_actions += [
+post_actions += [  # zgen
     '''#!/bin/bash
     # Update zgen modules and cache (the init file)
     zsh -c "
@@ -149,22 +149,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         '# zgen update (Skipped)'
 ]
 
-post_actions += [
-    '''#!/bin/bash
-    # validate neovim package installation on python2/3 and automatically install if missing
-    bash "etc/install-neovim-py.sh"
-''']
-
-vim = 'nvim' if find_executable('nvim') else 'vim'
-post_actions += [
-    # Run vim-plug installation
-    {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
-     'update'  : '{vim} +PlugUpdate  +qall'.format(vim=vim),
-     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
-     }['update' if not args.skip_vimplug else 'none']
-]
-
-post_actions += [
+post_actions += [  # tmux plugins
     # Install tmux plugins via tpm
     '~/.tmux/plugins/tpm/bin/install_plugins',
 
@@ -183,25 +168,7 @@ post_actions += [
     fi
 ''']
 
-post_actions += [
-    r'''#!/bin/bash
-    # Setting up for coc.nvim (~/.config/coc, node.js)
-
-    # (i) create ~/.config/coc directory if not exists
-    GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m";
-    coc_dir="$HOME/.config/coc/"
-    if [ ! -d "$coc_dir" ]; then
-        mkdir -p "$coc_dir" || exit 1;
-        echo "Created: $coc_dir"
-    else
-        echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
-    fi
-
-    # (ii) validate or auto-install node.js locally
-    bash "etc/install-node.sh" || exit 1;
-''']
-
-post_actions += [
+post_actions += [  # default shell
     r'''#!/bin/bash
     # Change default shell to zsh
     /bin/zsh --version >/dev/null || (\
@@ -214,7 +181,7 @@ post_actions += [
     fi
 ''']
 
-post_actions += [
+post_actions += [  # gitconfig.secret
     r'''#!/bin/bash
     # Create ~/.gitconfig.secret file and check user configuration
     if [ ! -f ~/.gitconfig.secret ]; then
@@ -245,6 +212,24 @@ EOL
     echo -en 'user.email : '; git config --file ~/.gitconfig.secret user.email
     echo -en '\033[0m';
 ''']
+
+post_actions += [  # neovim
+    '''#!/bin/bash
+    # validate neovim package installation on python2/3 and automatically install if missing
+    bash "etc/install-neovim-py.sh"
+''']
+
+vim_options = dict(
+    nvim=dict(vim='nvim', flag='--headless'),
+    vim=dict(vim='vim', flag=''),
+)[find_executable('nvim') and 'nvim' or 'vim']
+post_actions += [  # vim-plug
+    # Run vim-plug installation
+    {'install' : '{vim} {flag} +"set nonumber" +"PlugInstall --sync" +%print +qall'.format(**vim_options),
+     'update'  : '{vim} {flag} +"set nonumber" +"PlugUpdate  --sync" +%print +qall'.format(**vim_options),
+     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(**vim_options)
+     }['update' if not args.skip_vimplug else 'none']
+]
 
 ################# END OF FIXME #################
 
@@ -368,8 +353,9 @@ for target, source in sorted(tasks.items()):
     # make a symbolic link if available
     if not os.path.lexists(target):
         mkdir_target = os.path.split(target)[0]
-        makedirs(mkdir_target, exist_ok=True)
-        log(GREEN('Created directory : %s' % mkdir_target))
+        if not os.path.isdir(mkdir_target):
+            makedirs(mkdir_target)
+            log(GREEN('Created directory : %s' % mkdir_target))
         os.symlink(source, target)
         log("{:50s} : {}".format(
             BLUE(target),

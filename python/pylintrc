@@ -1,4 +1,4 @@
-# .pylintrc
+# .pylintrc (global)
 
 # @see https://github.com/PyCQA/pylint/blob/master/pylintrc
 # for an effective setting, try 'pylint --generate-rcfile'
@@ -14,16 +14,36 @@ ignore=CVS .git .hg .svn
 extension-pkg-whitelist=numpy,torch
 
 
+[FORMAT]
+
+# Configure tab size (2 or 4)
+#indent-string='  '
+#indent-after-paren=2
+
+
 [MESSAGES CONTROL]
 
 # Disable the message, report, category or checker with the given id(s).
-# [List] http://pylint-messages.wikidot.com/all-codes
-disable=blacklisted-name,invalid-name,
-        too-few-public-methods,no-self-use,
+# https://pylint.pycqa.org/en/latest/technical_reference/features.html
+# http://pylint-messages.wikidot.com/all-codes
+disable=blacklisted-name,
+        invalid-name,
+        too-few-public-methods,
+        too-many-arguments,
+        too-many-instance-attributes,
+        too-many-locals,
+        no-self-use,
         wrong-import-position,
         line-too-long,
+        #missing-class-docstring,
+        #missing-function-docstring,
+        no-else-break,
+        no-else-continue,
+        no-else-raise,
+        no-else-return,
         bad-continuation,
         fixme
+
 
 [TYPECHECK]
 
