@@ -431,7 +431,7 @@ if has('nvim')
   augroup terminal_autoinsert
     autocmd!
     autocmd BufWinEnter,WinEnter *  if &buftype == 'terminal' | startinsert | endif
-    autocmd TermOpen * startinsert
+    autocmd TermOpen *  if nvim_buf_get_name(0) =~# '^term://' | startinsert | endif
 
     " mouse click puts into normal mode even in terminal; disable this
     autocmd TermOpen * tnoremap <buffer><silent> <LeftRelease> <Nop>
