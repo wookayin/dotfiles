@@ -1,12 +1,24 @@
+# Start-up script executed if a login shell.
+
 # set default permission of file to 644 (rw-r--r--)
 umask 022
 
-# Temporary fix for the path order in the login shell.
-# $PATH is overriden by path_helper in /etc/zprofile,
-# after ~/.zshenv.
+# At this point, /etc/zprofile has been executed (after ~/.zshenv)
+# which messes up $PATH due to the execution of `path_helper`.
+# Correct $PATH so that /usr/local/bin, etc. would come after
+# custom, local-preferred paths.
+path=( ${path[@]:#/usr/local/bin} )
+path=( ${path[@]:#/usr/local/sbin} )
+path=( ${path[@]:#/usr/bin} )
+path=( ${path[@]:#/usr/sbin} )
+path=( ${path[@]:#/sbin} )
 path=(
   $path
-  /usr/local/{bin,sbin}
+  "/usr/local/bin"
+  "/usr/local/sbin"
+  "/usr/bin"
+  "/usr/sbin"
+  "/sbin"
 )
 
 # Let ~/.local/bin take precedence
