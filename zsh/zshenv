@@ -77,6 +77,18 @@ if [ -d $HOME/.yarn/bin/ ]; then
   path=( $path $HOME/.yarn/bin )
 fi
 
+# Ruby on macos (M1)
+# Homebrew ruby is keg-only, no symlink into /opt/homebrew/bin,
+# so we'll need manually add ruby and gem bins to PATH
+# NOTE: We hvae to pin an exact ruby version (brew install ruby@3.0)
+if [[ "$OSTYPE" == darwin* && "$(uname -m)" == "arm64" ]]; then
+  path=(
+    "/opt/homebrew/opt/ruby@3.0/bin"
+    "/opt/homebrew/lib/ruby/gems/3.0.0/bin"
+    $path
+  )
+fi
+
 # Cleanup some anaconda environment variables to avoid messing up in tmux, etc.
 # (these environment variables might be copied and inherited unwantedly)
 unset CONDA_EXE
