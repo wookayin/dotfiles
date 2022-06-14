@@ -131,6 +131,10 @@
 	# Make all new branches to automatically use rebase rather than merge, on pull
 	autosetuprebase = always
 
+[stash]
+	# Show diff when running 'git stash show <SHA>'.
+	showPatch = true
+
 [submodule]
 	# Git 2.15+: Update submodules recursively when pulling changes
 	recurse = true
