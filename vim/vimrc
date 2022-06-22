@@ -2317,8 +2317,8 @@ let g:SuperTabNoCompleteAfter = ['^', '\s']
 " (e.g. change CWD to the directory hitted by CtrlPZ)
 let g:NERDTreeChDirMode = 1
 
-" <Leader>N toggles NERDTree (across tab)
-map <Leader>N <plug>NERDTreeTabsToggle<CR>
+" <Leader>n toggles NERDTree (across tab)
+map <Leader>n <plug>NERDTreeTabsToggle<CR>
 
 " By default nerdtree maps <C-j> and <C-k> which I want to reserve for window
 " navigation instead for the sake consistency. Therefore use different keymaps.
