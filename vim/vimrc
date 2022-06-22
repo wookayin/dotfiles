@@ -340,6 +340,8 @@ nnoremap <leader>:  :
 nnoremap <Space> :
 
 inoremap <silent> <C-k> <ESC>:update<CR>
+inoremap <silent> jk <ESC>:update<CR>
+inoremap <silent> kj <ESC>:update<CR>
 nnoremap <silent> <leader>e   :<C-u>e<CR>zR
 
 nnoremap Q <Nop>
