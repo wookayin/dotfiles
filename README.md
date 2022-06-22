@@ -3,10 +3,16 @@ Dotfiles
 
 🏠 Personal dotfiles for \*NIX (macOS and Linux) systems.
 
+
+TODO
+------------
+- [ ] update one line installation with own keybinds
+- [ ] fix resize-pane/select-layout conflicting keybinds for tmux
+
 Installation
 ------------
 
-### 👉 One-liner (if you trust me):
+### 👉 One-liner (if you trust me) (WARNING: DOES NOT WORK WITH UPDATED KEYBINDS):
 
 ```bash
 curl -fsSL https://dotfiles.wook.kr/etc/install | bash
