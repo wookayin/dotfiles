@@ -679,7 +679,7 @@ if pcall(require, "null-ls") then
     command! -nargs=? LspAutoFormattingOn      lua _G.LspAutoFormattingStart(<q-args>)
     command!          LspAutoFormattingOff     lua _G.LspAutoFormattingStop()
   ]]
-  _G.LspAutoFormattingStart = function (misc)
+  _G.LspAutoFormattingStart = function(misc)
     vim.cmd [[
     augroup LspAutoFormatting
       autocmd!
@@ -690,21 +690,22 @@ if pcall(require, "null-ls") then
     if misc and misc ~= '' then
       msg = msg .. string.format("\n(%s)", misc)
     end
-    vim.notify(msg, 'info', {timeout = 2000})
+    vim.notify(msg, 'info', { timeout = 2000 })
   end
-  _G.LspAutoFormattingTrigger = function ()
-    -- Disable on some files (e.g., external packages)
-    if string.find(vim.fn.bufname(), '/site-packages/') then
+  _G.LspAutoFormattingTrigger = function()
+    -- Disable on some files (e.g., site-packages or python built-ins)
+    -- Note that `-` is a special character in Lua regex
+    if vim.api.nvim_buf_get_name(0):match '/lib/python3.%d+/' then
       return false
     end
     -- TODO: Enable only on the current project specified by PATH.
     if vim.tbl_count(vim.lsp.buf_get_clients(0)) > 0 then
-      vim.lsp.buf.format({timeout_ms = 1000})
+      vim.lsp.buf.format({ timeout_ms = 1000 })
       return true
     end
     return false
   end
-  _G.LspAutoFormattingStop = function ()
+  _G.LspAutoFormattingStop = function()
     vim.cmd [[ autocmd! LspAutoFormatting ]]
     vim.notify("Lsp Auto-Formatting has been turned off.", 'warn')
   end
