@@ -470,9 +470,11 @@ end
 -----------------------------
 -- Configs for PeekDefinition
 -----------------------------
-function PeekDefinition()
+_G.PeekDefinition = function(lsp_request_method)
   local params = vim.lsp.util.make_position_params()
-  local definition_callback = function (_, result)
+  local definition_callback = function(_, result, ctx, config)
+    -- This handler previews the jump location instead of actually jumping to it
+    -- see $VIMRUNTIME/lua/vim/lsp/handlers.lua, function location_handler
     if result == nil or vim.tbl_isempty(result) then
       print("PeekDefinition: " .. "cannot find the definition.")
       return nil
@@ -486,14 +488,15 @@ function PeekDefinition()
     local def_uri = def_result.uri or def_result.targetUri
     local def_range = def_result.range or def_result.targetSelectionRange
     vim.fn['quickui#preview#open'](vim.uri_to_fname(def_uri), {
-        cursor = def_range.start.line + 1,
-        number = 1,   -- show line number
-        persist = 0,
-      })
+      cursor = def_range.start.line + 1,
+      number = 1, -- show line number
+      persist = 0,
+    })
   end
   -- Asynchronous request doesn't work very smoothly, so we use synchronous one with timeout;
   -- return vim.lsp.buf_request(0, 'textDocument/definition', params, definition_callback)
-  local results, err = vim.lsp.buf_request_sync(0, 'textDocument/definition', params, 1000)
+  lsp_request_method = lsp_request_method or 'textDocument/definition'
+  local results, err = vim.lsp.buf_request_sync(0, lsp_request_method, params, 1000)
   if results then
     for client_id, result in pairs(results) do
       definition_callback(client_id, result.result)
@@ -504,10 +507,13 @@ function PeekDefinition()
 end
 
 vim.cmd [[
-  command! -nargs=0 PeekDefinition      :lua PeekDefinition()
+  command! -nargs=0 PeekDefinition      :lua _G.PeekDefinition()
   command! -nargs=0 PreviewDefinition   :PeekDefinition
-  nmap <leader>K     :<C-U>PeekDefinition<CR>
-  nmap <silent> gp   :<C-U>PeekDefinition<CR>
+  " Preview definition.
+  nmap <leader>K     <cmd>PeekDefinition<CR>
+  nmap <silent> gp   <cmd>lua _G.PeekDefinition()<CR>
+  " Preview type definition.
+  nmap <silent> gT   <cmd>lua _G.PeekDefinition('textDocument/typeDefinition')<CR>
 ]]
 
 
