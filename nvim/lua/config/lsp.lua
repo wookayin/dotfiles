@@ -9,15 +9,15 @@ local lspconfig = require('lspconfig')
 -- https://github.com/ray-x/lsp_signature.nvim#full-configuration-with-default-values
 local on_attach_lsp_signature = function(client, bufnr)
   require('lsp_signature').on_attach({
-      bind = true, -- This is mandatory, otherwise border config won't get registered.
-      floating_window = true,
-      handler_opts = {
-        border = "single"
-      },
-      zindex = 99,     -- <100 so that it does not hide completion popup.
-      fix_pos = false, -- Let signature window change its position when needed, see GH-53
-      toggle_key = '<M-x>',  -- Press <Alt-x> to toggle signature on and off.
-    })
+    bind = true, -- This is mandatory, otherwise border config won't get registered.
+    floating_window = true,
+    handler_opts = {
+      border = "single"
+    },
+    zindex = 99, -- <100 so that it does not hide completion popup.
+    fix_pos = false, -- Let signature window change its position when needed, see GH-53
+    toggle_key = '<M-x>', -- Press <Alt-x> to toggle signature on and off.
+  })
 end
 
 -- Customize LSP behavior
@@ -36,7 +36,8 @@ local on_attach = function(client, bufnr)
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-  local opts = { noremap=true, silent=true }
+  local opts = { noremap = true, silent = true }
+
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   if vim.fn.exists(':Telescope') then
@@ -137,7 +138,7 @@ lsp_installer.on_server_ready(function(server)
 
     -- Suggested configuration by nvim-cmp
     capabilities = require('cmp_nvim_lsp').update_capabilities(
-     vim.lsp.protocol.make_client_capabilities()
+      vim.lsp.protocol.make_client_capabilities()
     ),
   }
 
@@ -173,7 +174,8 @@ local lsp_handlers_hover = vim.lsp.with(vim.lsp.handlers.hover, {
 vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
   local bufnr, winnr = lsp_handlers_hover(err, result, ctx, config)
   if winnr ~= nil then
-    vim.api.nvim_win_set_option(winnr, "winblend", 20)  -- opacity for hover
+    -- opacity/alpha for hover window
+    vim.api.nvim_win_set_option(winnr, "winblend", 20)
   end
   return bufnr, winnr
 end
@@ -192,11 +194,11 @@ if vim.fn.has('nvim-0.6.0') > 0 then
     virtual_text = false,
     underline = {
       -- Do not underline text when severity is low (INFO or HINT).
-      severity = {min = vim.diagnostic.severity.WARN},
+      severity = { min = vim.diagnostic.severity.WARN },
     },
     float = {
       source = 'always',
-      focusable = false,   -- See neovim#16425
+      focusable = false, -- See neovim#16425
       border = 'single',
 
       -- Customize how diagnostic message will be shown: show error code.
@@ -206,10 +208,10 @@ if vim.fn.has('nvim-0.6.0') > 0 then
         user_data = diagnostic.user_data or {}
         user_data = user_data.lsp or user_data.null_ls or user_data
         local code = (
-          -- TODO: symbol is specific to pylint (will be removed)
-          diagnostic.symbol or diagnostic.code or
-          user_data.symbol or user_data.code
-        )
+            -- TODO: symbol is specific to pylint (will be removed)
+            diagnostic.symbol or diagnostic.code or
+                user_data.symbol or user_data.code
+            )
         if code then
           return string.format("%s (%s)", diagnostic.message, code)
         else return diagnostic.message
@@ -218,9 +220,9 @@ if vim.fn.has('nvim-0.6.0') > 0 then
     }
   })
   _G.LspDiagnosticsShowPopup = function()
-    return vim.diagnostic.open_float(0, {scope="cursor"})
+    return vim.diagnostic.open_float(0, { scope = "cursor" })
   end
-else  -- neovim 0.5.0
+else -- neovim 0.5.0
   -- @see :help lsp-handler-configuration
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -242,7 +244,7 @@ end
 -- Show diagnostics in a pop-up window on hover
 _G.LspDiagnosticsPopupHandler = function()
   local current_cursor = vim.api.nvim_win_get_cursor(0)
-  local last_popup_cursor = vim.w.lsp_diagnostics_last_cursor or {nil, nil}
+  local last_popup_cursor = vim.w.lsp_diagnostics_last_cursor or { nil, nil }
 
   -- Show the popup diagnostics window,
   -- but only once for the current cursor location (unless moved afterwards).
@@ -250,7 +252,8 @@ _G.LspDiagnosticsPopupHandler = function()
     vim.w.lsp_diagnostics_last_cursor = current_cursor
     local _, winnr = _G.LspDiagnosticsShowPopup()
     if winnr ~= nil then
-      vim.api.nvim_win_set_option(winnr, "winblend", 20)  -- opacity for diagnostics
+      -- opacity/alpha for diagnostics
+      vim.api.nvim_win_set_option(winnr, "winblend", 20)
     end
   end
 end
@@ -292,7 +295,7 @@ local has_words_before = function()
     return false
   end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line-1, line, true)[1]:sub(col, col):match('%s') == nil
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
 local cmp = require('cmp')
@@ -309,10 +312,10 @@ cmp.setup {
   },
   window = {
     documentation = {
-      border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'},
+      border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
     },
     completion = {
-      border = (cmp_theme == 'dark' and {'┌', '─', '┐', '│', '┘', '─', '└', '│'} or nil),
+      border = (cmp_theme == 'dark' and { '┌', '─', '┐', '│', '┘', '─', '└', '│' } or nil),
       winhighlight = 'Normal:CmpPmenu,FloatBorder:CmpPmenuBorder,CursorLine:PmenuSel,Search:None',
     },
   },
@@ -329,7 +332,7 @@ cmp.setup {
     ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Insert }),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
     ['<Tab>'] = { -- see GH-880, GH-897
-      i = function(fallback)  -- see GH-231, GH-286
+      i = function(fallback) -- see GH-231, GH-286
         if cmp.visible() then cmp.select_next_item()
         elseif has_words_before() then cmp.complete()
         else fallback() end
@@ -382,7 +385,7 @@ cmp.setup {
     { name = 'buffer', priority = 10 },
   },
   sorting = {
-   -- see ~/.vim/plugged/nvim-cmp/lua/cmp/config/compare.lua
+    -- see ~/.vim/plugged/nvim-cmp/lua/cmp/config/compare.lua
     comparators = {
       cmp.config.compare.offset,
       cmp.config.compare.exact,
@@ -522,15 +525,15 @@ vim.cmd [[
 ------------
 local lsp_status = require('lsp-status')
 lsp_status.config({
-    -- Avoid using use emoji-like or full-width characters
-    -- because it can often break rendering within tmux and some terminals
-    -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
-    indicator_hint = '!',
-    status_symbol = ' ',
+  -- Avoid using use emoji-like or full-width characters
+  -- because it can often break rendering within tmux and some terminals
+  -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
+  indicator_hint = '!',
+  status_symbol = ' ',
 
-    -- If true, automatically sets b:lsp_current_function
-    -- (no longer used in favor of treesitter + nvim-gps)
-    current_function = false,
+  -- If true, automatically sets b:lsp_current_function
+  -- (no longer used in favor of treesitter + nvim-gps)
+  current_function = false,
 })
 lsp_status.register_progress()
 
@@ -576,9 +579,9 @@ end
 -- trouble.nvim
 ---------------
 require("trouble").setup {
-    -- https://github.com/folke/trouble.nvim#setup
-    mode = "document_diagnostics",
-    auto_preview = false,
+  -- https://github.com/folke/trouble.nvim#setup
+  mode = "document_diagnostics",
+  auto_preview = false,
 }
 
 
@@ -716,4 +719,4 @@ if pcall(require, "null-ls") then
     vim.notify("Lsp Auto-Formatting has been turned off.", 'warn')
   end
 
-end   -- if null-ls
+end -- if null-ls
