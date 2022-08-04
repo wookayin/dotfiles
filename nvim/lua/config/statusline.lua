@@ -161,6 +161,9 @@ if use_global_statusline then
     },
     tabline = {},
     extensions = {},
+    -- For backward compatibility (broken due to new fields since 53aa3d82)
+    winbar = {},
+    inactive_winbar = {},
   }
   require 'lualine.utils.loader'.load_all(winbar_config)
 
