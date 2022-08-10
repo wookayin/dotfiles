@@ -455,7 +455,7 @@ install_lazygit() {
 install_rsync() {
   set -e
 
-  local URL="https://rsync.samba.org/ftp/rsync/rsync-3.2.3.tar.gz"
+  local URL="https://www.samba.org/ftp/rsync/src/rsync-3.2.4.tar.gz"
   local TMP_DIR="/tmp/$USER/rsync"; mkdir -p $TMP_DIR
 
   wget -N -O $TMP_DIR/rsync.tar.gz "$URL"
