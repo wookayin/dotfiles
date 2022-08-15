@@ -28,10 +28,11 @@ setlocal sts=4
 if exists('*timer_start')
   function! AutoTabsizePython(...) abort
     let l:project_root = DetermineProjectRoot()
-    if !filereadable(l:project_root . '/.pylintrc')
+    let l:pylintrc_path = filereadable(".pylintrc") ? ".pylintrc" : l:project_root . '/.pylintrc'
+    if !filereadable(l:pylintrc_path)
       return -1  " no pylintrc found
     endif
-    if !empty(systemlist("grep \"indent-string='  '\" " .. shellescape(l:project_root . '/.pylintrc')))
+    if !empty(systemlist("grep \"indent-string='  '\" " .. shellescape(l:pylintrc_path)))
       setlocal ts=2 sw=2 sts=2
       return 2  " Use tabsize 2
     endif
