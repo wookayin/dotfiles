@@ -281,6 +281,16 @@ hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
 hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
 ]]
 
+-- Commands for temporarily turning on and off diagnostics (for the current buffer or globally)
+-- vim.diagnostic requires neovim 0.6.0+
+if vim.fn.has('nvim-0.6.0') > 0 then
+  vim.cmd [[
+    command! DiagnosticsDisable     :lua vim.diagnostic.disable(0)
+    command! DiagnosticsEnable      :lua vim.diagnostic.enable(0)
+    command! DiagnosticsDisableAll  :lua vim.diagnostic.disable()
+    command! DiagnosticsEnableAll   :lua vim.diagnostic.enable()
+  ]]
+end
 
 ---------------------------------
 -- nvim-cmp: completion support
