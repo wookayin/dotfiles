@@ -193,6 +193,15 @@ if has('nvim-0.6.1')
   Plug 'SmiteshP/nvim-gps'
 endif
 
+if has('nvim-0.7')
+  Plug 'nvim-neotest/neotest'
+  Plug 'antoinemadec/FixCursorHold.nvim'
+  Plug 'rcarriga/nvim-dap-ui'
+
+  Plug 'nvim-neotest/neotest-python'
+  Plug 'nvim-neotest/neotest-plenary'
+endif
+
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
 

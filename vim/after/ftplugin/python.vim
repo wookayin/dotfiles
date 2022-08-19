@@ -161,7 +161,13 @@ endfunction
 
 " <F5> to run &makeprg on a floaterm window (experimental)
 " pytest or execute the script itself, as per &makeprg
-if has_key(g:plugs, 'vim-floaterm')
+let s:is_test_file = (expand('%:t:r') =~# "_test$" || expand('%:t:r') =~# '^test_')
+if has_key(g:plugs, 'neotest-python') && s:is_test_file
+  noremap <buffer>     <F5>       <cmd>:NeotestRun<CR>
+  noremap <buffer>     <F6>       <cmd>:NeotestOutput<CR>
+  noremap <buffer>     <F7>       <cmd>lua require'neotest'.run.attach()<CR>
+
+elseif has_key(g:plugs, 'vim-floaterm')
   let s:ftname = 'makepython'
   function! MakeInTerminal() abort
     let l:bufnr = floaterm#terminal#get_bufnr(s:ftname)
