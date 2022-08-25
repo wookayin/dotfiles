@@ -719,7 +719,7 @@ if pcall(require, "null-ls") then
     end
     -- TODO: Enable only on the current project specified by PATH.
     if vim.tbl_count(vim.lsp.buf_get_clients(0)) > 0 then
-      vim.lsp.buf.format({ timeout_ms = 1000 })
+      vim.lsp.buf.format({ timeout_ms = 2000 })
       return true
     end
     return false
