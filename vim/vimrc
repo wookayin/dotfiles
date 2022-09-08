@@ -344,6 +344,9 @@ inoremap <silent> jk <ESC>:update<CR>
 inoremap <silent> kj <ESC>:update<CR>
 nnoremap <silent> <leader>e   :<C-u>e<CR>zR
 
+" Avoid windows paste and visual mode conflict
+nnoremap <leader>v <C-v>
+
 nnoremap Q <Nop>
 nnoremap QQ ZQ
 
