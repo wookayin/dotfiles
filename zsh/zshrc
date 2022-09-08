@@ -199,3 +199,6 @@ if [[ -z "$CONDA_EXE" && -d "/opt/homebrew/Caskroom/miniconda" ]]; then
   echo "$ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
   echo "$ ./Miniconda3-latest-MacOSX-x86_64.sh -p $HOME/.miniconda3"
 fi
+
+# Enable x-server for wsl
+export DISPLAY=`grep -oP "(?<=nameserver ).+" /etc/resolv.conf`:0.0
