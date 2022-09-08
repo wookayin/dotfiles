@@ -79,6 +79,7 @@ endtry
 
 " basic displays
 set number                  " show line numbers
+set relativenumber
 set ruler
 
 " input settings
