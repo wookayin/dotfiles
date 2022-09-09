@@ -252,14 +252,14 @@ function pip-search() {
 }
 
 # PREFIX/bin/python -> PREFIX/bin/ipython, etc.
-alias ipdb='${$(which python)%/*}/ipdb'
-alias pudb='${$(which python)%/*}/pudb3'
-alias pudb3='${$(which python)%/*}/pudb3'
+alias ipdb='python -m ipdb'
+alias pudb='python -m pudb'
+alias pudb3='pudb'
 alias python-config='${$(which python)%/*}/python3-config'
 alias python3-config='${$(which python)%/*}/python3-config'
 
 # ipython
-alias ipython='${$(which python)%/*}/ipython'
+alias ipython='python -m IPython'
 alias ipy='ipython'
 alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
 
@@ -269,8 +269,8 @@ alias jupyter='${$(which python)%/*}/jupyter'
 alias jupyter-lab='${$(which python)%/*}/jupyter-lab --no-browser'
 
 # ptpython
-alias ptpython='${$(which python)%/*}/ptpython'
-alias ptipython='${$(which python)%/*}/ptipython'
+alias ptpython='python -m ptpython'
+alias ptipython='python -m ptpython.entry_points.run_ptipython'
 alias ptpy='ptipython'
 alias pt='ptpy'
 
