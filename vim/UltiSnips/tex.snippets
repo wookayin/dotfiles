@@ -60,7 +60,7 @@ endglobal
 # Preamble
 # ===================
 
-snippet "% !TEX root" "Inserts `% !TEX root = ...` directive"
+snippet "%!TEX root" "Inserts `% !TEX root = ...` directive"
 %!TEX root = `!p snip.rv = detect_root_texfile()`
 endsnippet
 snippet hyperref "Import hyperref package with color settings."
@@ -325,6 +325,11 @@ snippet item "\begin{itemize} ... \end{itemize} block"
 \begin{itemize}
 	\item ${0}
 \end{itemize}
+endsnippet
+snippet outline "\begin{outline} ... \end{outline} (package outlines)"
+\begin{outline}[itemize]
+	\1 ${0}
+\end{outline}
 endsnippet
 snippet minipage "\begin{minipage} ... \end{minipage} block"
 \begin{minipage}[t]{\linewidth}

@@ -2390,7 +2390,7 @@ lua << EOF
       renderers = {
         directory = {
           {"icon"},
-          {"name", use_git_status_colors = false},
+          {"name", use_git_status_colors = false, right_padding = 0},
           {"trailing_slash"},
           {"diagnostics"},
           {"git_status"},

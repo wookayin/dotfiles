@@ -9,15 +9,15 @@ local lspconfig = require('lspconfig')
 -- https://github.com/ray-x/lsp_signature.nvim#full-configuration-with-default-values
 local on_attach_lsp_signature = function(client, bufnr)
   require('lsp_signature').on_attach({
-      bind = true, -- This is mandatory, otherwise border config won't get registered.
-      floating_window = true,
-      handler_opts = {
-        border = "single"
-      },
-      zindex = 99,     -- <100 so that it does not hide completion popup.
-      fix_pos = false, -- Let signature window change its position when needed, see GH-53
-      toggle_key = '<M-x>',  -- Press <Alt-x> to toggle signature on and off.
-    })
+    bind = true, -- This is mandatory, otherwise border config won't get registered.
+    floating_window = true,
+    handler_opts = {
+      border = "single"
+    },
+    zindex = 99, -- <100 so that it does not hide completion popup.
+    fix_pos = false, -- Let signature window change its position when needed, see GH-53
+    toggle_key = '<M-x>', -- Press <Alt-x> to toggle signature on and off.
+  })
 end
 
 -- Customize LSP behavior
@@ -36,17 +36,20 @@ local on_attach = function(client, bufnr)
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-  local opts = { noremap=true, silent=true }
+  local opts = { noremap = true, silent = true }
+
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   if vim.fn.exists(':Telescope') then
     buf_set_keymap('n', 'gr', '<cmd>Telescope lsp_references<CR>', opts)
     buf_set_keymap('n', 'gd', '<cmd>Telescope lsp_definitions<CR>', opts)
     buf_set_keymap('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts)
+    buf_set_keymap('n', 'gt', '<cmd>Telescope lsp_type_definitions<CR>', opts)
   else
     buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
     buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    buf_set_keymap('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   end
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   --buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
@@ -60,12 +63,22 @@ local on_attach = function(client, bufnr)
   --buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   --buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   --buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  --buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  --buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   --buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   --buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   --buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   --buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+
+  -- Commands
+  if vim.fn.has('nvim-0.7') > 0 then
+    vim.api.nvim_buf_create_user_command(bufnr,
+      "LspRename", function() vim.lsp.buf.rename() end, {})
+  end
+
+  -- Disable specific LSP capabilities: see nvim-lspconfig#1891
+  if client.name == "sumneko_lua" and client.server_capabilities then
+    client.server_capabilities.documentFormattingProvider = false
+  end
 end
 
 -- Add global keymappings for LSP actions
@@ -125,7 +138,7 @@ lsp_installer.on_server_ready(function(server)
 
     -- Suggested configuration by nvim-cmp
     capabilities = require('cmp_nvim_lsp').update_capabilities(
-     vim.lsp.protocol.make_client_capabilities()
+      vim.lsp.protocol.make_client_capabilities()
     ),
   }
 
@@ -161,7 +174,8 @@ local lsp_handlers_hover = vim.lsp.with(vim.lsp.handlers.hover, {
 vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
   local bufnr, winnr = lsp_handlers_hover(err, result, ctx, config)
   if winnr ~= nil then
-    vim.api.nvim_win_set_option(winnr, "winblend", 20)  -- opacity for hover
+    -- opacity/alpha for hover window
+    vim.api.nvim_win_set_option(winnr, "winblend", 20)
   end
   return bufnr, winnr
 end
@@ -180,11 +194,11 @@ if vim.fn.has('nvim-0.6.0') > 0 then
     virtual_text = false,
     underline = {
       -- Do not underline text when severity is low (INFO or HINT).
-      severity = {min = vim.diagnostic.severity.WARN},
+      severity = { min = vim.diagnostic.severity.WARN },
     },
     float = {
       source = 'always',
-      focusable = false,   -- See neovim#16425
+      focusable = false, -- See neovim#16425
       border = 'single',
 
       -- Customize how diagnostic message will be shown: show error code.
@@ -194,10 +208,10 @@ if vim.fn.has('nvim-0.6.0') > 0 then
         user_data = diagnostic.user_data or {}
         user_data = user_data.lsp or user_data.null_ls or user_data
         local code = (
-          -- TODO: symbol is specific to pylint (will be removed)
-          diagnostic.symbol or diagnostic.code or
-          user_data.symbol or user_data.code
-        )
+            -- TODO: symbol is specific to pylint (will be removed)
+            diagnostic.symbol or diagnostic.code or
+                user_data.symbol or user_data.code
+            )
         if code then
           return string.format("%s (%s)", diagnostic.message, code)
         else return diagnostic.message
@@ -206,9 +220,9 @@ if vim.fn.has('nvim-0.6.0') > 0 then
     }
   })
   _G.LspDiagnosticsShowPopup = function()
-    return vim.diagnostic.open_float(0, {scope="cursor"})
+    return vim.diagnostic.open_float(0, { scope = "cursor" })
   end
-else  -- neovim 0.5.0
+else -- neovim 0.5.0
   -- @see :help lsp-handler-configuration
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -230,7 +244,7 @@ end
 -- Show diagnostics in a pop-up window on hover
 _G.LspDiagnosticsPopupHandler = function()
   local current_cursor = vim.api.nvim_win_get_cursor(0)
-  local last_popup_cursor = vim.w.lsp_diagnostics_last_cursor or {nil, nil}
+  local last_popup_cursor = vim.w.lsp_diagnostics_last_cursor or { nil, nil }
 
   -- Show the popup diagnostics window,
   -- but only once for the current cursor location (unless moved afterwards).
@@ -238,7 +252,8 @@ _G.LspDiagnosticsPopupHandler = function()
     vim.w.lsp_diagnostics_last_cursor = current_cursor
     local _, winnr = _G.LspDiagnosticsShowPopup()
     if winnr ~= nil then
-      vim.api.nvim_win_set_option(winnr, "winblend", 20)  -- opacity for diagnostics
+      -- opacity/alpha for diagnostics
+      vim.api.nvim_win_set_option(winnr, "winblend", 20)
     end
   end
 end
@@ -266,6 +281,16 @@ hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
 hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
 ]]
 
+-- Commands for temporarily turning on and off diagnostics (for the current buffer or globally)
+-- vim.diagnostic requires neovim 0.6.0+
+if vim.fn.has('nvim-0.6.0') > 0 then
+  vim.cmd [[
+    command! DiagnosticsDisable     :lua vim.diagnostic.disable(0)
+    command! DiagnosticsEnable      :lua vim.diagnostic.enable(0)
+    command! DiagnosticsDisableAll  :lua vim.diagnostic.disable()
+    command! DiagnosticsEnableAll   :lua vim.diagnostic.enable()
+  ]]
+end
 
 ---------------------------------
 -- nvim-cmp: completion support
@@ -280,7 +305,7 @@ local has_words_before = function()
     return false
   end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line-1, line, true)[1]:sub(col, col):match('%s') == nil
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
 local cmp = require('cmp')
@@ -297,10 +322,10 @@ cmp.setup {
   },
   window = {
     documentation = {
-      border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'},
+      border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
     },
     completion = {
-      border = (cmp_theme == 'dark' and {'┌', '─', '┐', '│', '┘', '─', '└', '│'} or nil),
+      border = (cmp_theme == 'dark' and { '┌', '─', '┐', '│', '┘', '─', '└', '│' } or nil),
       winhighlight = 'Normal:CmpPmenu,FloatBorder:CmpPmenuBorder,CursorLine:PmenuSel,Search:None',
     },
   },
@@ -317,7 +342,7 @@ cmp.setup {
     ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Insert }),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
     ['<Tab>'] = { -- see GH-880, GH-897
-      i = function(fallback)  -- see GH-231, GH-286
+      i = function(fallback) -- see GH-231, GH-286
         if cmp.visible() then cmp.select_next_item()
         elseif has_words_before() then cmp.complete()
         else fallback() end
@@ -370,7 +395,7 @@ cmp.setup {
     { name = 'buffer', priority = 10 },
   },
   sorting = {
-   -- see ~/.vim/plugged/nvim-cmp/lua/cmp/config/compare.lua
+    -- see ~/.vim/plugged/nvim-cmp/lua/cmp/config/compare.lua
     comparators = {
       cmp.config.compare.offset,
       cmp.config.compare.exact,
@@ -458,9 +483,11 @@ end
 -----------------------------
 -- Configs for PeekDefinition
 -----------------------------
-function PeekDefinition()
+_G.PeekDefinition = function(lsp_request_method)
   local params = vim.lsp.util.make_position_params()
-  local definition_callback = function (_, result)
+  local definition_callback = function(_, result, ctx, config)
+    -- This handler previews the jump location instead of actually jumping to it
+    -- see $VIMRUNTIME/lua/vim/lsp/handlers.lua, function location_handler
     if result == nil or vim.tbl_isempty(result) then
       print("PeekDefinition: " .. "cannot find the definition.")
       return nil
@@ -474,14 +501,15 @@ function PeekDefinition()
     local def_uri = def_result.uri or def_result.targetUri
     local def_range = def_result.range or def_result.targetSelectionRange
     vim.fn['quickui#preview#open'](vim.uri_to_fname(def_uri), {
-        cursor = def_range.start.line + 1,
-        number = 1,   -- show line number
-        persist = 0,
-      })
+      cursor = def_range.start.line + 1,
+      number = 1, -- show line number
+      persist = 0,
+    })
   end
   -- Asynchronous request doesn't work very smoothly, so we use synchronous one with timeout;
   -- return vim.lsp.buf_request(0, 'textDocument/definition', params, definition_callback)
-  local results, err = vim.lsp.buf_request_sync(0, 'textDocument/definition', params, 1000)
+  lsp_request_method = lsp_request_method or 'textDocument/definition'
+  local results, err = vim.lsp.buf_request_sync(0, lsp_request_method, params, 1000)
   if results then
     for client_id, result in pairs(results) do
       definition_callback(client_id, result.result)
@@ -492,10 +520,13 @@ function PeekDefinition()
 end
 
 vim.cmd [[
-  command! -nargs=0 PeekDefinition      :lua PeekDefinition()
+  command! -nargs=0 PeekDefinition      :lua _G.PeekDefinition()
   command! -nargs=0 PreviewDefinition   :PeekDefinition
-  nmap <leader>K     :<C-U>PeekDefinition<CR>
-  nmap <silent> gp   :<C-U>PeekDefinition<CR>
+  " Preview definition.
+  nmap <leader>K     <cmd>PeekDefinition<CR>
+  nmap <silent> gp   <cmd>lua _G.PeekDefinition()<CR>
+  " Preview type definition.
+  nmap <silent> gT   <cmd>lua _G.PeekDefinition('textDocument/typeDefinition')<CR>
 ]]
 
 
@@ -504,15 +535,15 @@ vim.cmd [[
 ------------
 local lsp_status = require('lsp-status')
 lsp_status.config({
-    -- Avoid using use emoji-like or full-width characters
-    -- because it can often break rendering within tmux and some terminals
-    -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
-    indicator_hint = '!',
-    status_symbol = ' ',
+  -- Avoid using use emoji-like or full-width characters
+  -- because it can often break rendering within tmux and some terminals
+  -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
+  indicator_hint = '!',
+  status_symbol = ' ',
 
-    -- If true, automatically sets b:lsp_current_function
-    -- (no longer used in favor of treesitter + nvim-gps)
-    current_function = false,
+  -- If true, automatically sets b:lsp_current_function
+  -- (no longer used in favor of treesitter + nvim-gps)
+  current_function = false,
 })
 lsp_status.register_progress()
 
@@ -558,9 +589,9 @@ end
 -- trouble.nvim
 ---------------
 require("trouble").setup {
-    -- https://github.com/folke/trouble.nvim#setup
-    mode = "document_diagnostics",
-    auto_preview = false,
+  -- https://github.com/folke/trouble.nvim#setup
+  mode = "document_diagnostics",
+  auto_preview = false,
 }
 
 
@@ -667,7 +698,7 @@ if pcall(require, "null-ls") then
     command! -nargs=? LspAutoFormattingOn      lua _G.LspAutoFormattingStart(<q-args>)
     command!          LspAutoFormattingOff     lua _G.LspAutoFormattingStop()
   ]]
-  _G.LspAutoFormattingStart = function (misc)
+  _G.LspAutoFormattingStart = function(misc)
     vim.cmd [[
     augroup LspAutoFormatting
       autocmd!
@@ -678,23 +709,24 @@ if pcall(require, "null-ls") then
     if misc and misc ~= '' then
       msg = msg .. string.format("\n(%s)", misc)
     end
-    vim.notify(msg, 'info', {timeout = 2000})
+    vim.notify(msg, 'info', { timeout = 2000 })
   end
-  _G.LspAutoFormattingTrigger = function ()
-    -- Disable on some files (e.g., external packages)
-    if string.find(vim.fn.bufname(), '/site-packages/') then
+  _G.LspAutoFormattingTrigger = function()
+    -- Disable on some files (e.g., site-packages or python built-ins)
+    -- Note that `-` is a special character in Lua regex
+    if vim.api.nvim_buf_get_name(0):match '/lib/python3.%d+/' then
       return false
     end
     -- TODO: Enable only on the current project specified by PATH.
     if vim.tbl_count(vim.lsp.buf_get_clients(0)) > 0 then
-      vim.lsp.buf.format({timeout_ms = 1000})
+      vim.lsp.buf.format({ timeout_ms = 2000 })
       return true
     end
     return false
   end
-  _G.LspAutoFormattingStop = function ()
+  _G.LspAutoFormattingStop = function()
     vim.cmd [[ autocmd! LspAutoFormatting ]]
     vim.notify("Lsp Auto-Formatting has been turned off.", 'warn')
   end
 
-end   -- if null-ls
+end -- if null-ls
