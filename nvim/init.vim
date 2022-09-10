@@ -118,6 +118,7 @@ lua << EOF
     require 'config/lsp'
     require 'config/treesitter'
     require 'config/telescope'
+    require 'config/folding'
     require 'config/testing'
 EOF
   endfunction

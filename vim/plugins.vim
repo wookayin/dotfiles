@@ -114,7 +114,10 @@ endif
 if exists('##WinScrolled')  " neovim nightly (0.5.0+)
   Plug 'dstein64/nvim-scrollview'
 endif
-if has('nvim-0.5.0')
+if has('nvim-0.7.0')
+  Plug 'kevinhwang91/nvim-ufo'
+  Plug 'kevinhwang91/promise-async'
+elseif has('nvim-0.5.0')
   Plug 'anuvyklack/pretty-fold.nvim', {'commit': 'eba8996'}
 end
 

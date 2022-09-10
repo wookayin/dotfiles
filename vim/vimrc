@@ -2568,7 +2568,10 @@ let g:scrollview_excluded_filetypes = ['vim-plug', 'GV', 'git']
 " ---------------------------------------------------------------- }}}
 " pretty-fold {{{
 
-if HasPlug('pretty-fold.nvim')
+" Note: deprecated in favor of nvim-ufo
+" (see ~/.config/nvim/lua/config/folding.lua)
+
+if HasPlug('pretty-fold.nvim') && !HasPlug('nvim-ufo')
   autocmd User LazyInit  call s:setup_prettyfold()
 endif
 function! s:setup_prettyfold() abort
