@@ -82,6 +82,10 @@
 	whitespace = red reverse
 	meta = yellow bold
 
+[commit]
+	# git commit --verbose by default (git 2.9.0+)
+	verbose = true
+
 [diff]
 	# --no-prefix (for git diff, git show) such as 'a/' 'b/' blah
 	noprefix = true
