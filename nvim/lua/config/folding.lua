@@ -40,7 +40,6 @@ M.setup_ufo = function()
     end,
 
     -- see #26, #38, #74 (enables ctx.end_virt_text)
-    enable_fold_end_virt_text = true,
     enable_get_fold_virt_text_func = true,
 
     fold_virt_text_handler = M.virtual_text_handler,
