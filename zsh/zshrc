@@ -122,6 +122,7 @@ if true; then
 
   # see ~/.zsh/zsh.d/envs.zsh for fzf configs
   antidote bundle wookayin/fzf-fasd
+  antidote bundle junegunn/fzf-git.sh kind:clone
 
   antidote bundle zsh-users/zsh-autosuggestions
   if (( $+commands[virtualenvwrapper_lazy.sh] || $+commands[conda] )); then
@@ -138,6 +139,11 @@ fi
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Manually source fzf-git.sh,
+# because sourcing it via plugin manager will make shell terminate
+source $(__antidote_bundledir junegunn/fzf-git.sh)
+
 
 # Source zsh script files after loading the zsh plugins.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
