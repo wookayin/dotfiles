@@ -40,7 +40,7 @@ M.setup_ufo = function()
     end,
 
     -- see #26, #38, #74 (enables ctx.end_virt_text)
-    enable_get_fold_virt_text_func = true,
+    enable_get_fold_virt_text = true,
 
     fold_virt_text_handler = M.virtual_text_handler,
   }
@@ -57,7 +57,7 @@ M.virtual_text_handler = function(virt_text, lnum, end_lnum, width, truncate, ct
 
   local bufnr = vim.api.nvim_get_current_buf()
   local end_text = vim.api.nvim_buf_get_lines(bufnr, end_lnum - 1, end_lnum, false)[1]
-  local end_virt_text = ctx.end_virt_text   -- requires enable_fold_end_virt_text
+  local end_virt_text = ctx.get_fold_virt_text(end_lnum)
 
   -- Summarization of the folded text (optional)
   local folding_summary = M.get_fold_summary(lnum, end_lnum, ctx)
