@@ -20,8 +20,8 @@ parser.add_argument('-f', '--force', action="store_true", default=False,
                     help='If set, it will override existing symbolic links')
 parser.add_argument('--skip-vimplug', action='store_true',
                     help='If set, do not update vim plugins.')
-parser.add_argument('--skip-zgen', '--skip-zplug', action='store_true',
-                    help='If set, skip zgen updates.')
+parser.add_argument('--skip-zplug', action='store_true',
+                    help='If set, skip update of zsh plugins.')
 
 args = parser.parse_args()
 
@@ -47,7 +47,6 @@ tasks = {
     '~/.gitignore' : 'git/gitignore',
 
     # ZSH
-    '~/.zgen'     : 'zsh/zgen',
     '~/.zsh'      : 'zsh',
     '~/.zlogin'   : 'zsh/zlogin',
     '~/.zlogout'  : 'zsh/zlogout',
@@ -129,24 +128,23 @@ post_actions += [  # video2gif
     exit $ret;
 ''']
 
-post_actions += [  # zgen
+post_actions += [  # antidote (zsh plugins)
     '''#!/bin/bash
-    # Update zgen modules and cache (the init file)
+    # Update zsh bundles and cache (the init file)
     zsh -c "
-        # source zplug and list plugins
+        # source zsh plugin manager and list plugins
         DOTFILES_UPDATE=1 __p9k_instant_prompt_disabled=1 source ${HOME}/.zshrc
-        if ! which zgen > /dev/null; then
+        if ! which antidote > /dev/null; then
             echo -e '\033[0;31m\
-ERROR: zgen not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
-            ls -alh ~/.zsh/zgen/
+ERROR: antidote not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
+            ls -alh ~/.zsh/antidote/
             ls -alh ~/.zshrc
             exit 1;
         fi
-        zgen reset
-        zgen update
+        antidote update
     "
-    ''' if not args.skip_zgen else \
-        '# zgen update (Skipped)'
+    ''' if not args.skip_zplug else \
+        '# zsh plugins update (Skipped)'
 ]
 
 post_actions += [  # tmux plugins

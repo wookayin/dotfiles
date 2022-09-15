@@ -28,27 +28,24 @@ fi
 autoload -Uz is-at-least
 
 
-# zgen           {{{
-# ===================
-if [[ ! -s "${ZDOTDIR:-$HOME}/.zgen/zgen.zsh" ]]; then
-  echo -e "\033[0;31m zgen is not installed; please update dotfiles !"
-  echo -e "\033[0;33m  e.g. $ dotfiles update\n\
-       $ cd ~/.dotfiles && python install.py"
+# Source antidote
+if [[ ! -s "${ZDOTDIR:-$HOME}/.zsh/antidote/antidote.zsh" ]]; then
+  echo -e "\033[0;31m antidote is not installed; please update dotfiles !"
+  echo -e "\033[0;33m  Try one of the following: \
+       $ dotfiles update\n\
+       $ cd ~/.dotfiles && python install.py\
+       $ cd ~/.dotfiles && git submodule update --init --recursive\
+"
   echo -e "\033[0m"
   return
 fi
-
-source "${ZDOTDIR:-$HOME}/.zgen/zgen.zsh"
+source "${ZDOTDIR:-$HOME}/.zsh/antidote/antidote.zsh"
 
 
 # Source the Prezto configuration file.
 if [[ -s "${ZDOTDIR:-$HOME}/.zpreztorc" ]]; then
   source "${ZDOTDIR:-$HOME}/.zpreztorc"
 fi
-
-# Dirty hacks for Prezto+zplug
-# @see https://github.com/zplug/zplug/issues/373
-zstyle ":prezto:module:completion" loaded 'yes'
 
 # Do not put all usernames as possible candidates for tab completion.
 zstyle ':completion:*' users root $USER
@@ -83,59 +80,57 @@ export FZF_MARKS_JUMP='^g'
 
 # ------------------------------------------------------ }}}
 
-# Cleanup obsolete zgen plugins (zgen reset doesn't ignore)
-if [[ -n "${DOTFILES_UPDATE}" ]]; then
-  rm -rf ~/.zgen/zdharma/fast-syntax-highlighting-master
+# zsh plugin specifications.
+# antidote-managed plugins will be stored at $ANTIDOTE_HOME
+export ANTIDOTE_HOME="$HOME/.zsh/antidote-plugins"
+zstyle ':antidote:bundle' use-friendly-names on
+
+if [ ! -d "$ANTIDOTE_HOME" ]; then
+    echo -e "\033[0;33mInitializing ANTIDOTE and zsh plugins for the first time, please be patient ...\033[0m"
 fi
 
-# zgen plugin specifications
-# NOTE: To reflect the added/updated plugins, try 'zgen reset'
-if ! zgen saved; then
-  echo "Initializing zgen plugins ..."
+source <(antidote init)
 
-  # load prezto. see ~/.zpreztorc for plugin configurations
-  zgen prezto
+# TODO: Use static loading (cache) for better performance
+# (see antidote#63, antidote#65 for more details)
+# Don't forget to update the `reload!` alias and `install.py` tasks
+if true; then
 
-  # additional modules/plugins
-  # --------------------------
+  # TODO: Get rid of prezto, a legacy.
+  antidote bundle sorin-ionescu/prezto
 
   if is-at-least 5.4; then
     # zsh theme: powerlevel10k + customization
     # p10k's minimum zsh requirement is 5.1 but we require zsh 5.4+,
     # because without the instant mode initialization is slower than pure.
-    zgen load romkatv/powerlevel10k 'powerlevel10k.zsh-theme'
+    antidote bundle romkatv/powerlevel10k
   else
     # zsh theme: pure (forked ver). For OLD zsh.
-    zgen load mafredri/zsh-async
-    zgen load wookayin/pure
+    antidote bundle mafredri/zsh-async
+    antidote bundle wookayin/pure
   fi
 
   # zsh syntax: FSH
   # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
   # For some reason, @zdharma's repo is gone -- workaround by using its fork
-  zgen load wookayin/fast-syntax-highlighting
-  fast-theme "XDG:wook"
+  antidote bundle wookayin/fast-syntax-highlighting
+  fast-theme "XDG:wook" > /dev/null  # TODO: do it once
 
+  antidote bundle wookayin/fzf-fasd
   # More completion support
-  zgen load esc/conda-zsh-completion
+  antidote bundle esc/conda-zsh-completion
 
-  # misc.
-  # #see ~/.zsh/zsh.d/envs.zsh for configs
-  zgen load wookayin/fzf-fasd
+  # see ~/.zsh/zsh.d/envs.zsh for fzf configs
+  antidote bundle wookayin/fzf-fasd
 
-  # fzf-marks
-  zgen load urbainvaes/fzf-marks
-
-  zgen load zsh-users/zsh-autosuggestions
+  antidote bundle zsh-users/zsh-autosuggestions
   if (( $+commands[virtualenvwrapper_lazy.sh] || $+commands[conda] )); then
     # Use my own fork for a while, to support autoswitch into anaconda envs
-    zgen load wookayin/zsh-autoswitch-virtualenv
+    antidote bundle wookayin/zsh-autoswitch-virtualenv
   fi
   if [[ "`uname`" == "Darwin" ]]; then
-    zgen load wookayin/anybar-zsh
+    antidote bundle wookayin/anybar-zsh
   fi
-
-  zgen save
 
 fi
 
@@ -144,7 +139,7 @@ fi
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Source after-{zplug,zgen} zsh script files.
+# Source zsh script files after loading the zsh plugins.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
 # Terminal
