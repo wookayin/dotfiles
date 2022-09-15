@@ -143,6 +143,8 @@ fi
 # Manually source fzf-git.sh,
 # because sourcing it via plugin manager will make shell terminate
 source $(__antidote_bundledir junegunn/fzf-git.sh)
+bindkey '^g^o' fzf-git-hashes-widget
+bindkey '^go' fzf-git-hashes-widget
 
 
 # Source zsh script files after loading the zsh plugins.
