@@ -1,5 +1,9 @@
 -- Statusline config: lualine.nvim
 
+if not pcall(require, 'lualine') then
+  print("Warning: lualine not available, skipping configuration.")
+  return
+end
 
 -- From nvim-lualine/lualine.nvim/wiki/Component-snippets
 --- @param trunc_width number trunctates component when screen width is less then trunc_width

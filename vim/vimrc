@@ -16,9 +16,15 @@ endif
 
 " Check neovim version.
 if has('nvim') && !has('nvim-0.7.0')
-  let s:warning_msg = 'Please upgrade to latest neovim (0.7.0+). Support for neovim <= 0.6 will be dropped soon. '
-  let s:install_command_hint = printf('(Try: %s install neovim)', has('mac') ? 'brew' : 'dotfiles')
-  autocmd VimEnter * echohl WarningMsg | echom s:warning_msg . s:install_command_hint | echohl None
+  let s:warning_msg = 'Please upgrade to latest neovim (0.7.0+). Support for neovim < 0.7 will be dropped soon. '
+  let s:warning_msg .= printf('(Try: %s install neovim)', has('mac') ? 'brew' : 'dotfiles')
+  if exists('*luaeval')
+    autocmd VimEnter * call timer_start(100, { ->
+          \ luaeval("vim.notify(_A[1], _A[2], _A[3])", [s:warning_msg, 'error', {'title': 'Deprecation Warning'}])
+          \ })
+  else
+    autocmd VimEnter * echohl WarningMsg | echom s:warning_msg | echohl None
+  endif
 endif
 
 """""""""""""""""""""""""""""""""""""""""

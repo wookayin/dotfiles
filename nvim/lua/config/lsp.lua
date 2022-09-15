@@ -3,6 +3,10 @@
 -------------
 -- See ~/.dotfiles/vim/plugins.vim for the Plug directives
 
+if not pcall(require, 'lspconfig') then
+  print("Warning: lspconfig not available, skipping configuration.")
+  return
+end
 local lspconfig = require('lspconfig')
 
 -- lsp_signature

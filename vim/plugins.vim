@@ -95,7 +95,7 @@ if has('nvim-0.5.0')
 else
   Plug 'airblade/vim-gitgutter'
 endif
-if has('nvim-0.5.0')
+if has('nvim-0.7.0')
   Plug 'sindrets/diffview.nvim'
 endif
 if has('nvim-0.4.0') && exists('*nvim_open_win')
@@ -175,10 +175,12 @@ if has('nvim-0.5.0')
   Plug 'nvim-neo-tree/neo-tree.nvim', {'branch': 'main'}
   Plug 'MunifTanjim/nui.nvim'
   Plug 'nvim-lua/plenary.nvim'
-  Plug 'nvim-telescope/telescope.nvim', PinIf(!has('nvim-0.6.0'), {'commit': '80cdb00'})
+endif
+if has('nvim-0.7.0')
+  Plug 'nvim-telescope/telescope.nvim'
 endif
 
-if has('nvim-0.6.1')
+if has('nvim-0.7.0')
   " Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
   function! TSUpdate(arg) abort
     if luaeval('pcall(require, "nvim-treesitter")')
@@ -208,12 +210,12 @@ endif
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
 
-let g:dotfiles_completion_backend = has('nvim-0.5.0') ? '@lsp' : ''
+let g:dotfiles_completion_backend = has('nvim-0.7.0') ? '@lsp' : ''
 
 " 1. [Neovim 0.5.0 LSP]
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
 if g:dotfiles_completion_backend == '@lsp'
-  Plug 'neovim/nvim-lspconfig', PinIf(!has('nvim-0.7'), {'tag': 'v0.1.3'})
+  Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/lua-dev.nvim'
 

@@ -2,6 +2,7 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
 if not pcall(require, 'nvim-treesitter') then
+  print("Warning: treesitter not available, skipping configuration.")
   return
 end
 

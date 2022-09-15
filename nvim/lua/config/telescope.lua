@@ -3,6 +3,11 @@
 ---------------
 -- @see  :help telescope.setup
 -- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
+--
+if not pcall(require, 'telescope') then
+  print("Warning: telescope not available, skipping configuration.")
+  return
+end
 local telescope = require("telescope")
 
 if not pcall(require, 'telescope.actions.layout') then
