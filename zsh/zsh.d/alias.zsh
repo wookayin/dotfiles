@@ -9,9 +9,8 @@ _version_check() {
 # -----------------------------
 
 # Basic
-alias reload!="source ~/.zshrc && echo 'sourced ~/.zshrc' again"
-#alias reload!="command -v zgen 2>&1 > /dev/null && zgen reset; \
-    #source ~/.zshrc && echo 'sourced ~/.zshrc' again"
+alias reload!="command -v antidote 2>&1 > /dev/null && antidote reset; \
+    source ~/.zshrc && echo 'sourced ~/.zshrc' again"
 alias c='command'
 alias ZQ='exit'
 alias QQ='exit'

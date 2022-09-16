@@ -142,6 +142,7 @@ ERROR: antidote not found. Double check the submodule exists, and you have a val
             exit 1;
         fi
         antidote update
+        antidote reset
     "
     ''' if not args.skip_zplug else \
         '# zsh plugins update (Skipped)'
