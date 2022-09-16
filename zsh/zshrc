@@ -103,9 +103,9 @@ function antidote-reset() {
 # (see antidote#65 for more details)
 local -a bundles=()
 
-if [ ! -s "$ANTIDOTE_BUNDLE" ] || ! grep -q '[^[:space:]]' < $ANTIDOTE_BUNDLE; then
+function _antidote_compile_bundles() {
   local _ANTIDOTE_SAVING="1"
-  echo "Writing antidote cache file into $ANTIDOTE_BUNDLE ..."
+  echo -e "\033[0;33mWriting antidote cache file into $ANTIDOTE_BUNDLE ...\033[0m"
 
   # TODO: Get rid of prezto, a legacy.
   bundles+=('sorin-ionescu/prezto')
@@ -143,11 +143,20 @@ if [ ! -s "$ANTIDOTE_BUNDLE" ] || ! grep -q '[^[:space:]]' < $ANTIDOTE_BUNDLE; t
     bundles+=('wookayin/anybar-zsh')
   fi
 
-  printf "%s\n" $bundles | antidote bundle > $ANTIDOTE_BUNDLE
+  printf "%s\n" $bundles | antidote bundle >! "$ANTIDOTE_BUNDLE"
+}
+
+# If $ANTIDOTE_BUNDLE is empty (blank) file, refresh the static cache
+if [ ! -s "$ANTIDOTE_BUNDLE" ] || ! grep -q '[^[:space:]]' < "$ANTIDOTE_BUNDLE"; then
+  _antidote_compile_bundles
 fi
 
 # Load the static script for loading zsh plugins.
 source $ANTIDOTE_BUNDLE
+if [ ! $? -eq 0 ] ; then   # error, refresh the script and try again
+    _antidote_compile_bundles
+    source $ANTIDOTE_BUNDLE
+fi
 
 if [[ -n "$_ANTIDOTE_SAVING" ]]; then
     fast-theme "XDG:wook"
