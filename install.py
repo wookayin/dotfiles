@@ -91,14 +91,6 @@ tasks = {
 
 import platform
 
-try:
-    from distutils.spawn import find_executable
-except ImportError:
-    # In some environments, distutils might not be available.
-    import sys
-    sys.stderr.write("WARNING: distutils not available\n")
-    find_executable = lambda _: False   # type: ignore
-
 
 post_actions = []
 post_actions += [  # Check symbolic link at $HOME
@@ -228,15 +220,11 @@ post_actions += [  # neovim
     bash "etc/install-neovim-py.sh"
 ''']
 
-vim_options = dict(
-    nvim=dict(vim='nvim', flag='--headless'),
-    vim=dict(vim='vim', flag=''),
-)[find_executable('nvim') and 'nvim' or 'vim']
 post_actions += [  # vim-plug
     # Run vim-plug installation
-    {'install' : '{vim} {flag} +"set nonumber" +"PlugInstall --sync" +%print +qall'.format(**vim_options),
-     'update'  : '{vim} {flag} +"set nonumber" +"PlugUpdate  --sync" +%print +qall'.format(**vim_options),
-     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(**vim_options)
+    {'install' : 'nvim --headless +"set nonumber" +"PlugInstall --sync" +%print +UpdateRemotePlugins +qall'.format(),
+     'update'  : 'nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall'.format(),
+     'none'    : '# {vim} +PlugUpdate (Skipped)'.format()
      }['update' if not args.skip_vimplug else 'none']
 ]
 
