@@ -89,6 +89,8 @@ tasks = {
 }
 
 
+import platform
+
 try:
     from distutils.spawn import find_executable
 except ImportError:
@@ -211,6 +213,14 @@ EOL
     echo -en 'user.email : '; git config --file ~/.gitconfig.secret user.email
     echo -en '\033[0m';
 ''']
+
+post_actions += [  # install some essential packages (linux)
+    '''#!/bin/bash
+    type node >/dev/null 2>&1 || dotfiles install node
+    type rg   >/dev/null 2>&1 || dotfiles install ripgrep
+    type fd   >/dev/null 2>&1 || dotfiles install fd
+    '''
+] if platform.system() == "Linux" else []
 
 post_actions += [  # neovim
     '''#!/bin/bash
