@@ -2289,9 +2289,10 @@ function! s:check_wilder_rplugins() abort
   " so we first force loading it even before wilder initialization is complete.
   doautocmd FuncUndefined _wilder_init
   if !exists('*_wilder_init')
-    let l:msg = 'Please run :UpdateRemotePlugins and restart. (see :messages)'
+    UpdateRemotePlugins
+    let l:msg = ':UpdateRemotePlugins has been executed. Please restart neovim.'
     echohl WarningMsg | echom l:msg | echohl None
-    call VimNotify(l:msg, 'error', {'timeout': 30 * 1000, 'title': 'wilder.nvim'})
+    call VimNotify(l:msg, 'error', {'timeout': 30 * 1000, 'title': 'neovim'})
   endif
 endfunction
 
