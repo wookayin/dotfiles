@@ -89,7 +89,12 @@ tasks = {
 }
 
 
+import os
 import platform
+
+# Make sure the CWD is the root of dotfiles.
+__PATH__ = os.path.abspath(os.path.dirname(__file__))
+os.chdir(__PATH__)
 
 
 post_actions = []
@@ -208,9 +213,9 @@ EOL
 
 post_actions += [  # install some essential packages (linux)
     '''#!/bin/bash
-    type node >/dev/null 2>&1 || dotfiles install node
-    type rg   >/dev/null 2>&1 || dotfiles install ripgrep
-    type fd   >/dev/null 2>&1 || dotfiles install fd
+    type node >/dev/null 2>&1 || bin/dotfiles install node
+    type rg   >/dev/null 2>&1 || bin/dotfiles install ripgrep
+    type fd   >/dev/null 2>&1 || bin/dotfiles install fd
     '''
 ] if platform.system() == "Linux" else []
 
