@@ -121,12 +121,10 @@ function _antidote_compile_bundles() {
     bundles+=('wookayin/pure')
   fi
 
-  # zsh syntax: FSH
+  # zsh syntax: FSH (fast-syntax-highlighting)
   # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
-  # For some reason, @zdharma's repo is gone -- workaround by using its fork
-  bundles+=('wookayin/fast-syntax-highlighting')
+  bundles+=('z-shell/F-Sy-H')
 
-  bundles+=('wookayin/fzf-fasd')
   # More completion support
   bundles+=('esc/conda-zsh-completion')
 
