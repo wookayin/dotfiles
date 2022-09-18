@@ -129,39 +129,15 @@ install_node() {
 }
 
 install_tmux() {
-    # install tmux (and its dependencies such as libevent) locally
+    # tmux: we can do static compile, or use tmux-appimage (include libevents/ncurses)
+    # see https://github.com/nelsonenzo/tmux-appimage
     set -e
     TMUX_VER="3.2a"
 
-    TMP_TMUX_DIR="/tmp/$USER/tmux/"; mkdir -p $TMP_TMUX_DIR
+    TMUX_APPIMAGE_URL="https://github.com/nelsonenzo/tmux-appimage/releases/download/${TMUX_VER}/tmux.appimage"
+    wget -O $HOME/.local/bin/tmux $TMUX_APPIMAGE_URL
+    chmod +x $HOME/.local/bin/tmux
 
-    # libevent
-    if [[ -f "/usr/include/libevent.a" ]]; then
-        echo "Using system libevent"
-    elif [[ ! -f "$PREFIX/lib/libevent.a" ]]; then
-        wget -nc -O $TMP_TMUX_DIR/libevent.tar.gz "https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz" || true;
-        tar -xvzf $TMP_TMUX_DIR/libevent.tar.gz -C $TMP_TMUX_DIR
-        cd ${TMP_TMUX_DIR}/libevent-*
-        ./configure --prefix="$PREFIX" --disable-shared
-        make clean && make -j4 && make install
-    fi
-
-    # TODO: assuming that ncurses is available?
-
-    # tmux
-    TMUX_TGZ_FILE="tmux-${TMUX_VER}.tar.gz"
-    TMUX_DOWNLOAD_URL="https://github.com/tmux/tmux/releases/download/${TMUX_VER}/${TMUX_TGZ_FILE}"
-
-    wget -nc ${TMUX_DOWNLOAD_URL} -P ${TMP_TMUX_DIR}
-    cd ${TMP_TMUX_DIR} && tar -xvzf ${TMUX_TGZ_FILE}
-    cd "tmux-${TMUX_VER}"
-
-    ./configure --prefix="$PREFIX" \
-        CFLAGS="-I$PREFIX/include/ -I$PREFIX/include/ncurses/" \
-        LDFLAGS="-L$PREFIX/lib/" \
-        PKG_CONFIG="/bin/false"
-
-    make clean && make -j4 && make install
     ~/.local/bin/tmux -V
 }
 

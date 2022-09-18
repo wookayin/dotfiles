@@ -156,7 +156,11 @@ post_actions += [  # tmux plugins
     _version_check() {    # target_ver current_ver
         [ "$1" = "$(echo -e "$1\n$2" | sort -s -t- -k 2,2n | sort -t. -s -k 1,1n -k 2,2n | head -n1)" ]
     }
-    if ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
+    if [[ `uname` == "Linux" ]] && ! type tmux >/dev/null 2>&1; then
+        echo -e "\033[0;33mInstalling tmux because not installed globally.\033[0m"
+        bin/dotfiles install tmux
+        export PATH="$PATH:~/.local/bin"
+    elif ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
         echo -en "\033[0;33m"
         echo -e "$(tmux -V) is too old. Contact system administrator, or:"
         echo -e "  $ dotfiles install tmux  \033[0m (installs to ~/.local/, if you don't have sudo)"
