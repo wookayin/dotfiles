@@ -222,9 +222,9 @@ post_actions += [  # neovim
 
 post_actions += [  # vim-plug
     # Run vim-plug installation
-    {'install' : 'nvim --headless +"set nonumber" +"PlugInstall --sync" +%print +UpdateRemotePlugins +qall'.format(),
-     'update'  : 'nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall'.format(),
-     'none'    : '# {vim} +PlugUpdate (Skipped)'.format()
+    {'install' : 'nvim --headless +"set nonumber" +"PlugInstall --sync" +%print +UpdateRemotePlugins +qall',
+     'update'  : 'nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall',
+     'none'    : '# nvim +PlugUpdate (Skipped)',
      }['update' if not args.skip_vimplug else 'none']
 ]
 
