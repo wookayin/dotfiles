@@ -217,6 +217,8 @@ EOL
 
 post_actions += [  # install some essential packages (linux)
     '''#!/bin/bash
+    # Install node, rg, fd locally
+    export PATH="$PATH:$HOME/.local/bin"
     type node >/dev/null 2>&1 || bin/dotfiles install node
     type rg   >/dev/null 2>&1 || bin/dotfiles install ripgrep
     type fd   >/dev/null 2>&1 || bin/dotfiles install fd
@@ -231,8 +233,8 @@ post_actions += [  # neovim
 
 post_actions += [  # vim-plug
     # Run vim-plug installation
-    {'install' : 'nvim --headless +"set nonumber" +"PlugInstall --sync" +%print +UpdateRemotePlugins +qall',
-     'update'  : 'nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall',
+    {'install' : 'PATH="$PATH:~/.local/bin"  nvim --headless +"set nonumber" +"PlugInstall --sync" +%print +UpdateRemotePlugins +qall',
+     'update'  : 'PATH="$PATH:~/.local/bin"  nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall',
      'none'    : '# nvim +PlugUpdate (Skipped)',
      }['update' if not args.skip_vimplug else 'none']
 ]
