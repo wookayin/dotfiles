@@ -713,7 +713,8 @@ if pcall(require, "null-ls") then
     if misc and misc ~= '' then
       msg = msg .. string.format("\n(%s)", misc)
     end
-    vim.notify(msg, 'info', { timeout = 2000 })
+    msg = msg .. "\n\n" .. "To disable auto-formatting, run :LspAutoFormattingOff"
+    vim.notify(msg, 'info', { title = "nvim/lua/config/lsp.lua", timeout = 1000 })
   end
   _G.LspAutoFormattingTrigger = function()
     -- Disable on some files (e.g., site-packages or python built-ins)
