@@ -1410,10 +1410,6 @@ let g:EditorConfig_core_mode = 'vim_core'
 
 let g:nvim_notify_winblend = 20
 
-if IsPlugInstalled('nvim-notify')
-  lua function VimNotify(msg, log_level, opts) return vim.notify(msg, log_level, opts) end
-  autocmd User LazyInit  call s:setup_nvim_notify()
-endif
 function! s:setup_nvim_notify() abort
 lua << EOF
 require("notify").setup({
@@ -1435,6 +1431,14 @@ command! -nargs=0 PrintNotifications   :NotificationsPrint
 ]]
 EOF
 endfunction
+
+if IsPlugInstalled('nvim-notify')
+  lua function VimNotify(msg, log_level, opts) return vim.notify(msg, log_level, opts) end
+  " Eagerly load first so that other plugins can use vim.notify before initialized.
+  " At this point telescope is not loaded, so lua import should be fast enough
+  " Note: to lazyload, autocmd User LazyInit  call s:setup_nvim_notify()
+  call s:setup_nvim_notify()
+endif
 
 " ---------------------------------------------------------------- }}}
 " nvim-colorizer {{{
