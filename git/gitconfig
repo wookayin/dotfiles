@@ -41,6 +41,7 @@
 	list-conflicts = diff --name-only --diff-filter=U
 
 	amend = commit --amend -v
+	amend-f = commit --amend -v --no-edit
 
 	wdiff = diff --color-words
 	wshow = show --color-words
