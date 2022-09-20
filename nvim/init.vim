@@ -47,10 +47,11 @@ if executable("python3")
   " Detect whether neovim package is installed; if not, automatically install it
   " Since checking pynvim is slow (~200ms), it should be executed after vim init is done.
   call timer_start(0, { -> s:autoinstall_pynvim() })
-  function! s:autoinstall_pynvim()
+  function! s:autoinstall_pynvim() abort
     if empty(g:python3_host_prog) | return | endif
-    let s:python3_neovim_path = substitute(system(g:python3_host_prog . " -c 'import pynvim; print(pynvim.__path__)' 2>/dev/null"), '\n\+$', '', '')
-    if empty(s:python3_neovim_path)
+    " Get the minor version only for pynvim: 0.4.2 -> 4 (int)
+    let s:python3_neovim_version = substitute(system(g:python3_host_prog . " -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null"), '\n\+$', '', '')
+    if empty(s:python3_neovim_version) || str2nr(s:python3_neovim_version) < 4
       " auto-install 'neovim' python package for the current python3 (virtualenv, anaconda, or system-wide)
       let s:pip_options = Python3_determine_pip_options()
       execute ("!" . g:python3_host_prog . " -m pip install " . s:pip_options . " pynvim")
