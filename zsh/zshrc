@@ -41,7 +41,6 @@ if [[ ! -s "${ZDOTDIR:-$HOME}/.zsh/antidote/antidote.zsh" ]]; then
 fi
 source "${ZDOTDIR:-$HOME}/.zsh/antidote/antidote.zsh"
 
-
 # Source the Prezto configuration file.
 if [[ -s "${ZDOTDIR:-$HOME}/.zpreztorc" ]]; then
   source "${ZDOTDIR:-$HOME}/.zpreztorc"
@@ -167,9 +166,17 @@ fi
 
 # Manually source fzf-git.sh,
 # because sourcing it via plugin manager will make shell terminate
-source $(__antidote_bundledir junegunn/fzf-git.sh)/fzf-git.sh
-bindkey '^g^o' fzf-git-hashes-widget
-bindkey '^go' fzf-git-hashes-widget
+if type antidote >/dev/null 2>&1; then
+  source $(__antidote_bundledir junegunn/fzf-git.sh)/fzf-git.sh
+  bindkey '^g^o' fzf-git-hashes-widget
+  bindkey '^go' fzf-git-hashes-widget
+
+else
+  # old systems (e.g. Ubuntu 16.04) has low zsh version < 5.4
+  # where antidote doesn't load. Fallback to zgen if possible
+  echo -e "\033[0;31mERROR: mantidote cannot load (your zsh is too old).\033[0m"
+  [[ -f ~/.zgen/init.zsh ]] && { echo "Falling back to zgen..."; source ~/.zgen/init.zsh } || return 0;
+fi
 
 
 # Source zsh script files after loading the zsh plugins.
