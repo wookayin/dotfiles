@@ -1888,11 +1888,38 @@ call CommandAlias('D', 'Def')
 nnoremap <leader>def  :<C-U>Def*<CR>
 xnoremap <leader>def  "gy:Def <C-R>g<CR>
 
+" :RgPath (perform :Rg on a specfic path)
+" Usage: RgPath[!] /path/to/search query-string
+"  <bang> tells ripgrep to not ignore files (--no-ignore)
+command! -bang -nargs=+ -complete=dir  RgPath     call s:rgpath(<q-args>, <bang>0 ? "--no-ignore" : "")
+function! s:rgpath(qargs, rg_additional_arg) abort
+  let l:args = split(a:qargs)
+  let l:query = join(l:args[1:])
+  if empty(l:args)   " corner case: empty query
+    echom "Argument required" | return
+  endif
+  let l:path = expand(Trim(l:args[0]))
+  if !isdirectory(l:path)
+    echohl WarningMsg | echom "Directory does not exists: " . l:path | echohl None
+    return
+  endif
+  let l:opts = {
+        \ 'fullscreen': 1,
+        \ 'path': expand(l:path),
+        \ 'rg_additional_arg': a:rg_additional_arg,
+        \ }
+  call fzf#vim#ripgrep#rg_fzf(l:query, l:opts)
+endfunction
 
-" :RgPlug (perform :Rg on vim-plugins)
+" :RgConfig, :RC => search ~/.dotfiles, excluding vim plugins
+command! -bang -nargs=* RgConfig  call s:rgpath('~/.dotfiles ' . <q-args>, <bang>1 ? "-g '!plugged'" : '')
+call CommandAlias('RC', 'RgConfig')
+
+" :RgPlug [plugin-name] [query] => search vim plugins (~/.vim/plugged)
 command! -bang -nargs=* -complete=customlist,CompletePlugs
       \ RgPlug call s:rgfzf_plug(<q-args>, <bang>1)
 function! s:rgfzf_plug(qargs, bang) abort
+  " qargs: [plugin-name] [query words...]
   let l:args = split(a:qargs)
   let l:query = join(l:args[1:])
   if empty(l:args)   " corner case: empty query
@@ -1924,17 +1951,15 @@ function! CompletePlugs(...)
 endfunction
 
 
-" :DefPackage (perform :Def on the python package directory)
+" :DefPackage, :DP (perform :Def on the python package directory)
 command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
       \ DefPackage call s:rgfzf_pypackage('fzf#vim#ripgrep#rgdef_fzf', <q-args>, <bang>1)
+call CommandAlias('DP', 'DefPackage')
 
-" :RgPackage (Perform :RgFzf on the python package directory)
+" :RgPackage, :RP (Perform :RgFzf on the python package directory)
 " TODO: too many lines (millions) on empty query; we should avoid it?
 command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
       \ RgPackage call s:rgfzf_pypackage('fzf#vim#ripgrep#rg_fzf', <q-args>, <bang>1)
-
-" command alias (:DP, :RP)
-call CommandAlias('DP', 'DefPackage')
 call CommandAlias('RP', 'RgPackage')
 
 function! s:rgfzf_pypackage(fzfrg_func, qargs, bang) abort
