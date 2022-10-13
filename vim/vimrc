@@ -664,15 +664,16 @@ endfunction
 command! -nargs=0   CD   :call CD_to(expand('%:p:h'))
 
 " CDRoot: switch to the project root directory of the current buffer
-function! DetermineProjectRoot() abort
+function! DetermineProjectRoot(...) abort
+  let l:arg = a:0 >= 1 ? a:000[0]: '%'
   " If the current file is under a git repository, that's it!
-  let l:git_dir = s:get_git_dir('%')
+  let l:git_dir = s:get_git_dir(l:arg)
   if !empty(l:git_dir)
     return resolve(l:git_dir . "/..")
   endif
 
   " Not a git repository. Use heuristic and domain knowledge as much as you can
-  let l:base_dir = expand("%:p")
+  let l:base_dir = expand(l:arg . ":p")
   if l:base_dir =~ 'python[^/]*/site-packages/[^/]\+/'
     return resolve(substitute(l:base_dir, '\(python[^/]*/site-packages/[^/]\+/\).*$', '\1', 'g'))
   else
@@ -1898,7 +1899,13 @@ function! s:rgpath(qargs, rg_additional_arg) abort
   if empty(l:args)   " corner case: empty query
     echom "Argument required" | return
   endif
-  let l:path = expand(Trim(l:args[0]))
+  " Expand path, e.g., %:p:h => parent directory, ^ => root of the project (if applicable)
+  let l:path = Trim(l:args[0])
+  if l:path == "^"
+    let l:path = DetermineProjectRoot("%")
+    if empty(l:path) | let l:path = "." | endif
+  endif
+  let l:path = expand(l:path)
   if !isdirectory(l:path)
     echohl WarningMsg | echom "Directory does not exists: " . l:path | echohl None
     return
