@@ -121,19 +121,19 @@ lsp_setup_opts['pyright'] = {
     },
   },
 }
-lsp_setup_opts['sumneko_lua'] = vim.tbl_deep_extend('force',
-  require("neodev").setup {}, {
-    settings = {
-      Lua = {
-        runtime = {
-          version = 'LuaJIT',   -- Lua 5.1/LuaJIT
-        },
-        completion = { callSnippet = "Disable" },
-        workspace = { maxPreload = 8000 },
+
+-- Configure sumneko_lua to support neovim Lua runtime APIs
+require("neodev").setup {
+  settings = {
+    Lua = {
+      runtime = {
+        version = 'LuaJIT',   -- Lua 5.1/LuaJIT
       },
+      completion = { callSnippet = "Disable" },
+      workspace = { maxPreload = 8000 },
     },
-  }
-)
+  },
+}
 
 local lsp_installer = require("nvim-lsp-installer")
 local cmp_nvim_lsp = require('cmp_nvim_lsp')
