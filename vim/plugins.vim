@@ -221,7 +221,7 @@ if g:dotfiles_completion_backend == '@lsp'
 
   Plug 'hrsh7th/nvim-cmp', {'commit': 'dbc7229'}  " GH-899
   Plug 'hrsh7th/cmp-buffer'
-  Plug 'hrsh7th/cmp-nvim-lsp', {'commit': 'affe808'}
+  Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-path'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
