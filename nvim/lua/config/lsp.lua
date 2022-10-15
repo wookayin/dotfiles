@@ -122,7 +122,7 @@ lsp_setup_opts['pyright'] = {
   },
 }
 lsp_setup_opts['sumneko_lua'] = vim.tbl_deep_extend('force',
-  require("lua-dev").setup {}, {
+  require("neodev").setup {}, {
     settings = {
       Lua = {
         runtime = {

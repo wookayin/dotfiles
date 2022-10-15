@@ -217,7 +217,7 @@ let g:dotfiles_completion_backend = has('nvim-0.7.0') ? '@lsp' : ''
 if g:dotfiles_completion_backend == '@lsp'
   Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/nvim-lsp-installer'
-  Plug 'folke/lua-dev.nvim'
+  Plug 'folke/neodev.nvim', {'commit': '63c21fe'}  " GH-76
 
   Plug 'hrsh7th/nvim-cmp', {'commit': 'dbc7229'}  " GH-899
   Plug 'hrsh7th/cmp-buffer'
