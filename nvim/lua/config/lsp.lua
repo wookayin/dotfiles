@@ -141,7 +141,7 @@ lsp_installer.on_server_ready(function(server)
     on_attach = on_attach,
 
     -- Suggested configuration by nvim-cmp
-    capabilities = require('cmp_nvim_lsp').update_capabilities(
+    capabilities = require('cmp_nvim_lsp').default_capabilities(
       vim.lsp.protocol.make_client_capabilities()
     ),
   }
