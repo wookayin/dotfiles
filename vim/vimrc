@@ -2792,8 +2792,7 @@ let g:pymode_rope = 0
 let g:pymode_run = 0
 
 " Use ipython pdb for inserting breakpoints
-" one might need to run 'pip install ipdb'
-let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
+let g:pymode_breakpoint_cmd = 'breakpoint()'
 
 " show documentation: disable default keymap (K) if better plugins are present
 let g:pymode_doc_bind = '<leader>PK'

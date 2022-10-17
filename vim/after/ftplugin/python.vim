@@ -66,6 +66,9 @@ endif
 " shortcuts
 " =========
 
+" CTRL-B: insert breakpoint above?
+imap <buffer> <C-B>   <ESC><leader>ba<Down>
+
 if has_key(g:, 'plugs') && has_key(g:plugs, 'vim-surround')
   " Apply str(...) repr(...) to the current word or selection
   " :help surround-replacements
