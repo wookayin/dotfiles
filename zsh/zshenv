@@ -168,6 +168,8 @@ fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes ~/.zsh/functions ~/.local/share/zsh/
 # Python - Virtualenv, etc.
 #
 
+export PYTHONBREAKPOINT='pudb.set_trace'
+
 if [[ "$(uname)" == "Darwin" ]]; then
     # Mac OS X: use python shipped by Homebrew for virtualenv.
     export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python'
