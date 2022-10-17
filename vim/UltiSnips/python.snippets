@@ -209,6 +209,11 @@ snippet rich.traceback
 import rich.traceback; rich.traceback.install(width=None, show_locals=True)
 endsnippet
 
+# temp files
+snippet tmpdir
+tempfile.mkdtemp(suffix=None)
+endsnippet
+
 # misc utilities
 snippet strftime
 time.strftime(${1:'%Y%m%d-%H%M%S'})
