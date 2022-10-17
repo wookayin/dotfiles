@@ -52,6 +52,7 @@ local function determine_pip_options()
     end
     return pip_option
   end
+  return pip_option
 end
 local function autoinstall_pynvim()
   -- Require pynvim >= 0.4.0
