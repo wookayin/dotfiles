@@ -42,6 +42,7 @@ disable=blacklisted-name,
         no-else-raise,
         no-else-return,
         bad-continuation,
+        forgotten-debug-statement,
         fixme
 
 
