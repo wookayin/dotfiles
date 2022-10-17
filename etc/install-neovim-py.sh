@@ -38,8 +38,7 @@ else
     if [[ -n "$BASH_VERSION" ]] && [ `uname` == "Linux" ]; then
         while true; do
             echo -en "${YELLOW}Do you want to install neovim locally [y/N] ${RESET}"
-            [ -t 1 ] && read -t 5 -p "(wait 5 secs for auto-yes) ? " user_prompt;
-            if [ $? -ne 0 ]; then user_prompt="y"; fi  # when timeout, yes
+            [ -t 1 ] && read -t 5 -p "(wait 5 secs for auto-yes) ? " user_prompt || user_prompt="y";
             case $user_prompt in
                 [YyNn]* ) break;;
                 *) echo "Please answer yes or no.";;
