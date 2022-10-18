@@ -1708,7 +1708,7 @@ command! -bang -nargs=? -complete=dir GFiles
       \ <q-args> != '?' ? (
       \ <bang>0 ? fzf#vim#with_preview(s:fzf_gfiles_spec, 'up:90%')
       \         : fzf#vim#with_preview(s:fzf_gfiles_spec, 'right:50%', 'CTRL-/')
-      \) : <bang>0
+      \) : {}
       \)
 let s:fzf_gfiles_spec = {'options': []}
 function! s:fzf_gfiles_helpmsg(args)
