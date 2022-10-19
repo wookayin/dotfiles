@@ -210,11 +210,9 @@ endif
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
 
-let g:dotfiles_completion_backend = has('nvim-0.7.0') ? '@lsp' : ''
-
-" 1. [Neovim 0.5.0 LSP]
+" Neovim LSP related plugins.
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
-if g:dotfiles_completion_backend == '@lsp'
+if has('nvim')
   Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/neodev.nvim'
@@ -226,28 +224,14 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
   Plug 'ray-x/lsp_signature.nvim'
-  Plug 'nvim-lua/lsp-status.nvim', PinIf(!has('nvim-0.6.0'), {'commit': 'e8e5303'})
-  Plug 'j-hui/fidget.nvim', PlugCond(has('nvim-0.6.0'))
+  Plug 'nvim-lua/lsp-status.nvim'
+  Plug 'j-hui/fidget.nvim'
   Plug 'folke/trouble.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'onsails/lspkind-nvim'
 
-  Plug 'jose-elias-alvarez/null-ls.nvim', PlugCond(has('nvim-0.6.0'))
-
+  Plug 'jose-elias-alvarez/null-ls.nvim'
 endif
-
-" 2. [no LSP/coc support] (legacy) {{{
-if g:dotfiles_completion_backend == ''
-  Plug 'davidhalter/jedi-vim'
-  " Legacy support for <TAB> in the completion context
-  Plug 'ervandew/supertab'
-  " Use ALE if no LSP support was used
-  Plug 'w0rp/ale', PlugCond(v:version >= 800)
-  if has('nvim')
-    Plug 'Shougo/echodoc.vim'
-  endif
-endif
-" }}}
 
 " Other language-specific plugins (supplementary and orthogonal to LSP)
 " ---------------------------------------------------------------------
