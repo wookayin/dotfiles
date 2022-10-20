@@ -169,6 +169,7 @@ if has('nvim')
   Plug 'norcalli/nvim-colorizer.lua'
   Plug 'nvim-neo-tree/neo-tree.nvim', {'branch': 'main'}
   Plug 'MunifTanjim/nui.nvim'
+  Plug 'stevearc/dressing.nvim'
 
   Plug 'nvim-telescope/telescope.nvim'
 endif
