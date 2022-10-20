@@ -41,7 +41,7 @@ Plug 'dstein64/vim-startuptime', { 'on': ['StartupTime'] }
 
 " Vim Interfaces
 " -------------------------------------
-if has('nvim-0.6.0')
+if has('nvim')
   " Status line: use lualine.nvim (fork)
   Plug 'nvim-lualine/lualine.nvim'
   ForcePlugURI 'lualine.nvim'
@@ -53,10 +53,8 @@ endif
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
 Plug 'junegunn/fzf.vim'
 Plug 'wookayin/fzf-ripgrep.vim'
-if has('nvim-0.4.0')
+if has('nvim') || has('popup')
   Plug 'voldikss/vim-floaterm'
-endif
-if has('nvim-0.4.0') || has('popup')
   Plug 'skywind3000/vim-quickui'
 endif
 if exists('##TermOpen') || exists('##TerminalOpen')
@@ -73,7 +71,7 @@ Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 if has('nvim') || v:version >= 800
   Plug 'neomake/neomake'
 endif
-if has('nvim-0.4.0')
+if has('nvim')
   Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemote') }
   Plug 'romgrk/fzy-lua-native'
 endif
@@ -90,35 +88,32 @@ endif
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'rbong/vim-flog'
-if has('nvim-0.5.0')
+if has('nvim')
   Plug 'lewis6991/gitsigns.nvim'
 else
   Plug 'airblade/vim-gitgutter'
 endif
-if has('nvim-0.7.0')
+if has('nvim')
   Plug 'sindrets/diffview.nvim'
-endif
-if has('nvim-0.4.0') && exists('*nvim_open_win')
-  " git blame with floating window (requires nvim 0.4.0+)
   Plug 'rhysd/git-messenger.vim'
 endif
 Plug 'majutsushi/tagbar'
 Plug 'rking/ag.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'junegunn/vim-easy-align'
-if has('nvim-0.5.0')
+if has('nvim')
   Plug 'lukas-reineke/indent-blankline.nvim'
 else
   Plug 'Yggdroot/indentLine'
 endif
-if exists('##WinScrolled')  " neovim nightly (0.5.0+)
+if exists('##WinScrolled')
   Plug 'dstein64/nvim-scrollview'
 endif
-if has('nvim-0.7.0')
+
+" Advanced Folding
+if has('nvim')
   Plug 'kevinhwang91/nvim-ufo'
   Plug 'kevinhwang91/promise-async'
-elseif has('nvim-0.5.0')
-  Plug 'anuvyklack/pretty-fold.nvim', {'commit': 'eba8996'}
 end
 
 " Miscellanious Utilities
@@ -154,13 +149,12 @@ Plug 'junegunn/vader.vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tpope/vim-eunuch'
 Plug 'wookayin/vim-typora', { 'on': 'Typora' }
-if has('nvim-0.5.0')
+if has('nvim')
   Plug 'folke/which-key.nvim'
-  ForcePlugURI 'which-key.nvim'    " See GH-227, GH-280
 endif
 
 if s:darwin && isdirectory('/Applications/Dash.app')
-  if has('nvim-0.5.0')
+  if has('nvim')
     Plug 'mrjones2014/dash.nvim', { 'do': 'make install',
           \ 'on': ['Dash', 'DashWord'] }
   else
@@ -168,20 +162,19 @@ if s:darwin && isdirectory('/Applications/Dash.app')
   endif
 endif
 
-if has('nvim-0.5.0')
-  " Some lua-powered plugins for neovim 0.5.0+
+if has('nvim')
+  " Some lua-powered plugins for UI
+  Plug 'nvim-lua/plenary.nvim'
   Plug 'rcarriga/nvim-notify'
   Plug 'norcalli/nvim-colorizer.lua'
   Plug 'nvim-neo-tree/neo-tree.nvim', {'branch': 'main'}
   Plug 'MunifTanjim/nui.nvim'
-  Plug 'nvim-lua/plenary.nvim'
-endif
-if has('nvim-0.7.0')
+
   Plug 'nvim-telescope/telescope.nvim'
 endif
 
-if has('nvim-0.7.0')
-  " Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
+" Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
+if has('nvim')
   function! TSUpdate(arg) abort
     if luaeval('pcall(require, "nvim-treesitter")')
       TSUpdate
@@ -189,8 +182,9 @@ if has('nvim-0.7.0')
   endfunction
 
   let g:_plug_ts_config = {'do': function('TSUpdate')}
-  if !has('nvim-0.7')
-    let g:_plug_ts_config['commit'] = '8a1acc00'  " Since a1893234, 0.7.0+ required
+  if !has('nvim-0.8')
+    " Since 42ab95d5, nvim 0.8.0+ is required
+    let g:_plug_ts_config['commit'] = '4cccb6f4'
   endif
   Plug 'nvim-treesitter/nvim-treesitter', g:_plug_ts_config
   Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground'}
@@ -198,10 +192,10 @@ if has('nvim-0.7.0')
   Plug 'SmiteshP/nvim-gps'
 endif
 
-if has('nvim-0.7')
+" Test integration
+if has('nvim')
   Plug 'nvim-neotest/neotest'
   Plug 'antoinemadec/FixCursorHold.nvim'
-  Plug 'rcarriga/nvim-dap-ui'
 
   Plug 'nvim-neotest/neotest-python'
   Plug 'nvim-neotest/neotest-plenary'
