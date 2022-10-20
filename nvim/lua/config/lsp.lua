@@ -74,10 +74,9 @@ local on_attach = function(client, bufnr)
   --buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 
   -- Commands
-  if vim.fn.has('nvim-0.7') > 0 then
-    vim.api.nvim_buf_create_user_command(bufnr,
-      "LspRename", function() vim.lsp.buf.rename() end, {})
-  end
+  vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(opt)
+    vim.lsp.buf.rename(opt.args ~= "" and opt.args or nil)
+  end, { nargs = '?', desc = "Rename the current symbol at the cursor." })
 
   -- Disable specific LSP capabilities: see nvim-lspconfig#1891
   if client.name == "sumneko_lua" and client.server_capabilities then
