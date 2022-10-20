@@ -47,8 +47,6 @@ vim.cmd [[
 -- Custom Telescope mappings
 vim.cmd [[
 command! -nargs=0 Highlights    :Telescope highlights
-command! -nargs=0 CodeActions   :Telescope lsp_code_actions
-call CommandAlias("CA", "CodeActions")
 call CommandAlias("Te", "Telescope")
 
 command! -nargs=?                 LspSymbols  :lua require"telescope.builtin".lsp_dynamic_workspace_symbols({default_text = '<args>'})

@@ -735,3 +735,8 @@ if pcall(require, "null-ls") then
   end
 
 end -- if null-ls
+
+vim.cmd [[
+  command! -nargs=0 CodeActions   :lua vim.lsp.buf.code_action()
+  call CommandAlias("CA", "CodeActions")
+]]
