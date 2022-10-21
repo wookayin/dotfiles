@@ -127,8 +127,7 @@ _G.lsp_setup_opts['pyright'] = {
   },
 }
 
--- Configure sumneko_lua to support neovim Lua runtime APIs
-require("neodev").setup {
+_G.lsp_setup_opts['sumneko_lua'] = {
   settings = {
     Lua = {
       runtime = {
@@ -139,6 +138,9 @@ require("neodev").setup {
     },
   },
 }
+
+-- Configure sumneko_lua to support neovim Lua runtime APIs
+require("neodev").setup { }
 
 local lsp_installer = require("nvim-lsp-installer")
 lsp_installer.on_server_ready(function(server)
