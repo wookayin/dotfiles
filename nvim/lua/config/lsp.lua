@@ -676,6 +676,15 @@ if pcall(require, "null-ls") then
         })),
     },
 
+    should_attach = function(bufnr)
+      -- Excludes some files on which it doesn't not make a sense to use linting.
+      local bufname = vim.api.nvim_buf_get_name(bufnr)
+      if bufname:match("^git://") then return false end
+      if bufname:match("^fugitive://") then return false end
+      if bufname:match("/lib/python%d%.%d+/") then return false end
+      return true
+    end,
+
     -- Debug mode: Use :NullLsLog for viewing log files (~/.cache/nvim/null-ls.log)
     debug = false,
   })
