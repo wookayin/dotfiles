@@ -76,6 +76,7 @@ return {
     cmd = { 'DebugStart', 'DebugContinue' };
     dependencies = {
       Plug 'rcarriga/nvim-dap-ui';
+      Plug 'Weissle/persistent-breakpoints.nvim';
       Plug 'mfussenegger/nvim-dap-python';
     },
     config = function()

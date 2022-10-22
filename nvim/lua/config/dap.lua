@@ -169,12 +169,12 @@ M.setup_cmds_and_keymaps = function()  -- Commands and Keymaps.
   command('DebugClose', function() dapui.close {} end)
   command('DebugToggle', function() dapui.toggle {} end)
 
-  command('DebugBreakpoint', 'DapToggleBreakpoint')
-  command('ToggleBreakpoint', 'DapToggleBreakpoint')
-  command('BreakpointToggle', 'DapToggleBreakpoint')
+  command('DebugBreakpoint', 'DapToggleBreakpoint')  -- see setup_breakpoint_persistence
+  command('ToggleBreakpoint', 'DebugBreakpoint')
+  command('BreakpointToggle', 'DebugBreakpoint')
 
-  keymap('<leader>b', { cmd = 'DapToggleBreakpoint' })
-  keymap('<F9>',      { cmd = 'DapToggleBreakpoint' })
+  keymap('<leader>b', { cmd = 'DebugBreakpoint' })
+  keymap('<F9>',      { cmd = 'DebugBreakpoint' })
   vim.keymap.set('i', '<F9>',  '<c-\\><c-o><Cmd>DebugBreakpoint<CR>')
 
   command('DebugStackUp','DapStackUp')
@@ -269,6 +269,26 @@ M.setup_session_keymaps = function()
 
 end
 
+------------------------------------------------------------------------------
+-- Not essential, but useful advanced setups
+------------------------------------------------------------------------------
+
+M.setup_breakpoint_persistence = function()
+  -- https://github.com/Weissle/persistent-breakpoints.nvim
+
+  require('persistent-breakpoints').setup {
+    load_breakpoints_event = { "BufReadPost" }
+  }
+
+  local pb_api = require('persistent-breakpoints.api')
+
+  -- Ensure called at least once after VimEnter, because DAP is loading lazily
+  pb_api.load_breakpoints()
+
+  -- Override and keymaps
+  command("DebugBreakpoint", function() pb_api.toggle_breakpoint() end)
+end
+
 
 ------------------------------------------------------------------------------
 -- Adapters & Language Configs
@@ -310,6 +330,9 @@ M.setup = function()
   M.setup_ui()
   M.setup_cmds_and_keymaps()
   M.setup_session_keymaps()
+
+  -- Extensions
+  M.setup_breakpoint_persistence()
 
   -- Adapters
   M.setup_python()
