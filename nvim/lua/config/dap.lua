@@ -316,6 +316,37 @@ end
 -- Not essential, but useful advanced setups
 ------------------------------------------------------------------------------
 
+M.setup_virtualtext = function()
+  -- https://github.com/theHamsta/nvim-dap-virtual-text
+  require("nvim-dap-virtual-text").setup {
+    enabled = true,
+
+    virt_text_pos = 'eol',  ---@type 'inline'|'eol'
+
+    --- A callback that determines how a variable is displayed or whether it should be omitted
+    --- @param variable Variable https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
+    --- @param buf number
+    --- @param stackframe dap.StackFrame https://microsoft.github.io/debug-adapter-protocol/specification#Types_StackFrame
+    --- @param node userdata tree-sitter node identified as variable definition of reference (see `:h tsnode`)
+    --- @param options nvim_dap_virtual_text_options Current options for nvim-dap-virtual-text
+    --- @return string|nil A text how the virtual text should be displayed or nil, if this variable shouldn't be displayed
+    display_callback = function(variable, buf, stackframe, node, options)
+      if options.virt_text_pos == 'inline' then
+        return ' = ' .. variable.value
+      else
+        return '  ◄ ' .. variable.name .. ' = ' .. variable.value
+      end
+    end,
+  }
+
+  require("utils.rc_utils").RegisterHighlights(function()
+    vim.cmd [[
+      highlight! NvimDapVirtualText          guifg=#898989 gui=italic
+      highlight! NvimDapVirtualTextChanged   guifg=#e8590c gui=italic
+    ]]
+  end)
+end
+
 M.setup_breakpoint_persistence = function()
   -- https://github.com/Weissle/persistent-breakpoints.nvim
 
@@ -375,6 +406,7 @@ M.setup = function()
   M.setup_session_keymaps()
 
   -- Extensions
+  M.setup_virtualtext()
   M.setup_breakpoint_persistence()
 
   -- Adapters
