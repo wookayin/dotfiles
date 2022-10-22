@@ -70,6 +70,19 @@ return {
     config = require('config.formatting').setup,
   };
 
+  -- DAP
+  Plug 'mfussenegger/nvim-dap' {
+    event = 'VeryLazy',
+    cmd = { 'DebugStart', 'DebugContinue' };
+    dependencies = {
+      Plug 'rcarriga/nvim-dap-ui';
+      Plug 'mfussenegger/nvim-dap-python';
+    },
+    config = function()
+      require('config.dap').setup()
+    end,
+  };
+
   -- Python
   Plug 'wookayin/semshi' {
     ft = 'python',
