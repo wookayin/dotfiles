@@ -124,6 +124,37 @@ M.setup_ui = function()
       augroup END
     ]]
   end
+
+  -- DAP REPL: insert mode keymaps need to be fixed (C-j, C-k, C-l, etc.)
+  local dapui_keymaps = vim.api.nvim_create_augroup("dapui_keymaps", { clear = true })
+  vim.api.nvim_create_autocmd("WinEnter", {
+    pattern = "*",
+    group = dapui_keymaps,
+    desc = 'Fix scrolloff for dap-repl',
+    callback = function()
+      if vim.bo.filetype == 'dap-repl' then
+        vim.wo.scrolloff = 0  -- to allow 'clear' REPL
+      end
+    end,
+  })
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "dap-repl",
+    group = dapui_keymaps,
+    desc = 'Fix and add insert-mode keymaps for dap-repl',
+    callback = function()
+      -- TODO ctrl-x
+      vim.keymap.set('i', '<c-h>', '<C-g>u<C-w>h', { buffer = true, desc = 'Move to the left window' })
+      vim.keymap.set('i', '<c-j>', '<C-g>u<C-w>j', { buffer = true, desc = 'Move to the above window' })
+      vim.keymap.set('i', '<c-k>', '<C-g>u<C-w>k', { buffer = true, desc = 'Move to the below window' })
+      vim.keymap.set('i', '<c-l>', '<c-u><c-\\><c-o>zt', { buffer = true, remap = true, desc = 'Clear REPL' })
+      vim.keymap.set('i', '<c-p>', '<Up>',   { buffer = true, remap = true, desc = 'Previous Command' })
+      vim.keymap.set('i', '<c-n>', '<Down>', { buffer = true, remap = true, desc = 'Next Command' })
+
+      -- Debugger commands (see setup_cmds_and_keymaps)
+      M._bind_keymaps_for_repl()
+    end,
+  })
+
 end
 
 
@@ -192,6 +223,18 @@ M.setup_cmds_and_keymaps = function()  -- Commands and Keymaps.
   command('DapRunToCursor',   function() dap.run_to_cursor() end)
   command('DebugRunToCursor', function() dap.run_to_cursor() end)
   keymap('<C-F10>',   { cmd = 'DapRunToCursor' })
+
+  -- Keymaps for dap-repl (insert mode), on FileType
+  M._bind_keymaps_for_repl = function()
+    vim.keymap.set('i', '<F5>', '<cmd>DebugContinue<CR>', { buffer = true })
+    vim.keymap.set('i', '<M-F5>', '<cmd>DebugContinue<CR>', { buffer = true })
+    vim.keymap.set('i', '<S-F5>', '<cmd>DebugClose<CR>', { buffer = true })
+    vim.keymap.set('i', '<F9>', '<noop>', { buffer = true })
+    vim.keymap.set('i', '<F10>', '<cmd>DapStepOver<CR>', { buffer = true })
+    vim.keymap.set('i', '<F11>', '<cmd>DapStepInto<CR>', { buffer = true })
+    vim.keymap.set('i', '<S-F11>', '<cmd>DapStepOut<CR>', { buffer = true })
+    vim.keymap.set('i', '<C-F10>', '<cmd>DapRunToCursor<CR>', { buffer = true })
+  end
 
   -- see M._bind_session_keymaps() for session-only key mappings
 end
