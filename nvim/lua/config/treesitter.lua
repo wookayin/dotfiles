@@ -9,11 +9,19 @@ end
 local ts_configs = require("nvim-treesitter.configs")
 local ts_parsers = require("nvim-treesitter.parsers")
 
+-- Note: parsers are installed at ~/.vim/plugged/nvim-treesitter/parser/
 local parsers_to_install = {
-  "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
-  "html", "http", "java", "javascript", "json", "json5", "jsonc", "latex", "lua", "make", "perl",
-  "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml"
+  default = {
+    "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
+    "html", "http", "java", "javascript", "json", "json5", "jsonc", "latex", "lua", "make", "perl",
+    "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml"
+  },
+  minimal = {
+    "bash", "json", "latex", "lua", "make", "python", "vim", "yaml"
+  },
 }
+parsers_to_install = parsers_to_install.minimal
+
 if vim.fn.has('mac') > 0 then
   -- Disable 'dockerfile' until nvim-treesitter/nvim-treesitter#3515 is resolved
   parsers_to_install = vim.tbl_filter(function(x) return x ~= "dockerfile" end, parsers_to_install)
