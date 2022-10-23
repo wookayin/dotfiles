@@ -140,16 +140,59 @@ local function keymap(lhs, rhs)
 end
 
 M.setup_cmds_and_keymaps = function()  -- Commands and Keymaps.
+  -- Define "global" commands and keymaps
+  -- Define similar keymaps as https://code.visualstudio.com/docs/editor/debugging#_debug-actions
   -- @see :help dap-api  :help dap-mappings
+  local dap = require('dap')
+  local dapui = require('dapui')
 
-  keymap('<leader>b', {cmd = 'DapToggleBreakpoint'})
-  keymap('<F9>',      {cmd = 'DapToggleBreakpoint'})
-
-  keymap('<F10>',     {cmd = 'DapStepOver'})
-  keymap('<F11>',     {cmd = 'DapStepInto'})
-  keymap('<S-F11>',   {cmd = 'DapStepOut'})
+  command('Debug', function()
+    if dap.configurations[vim.bo.filetype] then
+      vim.cmd [[ DebugStart ]]
+    else  -- no available DAP adapters, fall back to build
+      vim.cmd [[
+        echohl WarningMsg
+        echon ":Debug not defined for this filetype. Try :Build instead."
+        echohl NONE
+      ]]
+    end
+  end, { desc = 'Start or continue DAP.' })
 
   command('DebugStart', 'DapContinue')
+  command('DebugContinue', 'DapContinue')
+
+  command('DebugTerminate', 'DapTerminate')
+  command('DebugStop', 'DapTerminate')
+  keymap('<S-F5>',    { cmd = 'DebugClose' })
+
+  command('DebugOpen', function() dapui.open {} end)
+  command('DebugClose', function() dapui.close {} end)
+  command('DebugToggle', function() dapui.toggle {} end)
+
+  command('DebugBreakpoint', 'DapToggleBreakpoint')
+  command('ToggleBreakpoint', 'DapToggleBreakpoint')
+  command('BreakpointToggle', 'DapToggleBreakpoint')
+
+  keymap('<leader>b', { cmd = 'DapToggleBreakpoint' })
+  keymap('<F9>',      { cmd = 'DapToggleBreakpoint' })
+  vim.keymap.set('i', '<F9>',  '<c-\\><c-o><Cmd>DebugBreakpoint<CR>')
+
+  command('DebugStackUp','DapStackUp')
+  command('DapStackUp', dap.up)
+  command('DebugStackDown','DapStackDown')
+  command('DapStackDown', dap.down)
+
+  command('DebugStepOver', 'DapStepOver')
+  command('DebugStepInto', 'DapStepInto')
+  command('DebugStepOut', 'DapStepOut')
+  keymap('<F10>',     { cmd = 'DapStepOver' })
+  keymap('<F11>',     { cmd = 'DapStepInto' })
+  keymap('<S-F11>',   { cmd = 'DapStepOut' })
+
+  command('DapRunToCursor',   function() dap.run_to_cursor() end)
+  command('DebugRunToCursor', function() dap.run_to_cursor() end)
+  keymap('<C-F10>',   { cmd = 'DapRunToCursor' })
+
 end
 
 

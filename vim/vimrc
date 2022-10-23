@@ -626,6 +626,7 @@ nnoremap ]l  <Cmd>lnext<CR>
 " However, we should NOT directly remap <F5> and <Ctrl-F5>.
 
 " By default, <F5> runs :Build -> :Make. Ftplugins may define :Build and :Debug.
+" see config/dap.lua to how :Debug will be overriden when DAP exists
 nmap <F5>    <cmd>silent w<CR><cmd>Build<CR>
 nmap <C-F5>  <F5>
 nmap <M-F5>  <cmd>silent w<CR><cmd>Debug<CR>
@@ -638,7 +639,6 @@ nmap <leader>m <F5>
 
 " Build commands default to Make
 command! -nargs=* -bar Build    Make
-command! -nargs=* -bar Debug    echohl WarningMsg | echon ":Debug not defined for this filetype. Try :Build instead." | echohl NONE
 
 " :Make
 " runs a &makeprg job asynchronously in the background.
