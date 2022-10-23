@@ -1554,6 +1554,11 @@ function! s:NeomakeNotificationSet(value) abort
         \ "info", {'title': 'Neomake'})
 endfunction
 
+hi NeomakeErrorSign    gui=bold guifg=#e6645f ctermfg=167
+hi NeomakeWarningSign  gui=bold guifg=#b1b14d ctermfg=143
+hi NeomakeInfoSign     gui=bold guifg=#3e6e9e ctermfg=75
+hi NeomakeMessageSign  gui=bold guifg=LightGreen ctermfg=75
+
 " General hook/callback on starting and finishing jobs {
 function! s:OnNeomakeJobStart()
   " what will we do?
