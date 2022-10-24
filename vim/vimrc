@@ -1091,7 +1091,7 @@ else
 endif
 
 " show cursorline for active window only
-let g:NrHighlight_preserve_filetypes = ['nerdtree']
+let g:NrHighlight_preserve_filetypes = ['nerdtree', 'neo-tree']
 augroup NrHighlight
   autocmd!
   autocmd WinEnter * setlocal cursorline
