@@ -183,6 +183,30 @@ post_actions += [  # default shell
     fi
 ''']
 
+post_actions += [  # install some essential packages (linux)
+    '''#!/bin/bash
+    # Install node, rg, fd locally
+    export PATH="$PATH:$HOME/.local/bin"
+    type node >/dev/null 2>&1 || bin/dotfiles install node
+    type rg   >/dev/null 2>&1 || bin/dotfiles install ripgrep
+    type fd   >/dev/null 2>&1 || bin/dotfiles install fd
+    '''
+] if platform.system() == "Linux" else []
+
+post_actions += [  # neovim
+    '''#!/bin/bash
+    # validate neovim package installation on python2/3 and automatically install if missing
+    bash "etc/install-neovim-py.sh"
+''']
+
+post_actions += [  # vim-plug
+    # Run vim-plug installation
+    {'install' : 'PATH="$PATH:~/.local/bin"  nvim --headless +"set nonumber" +"PlugInstall --sync" +%print +UpdateRemotePlugins +qall',
+     'update'  : 'PATH="$PATH:~/.local/bin"  nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall',
+     'none'    : '# nvim +PlugUpdate (Skipped)',
+     }['update' if not args.skip_vimplug else 'none']
+]
+
 post_actions += [  # gitconfig.secret
     r'''#!/bin/bash
     # Create ~/.gitconfig.secret file and check user configuration
@@ -215,29 +239,6 @@ EOL
     echo -en '\033[0m';
 ''']
 
-post_actions += [  # install some essential packages (linux)
-    '''#!/bin/bash
-    # Install node, rg, fd locally
-    export PATH="$PATH:$HOME/.local/bin"
-    type node >/dev/null 2>&1 || bin/dotfiles install node
-    type rg   >/dev/null 2>&1 || bin/dotfiles install ripgrep
-    type fd   >/dev/null 2>&1 || bin/dotfiles install fd
-    '''
-] if platform.system() == "Linux" else []
-
-post_actions += [  # neovim
-    '''#!/bin/bash
-    # validate neovim package installation on python2/3 and automatically install if missing
-    bash "etc/install-neovim-py.sh"
-''']
-
-post_actions += [  # vim-plug
-    # Run vim-plug installation
-    {'install' : 'PATH="$PATH:~/.local/bin"  nvim --headless +"set nonumber" +"PlugInstall --sync" +%print +UpdateRemotePlugins +qall',
-     'update'  : 'PATH="$PATH:~/.local/bin"  nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall',
-     'none'    : '# nvim +PlugUpdate (Skipped)',
-     }['update' if not args.skip_vimplug else 'none']
-]
 
 ################# END OF FIXME #################
 
