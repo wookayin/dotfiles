@@ -59,7 +59,7 @@ tasks = {
     '~/.local/bin/dotfiles' : 'bin/dotfiles',
     '~/.local/bin/fasd' : 'zsh/fasd/fasd',
     '~/.local/bin/is_mosh' : 'zsh/is_mosh/is_mosh',
-    '~/.local/bin/fzf' : '~/.fzf/bin/fzf', # fzf is at $HOME/.fzf
+    '~/.local/bin/fzf' : dict(src='~/.fzf/bin/fzf', force=True),
 
     # X
     '~/.Xmodmap' : 'Xmodmap',
@@ -329,13 +329,19 @@ if submodule_issues:
 
 
 log_boxed("Creating symbolic links", color_fn=CYAN)
-for target, source in sorted(tasks.items()):
+for target, item in sorted(tasks.items()):
     # normalize paths
+    if isinstance(item, str):
+        item = {'src': item}
+
+    source, force = item['src'], item.get('force', False)
     source = os.path.join(current_dir, os.path.expanduser(source))
     target = os.path.expanduser(target)
 
     # bad entry if source does not exists...
-    if not os.path.lexists(source):
+    if force:
+        pass  # Even if the source does not exist, always make a symlink
+    elif not os.path.lexists(source):
         log(RED("source %s : does not exist" % source))
         continue
 
