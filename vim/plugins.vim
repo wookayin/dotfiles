@@ -279,7 +279,7 @@ silent unlet g:_nerdtree_lazy_events
 
 
 " Automatically install missing plugins on startup
-let g:plugs_missing_on_startup = filter(values(g:plugs), '!isdirectory(v:val.dir)')
+let g:plugs_missing_on_startup = filter(values(g:plugs), '!isdirectory(v:val.dir) && get(v:val, "uri")')
 if len(g:plugs_missing_on_startup) > 0
   PlugInstall --sync | q
 endif
