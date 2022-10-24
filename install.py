@@ -308,12 +308,10 @@ if submodule_issues:
         log(RED("git submodule {name} : {status}".format(
             name=submodule_name,
             status=stat_messages.get(submodule_stat, '(Unknown)'))))
-    log(RED(" you may run: $ git submodule update --init --recursive"))
+    log(YELLOW("Git submodules are not initialized.\n"))
 
-    log("")
-    log(YELLOW("Do you want to update submodules? (y/n) "), cr=False)
-    shall_we = (input().lower() == 'y')
-    if shall_we:
+    update_submodule = True
+    if update_submodule:
         git_submodule_update_cmd = 'git submodule update --init --recursive'
         # git 2.8+ supports parallel submodule fetching
         try:
@@ -321,7 +319,7 @@ if submodule_issues:
             if git_version >= '2.8': git_submodule_update_cmd += ' --jobs 8'
         except Exception as ex:
             pass
-        log("Running: %s" % BLUE(git_submodule_update_cmd))
+        log("Running: %s" % CYAN(git_submodule_update_cmd))
         subprocess.call(git_submodule_update_cmd, shell=True)
     else:
         log(RED("Aborted."))
