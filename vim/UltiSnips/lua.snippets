@@ -1,10 +1,30 @@
 # lua.snippets
 # Common luascript usage for neovim config and plugin development
 
+# General Lua
+# -----------
+
+snippet fun
+function()
+	$1
+end
+endsnippet
+snippet req
+require('$1')
+endsnippet
+snippet getinfo
+debug.getinfo($1)
+endsnippet
+
+# Neovim Development
+# ------------------
+
 snippet p
 print(vim.inspect(${1}))
 endsnippet
-
 snippet notify
 vim.notify('${1:message}', '${3:info}', {title = '${2:Title}'})
+endsnippet
+snippet reload
+require('plenary.reload').reload_module('$1')
 endsnippet
