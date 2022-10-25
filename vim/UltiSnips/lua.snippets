@@ -28,3 +28,50 @@ endsnippet
 snippet reload
 require('plenary.reload').reload_module('$1')
 endsnippet
+
+# Defining User Commands and Keymaps (neovim 0.7.0+)
+# https://github.com/nanotee/nvim-lua-guide/blob/master/README.md#defining-user-commands
+snippet command
+vim.api.nvim_create_user_command('${1:CommandName}', ${2:function(opts) end}, {
+	nargs = ${3:'?'},
+	desc = '$1',
+})
+endsnippet
+snippet commandbuf
+vim.api.nvim_buf_create_user_command(bufnr, '${1:CommandName}', ${2:function(opts) end}, {
+	nargs = ${3:'?'},
+	desc = '$1',
+})
+endsnippet
+snippet augroup
+local ${1:GroupName} = vim.api.nvim_create_augroup('$1', { clear = true })
+endsnippet
+snippet autocmd
+vim.api.nvim_create_autocmd('${1:FileType}', {
+	pattern = '${2:*}',
+	group = ${3:augroup},
+	-- use either callback or command, not both
+	callback = ${4:function() end},
+	command = '${5:silent! lua ...}',
+})
+endsnippet
+snippet keymap
+vim.keymap.set('${1:n}', '${2:<Key>}', function()
+	${4:-- or a key sequence str instead of function}
+end, {remap = false, buffer = ${3:true}, desc = '$5'})
+endsnippet
+snippet bufmap
+vim.keymap.set('${1:n}', '${2:<Key>}', function()
+	${3:-- or a key sequence str instead of function}
+end, {buffer = true, desc = '$4'})
+endsnippet
+snippet nmap
+vim.keymap.set('n', '${1:<Key>}', function()
+	${2:-- or a key sequence str instead of function}
+end, {remap = true, desc = '$3'})
+endsnippet
+snippet noremap
+vim.keymap.set('n', '${1:<Key>}', function()
+	${2:-- or a key sequence str instead of function}
+end, {desc = '$3'})
+endsnippet
