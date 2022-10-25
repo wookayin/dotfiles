@@ -193,6 +193,80 @@ M.setup_cmds_and_keymaps = function()  -- Commands and Keymaps.
   command('DebugRunToCursor', function() dap.run_to_cursor() end)
   keymap('<C-F10>',   { cmd = 'DapRunToCursor' })
 
+  -- see M._bind_session_keymaps() for session-only key mappings
+end
+
+M.setup_session_keymaps = function()
+  -- Debug-Session-Only keymaps.
+  -- Keymaps that are temporarily active ONLY during the debug session.
+  -- When the DAP session terminates, keymaps will be reset.
+
+  local dap = require('dap')
+
+  M._keymaps_original = {}
+  local get_keymap = function(mode, lhs)
+    local keymaps = vim.api.nvim_get_keymap(mode)
+    for _, keymap in pairs(keymaps) do
+      if keymap.lhs == lhs then return keymap end
+    end
+    return nil
+  end
+  local debug_nmap = function(lhs, rhs, opts)
+    M._keymaps_original[lhs] = get_keymap('n', lhs)
+    opts = vim.tbl_deep_extend('keep', opts or {}, { bar = true })
+    vim.keymap.set('n', lhs, rhs, { noremap = true, nowait = true })
+  end
+  local to_bool = function(x)
+    if x == nil then return false end
+    if type(x) == "boolean" then return x end
+    if type(x) == "number" then return x > 0 end
+    if type(x) == "string" then return x ~= "" end
+    error("Unknown type : " .. type(x))
+  end
+
+  -- Override "global" keymaps when DAP session initiailzes.
+  dap.listeners.after.event_initialized["dap_keymaps"] = function() M._bind_session_keymaps() end
+  M._bind_session_keymaps = function()
+    debug_nmap('<F5>', '<cmd>DebugContinue<CR>')
+    debug_nmap('<S-F5>', '<Cmd>DapTerminate<CR>')
+
+    debug_nmap('<leader>c', '<cmd>DebugContinue<CR>')  -- Continue
+    debug_nmap('<leader>n', '<cmd>DebugStepOver<CR>')  -- Next
+    debug_nmap('<leader>s', '<cmd>DebugStepInto<CR>')  --  Step
+    debug_nmap('<leader>t', '<cmd>DebugRunToCursor<CR>')  -- run To cursor
+    debug_nmap('<leader>f', '<cmd>DebugStepOut<CR>')  -- Finish
+    debug_nmap('<leader>r', '<cmd>DebugStepOut<CR>')  -- Return
+
+    debug_nmap('K', function() require("dapui").eval(nil, {}) end,
+        { desc = 'Evaluate or examine the expression on the cursor.'})
+
+    debug_nmap('<C-u>', '<cmd>DebugStackUp<CR>')
+    debug_nmap('<C-d>', '<cmd>DebugStackDown<CR>')
+  end
+
+  -- Restore the keymap existing to before the DAP session
+  -- Some adapters may not fully support the 'terminated' event, see mfussenegger/nvim-dap#742
+  dap.listeners.after.disconnect["dap_keymaps"] = function() M.unbind_session_keymaps() end
+  dap.listeners.after.event_terminated["dap_keymaps"] = function() M.unbind_session_keymaps() end
+  M.unbind_session_keymaps = function()
+    for _, keymap in pairs(M._keymaps_original) do
+      if keymap then
+        vim.keymap.set(keymap.mode, keymap.lhs, keymap.rhs or keymap.callback,
+          {  -- see :map-arguments
+            silent = to_bool(keymap.silent),
+            expr = to_bool(keymap.expr),
+            nowait = to_bool(keymap.nowait),
+            noremap = to_bool(keymap.noremap),
+            replace_keycodes = to_bool(keymap.replace_keycodes),
+            script = to_bool(keymap.script),
+          })
+      else
+        vim.keymap.del(keymap.mode, keymap.lhs)
+      end
+    end
+    M._keymaps_original = {}
+  end
+
 end
 
 
@@ -213,6 +287,7 @@ M.setup = function()
   M.setup_sign()
   M.setup_ui()
   M.setup_cmds_and_keymaps()
+  M.setup_session_keymaps()
 
   -- Adapters
   M.setup_python()
