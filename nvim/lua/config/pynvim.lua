@@ -59,7 +59,10 @@ local function autoinstall_pynvim()
   local python3_neovim_version = system(vim.g.python3_host_prog .. " -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null")
   if tonumber(python3_neovim_version) == nil or tonumber(python3_neovim_version) < 4 then
     warning("Automatically installing pynvim into python environment: " .. vim.g.python3_host_prog)
-    local pip_install_cmd = vim.g.python3_host_prog .. " -m pip install " .. determine_pip_options() .. " pynvim"
+    local pip_install_cmd = (
+      vim.g.python3_host_prog .. " -m ensurepip; " ..
+      vim.g.python3_host_prog .. " -m pip install " .. determine_pip_options() .. " pynvim"
+    )
     vim.api.nvim_command("!" .. pip_install_cmd)
     if vim.v.shell_error == 0 then
       echom("Successfully installed pynvim. Please restart neovim.", "MoreMsg")
