@@ -729,7 +729,10 @@ if pcall(require, "null-ls") then
       return false
     end
     -- TODO: Enable only on the current project specified by PATH.
-    if vim.tbl_count(vim.lsp.buf_get_clients(0)) > 0 then
+    local formatting_clients = vim.tbl_filter(function(client)
+      return client.server_capabilities.documentFormattingProvider
+    end, vim.lsp.get_active_clients({bufnr = 0}))
+    if vim.tbl_count(formatting_clients) > 0 then
       vim.lsp.buf.format({ timeout_ms = 2000 })
       return true
     end
