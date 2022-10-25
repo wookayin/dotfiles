@@ -304,18 +304,19 @@ install_neovim() {
 
 install_exa() {
     # https://github.com/ogham/exa/releases
-    EXA_VERSION="0.9.0"
-    EXA_BINARY_SHA1SUM="744e3fdff6581bf84b95cecb00258df8c993dc74"  # exa-linux-x86_64 v0.9.0
-    EXA_DOWNLOAD_URL="https://github.com/ogham/exa/releases/download/v$EXA_VERSION/exa-linux-x86_64-$EXA_VERSION.zip"
+    EXA_VERSION="0.10.1"
+    EXA_BINARY_SHA1SUM="7bbd4be0bf44a0302970e7596f5753a0f31e85ac"
+    EXA_DOWNLOAD_URL="https://github.com/ogham/exa/releases/download/v$EXA_VERSION/exa-linux-x86_64-v$EXA_VERSION.zip"
     TMP_EXA_DIR="/tmp/$USER/exa/"
 
     wget -nc ${EXA_DOWNLOAD_URL} -P ${TMP_EXA_DIR} || exit 1;
-    cd ${TMP_EXA_DIR} && unzip -o "exa-linux-x86_64-$EXA_VERSION.zip" || exit 1;
-    if [[ "$EXA_BINARY_SHA1SUM" != "$(sha1sum exa-linux-x86_64 | cut -d' ' -f1)" ]]; then
+    cd ${TMP_EXA_DIR} && unzip -o "exa-linux-x86_64-v$EXA_VERSION.zip" || exit 1;
+    if [[ "$EXA_BINARY_SHA1SUM" != "$(sha1sum bin/exa | cut -d' ' -f1)" ]]; then
         echo -e "${COLOR_RED}SHA1 checksum mismatch, aborting!${COLOR_NONE}"
         exit 1;
     fi
-    cp "exa-linux-x86_64" "$PREFIX/bin/exa" || exit 1;
+    cp "bin/exa" "$PREFIX/bin/exa" || exit 1;
+    cp "completions/exa.zsh" "$PREFIX/share/zsh/site-functions/_exa" || exit 1;
     echo "$(which exa) : $(exa --version)"
 }
 
