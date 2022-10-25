@@ -13,7 +13,12 @@ function M.setup_neotest()
   require("neotest").setup {
     adapters = {
       require("neotest-python")({
-        dap = { justMyCode = false },
+        dap = {
+          justMyCode = false,
+          console = "integratedTerminal",
+          stopOnEntry = false,  -- which is the default(false)
+          subProcess = false,  -- see config/testing.lua
+        },
         args = { "-vv", "-s" },
         runner = 'pytest',
       }),
@@ -58,6 +63,7 @@ function M.setup_commands_keymaps()
     command! -nargs=0 NeotestRunFile  lua require("neotest").run.run(vim.fn.expand("%"))
     command! -nargs=0 Neotest         NeotestRun
     command! -nargs=0 Test            NeotestRun
+    command! -nargs=0 TestDebug       lua require("neotest").run.run({ strategy = "dap" })
 
     command! -nargs=0 NeotestStop             lua require("neotest").run.stop()
     command! -nargs=0 NeotestOutput           lua require("neotest").attach_or_output.open()

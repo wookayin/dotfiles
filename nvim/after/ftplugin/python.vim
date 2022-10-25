@@ -62,8 +62,14 @@ endfunction
 " shortcuts
 " =========
 
+let s:has_dap = has('nvim') && luaeval("pcall(require, 'dap')")
+
 " CTRL-B: insert breakpoint above?
-imap <buffer> <C-B>   <ESC><leader>ba<Down>
+if s:has_dap
+  imap <buffer> <C-b>   <F9>
+else
+  imap <buffer> <C-b>   <ESC><leader>ba<Down>
+end
 
 if 1  " TODO: HasPlug('vim-surround')
   " Apply str(...) repr(...) to the current word or selection
@@ -88,8 +94,8 @@ endif
 
 " <F5> to run &makeprg on a floaterm window (experimental)
 " pytest or execute the script itself, as per &makeprg
-let s:is_test_file = (expand('%:t:r') =~# "_test$" || expand('%:t:r') =~# '^test_')
-if s:is_test_file && s:pcall_require('neotest')
+let b:is_test_file = (expand('%:t:r') =~# "_test$" || expand('%:t:r') =~# '^test_')
+if b:is_test_file && s:pcall_require('neotest')
   " see ~/.config/nvim/config/tesing.lua commands
   command! -buffer -nargs=0  Build    echom ':Test' | Test
   command! -buffer -nargs=0  Output   NeotestOutput
@@ -134,4 +140,11 @@ elseif exists('g:loaded_floaterm')
   " <F5> Build (replaces Make), <F6> Output (replaces QuickfixToggle)
   command! -buffer -bar  Build   w | call MakeInTerminal() | stopinsert
   command! -buffer -bar  Output  FloatermShow makepython
+endif
+
+" DAP + Unit test
+if s:has_dap
+  if b:is_test_file
+    command! -buffer -bang  DebugStart   TestDebug
+  end
 endif

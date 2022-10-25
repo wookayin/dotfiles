@@ -275,9 +275,31 @@ end
 -- @see :help dap-configuration
 ------------------------------------------------------------------------------
 
+--- python dap: https://github.com/mfussenegger/nvim-dap-python
 M.setup_python = function()
-  -- python dap: https://github.com/mfussenegger/nvim-dap-python
   require('dap-python').setup()
+  require('dap-python').test_runner = 'pytest'
+
+  -- Let python breakpoint() hit DAP's breakpoint
+  vim.env.PYTHONBREAKPOINT = 'debugpy.breakpoint'
+
+  -- Customize launch configuration (:help dap-python.DebugpyLaunchConfig)
+  -- https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
+  ---@diagnostic disable-next-line: undefined-field
+  local configurations = require('dap').configurations.python
+  for _, configuration in pairs(configurations) do
+    ---@cast configuration table<string, any>
+    -- makes third party libraries and packages debuggable
+    configuration.justMyCode = false
+    -- stop at first line of user code for better interaction.
+    configuration.stopOnEntry = true
+    -- dap-adapter-python does not support multiprocess yet (it often leads to deadlock)
+    -- let's work around the bug by disabling multiprocess patch in debugpy.
+    -- see microsoft/debugpy#1096, mfussenegger/nvim-dap-python#21
+    configuration.subProcess = false
+  end
+
+  -- Unit test integration: see neotest config (config/testing)
 end
 
 
