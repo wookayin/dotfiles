@@ -76,6 +76,7 @@ return {
     cmd = { 'DebugStart', 'DebugContinue' };
     dependencies = {
       Plug 'rcarriga/nvim-dap-ui';
+      Plug 'rcarriga/cmp-dap';
       Plug 'theHamsta/nvim-dap-virtual-text';
       Plug 'Weissle/persistent-breakpoints.nvim';
       Plug 'mfussenegger/nvim-dap-python';

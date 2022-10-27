@@ -102,6 +102,21 @@ M.setup_ui = function()
     augroup END
   ]]
 
+  -- Completion in DAP widgets, via nvim-cmp
+  require("cmp").setup {
+    enabled = function()
+      return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt"
+        or require("cmp_dap").is_dap_buffer()
+    end
+  }
+  require("cmp").setup.filetype({
+    "dap-repl", "dapui_watches", "dapui_hover",
+  }, {
+    sources = {
+      { name = "dap", trigger_characters = { '.' } },
+    },
+  })
+
   -- Events
   -- https://microsoft.github.io/debug-adapter-protocol/specification#Events
   -- e.g., initialized, stopped, continued, exited, terminated, thread, output, breakpoint, module, etc.
@@ -149,6 +164,9 @@ M.setup_ui = function()
       vim.keymap.set('i', '<c-l>', '<c-u><c-\\><c-o>zt', { buffer = true, remap = true, desc = 'Clear REPL' })
       vim.keymap.set('i', '<c-p>', '<Up>',   { buffer = true, remap = true, desc = 'Previous Command' })
       vim.keymap.set('i', '<c-n>', '<Down>', { buffer = true, remap = true, desc = 'Next Command' })
+
+      -- Override <Tab> so that it can trigger autocompletion even if the cursor does not have a preceding word.
+      vim.keymap.set('i', '<tab>', function() require('cmp').complete() end, { buffer = true, desc = 'Tab Completion in dap-repl' })
 
       -- Debugger commands (see setup_cmds_and_keymaps)
       M._bind_keymaps_for_repl()
