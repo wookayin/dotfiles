@@ -110,7 +110,7 @@ M.setup_ui = function()
     end
   }
   require("cmp").setup.filetype({
-    "dap-repl", "dapui_watches", "dapui_hover",
+    "dap-repl", "dapui_watches", "dapui_hover", "dapui_eval_input"
   }, {
     sources = {
       { name = "dap", trigger_characters = { '.' } },
@@ -300,6 +300,8 @@ M.setup_session_keymaps = function()
 
     debug_nmap('K', function() require("dapui").eval(nil, {}) end,
         { desc = 'Evaluate or examine the expression on the cursor.'})
+    debug_nmap('?', function() M.DebugEval() end,
+        { desc = 'Evaluate an arbitrary expression using input dialog.'})
 
     debug_nmap('<C-u>', '<cmd>DebugStackUp<CR>')
     debug_nmap('<C-d>', '<cmd>DebugStackDown<CR>')
@@ -379,6 +381,52 @@ M.setup_breakpoint_persistence = function()
 
   -- Override and keymaps
   command("DebugBreakpoint", function() pb_api.toggle_breakpoint() end)
+end
+
+
+M.DebugEval = function(default_expr)
+  -- :DebugEval command ('?' in the session keymap)
+
+  if require('dap').session() == nil then
+    return vim.notify('DebugEval: Not in a Debug session.', vim.log.levels.WARN, {title = 'nvim-dap'})
+  end
+  if default_expr == "" then default_expr = nil end
+
+  -- Get user input and evaluate the expression.
+  local opts = {
+    prompt = "DebugEval> ",
+    default = default_expr or vim.fn.expand('<cexpr>'),
+    -- Assumes dressing.nvim; see lua module "dressing.input"
+    -- completion does not support lua funcref yet.
+    -- This works as an omnicomplete, so needs cmp-omni.
+    completion = "custom,v:lua.require('config.dap').DebugEvalCompletion",
+    insert_only = false,
+  }
+  vim.ui.input(opts, function(input)
+    if input and input ~= "" then
+      -- Show evaluation of the input expression in a floating window.
+      vim.defer_fn(function()
+        require "dapui".eval(input, {})
+      end, 10)
+    end
+  end)
+end
+
+M.DebugEvalCompletion = function(A, L, P)
+  -- Hack: Monkey-batch buffer vars and keymaps upon the first completion hit (<Tab>)
+  local cmp = require('cmp')
+  local bufnr = vim.api.nvim_get_current_buf()
+  vim.api.nvim_buf_set_option(bufnr, "filetype", "dapui_eval_input")  -- to make is_dap_buffer() return true
+  cmp.setup.buffer({ enabled = true })
+  vim.keymap.set("i", "<Tab>", function()
+    if cmp.visible() then cmp.select_next_item()
+    else cmp.complete() end
+  end, { buffer = bufnr })
+  vim.keymap.set("i", "<S-Tab>", function()
+    if cmp.visible() then cmp.select_prev_item() end
+  end, { buffer = bufnr })
+  cmp.complete()
+  return ''
 end
 
 
