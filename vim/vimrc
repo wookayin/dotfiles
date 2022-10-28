@@ -985,12 +985,13 @@ endif
 " e.g., :Pyedit numpy.core will open $(site-packages)/numpy/core/__init__.py
 if has('nvim') && has('python3')
   " This feature requires jedi installed on the host python.
+  let g:python_jedi_available = 0
 python3 << EOF
 try:
   import jedi
   vim.command('let g:python_jedi_available = 1')
 except ImportError:
-  vim.command('let g:python_jedi_available = 0')
+  pass
 EOF
 
   " Get module path for the given module (e.g., numpy.core) *without* actually importing it.
