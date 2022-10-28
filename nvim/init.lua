@@ -46,3 +46,8 @@ end
 vim.cmd [[
   autocmd User LazyInit  lua RC.source_config_lazy()
 ]]
+
+-- Source local-only lua configs (not git tracked)
+if vim.fn.filereadable(vim.fn.expand('~/.config/nvim/lua/config/local.lua')) > 0 then
+  require 'config/local'
+end
