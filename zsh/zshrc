@@ -237,5 +237,5 @@ fi
 
 # Optionally, put local startup config (not version controlled) in ~/.zshrc.local
 if [ -f "$HOME/.zshrc.local" ]; then
-    source '$HOME/.zshrc.local'
+    source "$HOME/.zshrc.local"
 fi
