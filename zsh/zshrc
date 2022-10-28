@@ -234,3 +234,8 @@ if [[ -z "$CONDA_EXE" && -d "/opt/homebrew/Caskroom/miniconda" ]]; then
   echo "$ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
   echo "$ ./Miniconda3-latest-MacOSX-x86_64.sh -p $HOME/.miniconda3"
 fi
+
+# Optionally, put local startup config (not version controlled) in ~/.zshrc.local
+if [ -f "$HOME/.zshrc.local" ]; then
+    source '$HOME/.zshrc.local'
+fi
