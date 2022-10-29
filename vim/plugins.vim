@@ -69,6 +69,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'vim-voom/VOoM', { 'on' : ['Voom', 'VoomToggle'] }
 if has('nvim') || v:version >= 800
   Plug 'neomake/neomake'
+  Plug 'skywind3000/asyncrun.vim'
 endif
 if has('nvim')
   Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemote') }

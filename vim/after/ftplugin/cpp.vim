@@ -6,7 +6,12 @@
 " ====================
 
 " Show <Quickfix List> buffer at the right splitted vertically
-command! -buffer -bar Copen   cclose | vertical 60copen | wincmd w
+command! -count=60 -buffer Copen   call s:Copen(<count>)
+function! s:Copen(count) abort
+    cclose
+    exec printf('vertical %dcopen', a:count)
+    wincmd h
+endfunction
 
 " Automatic makeprg generation (regarding %:r.in, %r.ans)
 if !filereadable('Makefile')

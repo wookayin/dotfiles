@@ -570,8 +570,9 @@ command! -nargs=* -bar Debug    Make
 " TODO: Real-time streaming of progress & output upon request. Neomake does not support this.
 command! -nargs=0 -bar Make    call s:run_make("<bang>")
 function! s:run_make(bang)
-    cexpr []
-    Neomake!   " asynchronous job dispatching in the background
+    " Asynchronous job dispatching in the background (output goes to quickfix)
+    AsyncMake
+    "Neomake!
     echohl Special
     echom 'Make: ' . &makeprg
     echohl NONE
@@ -579,7 +580,7 @@ endfunction
 
 if !has_key(g:plugs, 'neomake')
   " fallback to the plain make if neomake is not there
-  command! -nargs=0 -bang Neomake     make<bang>
+  command! -nargs=0 -bang Neomake     cexpr [] | make<bang>
 end
 
 " A handy way to set (global) makeprg.
@@ -613,11 +614,14 @@ command! -nargs=0 -bar  QuickfixToggle  call QuickfixToggle()
 function! QuickfixToggle() abort
   let nr = winnr('$')
   :Copen
+  cbottom   " scroll the quickfix window to the last line
   let nr2 = winnr('$')
   if nr == nr2 | cclose | endif
 endfunction
 
-command! -nargs=0 -bar  Copen   copen
+" Open the quickfix window scroll to the end (to see the status)
+" Note: asyncrun will override Copen later with asyncrun#quickfix_toggle
+command! -nargs=0 -bar       Copen   copen
 
 
 " <leader>L: show/close location list window
@@ -1554,7 +1558,41 @@ let g:airline#extensions#tabline#show_buffers = 1
 let g:airline#extensions#whitespace#mixed_indent_algo = 1
 
 " ---------------------------------------------------------------- }}}
-" Neomake {{{
+" asyncrun.vim {{{
+" see ~/.vim/after/syntax/qf.vim for color + highlights
+
+" Note that asyncrun.vim allows only one job running at a time.
+" For multiple job dispatch, we may need more advanced plugins.
+
+" Settings
+let g:asyncrun_open = 0   " Do not open quickfix after job starts
+
+command! -nargs=* AsyncMake  call AsyncMake(<q-args>)
+" TODO: Makefile completion depending on &makeprg
+function! AsyncMake(qarg) abort
+  let l:qarg = (a:qarg)
+  if &makeprg == 'make'
+    exe 'AsyncRun make ' . l:qarg
+  else
+    if !empty(l:qarg)
+      echohl WarningMsg |
+      echo 'Error: Cannot have arguments with &makeprg = ' . &makeprg
+      echohl None
+      return
+    endif
+    exe 'AsyncRun ' . ExpandCmd(&makeprg)
+  endif
+endfunction
+
+" Copen. Do not steal the cursor.
+command! -bar -count=9 Copen   call asyncrun#quickfix_toggle(<count>, v:true)
+
+" Alias :Run => :AsyncRun
+call CommandAlias('Run', 'AsyncRun', v:true)
+
+
+" ---------------------------------------------------------------- }}}
+" Neomake (deprecated) {{{
 
 " so that ':Neomake clean' invokes 'make clean'
 let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
