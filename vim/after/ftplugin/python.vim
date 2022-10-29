@@ -86,8 +86,8 @@ if has_key(g:, 'plugs') && has_key(g:plugs, 'jedi-vim')
   inoremap <buffer> <F12>  :call jedi#goto_assignments()<CR>
   imap     <buffer> <F3>   :call jedi#goto_assignments()<CR>
   " show usages (gr)
-  noremap  <buffer> <F24>  :call jedi#usages()<CR>
-  inoremap <buffer> <F24>  :call jedi#usages()<CR>
+  noremap  <buffer> <S-F12>  :call jedi#usages()<CR>
+  inoremap <buffer> <S-F12>  :call jedi#usages()<CR>
 endif
 
 " comment annotations

@@ -92,8 +92,8 @@ do
     imap <F3>   <F12>
 
     " Shift+F12: show usages/references
-    map  <F24>  gr
-    imap <F24>  <ESC>gr
+    map  <S-F12>  gr
+    imap <S-F12>  <ESC>gr
   ]]
 end
 
