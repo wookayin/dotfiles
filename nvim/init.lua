@@ -10,6 +10,7 @@ RC = {}
 
 -- Configure neovim python host.
 require 'config/pynvim'
+require 'config/fixfnkeys'
 
 -- VimR support
 -- @see https://github.com/qvacua/vimr/wiki#initvim
