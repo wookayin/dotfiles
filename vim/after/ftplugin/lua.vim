@@ -8,4 +8,4 @@ if expand("%:p") =~ "nvim/lua/config/"
 endif
 
 " Make goto-file (gf, ]f) detect lua config files.
-setlocal path+=~/.config/nvim/lua
+setlocal path+=~/.dotfiles/nvim/lua
