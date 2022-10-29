@@ -1633,6 +1633,19 @@ function! OnAsyncRunJobFinished() abort
   endif
 endfunction
 
+" Actions in the asyncrun window
+augroup AsyncRunQuickfixWindow
+  autocmd!
+  " Ctrl-C twice: kill the asyncrun job
+  autocmd FileType qf    noremap <silent> <nowait> <buffer> <C-C>        <cmd>echo 'Press Ctrl-C twice to kill the job'<CR>
+  autocmd FileType qf    noremap <silent> <nowait> <buffer> <C-C><C-C>   <cmd>call AsyncrunQuickfixCtrlC()<CR>
+augroup END
+function! AsyncrunQuickfixCtrlC() abort
+  if g:asyncrun_status == "running"
+    AsyncStop
+  endif
+endfunction
+
 
 " ---------------------------------------------------------------- }}}
 " Neomake (deprecated) {{{
