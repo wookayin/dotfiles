@@ -704,9 +704,9 @@ nnoremap <leader>src   <cmd>call _source_rc()<CR>
 if v:vim_did_enter == 0   " Do not redefine the function
   function! _source_rc() abort
     if has('nvim')
-      source ~/.config/nvim/init.vim
+      source ~/.config/nvim/init.lua
       doautocmd VimEnter
-      echo 'Sourced ~/.config/nvim/init.vim'
+      echo 'Sourced ~/.config/nvim/init.lua'
     else
       source ~/.vimrc
       doautocmd VimEnter
