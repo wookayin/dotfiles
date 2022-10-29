@@ -67,7 +67,6 @@ Plug 'jistr/vim-nerdtree-tabs', { 'on': g:_nerdtree_lazy_events }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 Plug 'vim-voom/VOoM', { 'on' : ['Voom', 'VoomToggle'] }
-Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
 if has('nvim') || v:version >= 800
   Plug 'neomake/neomake'
 endif

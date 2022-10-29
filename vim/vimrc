@@ -535,53 +535,56 @@ vnoremap > >gv
 nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
 
-" -----------------------
-" [F5] Make and Build {{{
-" -----------------------
-" use Make (vim-dispatch) or Neomake (neomake)
-if has_key(g:plugs, 'neomake')
-    " neomake; always use the bang version so that :copen can sync
-    command! -nargs=0 -bang TheMake cexpr [] | Neomake!
-    command! -nargs=0 TheCopen copen
-else
-    " vim-dispatch
-    command! -nargs=0 -bang TheMake Make<bang>
-    command! -nargs=0 TheCopen Copen
-endif
+" ------------------
+" Make and Build {{{
+" ------------------
+" We use <F5> and <Ctrl-F5> to quickly build and execute the code.
+" <C-F5> :Build        => Build and run the program.
+" <F5>   :Debug        => Build and run, in a debug mode (with DAP in the future) if available.
+" <F6>   :Output       => Show the output or build status window (quickfix, terminal, etc.)
 
+" To specialize project-wise, filetype-wise, or buffer-wise behaviors,
+" the Build, Debug, and Output commands be overriden.
+" However, we should NOT directly remap <F5> and <Ctrl-F5>.
 
-" smartly dispatch according to filetype
-command! -nargs=0 -bang RunMake call s:run_make("<bang>")
+" For now, <F5> runs :Debug -> :Build -> :Make.
+nmap <F5>    <cmd>silent w<CR><cmd>Debug<CR>
+nmap <C-F5>  <cmd>silent w<CR><cmd>Build<CR>
+imap <F5>    <ESC><F5>a
+imap <C-F5>  <ESC><C-F5>a
+
+" Alternative to <F5> (shortcut)
+map <leader>m <F5>
+
+" Build commands default to Make
+command! -nargs=* -bar Build    Make
+command! -nargs=* -bar Debug    Make
+
+" :Make
+" The default behavior is to run :Neomake, which runs a &makeprg job silently in the background.
+"
+" Note that filetype plugins or individual buffers may override the command :Make
+" For instance, ~/.vim/after/ftplugin/python.vim  ~/.vim/after/ftplugin/cpp.vim
+"
+" TODO: Neomake doesn't support regular Makefile args
+" TODO: Real-time streaming of progress & output upon request. Neomake does not support this.
+command! -nargs=0 -bar Make    call s:run_make("<bang>")
 function! s:run_make(bang)
-    let l:silent_filetypes = ['tex', 'pandoc', 'lilypond']
-    " (1) bang given, force background
-    if a:bang ==# '!' | TheMake!
-    " (2) for specified filetypes, use background
-    elseif index(l:silent_filetypes, &filetype) >= 0 | TheMake!
-    " (3) otherwise, make with foreground shown
-    else | TheMake
-    endif
-    echo printf(':RunMake  (%s)', &makeprg)
+    cexpr []
+    Neomake!   " asynchronous job dispatching in the background
+    echohl Special
+    echom 'Make: ' . &makeprg
+    echohl NONE
 endfunction
 
-" A handy way to set makeprg.
+if !has_key(g:plugs, 'neomake')
+  " fallback to the plain make if neomake is not there
+  command! -nargs=0 -bang Neomake     make<bang>
+end
+
+" A handy way to set (global) makeprg.
 command! -nargs=1 Makeprg let &g:makeprg="<args>" | echo "makeprg = <args>"
 
-if has_key(g:plugs, 'vim-dispatch')
-    " use vim-dispatch if exists
-
-    " <F5>: run make, asynchronously or split windows (dispatch)
-    map  <F5> <ESC>:w<CR>:RunMake<CR>
-    imap <F5> <ESC><F5>a
-
-    " <leader-F5>: run make with visible progress (split window in tmux)
-    map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
-
-else
-    " otherwise, fallback to default make
-    map <F5> <ESC>:w<CR>:make!<CR>
-    imap <F5> <ESC><F5>a
-endif
 
 " Make for vim script files is to reload itself.
 augroup VimscriptMakeprg
@@ -590,21 +593,32 @@ augroup VimscriptMakeprg
         \ <cmd>source %<CR><cmd>call VimNotify("Sourced " . bufname('%'))<CR>
 augroup END
 
-" Alternative to <F5>
-map <leader>m <F5>
-
 " }}}
 
-" <F6>: show/close quickfix window (scroll bottom)
-function! QuickfixToggle()
+
+" :OutputToggle or <F6> (Toggle mode)
+" -----------------------------
+
+" F6 :Output
+map  <silent> <F6>   <cmd>Output<CR>
+imap <silent> <F6>   <c-\><c-o><F6>
+":call QuickfixToggle()<CR>G:wincmd w<CR>a
+nmap <silent> <C-Q>  :call QuickfixToggle()<CR>
+
+" By default, :Output opens or closes the quickfix (copen) window
+" filetype plugin or individual buffers may override the command :Output (or :COpen)
+command! -nargs=0 -bar  Output          QuickfixToggle
+command! -nargs=0 -bar  QuickfixToggle  call QuickfixToggle()
+
+function! QuickfixToggle() abort
   let nr = winnr('$')
-  :TheCopen
+  :Copen
   let nr2 = winnr('$')
   if nr == nr2 | cclose | endif
 endfunction
-map  <silent> <F6> :call QuickfixToggle()<CR>
-imap <silent> <F6> <ESC>:call QuickfixToggle()<CR>G:wincmd w<CR>a
-nmap  <silent> <C-Q> :call QuickfixToggle()<CR>
+
+command! -nargs=0 -bar  Copen   copen
+
 
 " <leader>L: show/close location list window
 function! LocListToggle()
@@ -2122,8 +2136,8 @@ hi def link FloatermBorderNF  FloatermBorder
 command! -bang -nargs=? -complete=shellcmd  T                    :FloatermToggleOrNew<bang> <args>
 command! -bang -nargs=? -complete=shellcmd  FT                   :FloatermToggleOrNew<bang> <args>
 command! -bang -nargs=? -complete=shellcmd  FloatermToggleOrNew  call FloatermToggleOrNew(<q-args>, <bang>0)
-nnoremap <leader>tt  :FloatermToggle<CR>
-"
+nnoremap <leader>tt  :FloatermToggleOrNew<CR>
+
 function! FloatermToggleOrNew(...) abort
   " FloatermToggleOrNew(cmdline: str, bang: int = 0)
   "  - if bang=1, run the command in a shell use sendkeys.

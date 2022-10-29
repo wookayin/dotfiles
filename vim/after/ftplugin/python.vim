@@ -166,9 +166,10 @@ endfunction
 " pytest or execute the script itself, as per &makeprg
 let s:is_test_file = (expand('%:t:r') =~# "_test$" || expand('%:t:r') =~# '^test_')
 if has_key(g:plugs, 'neotest-python') && s:is_test_file
-  noremap <buffer>     <F5>       <cmd>:NeotestRun<CR>
-  noremap <buffer>     <F6>       <cmd>:NeotestOutput<CR>
-  noremap <buffer>     <F7>       <cmd>lua require'neotest'.run.attach()<CR>
+  " see ~/.config/nvim/config/tesing.lua commands
+  command! -buffer -nargs=0  Build    echom ':Test' | Test
+  command! -buffer -nargs=0  Output   NeotestOutput
+  noremap <buffer>           <F7>    <cmd>lua require'neotest'.run.attach()<CR>
 
 elseif has_key(g:plugs, 'vim-floaterm')
   let s:ftname = 'makepython'
@@ -209,6 +210,7 @@ elseif has_key(g:plugs, 'vim-floaterm')
       wincmd p        " move back to the python buf
     endif
   endfunction
-  noremap <buffer>          <F5>   <ESC>:w<CR>:<C-u>call MakeInTerminal()<CR><C-\><C-o>:stopinsert<CR>
-  noremap <buffer> <silent> <F6>   :FloatermToggle makepython<CR>
+  " <F5> Build (replaces Make), <F6> Output (replaces QuickfixToggle)
+  command! -buffer -bar  Build   w | call MakeInTerminal() | stopinsert
+  command! -buffer -bar  Output  FloatermShow makepython
 endif
