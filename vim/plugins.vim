@@ -71,6 +71,7 @@ if has('nvim') || v:version >= 800
   Plug 'neomake/neomake'
   Plug 'skywind3000/asyncrun.vim'
 endif
+Plug 'vim-scripts/errormarker.vim'
 if has('nvim')
   Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemote') }
   Plug 'romgrk/fzy-lua-native'

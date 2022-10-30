@@ -1568,8 +1568,12 @@ let g:airline#extensions#whitespace#mixed_indent_algo = 1
 " Note that asyncrun.vim allows only one job running at a time.
 " For multiple job dispatch, we may need more advanced plugins.
 
-" Settings
-let g:asyncrun_open = 0   " Do not open quickfix after job starts
+" (Settings)
+" Do not open quickfix after job starts
+let g:asyncrun_open = 0
+" Trigger autocmd QuickFixCmdPost make after job finish (triggers errormarker)
+let g:asyncrun_auto = "make"
+
 
 command! -nargs=* -complete=customlist,MakeCommandCompletion AsyncMake
       \ call AsyncMake(<q-args>)
@@ -1737,6 +1741,22 @@ augroup END
 
 " }
 
+
+" ---------------------------------------------------------------- }}}
+" errormarker.vim (quickfix to signs) {{{
+
+" signs
+let g:errormarker_errortext = '✘'
+let g:errormarker_warningtext = ''
+let g:errormarker_errortextgroup = "DiagnosticSignError"
+let g:errormarker_warningtextgroup = "DiagnosticSignWarn"
+
+" text line
+let g:errormarker_errorgroup = 'ErrormarkerErrorText'
+let g:errormarker_warninggroup = 'ErrormarkerWarningText'
+
+hi ErrormarkerErrorText       guibg=#3d0f0f
+hi ErrormarkerWarningText     guibg=NONE
 
 " ---------------------------------------------------------------- }}}
 " FZF {{{
