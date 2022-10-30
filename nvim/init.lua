@@ -35,6 +35,7 @@ if vim.fn.has('nvim-0.7') == 0 then
   return
 end
 
+require 'config/ui'
 require 'config/commands'
 require 'config/quickfix'
 

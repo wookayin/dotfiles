@@ -588,7 +588,10 @@ function! MakeCommandCompletion(A, L, P) abort
 endfunction
 
 " A handy way to set (global) makeprg.
-command! -nargs=1 Makeprg let &g:makeprg="<args>" | echo "makeprg = <args>"
+" See ~/.dotfiles/nvim/lua/config/commands/Makeprg.lua for nvim+lua version
+command! -nargs=1 Makeprg       let &makeprg="<args>" | echo "&makeprg = <args>"
+command! -nargs=1 MakeprgGlobal let &g:makeprg="<args>" | echo "&g:makeprg = <args>"
+command! -nargs=1 MakeprgLocal  let &l:makeprg="<args>" | echo "&l:makeprg = <args>"
 
 
 " Make for vim script files is to reload itself.
