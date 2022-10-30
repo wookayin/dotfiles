@@ -36,6 +36,7 @@ if vim.fn.has('nvim-0.7') == 0 then
 end
 
 require 'config/commands'
+require 'config/quickfix'
 
 -- Source individiual rc files. (lazy loading)
 function RC.source_config_lazy()

@@ -1563,6 +1563,10 @@ let g:airline#extensions#tabline#show_buffers = 1
 let g:airline#extensions#whitespace#mixed_indent_algo = 1
 
 " ---------------------------------------------------------------- }}}
+" nvim-bqf (enhanced quickfix) {{{
+" See ~/.dotfiles/nvim/lua/config/quickfix.lua
+
+" ---------------------------------------------------------------- }}}
 " asyncrun.vim {{{
 " see ~/.vim/after/syntax/qf.vim for color + highlights
 

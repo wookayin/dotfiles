@@ -67,6 +67,9 @@ Plug 'jistr/vim-nerdtree-tabs', { 'on': g:_nerdtree_lazy_events }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 Plug 'vim-voom/VOoM', { 'on' : ['Voom', 'VoomToggle'] }
+if has('nvim')
+   Plug 'kevinhwang91/nvim-bqf'
+endif
 if has('nvim') || v:version >= 800
   Plug 'neomake/neomake'
   Plug 'skywind3000/asyncrun.vim'
