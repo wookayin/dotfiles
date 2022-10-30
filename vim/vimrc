@@ -566,22 +566,26 @@ command! -nargs=* -bar Debug    Make
 " Note that filetype plugins or individual buffers may override the command :Make
 " For instance, ~/.vim/after/ftplugin/python.vim  ~/.vim/after/ftplugin/cpp.vim
 "
-" TODO: Neomake doesn't support regular Makefile args
-" TODO: Real-time streaming of progress & output upon request. Neomake does not support this.
-command! -nargs=0 -bar Make    call s:run_make("<bang>")
-function! s:run_make(bang)
+command! -nargs=* -complete=customlist,MakeCommandCompletion -bar Make
+      \ call s:run_make("<bang>", <q-args>)
+function! s:run_make(bang, qargs)
     " Asynchronous job dispatching in the background (output goes to quickfix)
-    AsyncMake
-    "Neomake!
+    exec 'AsyncMake ' . a:qargs
     echohl Special
     echom 'Make: ' . &makeprg
     echohl NONE
 endfunction
 
-if !has_key(g:plugs, 'neomake')
-  " fallback to the plain make if neomake is not there
-  command! -nargs=0 -bang Neomake     cexpr [] | make<bang>
-end
+" Completion for :Make commands
+function! MakeCommandCompletion(A, L, P) abort
+  if &makeprg == 'make'
+    " credit: @pbnj https://dev.to/pbnj/how-to-get-make-target-tab-completion-in-vim-4mj1
+    let l:targets = systemlist('make -qp | awk -F'':'' ''/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}'' | grep -v Makefile | sort -u')
+    return filter(l:targets, 'v:val =~ "^' . a:A . '"')
+  else
+    return []
+  end
+endfunction
 
 " A handy way to set (global) makeprg.
 command! -nargs=1 Makeprg let &g:makeprg="<args>" | echo "makeprg = <args>"
@@ -1567,8 +1571,8 @@ let g:airline#extensions#whitespace#mixed_indent_algo = 1
 " Settings
 let g:asyncrun_open = 0   " Do not open quickfix after job starts
 
-command! -nargs=* AsyncMake  call AsyncMake(<q-args>)
-" TODO: Makefile completion depending on &makeprg
+command! -nargs=* -complete=customlist,MakeCommandCompletion AsyncMake
+      \ call AsyncMake(<q-args>)
 function! AsyncMake(qarg) abort
   let l:qarg = (a:qarg)
   if &makeprg == 'make'
