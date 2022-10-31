@@ -254,13 +254,14 @@ set matchpairs+=<:>
 set switchbuf+=usetab,split
 
 " diff: ignore whitespaces
-if &diff
+try
   set diffopt+=iwhite
   " use more intuitive, semantically easy-to-parse diff algorithm
   if has("patch-8.1.0360") || has('nvim')
     set diffopt+=internal,algorithm:patience
   endif
-endif
+catch   " ignore if diffopt unknown for legacy vimdiff
+endtry
 
 " jump to the last position when reopening a file
 if has('autocmd')
