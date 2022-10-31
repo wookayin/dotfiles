@@ -3,6 +3,11 @@
 
 local M = {}
 
+local if_nil = function(value, val_nil, val_non_nil)
+  if value == nil then return val_nil
+  else return val_non_nil end
+end
+
 ------------------------------------------------------------------------------
 -- DAP Configs.
 ------------------------------------------------------------------------------
@@ -121,8 +126,12 @@ M.setup_ui = function()
   -- https://microsoft.github.io/debug-adapter-protocol/specification#Events
   -- e.g., initialized, stopped, continued, exited, terminated, thread, output, breakpoint, module, etc.
   dap.listeners.after.event_initialized["dapui_config"] = function()
-    -- Open DAP UI Elements when a debug session starts;
-    dapui.open {}
+    -- Open DAP UI Elements when a debug session starts, unless openUIOnEntry is false.
+    ---@diagnostic disable-next-line: undefined-field
+    local openUIOnEntry = if_nil(dap.session().config.openUIOnEntry, true, false)
+    if openUIOnEntry then
+      dapui.open {}
+    end
   end
   dap.listeners.after.event_stopped["dapui_config"] = function()
     -- Open DapUI when the debugger hits a breakpoint.

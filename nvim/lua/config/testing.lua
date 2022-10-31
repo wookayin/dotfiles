@@ -13,11 +13,13 @@ function M.setup_neotest()
   require("neotest").setup {
     adapters = {
       require("neotest-python")({
+        -- see config/lua setup_python()
         dap = {
           justMyCode = false,
           console = "integratedTerminal",
           stopOnEntry = false,  -- which is the default(false)
           subProcess = false,  -- see config/testing.lua
+          openUIOnEntry = false,
         },
         args = { "-vv", "-s" },
         runner = 'pytest',
