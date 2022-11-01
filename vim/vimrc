@@ -536,53 +536,64 @@ vnoremap > >gv
 nnoremap [l :lprevious<CR>
 nnoremap ]l :lnext<CR>
 
-" -----------------------
-" [F5] Make and Build {{{
-" -----------------------
-" use Make (vim-dispatch) or Neomake (neomake)
-if has_key(g:plugs, 'neomake')
-    " neomake; always use the bang version so that :copen can sync
-    command! -nargs=0 -bang TheMake cexpr [] | Neomake!
-    command! -nargs=0 TheCopen copen
-else
-    " vim-dispatch
-    command! -nargs=0 -bang TheMake Make<bang>
-    command! -nargs=0 TheCopen Copen
-endif
+" ------------------
+" Make and Build {{{
+" ------------------
+" We use <F5> and <Ctrl-F5> to quickly build and execute the code.
+" <C-F5> :Build        => Build and run the program.
+" <F5>   :Debug        => Build and run, in a debug mode (with DAP in the future) if available.
+" <F6>   :Output       => Show the output or build status window (quickfix, terminal, etc.)
 
+" To specialize project-wise, filetype-wise, or buffer-wise behaviors,
+" the Build, Debug, and Output commands be overriden.
+" However, we should NOT directly remap <F5> and <Ctrl-F5>.
 
-" smartly dispatch according to filetype
-command! -nargs=0 -bang RunMake call s:run_make("<bang>")
-function! s:run_make(bang)
-    let l:silent_filetypes = ['tex', 'pandoc', 'lilypond']
-    " (1) bang given, force background
-    if a:bang ==# '!' | TheMake!
-    " (2) for specified filetypes, use background
-    elseif index(l:silent_filetypes, &filetype) >= 0 | TheMake!
-    " (3) otherwise, make with foreground shown
-    else | TheMake
-    endif
-    echo printf(':RunMake  (%s)', &makeprg)
+" For now, <F5> runs :Debug -> :Build -> :Make.
+nmap <F5>    <cmd>silent w<CR><cmd>Debug<CR>
+nmap <C-F5>  <cmd>silent w<CR><cmd>Build<CR>
+imap <F5>    <ESC><F5>a
+imap <C-F5>  <ESC><C-F5>a
+
+" Alternative to <F5> (shortcut)
+map <leader>m <F5>
+
+" Build commands default to Make
+command! -nargs=* -bar Build    Make
+command! -nargs=* -bar Debug    Make
+
+" :Make
+" The default behavior is to run :Neomake, which runs a &makeprg job silently in the background.
+"
+" Note that filetype plugins or individual buffers may override the command :Make
+" For instance, ~/.vim/after/ftplugin/python.vim  ~/.vim/after/ftplugin/cpp.vim
+"
+command! -nargs=* -complete=customlist,MakeCommandCompletion -bar Make
+      \ call s:run_make("<bang>", <q-args>)
+function! s:run_make(bang, qargs)
+    " Asynchronous job dispatching in the background (output goes to quickfix)
+    exec 'AsyncMake ' . a:qargs
+    echohl Special
+    echom 'Make: ' . &makeprg
+    echohl NONE
 endfunction
 
-" A handy way to set makeprg.
-command! -nargs=1 Makeprg let &g:makeprg="<args>" | echo "makeprg = <args>"
+" Completion for :Make commands
+function! MakeCommandCompletion(A, L, P) abort
+  if &makeprg == 'make'
+    " credit: @pbnj https://dev.to/pbnj/how-to-get-make-target-tab-completion-in-vim-4mj1
+    let l:targets = systemlist('make -qp | awk -F'':'' ''/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}'' | grep -v Makefile | sort -u')
+    return filter(l:targets, 'v:val =~ "^' . a:A . '"')
+  else
+    return []
+  end
+endfunction
 
-if has_key(g:plugs, 'vim-dispatch')
-    " use vim-dispatch if exists
+" A handy way to set (global) makeprg.
+" See ~/.dotfiles/nvim/lua/config/commands/Makeprg.lua for nvim+lua version
+command! -nargs=1 Makeprg       let &makeprg="<args>" | echo "&makeprg = <args>"
+command! -nargs=1 MakeprgGlobal let &g:makeprg="<args>" | echo "&g:makeprg = <args>"
+command! -nargs=1 MakeprgLocal  let &l:makeprg="<args>" | echo "&l:makeprg = <args>"
 
-    " <F5>: run make, asynchronously or split windows (dispatch)
-    map  <F5> <ESC>:w<CR>:RunMake<CR>
-    imap <F5> <ESC><F5>a
-
-    " <leader-F5>: run make with visible progress (split window in tmux)
-    map  <leader><F5> <ESC>:w<CR>:RunMake!<CR>
-
-else
-    " otherwise, fallback to default make
-    map <F5> <ESC>:w<CR>:make!<CR>
-    imap <F5> <ESC><F5>a
-endif
 
 " Make for vim script files is to reload itself.
 augroup VimscriptMakeprg
@@ -591,21 +602,35 @@ augroup VimscriptMakeprg
         \ <cmd>source %<CR><cmd>call VimNotify("Sourced " . bufname('%'))<CR>
 augroup END
 
-" Alternative to <F5>
-map <leader>m <F5>
-
 " }}}
 
-" <F6>: show/close quickfix window (scroll bottom)
-function! QuickfixToggle()
+
+" :OutputToggle or <F6> (Toggle mode)
+" -----------------------------
+
+" F6 :Output
+map  <silent> <F6>   <cmd>Output<CR>
+imap <silent> <F6>   <c-\><c-o><F6>
+":call QuickfixToggle()<CR>G:wincmd w<CR>a
+nmap <silent> <C-Q>  :call QuickfixToggle()<CR>
+
+" By default, :Output opens or closes the quickfix (copen) window
+" filetype plugin or individual buffers may override the command :Output (or :COpen)
+command! -nargs=0 -bar  Output          QuickfixToggle
+command! -nargs=0 -bar  QuickfixToggle  call QuickfixToggle()
+
+function! QuickfixToggle() abort
   let nr = winnr('$')
-  :TheCopen
+  :Copen
+  cbottom   " scroll the quickfix window to the last line
   let nr2 = winnr('$')
   if nr == nr2 | cclose | endif
 endfunction
-map  <silent> <F6> :call QuickfixToggle()<CR>
-imap <silent> <F6> <ESC>:call QuickfixToggle()<CR>G:wincmd w<CR>a
-nmap  <silent> <C-Q> :call QuickfixToggle()<CR>
+
+" Open the quickfix window scroll to the end (to see the status)
+" Note: asyncrun will override Copen later with asyncrun#quickfix_toggle
+command! -nargs=0 -bar       Copen   copen
+
 
 " <leader>L: show/close location list window
 function! LocListToggle()
@@ -621,6 +646,7 @@ map <F4> <ESC>:cn<CR>
 map [26~ <ESC>:cp<CR>
 map [1;2S <ESC>:cp<CR>
 map [29~ <ESC>:cp<CR>
+map <S-F4> <ESC>:cp<CR>
 
 " [F2] save
 imap <F2> <ESC>:w<CR>
@@ -1541,7 +1567,105 @@ let g:airline#extensions#tabline#show_buffers = 1
 let g:airline#extensions#whitespace#mixed_indent_algo = 1
 
 " ---------------------------------------------------------------- }}}
-" Neomake {{{
+" nvim-bqf (enhanced quickfix) {{{
+" See ~/.dotfiles/nvim/lua/config/quickfix.lua
+
+" ---------------------------------------------------------------- }}}
+" asyncrun.vim {{{
+" see ~/.vim/after/syntax/qf.vim for color + highlights
+
+" Note that asyncrun.vim allows only one job running at a time.
+" For multiple job dispatch, we may need more advanced plugins.
+
+" (Settings)
+" Do not open quickfix after job starts
+let g:asyncrun_open = 0
+" Trigger autocmd QuickFixCmdPost make after job finish (triggers errormarker)
+let g:asyncrun_auto = "make"
+
+
+command! -nargs=* -complete=customlist,MakeCommandCompletion AsyncMake
+      \ call AsyncMake(<q-args>)
+function! AsyncMake(qarg) abort
+  let l:qarg = (a:qarg)
+  if &makeprg == 'make'
+    exe 'AsyncRun make ' . l:qarg
+  else
+    if !empty(l:qarg)
+      echohl WarningMsg |
+      echo 'Error: Cannot have arguments with &makeprg = ' . &makeprg
+      echohl None
+      return
+    endif
+    exe 'AsyncRun ' . ExpandCmd(&makeprg)
+  endif
+endfunction
+
+" Copen. Do not steal the cursor.
+command! -bar -count=9 Copen   call asyncrun#quickfix_toggle(<count>, v:true)
+
+" Alias :Run => :AsyncRun
+call CommandAlias('Run', 'AsyncRun', v:true)
+
+" asyncrun autocmd events: notification callback when job finishes
+augroup AsyncRunEvents
+  autocmd!
+  autocmd User AsyncRunStart  call OnAsyncRunJobStart()
+  autocmd User AsyncRunStop   call OnAsyncRunJobFinished()
+augroup END
+
+let g:asyncrun_job_status = {}
+function! OnAsyncRunJobStart() abort
+  let l:jobid = 3000   " asyncrun supports only ONE concurrent job
+  let g:asyncrun_job_status[l:jobid] = {
+        \ 'status': 'running',
+        \ 'cmdline': g:asyncrun_info,
+        \ }
+endfunction
+
+function! OnAsyncRunJobFinished() abort
+  let l:jobid = 3000   " asyncrun supports only ONE concurrent job
+  let l:job = get(g:asyncrun_job_status, l:jobid, {})
+  if l:job == {} | return | endif
+  let l:job['status'] = g:asyncrun_status
+
+  " Notifications.
+  if l:job['status'] != "success"
+    let l:failure_message = l:job['cmdline']
+    let l:job_title = printf("AsyncRun")   " TODO: How to get the cmd or job info?
+    call VimNotify('Job Failed: ' . l:failure_message, 'warn', {'title': l:job_title})
+
+    " Automatically show quickfix window if the job has failed.
+    " open the qf window at the bottom (regardless of overriden :Copen)
+    call asyncrun#quickfix_toggle(9, v:true) | cbottom
+  endif
+
+  " Statusline integration
+  " Remove the job from the statusline after 2 seconds
+  if !exists('*timer_start')
+    silent! unlet g:asyncrun_job_status[l:jobid]
+  else
+    call timer_start(2000, { -> execute(printf(
+          \"silent! unlet g:asyncrun_job_status[%d]", l:jobid)) })
+  endif
+endfunction
+
+" Actions in the asyncrun window
+augroup AsyncRunQuickfixWindow
+  autocmd!
+  " Ctrl-C twice: kill the asyncrun job
+  autocmd FileType qf    noremap <silent> <nowait> <buffer> <C-C>        <cmd>echo 'Press Ctrl-C twice to kill the job'<CR>
+  autocmd FileType qf    noremap <silent> <nowait> <buffer> <C-C><C-C>   <cmd>call AsyncrunQuickfixCtrlC()<CR>
+augroup END
+function! AsyncrunQuickfixCtrlC() abort
+  if g:asyncrun_status == "running"
+    AsyncStop
+  endif
+endfunction
+
+
+" ---------------------------------------------------------------- }}}
+" Neomake (deprecated) {{{
 
 " so that ':Neomake clean' invokes 'make clean'
 let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
@@ -1575,10 +1699,10 @@ function! s:OnNeomakeJobFinished()
 
   " Remove the job from the statusline after 2 seconds
   if !exists('*timer_start')
-    unlet g:neomake_job_status[l:context.jobinfo.make_id]
+    silent! unlet g:neomake_job_status[l:context.jobinfo.make_id]
   else
     call timer_start(2000, { -> execute(printf(
-          \"unlet g:neomake_job_status[%d]", l:context.jobinfo.make_id)) })
+          \"silent! unlet g:neomake_job_status[%d]", l:context.jobinfo.make_id)) })
   endif
 
   let l:bufnr = l:context.jobinfo.bufnr
@@ -1589,13 +1713,13 @@ function! s:OnNeomakeJobFinished()
   if l:exit_code != 0
     let l:failure_message = printf('%s%s ', l:failure_message, l:job['as_string']())
   endif
-  if !empty(l:failure_message)
+  if !empty(l:failure_message)  " fail
     call VimNotify('Job Failed: ' . l:failure_message, 'warn', {'title': l:job_title})
     copen | wincmd p   " copen, but not move to the quickfix window
     if !s:is_copen()
       let b:neomake_auto_copen = 1
     endif
-  else
+  else  " job success
     if g:neomake_job_notification > 0
       call VimNotify('Job Finished, Success.', 'info',
             \ {'title': l:job_title, 'timeout': 1000})
@@ -1626,6 +1750,22 @@ augroup END
 
 " }
 
+
+" ---------------------------------------------------------------- }}}
+" errormarker.vim (quickfix to signs) {{{
+
+" signs
+let g:errormarker_errortext = '✘'
+let g:errormarker_warningtext = ''
+let g:errormarker_errortextgroup = "DiagnosticSignError"
+let g:errormarker_warningtextgroup = "DiagnosticSignWarn"
+
+" text line
+let g:errormarker_errorgroup = 'ErrormarkerErrorText'
+let g:errormarker_warninggroup = 'ErrormarkerWarningText'
+
+hi ErrormarkerErrorText       guibg=#3d0f0f
+hi ErrormarkerWarningText     guibg=NONE
 
 " ---------------------------------------------------------------- }}}
 " FZF {{{
@@ -2123,8 +2263,8 @@ hi def link FloatermBorderNF  FloatermBorder
 command! -bang -nargs=? -complete=shellcmd  T                    :FloatermToggleOrNew<bang> <args>
 command! -bang -nargs=? -complete=shellcmd  FT                   :FloatermToggleOrNew<bang> <args>
 command! -bang -nargs=? -complete=shellcmd  FloatermToggleOrNew  call FloatermToggleOrNew(<q-args>, <bang>0)
-nnoremap <leader>tt  :FloatermToggle<CR>
-"
+nnoremap <leader>tt  :FloatermToggleOrNew<CR>
+
 function! FloatermToggleOrNew(...) abort
   " FloatermToggleOrNew(cmdline: str, bang: int = 0)
   "  - if bang=1, run the command in a shell use sendkeys.
