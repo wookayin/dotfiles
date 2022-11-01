@@ -1,4 +1,4 @@
--- Fixes function key mappings for neovim on xterm-256color TERM.
+-- Fixes function key mappings for neovim on xterm-* TERMs.
 
 -- @author Jongwook Choi <wookayin@gmail.com>
 -- This file is licensed at the PUBLIC DOMAIN (PD) LICENSE
@@ -9,7 +9,7 @@
 -- normal modifier-enabled keycodes (e.g. <S-F1> .. <M-12>) everywhere in the config.
 
 
-local condition = vim.fn.has('nvim-0.7.0') > 0 and vim.fn.expand('$TERM') == 'xterm-256color'
+local condition = vim.fn.has('nvim-0.7.0') > 0 and vim.fn.expand('$TERM'):match("^xterm")
 if not condition then return end
 
 local mode = { 'n', 'v', 'x', 's', 'o', 'i', 'l', 'c', 't' }
@@ -73,5 +73,5 @@ vim.keymap.set(mode, '<F60>', '<M-F12>', opts)
 
 -- Other possible combinations among Alt, Shift, Ctrl
 -- Alt + Shift        : correctly recognized as <M-S-F%d>
--- Ctrl + Alt         : correctly recognized as <M-C-F%d>
+-- Alt + Ctrl         : correctly recognized as <M-C-F%d>
 -- Alt + Ctrl + Shift : correctly recognized as <M-C-S-F%d>
