@@ -33,7 +33,11 @@ end
 
 function M.action(arg)
   map = map or M.build_directory_map()
-  local file = map[arg] or map[arg .. '.lua']
+  local aliases = {
+    ['plug'] = 'plugins.vim'
+  }
+  local file = map[arg] or map[arg .. '.lua'] or map[arg .. '.vim'] or map[aliases[arg]]
+
   if not file then
     return print("Invalid argument: " .. arg)
   end
@@ -56,7 +60,7 @@ end
 
 -- Define commands upon sourcing
 vim.api.nvim_create_user_command('Config',
-  function(opts) M.action(opts.args) end,
+  function(opts) M.action(vim.trim(opts.args)) end,
   {
     nargs = 1,
     complete = M.completion,
