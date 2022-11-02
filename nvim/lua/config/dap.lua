@@ -506,6 +506,78 @@ end
 -- @see :help dap-configuration
 ------------------------------------------------------------------------------
 
+---@param fn fun(yield: fun(ret))  A callback function to be wrapped in a coroutine.
+---            The wrapped function takes a argument `yield`, which a result is passed to.
+local function wrap_coroutine(fn)
+  return function()
+    return coroutine.create(function(dap_co)
+      local yield = function(ret)
+        coroutine.resume(dap_co, ret)
+      end
+      xpcall(function()
+        fn(yield)
+      end,
+      function(err) -- catch exceptions
+        local msg = debug.traceback(err, 2)
+        vim.notify(msg, vim.log.levels.ERROR, { title = "config.dap" })
+      end)
+    end)
+  end
+end
+
+--- Lua adapter(osv): https://github.com/jbyuki/one-small-step-for-vimkind
+---
+--- Our use case of lua debugging is limited to the following scenario:
+--- 1. On a UI-attached neovim instance (say "S") that is going to be debugged,
+---    launch a OSV lua debug server (localhost:8086) through:
+---    > :LuaDebugServerLaunch [8086]
+--- 2. then open another neovim instance (say "C") that will run a DAP session as the
+---    debugger client, by attaching to the OSV debugging server running on "S":
+---    > :DebugStart lua
+M.setup_lua = function()
+  local dap = require('dap')
+
+  command('LuaDebugServerLaunch', function(e)
+    local port = tonumber(e.fargs[1] or 8086)
+    local server = require("osv").launch { port = port }
+    if not server then
+      return error("Lua OSV server has failed to launch.")
+    end
+    vim.notify(("Lua OSV server launched on port %s.\n" ..
+                "Run `:DebugStart lua` in another vim."):format(server.port))
+  end, { nargs = '?' })
+
+  dap.configurations.lua = {
+    {
+      type = 'nlua',
+      request = 'attach',
+      name = "Attach to an remote Neovim instance",
+      host = "127.0.0.1",
+      port = wrap_coroutine(function(yield)
+        vim.ui.input({
+          prompt = "Lua OSV server port (:LuaDebugServerLaunch) [8086]:",
+          default = '8086', relative = 'editor'
+        }, function(input)
+          if not input or input == "" then return end
+          local port = tonumber(input)
+          if not port then
+            return vim.schedule_wrap(vim.api.nvim_err_writeln)("Invalid port number: " .. input)
+          end
+          yield(port)
+        end)
+      end),
+    },
+  }
+  ---@param configuration table<string, any>
+  dap.adapters['nlua'] = function(callback, configuration)
+    callback({
+      type = 'server',
+      host = configuration.host or "127.0.0.1",
+      port = configuration.port or 8086,
+    })
+  end
+end
+
 --- python dap: https://github.com/mfussenegger/nvim-dap-python
 M.setup_python = function()
   require('dap-python').setup()
@@ -547,6 +619,7 @@ M.setup = function()
   M.setup_breakpoint_persistence()
 
   -- Adapters
+  M.setup_lua()
   M.setup_python()
 end
 

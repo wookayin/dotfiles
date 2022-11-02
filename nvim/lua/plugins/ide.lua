@@ -80,6 +80,7 @@ return {
       Plug 'theHamsta/nvim-dap-virtual-text';
       Plug 'Weissle/persistent-breakpoints.nvim';
       Plug 'mfussenegger/nvim-dap-python';
+      Plug 'jbyuki/one-small-step-for-vimkind';
     },
     config = function()
       require('config.dap').setup()
