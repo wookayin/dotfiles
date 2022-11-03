@@ -61,6 +61,23 @@ function plugged() {
 
 # Tmux ========================================= {{{
 
+function tmux-wrapper() {
+    if [ $# -lt 1 ]; then
+        command tmux -V || return 2;
+        echo 'tmux: Using tmux with no arguments is discouraged, try some aliases:\n' >&2
+        echo '  tmuxnew SESSION_NAME : Create a new session with the name' >&2
+        echo '  tmuxa   SESSION_NAME : Attach to an existing session' >&2
+        echo '  tmuxl                : List all the existing sessions' >&2
+        echo '' >&2
+
+        tmux --help || true;
+        return 1;
+    fi
+    command tmux "$@"
+}
+compdef '_tmux' tmux-wrapper
+alias tmux='tmux-wrapper'
+
 # create a new session with name
 alias tmuxnew='tmux new -s'
 alias tnew='tmuxnew'
