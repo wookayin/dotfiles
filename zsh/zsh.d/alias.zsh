@@ -404,21 +404,6 @@ function site-packages() {
     fi;
 }
 
-function vimpy() {
-    # Open a corresponding file of specified python module.
-    # e.g. $ vimpy numpy.core    --> opens $(site-package)/numpy/core/__init__.py
-    if [[ -z "$1" ]]; then; echo "Argument required"; return 1; fi
-
-    local _module_path=$(python -c "import $1; print($1.__file__)" 2>/dev/null)
-    if [[ -n "$_module_path" ]]; then
-        echo $_module_path
-        vim "$_module_path"
-     else
-        echo "Cannot import module: $1"
-        return 1;
-    fi
-}
-
 # open some macOS applications
 if [[ "$(uname)" == "Darwin" ]]; then
 
