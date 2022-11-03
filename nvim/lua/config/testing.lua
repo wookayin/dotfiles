@@ -171,6 +171,14 @@ function M.custom_consumers.attach_or_output()
     async.run(function()
       local pos = neotest.run.get_tree_from_args(args)
       if pos and client:is_running(pos:data().id) then
+        local is_dap_active = pcall(require, "dap") and require("dap").session() ~= nil or false
+        if is_dap_active then
+          -- when a DAP session is running with neotest (strategy = dap),
+          -- strategy.attach will simply open dap-repl; we would want to show exceptions instead
+          -- because dap-terminal (console) will also be displayed
+          require("dapui").float_element("exception", { enter = false })
+          return
+        end
         neotest.run.attach()
       else
         neotest.output.open(args)

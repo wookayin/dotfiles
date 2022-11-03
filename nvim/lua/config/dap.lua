@@ -98,6 +98,36 @@ M.setup_ui = function()
     }
   }
 
+  -- Register custom dapui elements (dapui v3.0+)
+  local dapui_exception = {
+    buffer = require("dapui.util").create_buffer("DAP Exceptions", { filetype = "dapui_exceptions" }),
+    float_defaults = function() return { enter = false } end
+  }
+  function dapui_exception.render()
+    -- get the diagnostic information and draw upon rendering/entering.
+    local session = require("dap").session()
+    if session == nil then
+      return
+    end
+    local buf = dapui_exception.buffer()
+    local diagnostics = vim.diagnostic.get(nil, { namespace = session.ns } )  ---@type Diagnostic[]
+    local msg = table.concat(vim.tbl_map(function(d) return d.message end, diagnostics), '\n')
+    if not msg or msg == "" then
+      msg = "(No exception was caught)"
+    end
+    pcall(function()
+      vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(msg, '\n'))
+      vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+    end)
+  end
+  xpcall(function()
+    dapui.register_element("exception", dapui_exception)
+  end, function(err)
+    if err:match("already exists") then return end
+    vim.notify(debug.traceback(err, 1), vim.log.levels.ERROR, { title = "dapui" })
+  end)
+
   -- Custom highlights for dap-ui elements
   vim.cmd [[
     hi DapReplPrompt guifg=#fab005 gui=NONE
@@ -314,6 +344,10 @@ M.setup_session_keymaps = function()
 
     debug_nmap('<C-u>', '<cmd>DebugStackUp<CR>')
     debug_nmap('<C-d>', '<cmd>DebugStackDown<CR>')
+
+    debug_nmap('<leader>e', function()
+      require("dapui").float_element("exception", { enter = false })
+    end, { desc = 'Show the active exception in a floating window.' })
   end
 
   -- Restore the keymap existing to before the DAP session
