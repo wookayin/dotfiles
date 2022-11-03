@@ -2301,6 +2301,9 @@ let g:floaterm_height = 0.7
 " in favor of the autohide autocmd below (only works for 'floating' windows)
 let g:floaterm_autohide = 0
 
+" Turn off GIT_EDITOR integration.
+let g:floaterm_giteditor = 0
+
 augroup FloatermCustom
   autocmd!
   autocmd user FloatermOpen   call s:floaterm_configure_after()
