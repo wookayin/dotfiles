@@ -253,12 +253,17 @@ set matchpairs+=<:>
 " or open a new buffer by splitting window in the current tab otherwise.
 set switchbuf+=usetab,split
 
-" diff: ignore whitespaces
+" diff options (&diffopt)
 try
+  " Ignore whitespaces
   set diffopt+=iwhite
-  " use more intuitive, semantically easy-to-parse diff algorithm
-  if has("patch-8.1.0360") || has('nvim')
+  " Use more intuitive, semantically easy-to-parse diff algorithm
+  if has('patch-8.1.0360') || has('nvim')
     set diffopt+=internal,algorithm:patience
+  endif
+  " Enhance diff result by line matching algorithm (neovim#14537)
+  if has('nvim-0.9.0')
+    set diffopt+=linematch:60
   endif
 catch   " ignore if diffopt unknown for legacy vimdiff
 endtry
