@@ -169,7 +169,6 @@ if has_key(g:plugs, 'neotest-python') && s:is_test_file
   " see ~/.config/nvim/config/tesing.lua commands
   command! -buffer -nargs=0  Build    echom ':Test' | Test
   command! -buffer -nargs=0  Output   NeotestOutput
-  noremap <buffer>           <F7>    <cmd>lua require'neotest'.run.attach()<CR>
 
   nnoremap <buffer>    <leader>T   <cmd>NeotestSummary<CR>
 

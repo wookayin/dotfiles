@@ -9,6 +9,7 @@ if not pcall(require, 'neotest') then
 end
 
 local M = {}
+M.custom_consumers = {}
 
 -- :help neotest.config
 -- @see ~/.vim/plugged/neotest/lua/neotest/config/init.lua
@@ -32,6 +33,10 @@ function M.setup_neotest()
       failed = "❌",
       skipped = "🚫",
     },
+    -- custom consumers.
+    consumers = {
+      attach_or_output = M.custom_consumers.attach_or_output(),
+    }
   }
 end
 
@@ -45,7 +50,7 @@ function M.setup_commands_keymaps()
     command! -nargs=0 Test            NeotestRun
 
     command! -nargs=0 NeotestStop             lua require("neotest").run.stop()
-    command! -nargs=0 NeotestOutput           lua require("neotest").output.open()
+    command! -nargs=0 NeotestOutput           lua require("neotest").attach_or_output.open()
     command! -nargs=0 NeotestOutputSplit      lua require("neotest").output.open({ open_win = function() vim.cmd "botright 20split" end })
 
     command! -nargs=0 NeotestSummary  lua require("neotest").summary.toggle()
@@ -58,6 +63,36 @@ function M.setup_commands_keymaps()
     noremap <leader>tR  :NeotestRunFile<CR>
     noremap <leader>to  :NeotestOutput<CR>
   ]]
+end
+
+
+-- A custom neotest consumer, i.e., neotest.attach_or_run
+function M.custom_consumers.attach_or_output()
+  local self = { name = "attach_or_output" }
+  local neotest = require("neotest")
+
+  ---@type neotest.Client
+  local client = nil
+
+  self = setmetatable(self, {
+    __call = function(_, client_)
+      client = client_
+      return self
+    end,
+  })
+
+  -- neotest.attach_or_run.open()
+  function self.open(args)
+    args = args or {}
+    local pos = neotest.run.get_tree_from_args(args)
+    if pos and client:is_running(pos:data().id) then
+      neotest.run.attach()
+    else
+      neotest.output.open()
+    end
+  end
+
+  return self
 end
 
 
