@@ -564,7 +564,7 @@ map <leader>m <F5>
 
 " Build commands default to Make
 command! -nargs=* -bar Build    Make
-command! -nargs=* -bar Debug    Make
+command! -nargs=* -bar Debug    Build
 
 " :Make
 " The default behavior is to run :Neomake, which runs a &makeprg job silently in the background.
