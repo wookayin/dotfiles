@@ -51,18 +51,52 @@ function M.setup_commands_keymaps()
 
     command! -nargs=0 NeotestStop             lua require("neotest").run.stop()
     command! -nargs=0 NeotestOutput           lua require("neotest").attach_or_output.open()
-    command! -nargs=0 NeotestOutputSplit      lua require("neotest").output.open({ open_win = function() vim.cmd "botright 20split" end })
 
     command! -nargs=0 NeotestSummary  lua require("neotest").summary.toggle()
     command! -nargs=0 TestOutput      lua require("neotest").output.open()
     call CommandAlias('TO', 'TestOutput')
   ]]
 
+  vim.api.nvim_create_user_command('NeotestOutputSplit', function(opts)
+    local height = tonumber(opts.args) or 20
+    require("neotest").output.open { open_win = function() vim.cmd(string.format('botright %dsplit', height)) end }
+  end, { nargs = '?' })
+  vim.api.nvim_create_user_command('NeotestOutputVSplit', function(opts)
+    local width = tonumber(opts.args) or 70
+    require("neotest").output.open { open_win = function() vim.cmd(string.format('%dvsplit', width)) end }
+  end, { nargs = '?' })
+
+  -- keymaps (global)
   vim.cmd [[
     noremap <leader>tr  :NeotestRun<CR>
     noremap <leader>tR  :NeotestRunFile<CR>
     noremap <leader>to  :NeotestOutput<CR>
   ]]
+
+  -- buffer-local keymaps for neotest-output and neotest-attach windows
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'neotest-output', 'neotest-attach' },
+    group = vim.api.nvim_create_augroup('neotest_console_windows', { clear = true }),
+    callback = function()
+      local H = {}
+      vim.cmd [[
+        " Pressing <F6> again would move the floating window into normal splits
+        nnoremap <buffer> <silent> <F6>    <cmd>lua require("config/testing")._move_neotest_floating_to_split()<CR>
+        tnoremap <buffer> <silent> <F6>    <cmd>lua require("config/testing")._move_neotest_floating_to_split()<CR>
+        " Allow window movement via wincmd hotkeys
+        tnoremap <buffer> <silent> <C-w>H  <cmd>wincmd H<CR>
+        tnoremap <buffer> <silent> <C-w>J  <cmd>wincmd J<CR>
+        tnoremap <buffer> <silent> <C-w>K  <cmd>wincmd K<CR>
+        tnoremap <buffer> <silent> <C-w>L  <cmd>wincmd L<CR>
+      ]]
+    end,
+  })
+  M._move_neotest_floating_to_split = function()
+    if vim.api.nvim_win_get_config(0).relative ~= "" then  -- if floating window?
+      vim.cmd [[ wincmd J | resize 25 ]]  -- move to split window to the far bottom
+    end
+  end
+
 end
 
 
@@ -98,10 +132,11 @@ end
 
 M.setup_neotest()
 M.setup_commands_keymaps()
+-- See ~/.vim/after/ftplugin/python.vim for filetype-specfic mapping to neotest commands
 
 pcall(function()
   neotest = require('neotest')
   RC.testing = M
 end)
 
--- See ~/.vim/after/ftplugin/python.vim for filetype-specfic mapping to neotest commands
+return M

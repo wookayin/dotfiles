@@ -1607,7 +1607,16 @@ function! AsyncMake(qarg) abort
 endfunction
 
 " Copen. Do not steal the cursor.
-command! -bar -count=9 Copen   call asyncrun#quickfix_toggle(<count>, v:true)
+command! -bar -count=9 Copen   call s:quickfix_toggle(<count>)
+function! s:quickfix_toggle(count) abort
+  if has('nvim') && get(nvim_win_get_config(0), 'relative', '') != ''
+    " floating window: run the built-in copen because asyncrun is buggy
+    call timer_start(0, { -> execute(printf('copen %d', a:count)) })
+  else
+    " normal window: use quickfix_toggle()
+    call asyncrun#quickfix_toggle(a:count, v:true)
+  endif
+endfunction
 
 " Alias :Run => :AsyncRun
 call CommandAlias('Run', 'AsyncRun', v:true)
