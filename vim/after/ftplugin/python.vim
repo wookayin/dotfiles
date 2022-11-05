@@ -171,6 +171,8 @@ if has_key(g:plugs, 'neotest-python') && s:is_test_file
   command! -buffer -nargs=0  Output   NeotestOutput
   noremap <buffer>           <F7>    <cmd>lua require'neotest'.run.attach()<CR>
 
+  nnoremap <buffer>    <leader>T   <cmd>NeotestSummary<CR>
+
 elseif has_key(g:plugs, 'vim-floaterm')
   let s:ftname = 'makepython'
   function! MakeInTerminal() abort
