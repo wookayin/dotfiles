@@ -74,9 +74,10 @@ function M.setup_commands_keymaps()
   ]]
 
   -- buffer-local keymaps for neotest-output and neotest-attach windows
+  local augroup = vim.api.nvim_create_augroup('neotest_widget_keymaps', { clear = true })
   vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'neotest-output', 'neotest-attach' },
-    group = vim.api.nvim_create_augroup('neotest_console_windows', { clear = true }),
+    group = augroup,
     callback = function()
       local H = {}
       vim.cmd [[
@@ -96,6 +97,17 @@ function M.setup_commands_keymaps()
       vim.cmd [[ wincmd J | resize 25 ]]  -- move to split window to the far bottom
     end
   end
+
+  -- buffer-local keymaps for neotest-summary
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'neotest-summary' },
+    group = augroup,
+    callback = function()
+      vim.cmd [[
+        nnoremap <buffer> <silent> <leader>T     <cmd>lua require("neotest").summary.close()<CR>
+      ]]
+    end
+  })
 
 end
 
