@@ -208,7 +208,8 @@ if vim.diagnostic then
     },
     float = {
       source = 'always',
-      focusable = false, -- See neovim#16425
+      focusable = true,
+      focus = false,
       border = 'single',
 
       -- Customize how diagnostic message will be shown: show error code.
