@@ -890,7 +890,7 @@ function! CommandAlias(aliasname, target, ...)
 
   " :aliasname => :target  (only applicable at the beginning of the command line)
   exec printf('cnoreabbrev <expr> %s ', a:aliasname)
-    \ .printf('((getcmdtype() ==# ":" && getcmdline() =~# "^%s") ? ', a:aliasname)
+    \ .printf('((getcmdtype() ==# ":" && getcmdline() =~# "^%s$") ? ', a:aliasname)
     \ .printf('("%s") : ("%s"))', escape(a:target, '"'), escape(a:aliasname, '"'))
 
   " optionally, make a dummy command to facilitate cmdline completion
@@ -927,15 +927,15 @@ endfunction
 command! -nargs=0 Q   call s:Q()
 
 " Lua utilities (helpful for debugging)
-if has('nvim-0.5.0')
-  function! LuaEcho(expr) abort
-    echo luaeval("vim.inspect(" . a:expr . ")")
-  endfunction
-  command! -complete=lua -nargs=* LuaEcho   call LuaEcho(<q-args>)
-  call CommandAlias('Luaecho', 'LuaEcho')
-  call CommandAlias('luaecho', 'LuaEcho')
-  call CommandAlias('luae', 'LuaEcho')
-  call CommandAlias('l', 'LuaEcho')
+if has('nvim')
+  " (nvim 0.7.0+) :lua= ... is equivalent as :lua print(vim.inspect(...))
+  call CommandAlias('LuaEcho', 'lua=')
+  call CommandAlias('luaecho', 'lua=')
+  call CommandAlias('luae', 'lua=')
+  call CommandAlias('le', 'lua=')
+  call CommandAlias('l', 'lua=')
+
+  call CommandAlias('L', 'lua')
 endif
 
 " ----------------------------------------------------------------------------
