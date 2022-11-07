@@ -672,6 +672,10 @@ if pcall(require, "null-ls") then
               },
             }),
         })),
+      -- @rust
+      _cond("rustfmt", null_ls.builtins.formatting.rustfmt.with {
+        extra_args = { "--edition=2018" }
+      }),
     },
 
     should_attach = function(bufnr)
