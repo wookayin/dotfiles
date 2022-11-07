@@ -936,6 +936,9 @@ if has('nvim')
   call CommandAlias('l', 'lua=')
 
   call CommandAlias('L', 'lua')
+
+  " There is no ':require' command in vim; it is a common mistake with intending lua require...
+  call CommandAlias('require', 'lua require')
 endif
 
 " In the command mode, <CTRL-/> will toggle the command between `:lua` and `:lua=`
