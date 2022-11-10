@@ -31,6 +31,12 @@ fi
 
 export PAGER='less'
 
+# Unset GIT_EDITOR (usually nvr) inside a neovim-floaterm session.
+# See ~/.vimrc: $GIT_EDITOR section for more details.
+if [[ -n "$FLOATERM" ]]; then
+  unset GIT_EDITOR
+fi
+
 #
 # Language
 #

@@ -292,6 +292,10 @@ if has('nvim')
 endif
 
 " Use nvr as git editor (inside neovim terminal)
+" nvr >= 2.5.0 required.
+" One exception: on a floaterm, nvr should not be used. However,
+" floaterm does not allow customization of environment variables.
+" As a workaround, we unset $GIT_EDITOR in ~/.zshenv.
 if has('nvim') && executable('nvr')
   let $GIT_EDITOR = 'nvr -cc split --remote-wait'
   autocmd FileType gitcommit set bufhidden=delete
