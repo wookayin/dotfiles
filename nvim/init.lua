@@ -35,18 +35,24 @@ if vim.fn.has('nvim-0.7') == 0 then
   return
 end
 
-require 'config/ui'
-require 'config/commands'
-require 'config/quickfix'
+-- require a lua module, but force reload it (RC files can be re-sourced)
+function _require(name)
+  package.loaded[name] = nil
+  return require(name)
+end
+
+_require 'config/ui'
+_require 'config/commands'
+_require 'config/quickfix'
 
 -- Source individiual rc files. (lazy loading)
 function RC.source_config_lazy()
-  require 'config/statusline'
-  require 'config/lsp'
-  require 'config/treesitter'
-  require 'config/telescope'
-  require 'config/folding'
-  require 'config/testing'
+  _require 'config/statusline'
+  _require 'config/lsp'
+  _require 'config/treesitter'
+  _require 'config/telescope'
+  _require 'config/folding'
+  _require 'config/testing'
 end
 vim.cmd [[
   autocmd User LazyInit  lua RC.source_config_lazy()
