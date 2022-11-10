@@ -684,12 +684,13 @@ if executable('rg')
 endif
 
 
-" CD: switch to the directory of the current buffer
+" CD: switch to the directory of the current buffer (or project root), per-tab
 function! CD_to(dir)
   if empty(a:dir) || a:dir == -1
     return
   endif
-  execute 'silent cd ' . a:dir
+  " Use per-tab CWD.see :help :tcd, :lcd, etc.
+  execute 'silent tcd ' . a:dir
   echohl Directory | echom getcwd() | echohl None
 
   " if NERDTree is open, chdir NERDTree as well
@@ -725,7 +726,7 @@ function! s:CDRoot() abort
   endif
 endfunction
 command! -nargs=0   CDRoot  :call s:CDRoot()
-nmap <silent> <leader>cd    :<C-U>CDRoot<CR>
+nmap <silent> <leader>cd    <cmd>CDRoot<CR>
 
 
 " <leader>R : screen sucks, redraw everything
@@ -1940,10 +1941,10 @@ function! FzfSmart(path) abort
   let l:git_dir = s:get_git_dir(!empty(l:path) ? l:path : '%')
   if ! empty(l:git_dir)
     let l:old_cwd = getcwd()
-    execute ':cd ' . l:git_dir . '/..'
+    execute ':tcd ' . l:git_dir . '/..'
     echon ':GFiles (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
     GFiles -c -o --exclude-standard
-    execute ':cd ' . l:old_cwd
+    execute ':tcd ' . l:old_cwd
     return 2
 
   " (3) not in git repo, invoke :Files <args> by fallback
