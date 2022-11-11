@@ -2313,7 +2313,7 @@ function! FloatermToggleOrNew(...) abort
     elseif !bang
       " if argument given but without bang,
       " use it as the command line to execute (e.g. :FT git status)
-      execute ':FloatermNew --name=FT ' . cmd
+      execute ':FloatermNew --name=FT --autoclose=0 ' . cmd
     elseif bang
       " Given bang, (e.g. :FT! git status) run cmd in a (interactive) shell.
       execute ':FloatermNew --name=FT --autoclose=1'
