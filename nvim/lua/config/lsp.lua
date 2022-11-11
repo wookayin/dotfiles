@@ -29,7 +29,11 @@ local on_attach = function(client, bufnr)
   -- [[ A callback executed when LSP engine attaches to a buffer. ]]
 
   -- Always use signcolumn for the current buffer
-  vim.wo.signcolumn = 'yes:1'
+  if vim.bo.filetype == 'python' then
+    vim.wo.signcolumn = 'yes:2'
+  else
+    vim.wo.signcolumn = 'yes:1'
+  end
 
   -- Activate LSP signature on attach.
   on_attach_lsp_signature(client, bufnr)
