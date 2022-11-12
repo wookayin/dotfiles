@@ -51,6 +51,7 @@ function RC.source_config_lazy()
   _require 'config/lsp'
   _require 'config/treesitter'
   _require 'config/telescope'
+  _require 'config/git'
   _require 'config/folding'
   _require 'config/testing'
 end
