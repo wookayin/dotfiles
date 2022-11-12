@@ -3079,6 +3079,7 @@ augroup END
 
 " ---------------------------------------------------------------- }}}
 " fugitive {{{
+" See also: config/git.lua
 
 let g:fugitive_legacy_commands = 0
 
@@ -3103,7 +3104,8 @@ augroup FugitiveCustomizeCommands
 
  " :G -> :GDiff + :Git
   autocmd CmdlineEnter * ++once command! -nargs=0 G
-        \ execute 'GDiff' | execute 'Git'
+        \ execute 'GDiff' |
+        \ execute 'Git' | resize 5 | set winfixheight
 
 augroup END
 

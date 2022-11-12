@@ -5,8 +5,19 @@
 local M = {}
 
 function M.setup_diffview()
+  -- :help diffview.defaults
+  -- :help diffview-config
+
   require('diffview').setup {
+    view = {
+      -- Use 4-way diff (ours, base, theirs; local) for fixing conflicts
+      merge_tool = {
+        layout = "diff4_mixed",
+        disable_diagnostics = true,
+      },
+    },
     default_args = {
+      -- :DiffviewOpen --untracked-files=no
       DiffviewOpen = { '--untracked-files=no' },
     }
   }
