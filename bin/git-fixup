@@ -1,0 +1,46 @@
+#!/bin/zsh
+# git-fixup (interactive) using fzf-git.sh
+#
+# Usage:
+# $ git-fixup
+# $ git-fixup --rebase:  Perform interactive rebase after committing
+
+set -e
+
+zmodload zsh/zutil
+zparseopts -E -D -- \
+    -rebase="opt_rebase"
+
+function git-fixup() {
+    if git diff --staged --quiet; then
+        echo >&2 'No changes added to commit'; return 1;
+    else
+        echo 'Choose which commit to fix up:';
+        zsh -i --no-rcs -c '\
+            source ~/.zsh/antidote-plugins/junegunn/fzf-git.sh/fzf-git.sh && \
+            git commit --fixup $(_fzf_git_hashes) || exit 1; \
+        ';
+    fi
+
+    if [ -n "$opt_rebase" ]; then
+        echo "Running: git rebase -i --autosquash"
+        git rebase -i --autosquash
+    fi
+}
+
+
+# fail if unknown argument was given (equivalent as -F, zsh 5.8+)
+if (( $# )); then
+    end_opts=$@[(i)(--|-)]
+    if [[ -n ${invalid_opt::=${(M)@[0,end_opts-1]#-}} ]]; then
+        echo >&2 "Invalid options: $invalid_opt"
+        exit 2;
+    fi
+    set -- "${@[0,end_opts-1]}" "${@[end_opts+1,-1]}"
+fi
+if (( $# )); then
+    echo >&2 "No positional arguments expected";
+    exit 2;
+fi
+
+git-fixup
