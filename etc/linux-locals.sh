@@ -453,11 +453,12 @@ install_mosh() {
 }
 
 install_mujoco() {
-  # https://mujoco.org/download
+  # https://github.com/deepmind/mujoco/
+  # Note: If pre-built wheel is available, just do `pip install mujoco` and it's done
   set -e; set -x
-  local mujoco_version="mujoco210"
+  local mujoco_version="2.3.0"
 
-  local MUJOCO_ROOT=$HOME/.mujoco/$mujoco_version
+  local MUJOCO_ROOT=$HOME/.mujoco/mujoco-$mujoco_version
   if [[ -d "$MUJOCO_ROOT" ]]; then
     echo -e "${COLOR_YELLOW}Error: $MUJOCO_ROOT already exists.${COLOR_NONE}"
     return 1;
@@ -467,12 +468,12 @@ install_mujoco() {
   mkdir -p $tmpdir && cd $tmpdir
   mkdir -p $HOME/.mujoco
 
-  local download_url="https://mujoco.org/download/${mujoco_version}-linux-x86_64.tar.gz"
+  local download_url="https://github.com/deepmind/mujoco/releases/download/${mujoco_version}/mujoco-${mujoco_version}-linux-x86_64.tar.gz"
   local filename="$(basename $download_url)"
   wget -N -O $tmpdir/$filename "$download_url"
   tar -xvzf "$filename" -C $tmpdir
 
-  mv $tmpdir/$mujoco_version $HOME/.mujoco/
+  mv $tmpdir/mujoco-$mujoco_version $HOME/.mujoco/
   test -d $MUJOCO_ROOT
 
   $MUJOCO_ROOT/bin/testspeed $MUJOCO_ROOT/model/scene.xml 1000
