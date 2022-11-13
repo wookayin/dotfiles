@@ -174,30 +174,22 @@ install_bazel() {
     echo ""
 }
 
-install_anaconda() {
-    # installs Anaconda-python3. (Deprecated: Use miniconda)
-    # https://www.anaconda.com/products/individual
-    # https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
+install_miniforge() {
+    # Miniforge3.
+    # https://github.com/conda-forge/miniforge
     set -e
-    ANACONDA_VERSION="2021.05"
+    local URL="https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
 
-    if [ "$1" != "--force" ]; then
-        echo "Please use miniconda instead. Use --force option to proceed." && exit 1;
-    fi
+    local TMP_DIR="/tmp/$USER/miniforge/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
+    wget -nc "$URL"
 
-    # https://www.anaconda.com/download/
-    TMP_DIR="/tmp/$USER/anaconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
-    wget -nc "https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh"
-
-    # will install at $HOME/.anaconda3 (see zsh config for PATH)
-    ANACONDA_PREFIX="$HOME/.anaconda3/"
-    bash "Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh" -b -p ${ANACONDA_PREFIX}
-
-    $ANACONDA_PREFIX/bin/python --version
+    local MINIFORGE_PREFIX="$HOME/.miniforge3"
+    bash "Miniforge3-Linux-x86_64.sh" -b -p ${MINIFORGE_PREFIX}
+    $MINIFORGE_PREFIX/bin/python3 --version
 }
 
 install_miniconda() {
-    # installs Miniconda3
+    # installs Miniconda3. (Deprecated: Use miniforge3)
     # https://conda.io/miniconda.html
     set -e
     MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
