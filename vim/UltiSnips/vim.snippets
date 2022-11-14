@@ -1,0 +1,43 @@
+# vim.snippets
+
+global !p
+import px
+snippets_helper = px.__import__('snippets_helper')
+endglobal
+
+##############################################################################
+
+snippet has
+has('$1')
+endsnippet
+priority 1
+snippet "if has" "if has(...) endif" bA
+if has('$1')
+	$2
+endif
+endsnippet
+
+snippet function "Define a vim function" bA
+function! ${1:FunctionName}() abort
+	$2
+endfunction
+endsnippet
+post_jump "snippets_helper.snip_expand(snip, jump_forward=False)"
+snippet fun "Define a vim function" b
+function$1
+endsnippet
+
+snippet arg
+let l:${1:arg0} = a:0 >= 1 ? a:000[0] : ${2:$1_default}
+endsnippet
+
+snippet augroup "Define a new augroup + autocmd." bA
+augroup ${1:GroupName}
+	autocmd!
+	autocmd ${2:FileType} *  ${3:call ...}
+augroup END
+endsnippet
+post_jump "snippets_helper.snip_expand(snip, jump_forward=False)"
+snippet autocmd
+augroup$1
+endsnippet
