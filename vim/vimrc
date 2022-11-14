@@ -3102,12 +3102,19 @@ command! -nargs=* GCommit :Git commit -v<args>
 augroup FugitiveCustomizeCommands
   autocmd CmdlineEnter * ++once silent! delcommand GDelete
 
- " :G -> :GDiff + :Git
-  autocmd CmdlineEnter * ++once command! -nargs=0 G
-        \ execute 'GDiff' |
-        \ execute 'Git' | resize 5 | set winfixheight
-
+ " :G -> :GDiff + :Git,  or :Git <args>
+  autocmd CmdlineEnter * ++once command! -nargs=?  G    call s:G(<q-args>)
 augroup END
+
+function! s:G(arg) abort
+  if empty(Trim(a:arg))
+    GDiff
+    Git | resize 5 | set winfixheight
+  else
+    exec 'Git ' . a:arg
+  endif
+endfunction
+
 
 " fugitive key mappings
 nnoremap <leader>gd :Gvdiff<CR>
