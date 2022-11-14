@@ -23,6 +23,12 @@ function M.setup_gitsigns()
       virt_text_pos = 'right_align',
       ignore_whitespace = true,
     },
+    diff_opts = {
+      -- smarter diff algorithm that is semantically better
+      algorithm = 'patience',
+      -- Equivalent as git diff --indent-heuristic
+      indent_heuristic = true,
+    },
     on_attach = function(bufnr)
       local function map(mode, lhs, rhs, opts)
         opts = vim.tbl_extend('force', {noremap = true, silent = true}, opts or {})
