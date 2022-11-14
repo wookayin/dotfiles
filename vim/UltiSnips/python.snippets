@@ -4,17 +4,13 @@
 
 global !p
 import re
+import px
+
+snippets_helper = px.__import__('snippets_helper')
+
 
 def toCamelCase(s):
     return ''.join(x for x in s.title() if x.isalnum())
-
-def snip_expand(snip, jump_pos=1, jump_forward=False):
-    # See 'snippets-aliasing' in doc
-    if snip.tabstop != jump_pos:
-        return
-    vim.eval('feedkeys("\<C-R>=UltiSnips#ExpandSnippet()\<CR>")')
-    if jump_forward:
-        vim.eval('feedkeys("\<C-R>=UltiSnips#JumpForwards()\<CR>")')
 
 def collect_ale_lint_codes(linter_name: str):
     if not int(vim.eval('get(g:, "ale_enabled", 0)')):
@@ -308,7 +304,7 @@ endsnippet
 ################################################################################
 # Test
 ################################################################################
-post_jump "snip_expand(snip, jump_forward=True)"
+post_jump "snippets_helper.snip_expand(snip, 1, jump_forward=True)"
 snippet pytest
 import sys
 import pytest
