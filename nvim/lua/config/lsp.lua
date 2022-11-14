@@ -135,7 +135,19 @@ _G.lsp_setup_opts['sumneko_lua'] = {
         version = 'LuaJIT',   -- Lua 5.1/LuaJIT
       },
       completion = { callSnippet = "Disable" },
-      workspace = { maxPreload = 8000 },
+      workspace = {
+        maxPreload = 8000,
+        -- Add additional paths for lua packages
+        library = (function()
+          local library = {}
+          if vim.fn.has('mac') > 0 then
+            -- http://www.hammerspoon.org/Spoons/EmmyLua.html
+            -- Add a line `hs.loadSpoon('EmmyLua')` on the top in ~/.hammerspoon/init.lua
+            library[string.format('%s/.hammerspoon/Spoons/EmmyLua.spoon/annotations', os.getenv 'HOME')] = true
+          end
+          return library
+        end)(),
+      },
     },
   },
 }
