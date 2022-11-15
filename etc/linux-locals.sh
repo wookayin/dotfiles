@@ -314,9 +314,9 @@ install_exa() {
 
 install_fd() {
     # install fd
+    # https://github.com/sharkdp/fd/releases
     set -e
-
-    local FD_VERSION="v8.3.2"
+    local FD_VERSION="v8.5.3"
 
     TMP_FD_DIR="/tmp/$USER/fd"; mkdir -p $TMP_FD_DIR
     FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/${FD_VERSION}/fd-${FD_VERSION}-x86_64-unknown-linux-musl.tar.gz"
@@ -368,7 +368,8 @@ install_xsv() {
 }
 
 install_bat() {
-    BAT_VERSION="0.12.1"
+    # https://github.com/sharkdp/bat/releases
+    local BAT_VERSION="0.22.1"
 
     set -e; set -x
     mkdir -p $PREFIX/bin && cd $PREFIX/bin
