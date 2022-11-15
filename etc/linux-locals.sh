@@ -75,6 +75,22 @@ install_git() {
     fi
 }
 
+install_gh() {
+    # github CLI: https://github.com/cli/cli/releases
+    set -e
+
+    local version="2.20.2"
+    local url="https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz"
+
+    local tmpdir="/tmp/$USER/gh"; mkdir -p $tmpdir
+
+    wget -N -O $tmpdir/gh.tar.gz "$url"
+    tar -xvzf $tmpdir/gh.tar.gz -C $tmpdir --strip-components 1
+    mv $tmpdir/bin/gh $HOME/.local/bin/gh
+
+    $HOME/.local/bin/gh --version
+}
+
 install_ncurses() {
     # installs ncurses (shared libraries and headers) into local namespaces.
     set -e
