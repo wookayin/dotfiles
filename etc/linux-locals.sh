@@ -54,24 +54,35 @@ install_git() {
     # installs a modern version of git locally.
     set -e
 
-    GIT_VER="2.30.0"
-    TMP_GIT_DIR="/tmp/$USER/git"; mkdir -p $TMP_GIT_DIR
+    local GIT_LATEST_VERSION=$(\
+        curl -L https://api.github.com/repos/git/git/tags 2>/dev/null | \
+        python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+    )  # e.g. "v2.38.1"
+    test  -n "$GIT_LATEST_VERSION"
 
-    wget -N -O $TMP_GIT_DIR/git.tar.gz "https://github.com/git/git/archive/v${GIT_VER}.tar.gz"
+    local TMP_GIT_DIR="/tmp/$USER/git"; mkdir -p $TMP_GIT_DIR
+    wget -N -O $TMP_GIT_DIR/git.tar.gz "https://github.com/git/git/archive/${GIT_LATEST_VERSION}.tar.gz"
     tar -xvzf $TMP_GIT_DIR/git.tar.gz -C $TMP_GIT_DIR --strip-components 1
-    cd $TMP_GIT_DIR
 
+    cd $TMP_GIT_DIR
     make configure
     ./configure --prefix="$PREFIX" --with-curl --with-expat
+
+    # requires libcurl-dev (mandatory to make https:// work)
+    if grep -q 'cannot find -lcurl' config.log; then
+        echo -e "${COLOR_RED}Error: libcurl not found. Please install libcurl-dev and try again.${COLOR_NONE}"
+        echo -e "${COLOR_YELLOW}e.g., sudo apt install libcurl4-openssl-dev${COLOR_NONE}"
+        return 1;
+    fi
+
     make clean
     make -j8 && make install
-
     ~/.local/bin/git --version
 
     if [[ ! -f "$(~/.local/bin/git --exec-path)/git-remote-https" ]]; then
         echo -e "${COLOR_YELLOW}Warning: $(~/.local/bin/git --exec-path)/git-remote-https not found. "
         echo -e "https:// git url will not work. Please install libcurl-dev and try again.${COLOR_NONE}"
-        false;
+        return 2;
     fi
 }
 
