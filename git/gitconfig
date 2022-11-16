@@ -26,7 +26,7 @@
 [alias]
 	history = log --graph --decorate \
 		--pretty=format:'%C(yellow)%h%Creset  %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
-		--abbrev-commit --date=short --date-order -n30
+		--abbrev-commit --date=short --date-order
 
 	co = checkout
 	unstage = reset HEAD --
