@@ -60,6 +60,12 @@ typeset -gU cdpath fpath mailpath path
 # Homebrew: /opt/homebrew/bin must precede /usr/local/bin.
 # Please update /etc/paths: add `/opt/homebrew/bin` manually.
 
+if ! (( $path[(I)/opt/homebrew/bin] )); then
+    # Add homebrew bin path to $path automatically, if
+    # /etc/paths is not sourced or not configured.
+    path=($path /opt/homebrew/bin)
+fi
+
 # Set the the list of directories that cd searches.
 # cdpath=(
 #   $cdpath
