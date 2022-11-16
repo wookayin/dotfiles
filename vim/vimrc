@@ -2327,7 +2327,7 @@ endfunction
 
 " Use 90% width for floaterm. If error occurs, update the plugin
 let g:floaterm_width = 0.9
-let g:floaterm_height = 0.7
+let g:floaterm_height = 0.85
 
 " Turn off auto-hiding of previous floaterm windows,
 " in favor of the autohide autocmd below (only works for 'floating' windows)
