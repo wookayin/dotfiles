@@ -315,6 +315,14 @@ local has_words_before = function()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
+local truncate = function(text, max_width)
+  if #text > max_width then
+    return string.sub(text, 1, max_width) .. "…"
+  else
+    return text
+  end
+end
+
 local cmp = require('cmp')
 local cmp_helper = {}
 local cmp_types = require('cmp.types.cmp')
@@ -365,10 +373,7 @@ cmp.setup {
   formatting = {
     format = function(entry, vim_item)
       -- Truncate the item if it is too long
-      local max_width = 80
-      if #vim_item.abbr > max_width then
-        vim_item.abbr = string.sub(vim_item.abbr, 1, max_width) .. "…"
-      end
+      vim_item.abbr = truncate(vim_item.abbr, 80)
       -- fancy icons and a name of kind
       pcall(function()  -- protect the call against potential API breakage (lspkind GH-45).
         local lspkind = require("lspkind")
