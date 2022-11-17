@@ -219,6 +219,8 @@ function gsd() {
   return 0
 }
 
+alias gfx='git fixup'
+
 # using the vim plugin GV/Flog
 function _vim_gv {
     vim -c ":GV $1"
