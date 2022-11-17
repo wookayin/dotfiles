@@ -384,14 +384,22 @@ cmp.setup {
       -- The 'menu' section: source, detail information (lsp, snippet), etc.
       -- set a name for each source (see the sources section below)
       vim_item.menu = ({
-        buffer        = "[Buffer]",
-        nvim_lsp      = "[LSP]",
-        luasnip       = "[LuaSnip]",
-        ultisnips     = "[UltiSnips]",
-        nvim_lua      = "[Lua]",
-        latex_symbols = "[Latex]",
-      })[entry.source.name] or string.format("[%s]", entry.source.name)
+        buffer        = "Buffer",
+        nvim_lsp      = "LSP",
+        ultisnips     = "",
+        nvim_lua      = "Lua",
+        latex_symbols = "Latex",
+      })[entry.source.name] or string.format("%s", entry.source.name)
 
+      -- highlight groups for item.menu
+      vim_item.menu_hl_group = ({
+        buffer = "CmpItemMenuBuffer",
+        nvim_lsp = "CmpItemMenuLSP",
+        path = "CmpItemMenuPath",
+        ultisnips = "CmpItemMenuSnippet",
+      })[entry.source.name]  -- default is CmpItemMenu
+
+      -- detail information (optional)
       local cmp_item = entry:get_completion_item()  --- @type lsp.CompletionItem
 
       if entry.source.name == 'nvim_lsp' then
@@ -399,7 +407,7 @@ cmp.setup {
         local lspserver_name = nil
         pcall(function()
           lspserver_name = entry.source.source.client.name
-          vim_item.menu = " " .. lspserver_name
+          vim_item.menu = lspserver_name
         end)
 
         -- Some language servers provide details, e.g. type information.
@@ -416,16 +424,18 @@ cmp.setup {
           end
         end)(cmp_item)
         if detail_txt then
-          vim_item.menu = " " .. detail_txt
+          vim_item.menu = detail_txt
           vim_item.menu_hl_group = 'CmpItemMenuDetail'
         end
 
       elseif entry.source.name == 'ultisnips' then
         if (cmp_item.snippet or {}).description then
-          vim_item.menu = vim_item.menu .. " " .. truncate(cmp_item.snippet.description, 40)
+          vim_item.menu = truncate(cmp_item.snippet.description, 40)
         end
       end
 
+      -- Add a little bit more padding
+      vim_item.menu = " " .. vim_item.menu
       return vim_item
     end,
   },
@@ -484,8 +494,12 @@ do
     hi! CmpItemAbbrDeprecated guifg=#adb5bd
     hi! CmpItemKindDefault    guifg=#cc5de8
     hi! link CmpItemKind      CmpItemKindDefault
-    hi! CmpItemMenu           guifg=#cfa050
+    hi! CmpItemMenu           guifg=#ededcf
     hi! CmpItemMenuDetail     guifg=#ffe066
+    hi! CmpItemMenuBuffer     guifg=#898989
+    hi! CmpItemMenuSnippet    guifg=#cc5de8
+    hi! CmpItemMenuLSP        guifg=#cfa050
+    hi link CmpItemMenuPath   CmpItemMenu
   ]]
 end
 
