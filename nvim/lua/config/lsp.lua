@@ -380,6 +380,8 @@ cmp.setup {
         vim_item.kind_symbol = (lspkind.symbolic or lspkind.get_symbol)(vim_item.kind)
         vim_item.kind = " " .. vim_item.kind_symbol .. " " .. vim_item.kind
       end)
+
+      -- The 'menu' section: source, detail information (lsp, snippet), etc.
       -- set a name for each source (see the sources section below)
       vim_item.menu = ({
         buffer        = "[Buffer]",
@@ -390,11 +392,38 @@ cmp.setup {
         latex_symbols = "[Latex]",
       })[entry.source.name] or string.format("[%s]", entry.source.name)
 
-      if vim_item.menu == "[LSP]" then
+      local cmp_item = entry:get_completion_item()  --- @type lsp.CompletionItem
+
+      if entry.source.name == 'nvim_lsp' then
         -- Display which LSP servers this item came from.
+        local lspserver_name = nil
         pcall(function()
-          vim_item.menu = " " .. entry.source.source.client.name
+          lspserver_name = entry.source.source.client.name
+          vim_item.menu = " " .. lspserver_name
         end)
+
+        -- Some language servers provide details, e.g. type information.
+        -- The details info hide the name of lsp server, but mostly we'll have one LSP
+        -- per filetype, and we use special highlights so it's OK to hide it..
+        local detail_txt = (function(cmp_item)
+          if not cmp_item.detail then return nil end
+
+          if lspserver_name == "pyright" and cmp_item.detail == "Auto-import" then
+            local label = (cmp_item.labelDetails or {}).description
+            return label and (" " .. truncate(label, 20)) or nil
+          else
+            return truncate(cmp_item.detail, 50)
+          end
+        end)(cmp_item)
+        if detail_txt then
+          vim_item.menu = " " .. detail_txt
+          vim_item.menu_hl_group = 'CmpItemMenuDetail'
+        end
+
+      elseif entry.source.name == 'ultisnips' then
+        if (cmp_item.snippet or {}).description then
+          vim_item.menu = vim_item.menu .. " " .. truncate(cmp_item.snippet.description, 40)
+        end
       end
 
       return vim_item
@@ -456,6 +485,7 @@ do
     hi! CmpItemKindDefault    guifg=#cc5de8
     hi! link CmpItemKind      CmpItemKindDefault
     hi! CmpItemMenu           guifg=#cfa050
+    hi! CmpItemMenuDetail     guifg=#ffe066
   ]]
 end
 
