@@ -371,7 +371,9 @@ cmp.setup {
       end
       -- fancy icons and a name of kind
       pcall(function()  -- protect the call against potential API breakage (lspkind GH-45).
-        vim_item.kind = " " .. require("lspkind").get_symbol(vim_item.kind) .. " " .. vim_item.kind
+        local lspkind = require("lspkind")
+        vim_item.kind_symbol = (lspkind.symbolic or lspkind.get_symbol)(vim_item.kind)
+        vim_item.kind = " " .. vim_item.kind_symbol .. " " .. vim_item.kind
       end)
       -- set a name for each source (see the sources section below)
       vim_item.menu = ({
