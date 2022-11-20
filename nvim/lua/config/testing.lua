@@ -105,6 +105,7 @@ function M.setup_commands_keymaps()
     callback = function()
       vim.cmd [[
         nnoremap <buffer> <silent> <leader>T     <cmd>lua require("neotest").summary.close()<CR>
+        nmap     <buffer> <silent> <F6>          o
       ]]
     end
   })
