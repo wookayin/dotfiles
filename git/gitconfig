@@ -100,6 +100,12 @@
 	# smarter diff on splits around blank lines (git 2.9.0+)
 	compactionHeuristic = true
 
+[delta]
+	features = decorations
+	keep-plus-minus-markers = true
+	hunk-header-style = file line-number syntax
+	line-numbers = true
+
 [diff-so-fancy]
 	markEmptyLines = false
 	changeHunkIndicators = true

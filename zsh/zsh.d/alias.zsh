@@ -156,7 +156,11 @@ else
   alias gha='gh --all'   # git < 1.9 has no --exclude option
 fi
 
-alias gd='git diff --no-prefix'
+if (( $+commands[delta] )); then
+    alias gd='git -c core.pager="delta" diff --no-prefix'
+else
+    alias gd='git diff --no-prefix'
+fi
 alias gdc='gd --cached --no-prefix'
 alias gds='gd --staged --no-prefix'
 alias gs='git status'
