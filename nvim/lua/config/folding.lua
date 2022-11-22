@@ -160,6 +160,7 @@ end
 
 M.enable_ufo_fold = function()
   vim.wo.foldenable = true
+  vim.wo.foldlevel = 99   -- sometimes get lost. Ensure to be 99 at all times (see #89)
   M.attach_ufo_if_necessary()  -- some buffers may not have been attached
   ufo.enableFold()   -- setlocal foldenable
 end
