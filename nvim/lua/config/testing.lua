@@ -117,6 +117,7 @@ end
 function M.custom_consumers.attach_or_output()
   local self = { name = "attach_or_output" }
   local neotest = require("neotest")
+  local async = require("neotest.async")
 
   ---@type neotest.Client
   local client = nil
@@ -131,12 +132,14 @@ function M.custom_consumers.attach_or_output()
   -- neotest.attach_or_run.open()
   function self.open(args)
     args = args or {}
-    local pos = neotest.run.get_tree_from_args(args)
-    if pos and client:is_running(pos:data().id) then
-      neotest.run.attach()
-    else
-      neotest.output.open()
-    end
+    async.run(function()
+      local pos = neotest.run.get_tree_from_args(args)
+      if pos and client:is_running(pos:data().id) then
+        neotest.run.attach()
+      else
+        neotest.output.open(args)
+      end
+    end)
   end
 
   return self
