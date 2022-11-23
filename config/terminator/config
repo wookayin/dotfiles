@@ -1,25 +1,26 @@
 [global_config]
   title_hide_sizetext = True
-  suppress_multiple_term_dialog = True
   enabled_plugins = CustomCommandsMenu, ActivityWatch, TerminalShot, APTURLHandler, LaunchpadBugURLHandler
+  suppress_multiple_term_dialog = True
 [keybindings]
-  cycle_prev = disabled
   new_tab = <Ctrl>t
-  next_tab = <Ctrl>Tab
   cycle_next = disabled
+  cycle_prev = disabled
+  next_tab = <Ctrl>Tab
   prev_tab = <Ctrl><Shift>Tab
 [profiles]
   [[default]]
-    palette = "#000000:#cd0000:#00cd00:#cdcd00:#1e90ff:#cd00cd:#00cdcd:#e5e5e5:#4c4c4c:#ff0000:#00ff00:#ffff00:#4682b4:#ff00ff:#00ffff:#ffffff"
-    font = Ubuntu Mono derivative Powerline 13
-    background_image = None
-    background_darkness = 0.80
-    scrollback_lines = 5000
+    background_darkness = 0.94
     background_type = transparent
-    use_system_font = False
-    login_shell = True
+    cursor_color = "#aaaaaa"
+    font = NotoMono Nerd Font Mono 11
     show_titlebar = False
+    scrollback_lines = 5000
+    palette = "#000000:#cd0000:#00cd00:#cdcd00:#1e90ff:#cd00cd:#00cdcd:#e5e5e5:#4c4c4c:#ff0000:#00ff00:#ffff00:#4682b4:#ff00ff:#00ffff:#ffffff"
+    login_shell = True
+    use_system_font = False
     copy_on_selection = True
+    background_image = None
 [layouts]
   [[default]]
     [[[child1]]]

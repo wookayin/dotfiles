@@ -737,6 +737,11 @@ map <leader>y "*y
 noremap <leader>x "*x
 noremap <leader>p "*p
 
+" <leader>{Y,X,P} : {yank,cut,paste} wrt the main clipboard (C-v)
+map <leader>Y "+y
+noremap <leader>X "+x
+noremap <leader>P "+p
+
 " <leader>w : save
 nnoremap <leader>w :w!<CR>
 

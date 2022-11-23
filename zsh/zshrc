@@ -177,14 +177,18 @@ fi
 # see ~/.zshenv for $CONDA_EXE detection
 function _conda_initialize() {
 # >>> conda initialize >>>
-if [ -n "${CONDA_EXE}" ]; then
-  ${CONDA_EXE} config --set auto_activate_base false
-  __conda_setup="$(${CONDA_EXE} 'shell.zsh' 'hook' 2> /dev/null)"
-  if [ $? -eq 0 ]; then
-      eval "$__conda_setup"
-  fi
-  unset __conda_setup
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/aditya/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/aditya/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/aditya/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/aditya/anaconda3/bin:$PATH"
+    fi
 fi
+unset __conda_setup
 # <<< conda initialize <<<
 }
 # Note: conda initialize is slow (0.3 sec), so execute lazily
@@ -200,5 +204,9 @@ if [[ -z "$CONDA_EXE" && -d "/opt/homebrew/Caskroom/miniconda" ]]; then
   echo "$ ./Miniconda3-latest-MacOSX-x86_64.sh -p $HOME/.miniconda3"
 fi
 
-# Enable x-server for wsl
-export DISPLAY=`grep -oP "(?<=nameserver ).+" /etc/resolv.conf`:0.0
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+
+export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
