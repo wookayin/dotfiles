@@ -100,32 +100,6 @@ install_node() {
     sudo npm install -g http-server
 }
 
-install_exa() {
-    # https://github.com/ogham/exa/releases
-    EXA_VERSION="0.9.0"
-    EXA_BINARY_SHA1SUM="744e3fdff6581bf84b95cecb00258df8c993dc74"  # exa-linux-x86_64 v0.9.0
-
-    if _version_check "$(exa --version | cut -d' ' -f2)" "$EXA_VERSION"; then
-        echo "$(exa --version) : $(which exa)"
-        echo "  Already installed, skipping installation"; return
-    fi
-
-    echo -e "${COLOR_WHITE}Downloading exa...${COLOR_NONE}"
-    EXA_DOWNLOAD_URL="https://github.com/ogham/exa/releases/download/v$EXA_VERSION/exa-linux-x86_64-$EXA_VERSION.zip"
-    TMP_EXA_DIR="/tmp/exa/"
-
-    wget -nc ${EXA_DOWNLOAD_URL} -P ${TMP_EXA_DIR} || exit 1;
-    cd ${TMP_EXA_DIR} && unzip -o "exa-linux-x86_64-$EXA_VERSION.zip" || exit 1;
-    if [[ "$EXA_BINARY_SHA1SUM" != "$(sha1sum exa-linux-x86_64 | cut -d' ' -f1)" ]]; then
-        echo -e "${COLOR_RED}SHA1 checksum mismatch, aborting!${COLOR_NONE}"
-        exit 1;
-    fi
-    sudo cp "exa-linux-x86_64" "/usr/local/bin/exa" || exit 1;
-    echo -e "${COLOR_GREEN}Installation of exa successful!${COLOR_NONE}"
-    echo "$(which exa) : $(exa --version)"
-    rm -rf ${TMP_EXA_DIR}
-}
-
 install_all() {
     # TODO dependency management: duplicated 'apt-get update'?
     install_essential_packages
@@ -136,7 +110,6 @@ install_all() {
     install_neovim
     install_ppa_git
     install_ppa_nginx
-    install_exa
 }
 
 

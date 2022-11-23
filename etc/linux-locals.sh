@@ -54,25 +54,52 @@ install_git() {
     # installs a modern version of git locally.
     set -e
 
-    GIT_VER="2.30.0"
-    TMP_GIT_DIR="/tmp/$USER/git"; mkdir -p $TMP_GIT_DIR
+    local GIT_LATEST_VERSION=$(\
+        curl -L https://api.github.com/repos/git/git/tags 2>/dev/null | \
+        python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+    )  # e.g. "v2.38.1"
+    test  -n "$GIT_LATEST_VERSION"
 
-    wget -N -O $TMP_GIT_DIR/git.tar.gz "https://github.com/git/git/archive/v${GIT_VER}.tar.gz"
+    local TMP_GIT_DIR="/tmp/$USER/git"; mkdir -p $TMP_GIT_DIR
+    wget -N -O $TMP_GIT_DIR/git.tar.gz "https://github.com/git/git/archive/${GIT_LATEST_VERSION}.tar.gz"
     tar -xvzf $TMP_GIT_DIR/git.tar.gz -C $TMP_GIT_DIR --strip-components 1
-    cd $TMP_GIT_DIR
 
+    cd $TMP_GIT_DIR
     make configure
     ./configure --prefix="$PREFIX" --with-curl --with-expat
+
+    # requires libcurl-dev (mandatory to make https:// work)
+    if grep -q 'cannot find -lcurl' config.log; then
+        echo -e "${COLOR_RED}Error: libcurl not found. Please install libcurl-dev and try again.${COLOR_NONE}"
+        echo -e "${COLOR_YELLOW}e.g., sudo apt install libcurl4-openssl-dev${COLOR_NONE}"
+        return 1;
+    fi
+
     make clean
     make -j8 && make install
-
     ~/.local/bin/git --version
 
     if [[ ! -f "$(~/.local/bin/git --exec-path)/git-remote-https" ]]; then
         echo -e "${COLOR_YELLOW}Warning: $(~/.local/bin/git --exec-path)/git-remote-https not found. "
         echo -e "https:// git url will not work. Please install libcurl-dev and try again.${COLOR_NONE}"
-        false;
+        return 2;
     fi
+}
+
+install_gh() {
+    # github CLI: https://github.com/cli/cli/releases
+    set -e
+
+    local version="2.20.2"
+    local url="https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz"
+
+    local tmpdir="/tmp/$USER/gh"; mkdir -p $tmpdir
+
+    wget -N -O $tmpdir/gh.tar.gz "$url"
+    tar -xvzf $tmpdir/gh.tar.gz -C $tmpdir --strip-components 1
+    mv $tmpdir/bin/gh $HOME/.local/bin/gh
+
+    $HOME/.local/bin/gh --version
 }
 
 install_ncurses() {
@@ -129,39 +156,15 @@ install_node() {
 }
 
 install_tmux() {
-    # install tmux (and its dependencies such as libevent) locally
+    # tmux: we can do static compile, or use tmux-appimage (include libevents/ncurses)
+    # see https://github.com/nelsonenzo/tmux-appimage
     set -e
     TMUX_VER="3.2a"
 
-    TMP_TMUX_DIR="/tmp/$USER/tmux/"; mkdir -p $TMP_TMUX_DIR
+    TMUX_APPIMAGE_URL="https://github.com/nelsonenzo/tmux-appimage/releases/download/${TMUX_VER}/tmux.appimage"
+    wget -O $HOME/.local/bin/tmux $TMUX_APPIMAGE_URL
+    chmod +x $HOME/.local/bin/tmux
 
-    # libevent
-    if [[ -f "/usr/include/libevent.a" ]]; then
-        echo "Using system libevent"
-    elif [[ ! -f "$PREFIX/lib/libevent.a" ]]; then
-        wget -nc -O $TMP_TMUX_DIR/libevent.tar.gz "https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz" || true;
-        tar -xvzf $TMP_TMUX_DIR/libevent.tar.gz -C $TMP_TMUX_DIR
-        cd ${TMP_TMUX_DIR}/libevent-*
-        ./configure --prefix="$PREFIX" --disable-shared
-        make clean && make -j4 && make install
-    fi
-
-    # TODO: assuming that ncurses is available?
-
-    # tmux
-    TMUX_TGZ_FILE="tmux-${TMUX_VER}.tar.gz"
-    TMUX_DOWNLOAD_URL="https://github.com/tmux/tmux/releases/download/${TMUX_VER}/${TMUX_TGZ_FILE}"
-
-    wget -nc ${TMUX_DOWNLOAD_URL} -P ${TMP_TMUX_DIR}
-    cd ${TMP_TMUX_DIR} && tar -xvzf ${TMUX_TGZ_FILE}
-    cd "tmux-${TMUX_VER}"
-
-    ./configure --prefix="$PREFIX" \
-        CFLAGS="-I$PREFIX/include/ -I$PREFIX/include/ncurses/" \
-        LDFLAGS="-L$PREFIX/lib/" \
-        PKG_CONFIG="/bin/false"
-
-    make clean && make -j4 && make install
     ~/.local/bin/tmux -V
 }
 
@@ -198,30 +201,22 @@ install_bazel() {
     echo ""
 }
 
-install_anaconda() {
-    # installs Anaconda-python3. (Deprecated: Use miniconda)
-    # https://www.anaconda.com/products/individual
-    # https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
+install_miniforge() {
+    # Miniforge3.
+    # https://github.com/conda-forge/miniforge
     set -e
-    ANACONDA_VERSION="2021.05"
+    local URL="https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
 
-    if [ "$1" != "--force" ]; then
-        echo "Please use miniconda instead. Use --force option to proceed." && exit 1;
-    fi
+    local TMP_DIR="/tmp/$USER/miniforge/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
+    wget -nc "$URL"
 
-    # https://www.anaconda.com/download/
-    TMP_DIR="/tmp/$USER/anaconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
-    wget -nc "https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh"
-
-    # will install at $HOME/.anaconda3 (see zsh config for PATH)
-    ANACONDA_PREFIX="$HOME/.anaconda3/"
-    bash "Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh" -b -p ${ANACONDA_PREFIX}
-
-    $ANACONDA_PREFIX/bin/python --version
+    local MINIFORGE_PREFIX="$HOME/.miniforge3"
+    bash "Miniforge3-Linux-x86_64.sh" -b -p ${MINIFORGE_PREFIX}
+    $MINIFORGE_PREFIX/bin/python3 --version
 }
 
 install_miniconda() {
-    # installs Miniconda3
+    # installs Miniconda3. (Deprecated: Use miniforge3)
     # https://conda.io/miniconda.html
     set -e
     MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
@@ -328,26 +323,27 @@ install_neovim() {
 
 install_exa() {
     # https://github.com/ogham/exa/releases
-    EXA_VERSION="0.9.0"
-    EXA_BINARY_SHA1SUM="744e3fdff6581bf84b95cecb00258df8c993dc74"  # exa-linux-x86_64 v0.9.0
-    EXA_DOWNLOAD_URL="https://github.com/ogham/exa/releases/download/v$EXA_VERSION/exa-linux-x86_64-$EXA_VERSION.zip"
+    EXA_VERSION="0.10.1"
+    EXA_BINARY_SHA1SUM="7bbd4be0bf44a0302970e7596f5753a0f31e85ac"
+    EXA_DOWNLOAD_URL="https://github.com/ogham/exa/releases/download/v$EXA_VERSION/exa-linux-x86_64-v$EXA_VERSION.zip"
     TMP_EXA_DIR="/tmp/$USER/exa/"
 
     wget -nc ${EXA_DOWNLOAD_URL} -P ${TMP_EXA_DIR} || exit 1;
-    cd ${TMP_EXA_DIR} && unzip -o "exa-linux-x86_64-$EXA_VERSION.zip" || exit 1;
-    if [[ "$EXA_BINARY_SHA1SUM" != "$(sha1sum exa-linux-x86_64 | cut -d' ' -f1)" ]]; then
+    cd ${TMP_EXA_DIR} && unzip -o "exa-linux-x86_64-v$EXA_VERSION.zip" || exit 1;
+    if [[ "$EXA_BINARY_SHA1SUM" != "$(sha1sum bin/exa | cut -d' ' -f1)" ]]; then
         echo -e "${COLOR_RED}SHA1 checksum mismatch, aborting!${COLOR_NONE}"
         exit 1;
     fi
-    cp "exa-linux-x86_64" "$PREFIX/bin/exa" || exit 1;
+    cp "bin/exa" "$PREFIX/bin/exa" || exit 1;
+    cp "completions/exa.zsh" "$PREFIX/share/zsh/site-functions/_exa" || exit 1;
     echo "$(which exa) : $(exa --version)"
 }
 
 install_fd() {
     # install fd
+    # https://github.com/sharkdp/fd/releases
     set -e
-
-    local FD_VERSION="v8.3.2"
+    local FD_VERSION="v8.5.3"
 
     TMP_FD_DIR="/tmp/$USER/fd"; mkdir -p $TMP_FD_DIR
     FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/${FD_VERSION}/fd-${FD_VERSION}-x86_64-unknown-linux-musl.tar.gz"
@@ -399,7 +395,8 @@ install_xsv() {
 }
 
 install_bat() {
-    BAT_VERSION="0.12.1"
+    # https://github.com/sharkdp/bat/releases
+    local BAT_VERSION="0.22.1"
 
     set -e; set -x
     mkdir -p $PREFIX/bin && cd $PREFIX/bin
@@ -484,11 +481,12 @@ install_mosh() {
 }
 
 install_mujoco() {
-  # https://mujoco.org/download
+  # https://github.com/deepmind/mujoco/
+  # Note: If pre-built wheel is available, just do `pip install mujoco` and it's done
   set -e; set -x
-  local mujoco_version="mujoco210"
+  local mujoco_version="2.3.0"
 
-  local MUJOCO_ROOT=$HOME/.mujoco/$mujoco_version
+  local MUJOCO_ROOT=$HOME/.mujoco/mujoco-$mujoco_version
   if [[ -d "$MUJOCO_ROOT" ]]; then
     echo -e "${COLOR_YELLOW}Error: $MUJOCO_ROOT already exists.${COLOR_NONE}"
     return 1;
@@ -498,12 +496,12 @@ install_mujoco() {
   mkdir -p $tmpdir && cd $tmpdir
   mkdir -p $HOME/.mujoco
 
-  local download_url="https://mujoco.org/download/${mujoco_version}-linux-x86_64.tar.gz"
+  local download_url="https://github.com/deepmind/mujoco/releases/download/${mujoco_version}/mujoco-${mujoco_version}-linux-x86_64.tar.gz"
   local filename="$(basename $download_url)"
   wget -N -O $tmpdir/$filename "$download_url"
   tar -xvzf "$filename" -C $tmpdir
 
-  mv $tmpdir/$mujoco_version $HOME/.mujoco/
+  mv $tmpdir/mujoco-$mujoco_version $HOME/.mujoco/
   test -d $MUJOCO_ROOT
 
   $MUJOCO_ROOT/bin/testspeed $MUJOCO_ROOT/model/scene.xml 1000

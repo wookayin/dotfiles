@@ -4,17 +4,13 @@
 
 global !p
 import re
+import px
+
+snippets_helper = px.__import__('snippets_helper')
+
 
 def toCamelCase(s):
     return ''.join(x for x in s.title() if x.isalnum())
-
-def snip_expand(snip, jump_pos=1, jump_forward=False):
-    # See 'snippets-aliasing' in doc
-    if snip.tabstop != jump_pos:
-        return
-    vim.eval('feedkeys("\<C-R>=UltiSnips#ExpandSnippet()\<CR>")')
-    if jump_forward:
-        vim.eval('feedkeys("\<C-R>=UltiSnips#JumpForwards()\<CR>")')
 
 def collect_ale_lint_codes(linter_name: str):
     if not int(vim.eval('get(g:, "ale_enabled", 0)')):
@@ -50,6 +46,9 @@ snippet TODO  "# TODO"
 endsnippet
 snippet utf8
 # -*- coding: utf-8 -*-
+endsnippet
+snippet future
+from __future__ import annotations
 endsnippet
 
 
@@ -94,6 +93,18 @@ snippet "@?dataclass" "@dataclasse.dataclass" r
 class ${1}:
 	pass
 endsnippet
+
+
+################################################################################
+# Functional Programming
+################################################################################
+
+snippet wraps  "functools.wraps"
+@functools.wraps(${1:fn})
+def _wrapped(*args, **kwargs):
+	return $1(*args, **kwargs)
+endsnippet
+
 
 ################################################################################
 # Linting
@@ -209,6 +220,11 @@ snippet rich.traceback
 import rich.traceback; rich.traceback.install(width=None, show_locals=True)
 endsnippet
 
+# temp files
+snippet tmpdir
+tempfile.mkdtemp(suffix=None)
+endsnippet
+
 # misc utilities
 snippet strftime
 time.strftime(${1:'%Y%m%d-%H%M%S'})
@@ -229,7 +245,7 @@ endsnippet
 # Logging
 ################################################################################
 snippet p
-print($1)
+print(f"{$1=}")
 endsnippet
 snippet log
 log.info($1)
@@ -288,7 +304,7 @@ endsnippet
 ################################################################################
 # Test
 ################################################################################
-post_jump "snip_expand(snip, jump_forward=True)"
+post_jump "snippets_helper.snip_expand(snip, 1, jump_forward=True)"
 snippet pytest
 import sys
 import pytest
@@ -336,8 +352,8 @@ class Test${1:Example}(unittest.TestCase):
 		self.assertFalse("Implement me!")
 endsnippet
 
-snippet assert_array_equals
-np.testing.assert_array_equals($1, $2)
+snippet assert_array_equal
+np.testing.assert_array_equal($1, $2)
 endsnippet
 
 

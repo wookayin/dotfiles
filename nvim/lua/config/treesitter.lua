@@ -2,24 +2,35 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
 if not pcall(require, 'nvim-treesitter') then
+  print("Warning: treesitter not available, skipping configuration.")
   return
 end
 
 local ts_configs = require("nvim-treesitter.configs")
 local ts_parsers = require("nvim-treesitter.parsers")
 
-ts_configs.setup {
- -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {
+-- Note: parsers are installed at ~/.vim/plugged/nvim-treesitter/parser/
+local parsers_to_install = {
+  default = {
     "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
     "html", "http", "java", "javascript", "json", "json5", "jsonc", "latex", "lua", "make", "perl",
     "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml"
   },
-
-  -- List of parsers to ignore installing
-  ignore_install = {
-    "phpdoc",      -- Not compatible with M1 mac
+  minimal = {
+    "bash", "json", "latex", "lua", "make", "python", "vim", "yaml"
   },
+}
+parsers_to_install = parsers_to_install.minimal
+
+if vim.fn.has('mac') > 0 then
+  -- Disable 'dockerfile' until nvim-treesitter/nvim-treesitter#3515 is resolved
+  parsers_to_install = vim.tbl_filter(function(x) return x ~= "dockerfile" end, parsers_to_install)
+  pcall(function() require 'nvim-treesitter.install'.uninstall('dockerfile') end)
+end
+
+-- @see https://github.com/nvim-treesitter/nvim-treesitter#modules
+ts_configs.setup {
+  ensure_installed = parsers_to_install,
 
   highlight = {
     -- TreeSitter's highlight/syntax support is yet experimental and has some issues.

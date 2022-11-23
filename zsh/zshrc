@@ -28,27 +28,23 @@ fi
 autoload -Uz is-at-least
 
 
-# zgen           {{{
-# ===================
-if [[ ! -s "${ZDOTDIR:-$HOME}/.zgen/zgen.zsh" ]]; then
-  echo -e "\033[0;31m zgen is not installed; please update dotfiles !"
-  echo -e "\033[0;33m  e.g. $ dotfiles update\n\
-       $ cd ~/.dotfiles && python install.py"
+# Source antidote
+if [[ ! -s "${ZDOTDIR:-$HOME}/.zsh/antidote/antidote.zsh" ]]; then
+  echo -e "\033[0;31m antidote is not installed; please update dotfiles !"
+  echo -e "\033[0;33m  Try one of the following: \
+       $ dotfiles update\n\
+       $ cd ~/.dotfiles && python install.py\
+       $ cd ~/.dotfiles && git submodule update --init --recursive\
+"
   echo -e "\033[0m"
   return
 fi
-
-source "${ZDOTDIR:-$HOME}/.zgen/zgen.zsh"
-
+source "${ZDOTDIR:-$HOME}/.zsh/antidote/antidote.zsh"
 
 # Source the Prezto configuration file.
 if [[ -s "${ZDOTDIR:-$HOME}/.zpreztorc" ]]; then
   source "${ZDOTDIR:-$HOME}/.zpreztorc"
 fi
-
-# Dirty hacks for Prezto+zplug
-# @see https://github.com/zplug/zplug/issues/373
-zstyle ":prezto:module:completion" loaded 'yes'
 
 # Do not put all usernames as possible candidates for tab completion.
 zstyle ':completion:*' users root $USER
@@ -83,60 +79,84 @@ export FZF_MARKS_JUMP='^g'
 
 # ------------------------------------------------------ }}}
 
-# Cleanup obsolete zgen plugins (zgen reset doesn't ignore)
-if [[ -n "${DOTFILES_UPDATE}" ]]; then
-  rm -rf ~/.zgen/zdharma/fast-syntax-highlighting-master
+# antidote: zsh plugin specifications.
+# antidote-managed plugins will be stored at $ANTIDOTE_HOME
+export ANTIDOTE_HOME="$HOME/.zsh/antidote-plugins"
+export ANTIDOTE_BUNDLE="$HOME/.zsh_plugins.zsh"
+zstyle ':antidote:bundle' use-friendly-names on
+
+if [ ! -d "$ANTIDOTE_HOME" ]; then
+    echo -e "\033[0;33mInitializing ANTIDOTE and zsh plugins for the first time, please be patient ...\033[0m"
 fi
 
-# zgen plugin specifications
-# NOTE: To reflect the added/updated plugins, try 'zgen reset'
-if ! zgen saved; then
-  echo "Initializing zgen plugins ..."
+function antidote-load() {
+    echo "antidote load is disabled. see ~/.zshrc"
+    return 1;
+}
+function antidote-reset() {
+    echo "Removing $ANTIDOTE_BUNDLE ..."
+    rm -rf $ANTIDOTE_BUNDLE >/dev/null
+}
 
-  # load prezto. see ~/.zpreztorc for plugin configurations
-  zgen prezto
+# antidote: Use static loading (cache) for better performance
+# (see antidote#65 for more details)
+local -a bundles=()
 
-  # additional modules/plugins
-  # --------------------------
+function _antidote_compile_bundles() {
+  local _ANTIDOTE_SAVING="1"
+  echo -e "\033[0;33mWriting antidote cache file into $ANTIDOTE_BUNDLE ...\033[0m"
+
+  # TODO: Get rid of prezto, a legacy.
+  bundles+=('sorin-ionescu/prezto')
 
   if is-at-least 5.4; then
     # zsh theme: powerlevel10k + customization
     # p10k's minimum zsh requirement is 5.1 but we require zsh 5.4+,
     # because without the instant mode initialization is slower than pure.
-    zgen load romkatv/powerlevel10k 'powerlevel10k.zsh-theme'
+    bundles+=('romkatv/powerlevel10k')
   else
     # zsh theme: pure (forked ver). For OLD zsh.
-    zgen load mafredri/zsh-async
-    zgen load wookayin/pure
+    bundles+=('mafredri/zsh-async')
+    bundles+=('wookayin/pure')
   fi
 
-  # zsh syntax: FSH
+  # zsh syntax: FSH (fast-syntax-highlighting)
   # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
-  # For some reason, @zdharma's repo is gone -- workaround by using its fork
-  zgen load wookayin/fast-syntax-highlighting
-  fast-theme "XDG:wook"
+  bundles+=('z-shell/F-Sy-H')
 
   # More completion support
-  zgen load esc/conda-zsh-completion
+  bundles+=('esc/conda-zsh-completion')
 
-  # misc.
-  # #see ~/.zsh/zsh.d/envs.zsh for configs
-  zgen load wookayin/fzf-fasd
+  # see ~/.zsh/zsh.d/envs.zsh for fzf configs
+  bundles+=('wookayin/fzf-fasd')
+  bundles+=('junegunn/fzf-git.sh kind:clone')
 
-  # fzf-marks
-  zgen load urbainvaes/fzf-marks
-
-  zgen load zsh-users/zsh-autosuggestions
+  bundles+=('zsh-users/zsh-autosuggestions')
   if (( $+commands[virtualenvwrapper_lazy.sh] || $+commands[conda] )); then
     # Use my own fork for a while, to support autoswitch into anaconda envs
-    zgen load wookayin/zsh-autoswitch-virtualenv
+    bundles+=('wookayin/zsh-autoswitch-virtualenv')
   fi
   if [[ "`uname`" == "Darwin" ]]; then
-    zgen load wookayin/anybar-zsh
+    bundles+=('wookayin/anybar-zsh')
   fi
 
-  zgen save
+  printf "%s\n" $bundles | antidote bundle >! "$ANTIDOTE_BUNDLE"
+}
 
+# If $ANTIDOTE_BUNDLE is empty (blank) file, refresh the static cache
+if [ ! -s "$ANTIDOTE_BUNDLE" ] || ! grep -q '[^[:space:]]' < "$ANTIDOTE_BUNDLE"; then
+  _antidote_compile_bundles
+fi
+
+# Load the static script for loading zsh plugins.
+source $ANTIDOTE_BUNDLE
+if [ ! $? -eq 0 ] ; then   # error, refresh the script and try again
+    _antidote_compile_bundles
+    source $ANTIDOTE_BUNDLE
+fi
+
+if [[ -n "$_ANTIDOTE_SAVING" ]]; then
+    fast-theme "XDG:wook"
 fi
 
 # }}} ===================
@@ -144,7 +164,22 @@ fi
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Source after-{zplug,zgen} zsh script files.
+# Manually source fzf-git.sh,
+# because sourcing it via plugin manager will make shell terminate
+if type antidote >/dev/null 2>&1; then
+  source $(__antidote_bundledir junegunn/fzf-git.sh)/fzf-git.sh
+  bindkey '^g^o' fzf-git-hashes-widget
+  bindkey '^go' fzf-git-hashes-widget
+
+else
+  # old systems (e.g. Ubuntu 16.04) has low zsh version < 5.4
+  # where antidote doesn't load. Fallback to zgen if possible
+  echo -e "\033[0;31mERROR: mantidote cannot load (your zsh is too old).\033[0m"
+  [[ -f ~/.zgen/init.zsh ]] && { echo "Falling back to zgen..."; source ~/.zgen/init.zsh } || return 0;
+fi
+
+
+# Source zsh script files after loading the zsh plugins.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
 # Terminal
@@ -177,14 +212,18 @@ fi
 # see ~/.zshenv for $CONDA_EXE detection
 function _conda_initialize() {
 # >>> conda initialize >>>
-if [ -n "${CONDA_EXE}" ]; then
-  ${CONDA_EXE} config --set auto_activate_base false
-  __conda_setup="$(${CONDA_EXE} 'shell.zsh' 'hook' 2> /dev/null)"
-  if [ $? -eq 0 ]; then
-      eval "$__conda_setup"
-  fi
-  unset __conda_setup
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/aditya/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/aditya/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/aditya/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/aditya/anaconda3/bin:$PATH"
+    fi
 fi
+unset __conda_setup
 # <<< conda initialize <<<
 }
 # Note: conda initialize is slow (0.3 sec), so execute lazily
@@ -200,5 +239,8 @@ if [[ -z "$CONDA_EXE" && -d "/opt/homebrew/Caskroom/miniconda" ]]; then
   echo "$ ./Miniconda3-latest-MacOSX-x86_64.sh -p $HOME/.miniconda3"
 fi
 
-# Enable x-server for wsl
-export DISPLAY=`grep -oP "(?<=nameserver ).+" /etc/resolv.conf`:0.0
+
+# Optionally, put local startup config (not version controlled) in ~/.zshrc.local
+if [ -f "$HOME/.zshrc.local" ]; then
+    source "$HOME/.zshrc.local"
+fi

@@ -31,6 +31,12 @@ fi
 
 export PAGER='less'
 
+# Unset GIT_EDITOR (usually nvr) inside a neovim-floaterm session.
+# See ~/.vimrc: $GIT_EDITOR section for more details.
+if [[ -n "$FLOATERM" ]]; then
+  unset GIT_EDITOR
+fi
+
 #
 # Language
 #
@@ -53,6 +59,12 @@ typeset -gU cdpath fpath mailpath path
 # [For Mac M1 USERS]
 # Homebrew: /opt/homebrew/bin must precede /usr/local/bin.
 # Please update /etc/paths: add `/opt/homebrew/bin` manually.
+
+if ! (( $path[(I)/opt/homebrew/bin] )); then
+    # Add homebrew bin path to $path automatically, if
+    # /etc/paths is not sourced or not configured.
+    path=($path /opt/homebrew/bin)
+fi
 
 # Set the the list of directories that cd searches.
 # cdpath=(
@@ -95,7 +107,7 @@ if [[ "$OSTYPE" == darwin* && "$(uname -m)" == "arm64" ]]; then
   )
 fi
 
-# Cleanup some anaconda environment variables to avoid messing up in tmux, etc.
+# Cleanup some conda environment variables to avoid messing up in tmux, etc.
 # (these environment variables might be copied and inherited unwantedly)
 unset CONDA_EXE
 unset CONDA_PREFIX
@@ -103,7 +115,7 @@ unset CONDA_DEFAULT_ENV
 unset CONDA_PYTHON_EXE
 unset CONDA_SHLVL
 
-# Miniconda3
+# conda (miniforge3, miniconda3)
 function _try_conda_base() {
   local conda_base="$1"
   [[ -z "$conda_base" ]] && return 1;
@@ -119,9 +131,11 @@ function _try_conda_base() {
     fi
   fi
 }
+
+_try_conda_base "$HOME/.miniforge3";
+_try_conda_base "$HOME/miniforge3";
 _try_conda_base "$HOME/.miniconda3";
 _try_conda_base "$HOME/miniconda3";
-_try_conda_base "$HOME/.miniforge3";
 _try_conda_base "/usr/local/miniconda3";
 unfunction _try_conda_base
 
@@ -168,6 +182,8 @@ fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes ~/.zsh/functions ~/.local/share/zsh/
 # Python - Virtualenv, etc.
 #
 
+export PYTHONBREAKPOINT='pudb.set_trace'
+
 if [[ "$(uname)" == "Darwin" ]]; then
     # Mac OS X: use python shipped by Homebrew for virtualenv.
     export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python'
@@ -194,3 +210,4 @@ export COPYFILE_DISABLE=true
 if [ -f "$HOME/.zshenv.local" ]; then
   source "$HOME/.zshenv.local"
 fi
+. "$HOME/.cargo/env"

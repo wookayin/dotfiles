@@ -48,9 +48,9 @@ def add_argument(*args, **kwargs):
 
 ###############################################################################################
 
-@add_argument('--fast', action='store_true', help='Skip all slow updates (zgen, vimplug)')
-@add_argument('--skip-zplug', action='store_true', help='Skip zplug/zgen update')
-@add_argument('--skip-vimplug', action='store_true', help='Skip vim-plug update')
+@add_argument('--fast', action='store_true', help='Skip all slow updates (zsh/vim plugins)')
+@add_argument('--skip-zplug', action='store_true', help='Skip updating zsh plugins (antidote)')
+@add_argument('--skip-vimplug', action='store_true', help='Skip updating vim plugins (vim-plug)')
 def update(fast=False,
            skip_zplug=False,
            skip_vimplug=False):

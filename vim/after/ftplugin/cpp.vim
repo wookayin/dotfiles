@@ -6,11 +6,12 @@
 " ====================
 
 " Show <Quickfix List> buffer at the right splitted vertically
-if isdirectory(expand("~/.vim/plugged/vim-dispatch"))
-    noremap <F6> <ESC>:cclose<CR>:TheCopen<CR>:wincmd L<CR>:setlocal nowfh<CR>:70wincmd \|<CR>:wincmd h<CR>
-else
-    noremap <F6> <ESC>:cclose<CR>:vertical 60copen<CR>:wincmd h<CR>
-endif
+command! -count=60 -buffer Copen   call s:Copen(<count>)
+function! s:Copen(count) abort
+    cclose
+    exec printf('vertical %dcopen', a:count)
+    wincmd h
+endfunction
 
 " Automatic makeprg generation (regarding %:r.in, %r.ans)
 if !filereadable('Makefile')

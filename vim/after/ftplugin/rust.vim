@@ -1,6 +1,13 @@
 " rust ftplugin
 
-if !filereadable('Makefile')
+let s:project_root = DetermineProjectRoot()
+
+if filereadable(s:project_root . "/Makefile") || filereadable("./Makefile")
+elseif filereadable(s:project_root . "/Cargo.toml") || filereadable("./Cargo.toml")
+    if &g:makeprg == 'make'
+        let &g:makeprg = 'cargo build'
+    endif
+else
     let b:basename = expand("%:r")
     let b:input_file  = filereadable(b:basename . ".in") ? (b:basename . ".in") : ""
     let b:answer_file = filereadable(b:basename . ".ans") ? (b:basename . ".ans") : ""

@@ -41,7 +41,7 @@ Plug 'dstein64/vim-startuptime', { 'on': ['StartupTime'] }
 
 " Vim Interfaces
 " -------------------------------------
-if has('nvim-0.6.0')
+if has('nvim')
   " Status line: use lualine.nvim (fork)
   Plug 'nvim-lualine/lualine.nvim'
   ForcePlugURI 'lualine.nvim'
@@ -53,10 +53,8 @@ endif
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
 Plug 'junegunn/fzf.vim'
 Plug 'wookayin/fzf-ripgrep.vim'
-if has('nvim-0.4.0')
+if has('nvim') || has('popup')
   Plug 'voldikss/vim-floaterm'
-endif
-if has('nvim-0.4.0') || has('popup')
   Plug 'skywind3000/vim-quickui'
 endif
 if exists('##TermOpen') || exists('##TerminalOpen')
@@ -69,11 +67,15 @@ Plug 'jistr/vim-nerdtree-tabs', { 'on': g:_nerdtree_lazy_events }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 Plug 'vim-voom/VOoM', { 'on' : ['Voom', 'VoomToggle'] }
-Plug 'tpope/vim-dispatch', { 'tag' : 'v1.1' }
+if has('nvim')
+   Plug 'kevinhwang91/nvim-bqf'
+endif
 if has('nvim') || v:version >= 800
   Plug 'neomake/neomake'
+  Plug 'skywind3000/asyncrun.vim'
 endif
-if has('nvim-0.4.0')
+Plug 'vim-scripts/errormarker.vim'
+if has('nvim')
   Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemote') }
   Plug 'romgrk/fzy-lua-native'
 endif
@@ -90,32 +92,32 @@ endif
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'rbong/vim-flog'
-if has('nvim-0.5.0')
+if has('nvim')
   Plug 'lewis6991/gitsigns.nvim'
 else
   Plug 'airblade/vim-gitgutter'
 endif
-if has('nvim-0.5.0')
+if has('nvim')
   Plug 'sindrets/diffview.nvim'
-endif
-if has('nvim-0.4.0') && exists('*nvim_open_win')
-  " git blame with floating window (requires nvim 0.4.0+)
   Plug 'rhysd/git-messenger.vim'
 endif
 Plug 'majutsushi/tagbar'
 Plug 'rking/ag.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'junegunn/vim-easy-align'
-if has('nvim-0.5.0')
+if has('nvim')
   Plug 'lukas-reineke/indent-blankline.nvim'
 else
   Plug 'Yggdroot/indentLine'
 endif
-if exists('##WinScrolled')  " neovim nightly (0.5.0+)
+if exists('##WinScrolled')
   Plug 'dstein64/nvim-scrollview'
 endif
-if has('nvim-0.5.0')
-  Plug 'anuvyklack/pretty-fold.nvim', {'commit': 'eba8996'}
+
+" Advanced Folding
+if has('nvim')
+  Plug 'kevinhwang91/nvim-ufo'
+  Plug 'kevinhwang91/promise-async'
 end
 
 " Miscellanious Utilities
@@ -151,13 +153,12 @@ Plug 'junegunn/vader.vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tpope/vim-eunuch'
 Plug 'wookayin/vim-typora', { 'on': 'Typora' }
-if has('nvim-0.5.0')
+if has('nvim')
   Plug 'folke/which-key.nvim'
-  ForcePlugURI 'which-key.nvim'    " See GH-227, GH-280
 endif
 
 if s:darwin && isdirectory('/Applications/Dash.app')
-  if has('nvim-0.5.0')
+  if has('nvim')
     Plug 'mrjones2014/dash.nvim', { 'do': 'make install',
           \ 'on': ['Dash', 'DashWord'] }
   else
@@ -165,18 +166,20 @@ if s:darwin && isdirectory('/Applications/Dash.app')
   endif
 endif
 
-if has('nvim-0.5.0')
-  " Some lua-powered plugins for neovim 0.5.0+
+if has('nvim')
+  " Some lua-powered plugins for UI
+  Plug 'nvim-lua/plenary.nvim'
   Plug 'rcarriga/nvim-notify'
   Plug 'norcalli/nvim-colorizer.lua'
   Plug 'nvim-neo-tree/neo-tree.nvim', {'branch': 'main'}
   Plug 'MunifTanjim/nui.nvim'
-  Plug 'nvim-lua/plenary.nvim'
-  Plug 'nvim-telescope/telescope.nvim', PinIf(!has('nvim-0.6.0'), {'commit': '80cdb00'})
+  Plug 'stevearc/dressing.nvim'
+
+  Plug 'nvim-telescope/telescope.nvim'
 endif
 
-if has('nvim-0.6.1')
-  " Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
+" Treesitter (see ~/.config/nvim/lua/config/treesitter.lua)
+if has('nvim')
   function! TSUpdate(arg) abort
     if luaeval('pcall(require, "nvim-treesitter")')
       TSUpdate
@@ -184,8 +187,9 @@ if has('nvim-0.6.1')
   endfunction
 
   let g:_plug_ts_config = {'do': function('TSUpdate')}
-  if !has('nvim-0.7')
-    let g:_plug_ts_config['commit'] = '8a1acc00'  " Since a1893234, 0.7.0+ required
+  if !has('nvim-0.8')
+    " Since 42ab95d5, nvim 0.8.0+ is required
+    let g:_plug_ts_config['commit'] = '4cccb6f4'
   endif
   Plug 'nvim-treesitter/nvim-treesitter', g:_plug_ts_config
   Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground'}
@@ -193,10 +197,10 @@ if has('nvim-0.6.1')
   Plug 'SmiteshP/nvim-gps'
 endif
 
-if has('nvim-0.7')
+" Test integration
+if has('nvim')
   Plug 'nvim-neotest/neotest'
   Plug 'antoinemadec/FixCursorHold.nvim'
-  Plug 'rcarriga/nvim-dap-ui'
 
   Plug 'nvim-neotest/neotest-python'
   Plug 'nvim-neotest/neotest-plenary'
@@ -205,14 +209,12 @@ endif
 " Syntax, Completion, Language Servers, etc.
 " ------------------------------------------
 
-let g:dotfiles_completion_backend = has('nvim-0.5.0') ? '@lsp' : ''
-
-" 1. [Neovim 0.5.0 LSP]
+" Neovim LSP related plugins.
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
-if g:dotfiles_completion_backend == '@lsp'
-  Plug 'neovim/nvim-lspconfig', PinIf(!has('nvim-0.7'), {'tag': 'v0.1.3'})
+if has('nvim')
+  Plug 'neovim/nvim-lspconfig'
   Plug 'williamboman/nvim-lsp-installer'
-  Plug 'folke/lua-dev.nvim'
+  Plug 'folke/neodev.nvim'
 
   Plug 'hrsh7th/nvim-cmp', {'commit': 'dbc7229'}  " GH-899
   Plug 'hrsh7th/cmp-buffer'
@@ -221,28 +223,14 @@ if g:dotfiles_completion_backend == '@lsp'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
   Plug 'ray-x/lsp_signature.nvim'
-  Plug 'nvim-lua/lsp-status.nvim', PinIf(!has('nvim-0.6.0'), {'commit': 'e8e5303'})
-  Plug 'j-hui/fidget.nvim', PlugCond(has('nvim-0.6.0'))
+  Plug 'nvim-lua/lsp-status.nvim'
+  Plug 'j-hui/fidget.nvim'
   Plug 'folke/trouble.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'onsails/lspkind-nvim'
 
-  Plug 'jose-elias-alvarez/null-ls.nvim', PlugCond(has('nvim-0.6.0'))
-
+  Plug 'jose-elias-alvarez/null-ls.nvim'
 endif
-
-" 2. [no LSP/coc support] (legacy) {{{
-if g:dotfiles_completion_backend == ''
-  Plug 'davidhalter/jedi-vim'
-  " Legacy support for <TAB> in the completion context
-  Plug 'ervandew/supertab'
-  " Use ALE if no LSP support was used
-  Plug 'w0rp/ale', PlugCond(v:version >= 800)
-  if has('nvim')
-    Plug 'Shougo/echodoc.vim'
-  endif
-endif
-" }}}
 
 " Other language-specific plugins (supplementary and orthogonal to LSP)
 " ---------------------------------------------------------------------
@@ -295,7 +283,7 @@ silent unlet g:_nerdtree_lazy_events
 
 
 " Automatically install missing plugins on startup
-let g:plugs_missing_on_startup = filter(values(g:plugs), '!isdirectory(v:val.dir)')
+let g:plugs_missing_on_startup = filter(values(g:plugs), '!isdirectory(v:val.dir) && !empty(get(v:val, "uri"))')
 if len(g:plugs_missing_on_startup) > 0
   PlugInstall --sync | q
 endif

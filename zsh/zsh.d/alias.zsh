@@ -9,7 +9,7 @@ _version_check() {
 # -----------------------------
 
 # Basic
-alias reload!="command -v zgen 2>&1 > /dev/null && zgen reset; \
+alias reload!="command -v antidote 2>&1 > /dev/null && antidote reset; \
     source ~/.zshrc && echo 'sourced ~/.zshrc' again"
 alias c='command'
 alias ZQ='exit'
@@ -60,6 +60,23 @@ function plugged() {
 }
 
 # Tmux ========================================= {{{
+
+function tmux-wrapper() {
+    if [ $# -lt 1 ]; then
+        command tmux -V || return 2;
+        echo 'tmux: Using tmux with no arguments is discouraged, try some aliases:\n' >&2
+        echo '  tmuxnew SESSION_NAME : Create a new session with the name' >&2
+        echo '  tmuxa   SESSION_NAME : Attach to an existing session' >&2
+        echo '  tmuxl                : List all the existing sessions' >&2
+        echo '' >&2
+
+        tmux --help || true;
+        return 1;
+    fi
+    command tmux "$@"
+}
+compdef '_tmux' tmux-wrapper
+alias tmux='tmux-wrapper'
 
 # create a new session with name
 alias tmuxnew='tmux new -s'
@@ -124,7 +141,14 @@ GIT_VERSION=$(git --version | awk '{print $3}')
 
 alias github='\gh'
 
-alias gh='git history'
+function ghn() {
+    # git history, but truncate w.r.t the terminal size. Assumes not headless.
+    # A few lines to subtract from the height: previous prompt (2) + blank (1) + current prompt (2)
+    local num_lines=$(($(stty size | cut -d" " -f1) - 5))
+    if [[ $num_lines -gt 25 ]]; then num_lines=$((num_lines - 5)); fi  # more margin
+    git history --color=always -n$num_lines "$@" | head -n$num_lines | less --QUIT-AT-EOF -F
+}
+alias gh='ghn'
 alias ghA='gh --all'
 if _version_check $GIT_VERSION "2.0"; then
   alias gha='gh --exclude=refs/stash --all'
@@ -132,7 +156,11 @@ else
   alias gha='gh --all'   # git < 1.9 has no --exclude option
 fi
 
-alias gd='git diff --no-prefix'
+if (( $+commands[delta] )); then
+    alias gd='git -c core.pager="delta" diff --no-prefix'
+else
+    alias gd='git diff --no-prefix'
+fi
 alias gdc='gd --cached --no-prefix'
 alias gds='gd --staged --no-prefix'
 alias gs='git status'
@@ -194,6 +222,8 @@ function gsd() {
 
   return 0
 }
+
+alias gfx='git fixup'
 
 # using the vim plugin GV/Flog
 function _vim_gv {
@@ -385,21 +415,6 @@ function site-packages() {
     else
         echo "$base/$1"
     fi;
-}
-
-function vimpy() {
-    # Open a corresponding file of specified python module.
-    # e.g. $ vimpy numpy.core    --> opens $(site-package)/numpy/core/__init__.py
-    if [[ -z "$1" ]]; then; echo "Argument required"; return 1; fi
-
-    local _module_path=$(python -c "import $1; print($1.__file__)" 2>/dev/null)
-    if [[ -n "$_module_path" ]]; then
-        echo $_module_path
-        vim "$_module_path"
-     else
-        echo "Cannot import module: $1"
-        return 1;
-    fi
 }
 
 # open some macOS applications
