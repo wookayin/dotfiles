@@ -26,7 +26,7 @@
 [alias]
 	history = log --graph --decorate \
 		--pretty=format:'%C(yellow)%h%Creset  %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
-		--abbrev-commit --date=short --date-order -n30
+		--abbrev-commit --date=short --date-order
 
 	co = checkout
 	unstage = reset HEAD --
@@ -41,6 +41,7 @@
 	list-conflicts = diff --name-only --diff-filter=U
 
 	amend = commit --amend -v
+	amend-f = commit --amend -v --no-edit
 
 	wdiff = diff --color-words
 	wshow = show --color-words
@@ -82,6 +83,10 @@
 	whitespace = red reverse
 	meta = yellow bold
 
+[commit]
+	# git commit --verbose by default (git 2.9.0+)
+	verbose = true
+
 [diff]
 	# --no-prefix (for git diff, git show) such as 'a/' 'b/' blah
 	noprefix = true
@@ -94,6 +99,12 @@
 
 	# smarter diff on splits around blank lines (git 2.9.0+)
 	compactionHeuristic = true
+
+[delta]
+	features = decorations
+	keep-plus-minus-markers = true
+	hunk-header-style = file line-number syntax
+	line-numbers = true
 
 [diff-so-fancy]
 	markEmptyLines = false

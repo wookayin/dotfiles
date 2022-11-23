@@ -3,6 +3,11 @@
 ---------------
 -- @see  :help telescope.setup
 -- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
+--
+if not pcall(require, 'telescope') then
+  print("Warning: telescope not available, skipping configuration.")
+  return
+end
 local telescope = require("telescope")
 
 if not pcall(require, 'telescope.actions.layout') then
@@ -42,8 +47,6 @@ vim.cmd [[
 -- Custom Telescope mappings
 vim.cmd [[
 command! -nargs=0 Highlights    :Telescope highlights
-command! -nargs=0 CodeActions   :Telescope lsp_code_actions
-call CommandAlias("CA", "CodeActions")
 call CommandAlias("Te", "Telescope")
 
 command! -nargs=?                 LspSymbols  :lua require"telescope.builtin".lsp_dynamic_workspace_symbols({default_text = '<args>'})

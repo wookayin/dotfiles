@@ -55,6 +55,8 @@ def _import_common_modules(full=False):
             sys.stdout.flush()
 
     _import('numpy', _as='np')
+    _import('jax')
+    _import('jax.numpy', _as='jnp')
     _import('pandas', _as='pd')
     _import('matplotlib', _as='mpl')
     _import('matplotlib.pyplot', _as='plt')
@@ -64,7 +66,6 @@ def _import_common_modules(full=False):
 
     if full:   # %imp -a
         _import('tensorflow', _as='tf')
-        _import('torch')
 
 
 def _import_common_magics():
@@ -95,8 +96,8 @@ try:
     from IPython.core.magic import register_line_magic
 
     @register_line_magic
-    def imp(line):
-        """%imp: Magic for loading common packages you would need."""
+    def i(line):
+        """%i: Magic for loading common packages you would need."""
         _import_common(line.strip() == '-a')
 
     del register_line_magic

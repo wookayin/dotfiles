@@ -20,8 +20,8 @@ parser.add_argument('-f', '--force', action="store_true", default=False,
                     help='If set, it will override existing symbolic links')
 parser.add_argument('--skip-vimplug', action='store_true',
                     help='If set, do not update vim plugins.')
-parser.add_argument('--skip-zgen', '--skip-zplug', action='store_true',
-                    help='If set, skip zgen updates.')
+parser.add_argument('--skip-zplug', action='store_true',
+                    help='If set, skip update of zsh plugins.')
 
 args = parser.parse_args()
 
@@ -47,7 +47,6 @@ tasks = {
     '~/.gitignore' : 'git/gitignore',
 
     # ZSH
-    '~/.zgen'     : 'zsh/zgen',
     '~/.zsh'      : 'zsh',
     '~/.zlogin'   : 'zsh/zlogin',
     '~/.zlogout'  : 'zsh/zlogout',
@@ -60,7 +59,7 @@ tasks = {
     '~/.local/bin/dotfiles' : 'bin/dotfiles',
     '~/.local/bin/fasd' : 'zsh/fasd/fasd',
     '~/.local/bin/is_mosh' : 'zsh/is_mosh/is_mosh',
-    '~/.local/bin/fzf' : '~/.fzf/bin/fzf', # fzf is at $HOME/.fzf
+    '~/.local/bin/fzf' : dict(src='~/.fzf/bin/fzf', force=True),
 
     # X
     '~/.Xmodmap' : 'Xmodmap',
@@ -90,13 +89,12 @@ tasks = {
 }
 
 
-try:
-    from distutils.spawn import find_executable
-except ImportError:
-    # In some environments, distutils might not be available.
-    import sys
-    sys.stderr.write("WARNING: distutils not available\n")
-    find_executable = lambda _: False   # type: ignore
+import os
+import platform
+
+# Make sure the CWD is the root of dotfiles.
+__PATH__ = os.path.abspath(os.path.dirname(__file__))
+os.chdir(__PATH__)
 
 
 post_actions = []
@@ -129,24 +127,24 @@ post_actions += [  # video2gif
     exit $ret;
 ''']
 
-post_actions += [  # zgen
+post_actions += [  # antidote (zsh plugins)
     '''#!/bin/bash
-    # Update zgen modules and cache (the init file)
+    # Update zsh bundles and cache (the init file)
     zsh -c "
-        # source zplug and list plugins
+        # source zsh plugin manager and list plugins
         DOTFILES_UPDATE=1 __p9k_instant_prompt_disabled=1 source ${HOME}/.zshrc
-        if ! which zgen > /dev/null; then
+        if ! which antidote > /dev/null; then
             echo -e '\033[0;31m\
-ERROR: zgen not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
-            ls -alh ~/.zsh/zgen/
+ERROR: antidote not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
+            ls -alh ~/.zsh/antidote/
             ls -alh ~/.zshrc
             exit 1;
         fi
-        zgen reset
-        zgen update
+        antidote update
+        antidote reset
     "
-    ''' if not args.skip_zgen else \
-        '# zgen update (Skipped)'
+    ''' if not args.skip_zplug else \
+        '# zsh plugins update (Skipped)'
 ]
 
 post_actions += [  # tmux plugins
@@ -158,7 +156,11 @@ post_actions += [  # tmux plugins
     _version_check() {    # target_ver current_ver
         [ "$1" = "$(echo -e "$1\n$2" | sort -s -t- -k 2,2n | sort -t. -s -k 1,1n -k 2,2n | head -n1)" ]
     }
-    if ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
+    if [[ `uname` == "Linux" ]] && ! type tmux >/dev/null 2>&1; then
+        echo -e "\033[0;33mInstalling tmux because not installed globally.\033[0m"
+        bin/dotfiles install tmux
+        export PATH="$PATH:~/.local/bin"
+    elif ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
         echo -en "\033[0;33m"
         echo -e "$(tmux -V) is too old. Contact system administrator, or:"
         echo -e "  $ dotfiles install tmux  \033[0m (installs to ~/.local/, if you don't have sudo)"
@@ -180,6 +182,30 @@ post_actions += [  # default shell
         echo -e "\033[0;32m\$SHELL is already zsh.\033[0m $(zsh --version)"
     fi
 ''']
+
+post_actions += [  # install some essential packages (linux)
+    '''#!/bin/bash
+    # Install node, rg, fd locally
+    export PATH="$PATH:$HOME/.local/bin"
+    type node >/dev/null 2>&1 || bin/dotfiles install node
+    type rg   >/dev/null 2>&1 || bin/dotfiles install ripgrep
+    type fd   >/dev/null 2>&1 || bin/dotfiles install fd
+    '''
+] if platform.system() == "Linux" else []
+
+post_actions += [  # neovim
+    '''#!/bin/bash
+    # validate neovim package installation on python2/3 and automatically install if missing
+    bash "etc/install-neovim-py.sh"
+''']
+
+post_actions += [  # vim-plug
+    # Run vim-plug installation
+    {'install' : 'PATH="$PATH:~/.local/bin"  nvim --headless +"set nonumber" +"PlugInstall --sync" +%print +UpdateRemotePlugins +qall',
+     'update'  : 'PATH="$PATH:~/.local/bin"  nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall',
+     'none'    : '# nvim +PlugUpdate (Skipped)',
+     }['update' if not args.skip_vimplug else 'none']
+]
 
 post_actions += [  # gitconfig.secret
     r'''#!/bin/bash
@@ -213,23 +239,6 @@ EOL
     echo -en '\033[0m';
 ''']
 
-post_actions += [  # neovim
-    '''#!/bin/bash
-    # validate neovim package installation on python2/3 and automatically install if missing
-    bash "etc/install-neovim-py.sh"
-''']
-
-vim_options = dict(
-    nvim=dict(vim='nvim', flag='--headless'),
-    vim=dict(vim='vim', flag=''),
-)[find_executable('nvim') and 'nvim' or 'vim']
-post_actions += [  # vim-plug
-    # Run vim-plug installation
-    {'install' : '{vim} {flag} +"set nonumber" +"PlugInstall --sync" +%print +qall'.format(**vim_options),
-     'update'  : '{vim} {flag} +"set nonumber" +"PlugUpdate  --sync" +%print +qall'.format(**vim_options),
-     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(**vim_options)
-     }['update' if not args.skip_vimplug else 'none']
-]
 
 ################# END OF FIXME #################
 
@@ -300,12 +309,10 @@ if submodule_issues:
         log(RED("git submodule {name} : {status}".format(
             name=submodule_name,
             status=stat_messages.get(submodule_stat, '(Unknown)'))))
-    log(RED(" you may run: $ git submodule update --init --recursive"))
+    log(YELLOW("Git submodules are not initialized.\n"))
 
-    log("")
-    log(YELLOW("Do you want to update submodules? (y/n) "), cr=False)
-    shall_we = (input().lower() == 'y')
-    if shall_we:
+    update_submodule = True
+    if update_submodule:
         git_submodule_update_cmd = 'git submodule update --init --recursive'
         # git 2.8+ supports parallel submodule fetching
         try:
@@ -313,7 +320,7 @@ if submodule_issues:
             if git_version >= '2.8': git_submodule_update_cmd += ' --jobs 8'
         except Exception as ex:
             pass
-        log("Running: %s" % BLUE(git_submodule_update_cmd))
+        log("Running: %s" % CYAN(git_submodule_update_cmd))
         subprocess.call(git_submodule_update_cmd, shell=True)
     else:
         log(RED("Aborted."))
@@ -321,13 +328,19 @@ if submodule_issues:
 
 
 log_boxed("Creating symbolic links", color_fn=CYAN)
-for target, source in sorted(tasks.items()):
+for target, item in sorted(tasks.items()):
     # normalize paths
+    if isinstance(item, str):
+        item = {'src': item}
+
+    source, force = item['src'], item.get('force', False)
     source = os.path.join(current_dir, os.path.expanduser(source))
     target = os.path.expanduser(target)
 
     # bad entry if source does not exists...
-    if not os.path.lexists(source):
+    if force:
+        pass  # Even if the source does not exist, always make a symlink
+    elif not os.path.lexists(source):
         log(RED("source %s : does not exist" % source))
         continue
 

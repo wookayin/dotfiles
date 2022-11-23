@@ -15,7 +15,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '${1:2}'   # 0: >=INFO, 1: >=WARNING, 2: >=
 endsnippet
 
 # TF 2.0
-snippet gpu_growth "Let GPU do not allocate a full memory at once."
+snippet tf_gpu_growth "Let GPU do not allocate a full memory at once."
 gpu_devices = tf.config.experimental.list_physical_devices('GPU')
 for device in gpu_devices:
 	tf.config.experimental.set_memory_growth(device, True)
