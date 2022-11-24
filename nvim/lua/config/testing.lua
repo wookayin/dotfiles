@@ -25,6 +25,7 @@ function M.setup_neotest()
     },
     floating = { -- :help neotest.Config.floating
       max_width = 0.9,
+      max_height = 0.8,
       options = {},
     },
     icons = {
@@ -32,6 +33,10 @@ function M.setup_neotest()
       running = "⌛",
       failed = "❌",
       skipped = "🚫",
+      unknown = "❔",
+
+      expanded = "┐",
+      final_child_prefix = "└",
     },
     -- custom consumers.
     consumers = {
