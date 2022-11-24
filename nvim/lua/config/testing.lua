@@ -62,13 +62,25 @@ function M.setup_commands_keymaps()
     call CommandAlias('TO', 'TestOutput')
   ]]
 
+  local open_win_split = function(split_or_vsplit, size)
+    if split_or_vsplit == 'split' then
+      vim.cmd(string.format([[ botright %dsplit ]], size))
+    else
+      vim.cmd(string.format([[ %dvsplit ]], size))
+    end
+    local win_id = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_option(win_id, 'number', false)
+    vim.api.nvim_win_set_option(win_id, 'signcolumn', 'no')
+    return win_id
+  end
+
   vim.api.nvim_create_user_command('NeotestOutputSplit', function(opts)
     local height = tonumber(opts.args) or 20
-    require("neotest").output.open { open_win = function() vim.cmd(string.format('botright %dsplit', height)) end }
+    require("neotest").output.open { open_win = function() return open_win_split('split', height) end }
   end, { nargs = '?' })
   vim.api.nvim_create_user_command('NeotestOutputVSplit', function(opts)
     local width = tonumber(opts.args) or 70
-    require("neotest").output.open { open_win = function() vim.cmd(string.format('%dvsplit', width)) end }
+    require("neotest").output.open { open_win = function() return open_win_split('vsplit', width) end }
   end, { nargs = '?' })
 
   -- keymaps (global)
