@@ -340,7 +340,13 @@ cmp.setup {
       border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
     },
     completion = {
+      -- Use border for the completion window.
       border = (cmp_theme == 'dark' and { '┌', '─', '┐', '│', '┘', '─', '└', '│' } or nil),
+
+      -- Due to the border, move left the completion window by 1 column
+      -- so that text in the editor and on completion item can be aligned.
+      col_offset = -1,
+
       winhighlight = 'Normal:CmpPmenu,FloatBorder:CmpPmenuBorder,CursorLine:PmenuSel,Search:None',
     },
   },
