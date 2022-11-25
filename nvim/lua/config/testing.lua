@@ -56,6 +56,7 @@ function M.setup_commands_keymaps()
 
     command! -nargs=0 NeotestStop             lua require("neotest").run.stop()
     command! -nargs=0 NeotestOutput           lua require("neotest").attach_or_output.open()
+    command! -nargs=0 NeotestOutputPanel      lua require("neotest").output_panel.open()
 
     command! -nargs=0 NeotestSummary  lua require("neotest").summary.toggle()
     command! -nargs=0 TestOutput      lua require("neotest").output.open()
