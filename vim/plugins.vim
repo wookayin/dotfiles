@@ -216,7 +216,7 @@ if has('nvim')
   Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/neodev.nvim'
 
-  Plug 'hrsh7th/nvim-cmp', {'commit': 'dbc7229'}  " GH-899
+  Plug 'hrsh7th/nvim-cmp', {'commit': '4c05626'}
   Plug 'hrsh7th/cmp-buffer'
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-path'
