@@ -13,6 +13,7 @@ from prompt_toolkit.output import ColorDepth
 from prompt_toolkit.styles import Style
 
 import ptpython.python_input
+from ptpython.style import default_ui_style
 from ptpython.layout import CompletionVisualisation
 
 __all__ = ["configure"]
@@ -135,10 +136,8 @@ def configure(repl: ptpython.python_input.PythonInput):
     repl.vi_keep_last_used_mode = False
 
     # Install custom colorscheme named 'my-colorscheme' and use it.
-    """
-    repl.install_ui_colorscheme("my-colorscheme", Style.from_dict(_custom_ui_colorscheme))
+    repl.install_ui_colorscheme("my-colorscheme", custom_ui_colorscheme)
     repl.use_ui_colorscheme("my-colorscheme")
-    """
 
     # Add custom key binding.
     # ControlA and ControlE should work as Home/End (emac-style keybindings).
@@ -199,11 +198,26 @@ def configure(repl: ptpython.python_input.PythonInput):
     """
 
 
-# Custom colorscheme for the UI. See `ptpython/layout.py` and
-# `ptpython/style.py` for all possible tokens.
-_custom_ui_colorscheme = {
-    # Blue prompt.
-    "prompt": "bg:#eeeeff #000000 bold",
-    # Make the status toolbar red.
-    "status-toolbar": "bg:#ff0000 #000000",
-}
+# Custom colorscheme for the UI.
+# See `ptpython/layout.py` and `ptpython/style.py` for all possible tokens.
+# see https://github.com/prompt-toolkit/ptpython/blob/master/ptpython/layout.py
+# see https://github.com/prompt-toolkit/ptpython/blob/master/ptpython/style.py#L65 (a bit outdated)
+# see https://github.com/prompt-toolkit/python-prompt-toolkit/blob/master/src/prompt_toolkit/styles/defaults.py#L16
+custom_ui_colorscheme = Style.from_dict({
+    **default_ui_style,
+
+    # These default style does not exist in default_ui_style().
+    # see ptpython.ipython:IPythonInput and prompt-toolkit/ptpython#517
+    "pygments.prompt": "#009900",
+    "pygments.promptnum": "#00ff00 bold",
+
+    # color customizations, like vim colorscheme (Pmenu, PmenuSel, etc.)
+    "completion-menu": "bg:#fff3bf",
+    "completion-menu.completion.current": "bg:#ffffff #ff2020 bold",
+    "completion-menu.completion fuzzymatch.inside": "fg:#f03e3e",
+    "completion-menu.completion.current fuzzymatch.outside": "fg:#ff2020",
+    "completion-menu.completion.current fuzzymatch.inside": "bold",
+
+    "signature-toolbar": "bg:#a5d8ff #000000",
+    "signature-toolbar current-name": "bg:#4dabf7 #ffffff bold",
+})
