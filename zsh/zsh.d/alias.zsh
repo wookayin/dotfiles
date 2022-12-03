@@ -290,8 +290,8 @@ alias python3-config='${$(which python)%/*}/python3-config'
 
 # ipython
 alias ipython='python -m IPython --no-confirm-exit'
-alias ipy='ipython'
-alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
+alias ipy='ipython --InteractiveShellApp.exec_lines "%i"'  # see ~/.pythonrc.py
+alias ipypdb='ipy --InteractiveShellApp.exec_lines "%pdb"'   # with auto pdb calling turned ON
 
 alias ipynb='jupyter notebook'
 alias ipynb0='ipynb --ip=0.0.0.0'
