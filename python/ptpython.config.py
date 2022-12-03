@@ -25,7 +25,7 @@ def configure(repl):
     :param repl: `PythonRepl` instance.
     """
     # Show function signature (bool).
-    repl.show_signature = False
+    repl.show_signature = True
 
     # Show docstring (bool).
     repl.show_docstring = True
@@ -35,7 +35,7 @@ def configure(repl):
     repl.show_meta_enter_message = True
 
     # Show completions. (NONE, POP_UP, MULTI_COLUMN or TOOLBAR)
-    repl.completion_visualisation = CompletionVisualisation.MULTI_COLUMN
+    repl.completion_visualisation = CompletionVisualisation.POP_UP
 
     # When CompletionVisualisation.POP_UP has been chosen, use this
     # scroll_offset in the completion menu.
@@ -62,6 +62,10 @@ def configure(repl):
     # Complete while typing. (Don't require tab before the
     # completion menu is shown.)
     repl.complete_while_typing = True
+
+    # Fuzzy and dictionary completion.
+    repl.enable_fuzzy_completion = True
+    repl.enable_dictionary_completion = True
 
     # Vi mode.
     repl.vi_mode = True
