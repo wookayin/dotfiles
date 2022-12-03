@@ -289,7 +289,7 @@ alias python-config='${$(which python)%/*}/python3-config'
 alias python3-config='${$(which python)%/*}/python3-config'
 
 # ipython
-alias ipython='python -m IPython'
+alias ipython='python -m IPython --no-confirm-exit'
 alias ipy='ipython'
 alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
 
