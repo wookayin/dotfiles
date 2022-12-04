@@ -1,10 +1,28 @@
 # .pythonrc.py
+
+# Auto-load common built-in modules that are frequently used
+# For instant startup, non-builtins should be imported upon request (use %imp)
+
+import asyncio
+import contextlib
+import functools
+import hashlib
+import importlib
+import io
+import os
+import pathlib
+import re
+import sys
+from importlib import reload
+from pathlib import Path
+
+# Install Jedi completer to readline (tab completion in vanilla python REPL)
 # http://jedi.jedidjah.ch/en/dev/docs/usage.html
 try:
     from jedi.utils import setup_readline
     setup_readline()
 except ImportError:
-    import readline, rlcompleter
+    import readline, rlcompleter   # isort:skip
     readline.parse_and_bind("tab: complete")
 
 # https://github.com/laike9m/pdir2
@@ -12,12 +30,6 @@ try:
     import pdir
 except ImportError:
     pass
-
-# Auto-load common packages that are frequently used
-# For instant startup, non-builtins should be imported upon request (use %imp)
-import os, sys, re
-import importlib, contextlib
-from importlib import reload
 
 
 def _import_common_modules(full=False):
@@ -80,6 +92,7 @@ except ModuleNotFoundError:
     pass'''.format(line=line))
 
     _run(r'%load_ext autoreload')
+    _run(r'%load_ext imgcat')
     _run(r'%load_ext line_profiler')
 
 
