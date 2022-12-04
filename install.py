@@ -85,7 +85,8 @@ tasks = {
     '~/.pylintrc' : 'python/pylintrc',
     '~/.condarc' : 'python/condarc',
     '~/.config/pycodestyle' : 'python/pycodestyle',
-    '~/.ptpython/config.py' : 'python/ptpython.config.py',
+    '~/.ptpython/config.py' : dict(action="remove"),
+    '~/.config/ptpython/config.py' : 'python/ptpython.config.py',
 }
 
 
@@ -333,9 +334,18 @@ for target, item in sorted(tasks.items()):
     if isinstance(item, str):
         item = {'src': item}
 
-    source, force = item['src'], item.get('force', False)
-    source = os.path.join(current_dir, os.path.expanduser(source))
+    source, force = item.get('src', None), item.get('force', False)
+
+    if source:
+        source = os.path.join(current_dir, os.path.expanduser(source))
     target = os.path.expanduser(target)
+
+    if item.get('action', None) == 'remove':
+        try:
+            os.unlink(target)
+        except OSError:  # FileNotFoundError
+            pass
+        continue
 
     # bad entry if source does not exists...
     if force:
