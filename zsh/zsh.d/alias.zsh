@@ -88,8 +88,8 @@ alias tmuxa='tmux -2 attach-session -d -t'
 # tmux kill-session -t
 alias tmuxkill='tmux kill-session -t'
 
-# I am lazy, yeah
-alias t='tmuxa'
+# t <session>: attach to <session> (if exists) or create a new session with the name
+alias t='tmux new-session -AD -s'
 alias T='TMUX= tmuxa'
 
 # tmuxp
