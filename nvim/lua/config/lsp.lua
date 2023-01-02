@@ -137,6 +137,10 @@ _G.lsp_setup_opts['sumneko_lua'] = {
       completion = { callSnippet = "Disable" },
       workspace = {
         maxPreload = 8000,
+
+        -- Do not prompt "Do you need to configure your work environment as ..."
+        checkThirdParty = false,
+
         -- Add additional paths for lua packages
         library = (function()
           local library = {}
