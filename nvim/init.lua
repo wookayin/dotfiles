@@ -21,6 +21,13 @@ if vim.fn.has('gui_vimr') > 0 then
   ]]
 end
 
+-- Workaround for neovim#20456: vim syntax for lua files are broken in neovim 0.8+
+-- As a workaround, we use treesitter based highlight for lua
+if vim.fn.has('nvim-0.8') > 0 then
+  -- see also: ~/.config/nvim/after/queries/lua/highlights.scm
+  vim.g.ts_highlight_lua = true
+end
+
 -- Source plain vimrc for basic settings.
 vim.cmd [[
   source ~/.vimrc
