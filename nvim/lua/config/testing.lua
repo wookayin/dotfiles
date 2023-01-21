@@ -38,6 +38,10 @@ function M.setup_neotest()
       expanded = "┐",
       final_child_prefix = "└",
     },
+    quickfix = {
+      -- do not automatically open quickfix because it can steal focus
+      open = false,
+    },
     -- custom consumers.
     consumers = {
       attach_or_output = M.custom_consumers.attach_or_output(),
