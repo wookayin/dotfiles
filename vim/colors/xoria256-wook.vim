@@ -59,3 +59,19 @@ highlight CursorLine    cterm=none
 " better popup menu colors (instead of dark black)
 highlight Pmenu             ctermfg=black guifg=black ctermbg=yellow guibg=#ffec99
 highlight PmenuSel          ctermfg=red guifg=red ctermbg=white guibg=white gui=bold
+
+
+" Minimal treesitter syntax support
+" The highlight mapping is not exhaustive; to see the list, try:
+" :filter /^@/ highlight   (or :Highlights)
+
+hi! @constant                guifg=#ffaf00 gui=bold
+hi! @field                   guifg=NONE
+hi! @function                guifg=#ffaf00
+hi! @function.call           guifg=#d7ff5f
+hi! @parameter               guifg=#5fafff
+hi! @property                guifg=NONE
+hi! @punctuation.bracket     guifg=#afd700
+hi! @punctuation.delimiter   guifg=NONE
+hi! @variable                guifg=NONE
+hi def link @none            Normal

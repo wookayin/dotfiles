@@ -88,8 +88,8 @@ alias tmuxa='tmux -2 attach-session -d -t'
 # tmux kill-session -t
 alias tmuxkill='tmux kill-session -t'
 
-# I am lazy, yeah
-alias t='tmuxa'
+# t <session>: attach to <session> (if exists) or create a new session with the name
+alias t='tmux new-session -AD -s'
 alias T='TMUX= tmuxa'
 
 # tmuxp
@@ -289,9 +289,9 @@ alias python-config='${$(which python)%/*}/python3-config'
 alias python3-config='${$(which python)%/*}/python3-config'
 
 # ipython
-alias ipython='python -m IPython'
-alias ipy='ipython'
-alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
+alias ipython='python -m IPython --no-confirm-exit'
+alias ipy='ipython --InteractiveShellApp.exec_lines "%i"'  # see ~/.pythonrc.py
+alias ipypdb='ipy --InteractiveShellApp.exec_lines "%pdb"'   # with auto pdb calling turned ON
 
 alias ipynb='jupyter notebook'
 alias ipynb0='ipynb --ip=0.0.0.0'

@@ -137,6 +137,10 @@ _G.lsp_setup_opts['sumneko_lua'] = {
       completion = { callSnippet = "Disable" },
       workspace = {
         maxPreload = 8000,
+
+        -- Do not prompt "Do you need to configure your work environment as ..."
+        checkThirdParty = false,
+
         -- Add additional paths for lua packages
         library = (function()
           local library = {}
@@ -340,7 +344,13 @@ cmp.setup {
       border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
     },
     completion = {
+      -- Use border for the completion window.
       border = (cmp_theme == 'dark' and { '┌', '─', '┐', '│', '┘', '─', '└', '│' } or nil),
+
+      -- Due to the border, move left the completion window by 1 column
+      -- so that text in the editor and on completion item can be aligned.
+      col_offset = -1,
+
       winhighlight = 'Normal:CmpPmenu,FloatBorder:CmpPmenuBorder,CursorLine:PmenuSel,Search:None',
     },
   },

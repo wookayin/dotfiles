@@ -25,6 +25,7 @@ function M.setup_neotest()
     },
     floating = { -- :help neotest.Config.floating
       max_width = 0.9,
+      max_height = 0.8,
       options = {},
     },
     icons = {
@@ -32,6 +33,14 @@ function M.setup_neotest()
       running = "⌛",
       failed = "❌",
       skipped = "🚫",
+      unknown = "❔",
+
+      expanded = "┐",
+      final_child_prefix = "└",
+    },
+    quickfix = {
+      -- do not automatically open quickfix because it can steal focus
+      open = false,
     },
     -- custom consumers.
     consumers = {
@@ -51,19 +60,32 @@ function M.setup_commands_keymaps()
 
     command! -nargs=0 NeotestStop             lua require("neotest").run.stop()
     command! -nargs=0 NeotestOutput           lua require("neotest").attach_or_output.open()
+    command! -nargs=0 NeotestOutputPanel      lua require("neotest").output_panel.open()
 
     command! -nargs=0 NeotestSummary  lua require("neotest").summary.toggle()
     command! -nargs=0 TestOutput      lua require("neotest").output.open()
     call CommandAlias('TO', 'TestOutput')
   ]]
 
+  local open_win_split = function(split_or_vsplit, size)
+    if split_or_vsplit == 'split' then
+      vim.cmd(string.format([[ botright %dsplit ]], size))
+    else
+      vim.cmd(string.format([[ %dvsplit ]], size))
+    end
+    local win_id = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_option(win_id, 'number', false)
+    vim.api.nvim_win_set_option(win_id, 'signcolumn', 'no')
+    return win_id
+  end
+
   vim.api.nvim_create_user_command('NeotestOutputSplit', function(opts)
     local height = tonumber(opts.args) or 20
-    require("neotest").output.open { open_win = function() vim.cmd(string.format('botright %dsplit', height)) end }
+    require("neotest").output.open { open_win = function() return open_win_split('split', height) end }
   end, { nargs = '?' })
   vim.api.nvim_create_user_command('NeotestOutputVSplit', function(opts)
     local width = tonumber(opts.args) or 70
-    require("neotest").output.open { open_win = function() vim.cmd(string.format('%dvsplit', width)) end }
+    require("neotest").output.open { open_win = function() return open_win_split('vsplit', width) end }
   end, { nargs = '?' })
 
   -- keymaps (global)
