@@ -207,11 +207,18 @@ snippet <== "\Longleftarrow" "is_math()" wAe
 \Longleftarrow
 endsnippet
 
+# automatic subscript
 snippet _t+1 "_{t+1}" "is_math()" iAe
 _{t+1}
 endsnippet
 snippet _t-1 "_{t-1}" "is_math()" iAe
 _{t-1}
+endsnippet
+snippet '([A-Za-z])(\d)' "is_math()" wrA
+`!p snip.rv = match.group(1)`_`!p snip.rv = match.group(2)`
+endsnippet
+snippet '([A-Za-z])_(\d\d)' "is_math()" wrA
+`!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}
 endsnippet
 
 # Manual triggers: \left..\right pairs for {} [] () <>
