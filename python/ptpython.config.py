@@ -146,6 +146,11 @@ def configure(repl: ptpython.python_input.PythonInput):
     @repl.add_key_binding(Keys.ControlE)
     def _(event): event.cli.key_processor.feed(KeyPress(Keys.End))
 
+    @repl.add_key_binding(Keys.ControlSpace)
+    def _(event):
+        """Starts auto-completion on ctrl-space."""
+        event.app.current_buffer.start_completion(select_first=False)
+
     """
     @repl.add_key_binding("c-b")
     def _(event):
