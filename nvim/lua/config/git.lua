@@ -40,8 +40,8 @@ function M.setup_gitsigns()
       -- Actions
       map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')
       map('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>')
-      map('v', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')
-      map('v', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>')
+      map('v', '<leader>hs', '<cmd>lua require"gitsigns".stage_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>')
+      map('v', '<leader>hr', '<cmd>lua require"gitsigns".reset_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>')
       map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>')
       map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
       map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>')
@@ -56,8 +56,8 @@ function M.setup_gitsigns()
       map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
 
       -- Additional keymappings (actions) other than the suggested defaults
-      map('n', '<leader>ha', '<cmd>Gitsigns stage_hunk<CR>')
-      map('v', '<leader>ha', '<cmd>Gitsigns stage_hunk<CR>')
+      map('n', '<leader>ha', '<leader>hs', { noremap = false })
+      map('v', '<leader>ha', '<leader>hs', { noremap = false })
       map('n', '<leader>hh', '<cmd>Gitsigns toggle_linehl<CR>')
       map('n', '<leader>hw', '<cmd>Gitsigns toggle_word_diff<CR>')
     end
