@@ -222,19 +222,38 @@ snippet '([A-Za-z])_(\d\d)' "is_math()" wrA
 endsnippet
 
 # Manual triggers: \left..\right pairs for {} [] () <>
+snippet l "left" "is_math()" e
+\left
+endsnippet
+snippet r "right" "is_math()" e
+\right
+endsnippet
 snippet { "Curly braces" "is_math()" e
-\left\\{ ${0} \right\\}
+\left\\{ ${1} \right\\}$0
 endsnippet
 snippet [ "Square bracket" "is_math()" e
-\left[ ${0} \right]
+\left[ ${1} \right]$0
 endsnippet
 snippet ( "Parenthesis" "is_math()" e
-\left( ${0} \right)
+\left( ${1} \right)$0
 endsnippet
 snippet < "Angle" "is_math()"  e
-\left\langle ${0} \right\rangle
+\left\langle ${1} \right\rangle$0
 endsnippet
 
+# Automatic triggers for \left..\right {} [] () <>
+snippet \{ "{...}" "is_math()" eA
+\left\\{ ${1} \right\\}$0
+endsnippet
+snippet \( "(...)" "is_math()" eA
+\left( ${1} \right)$0
+endsnippet
+snippet \[ "[...]" "is_math()" eA
+\left[ ${1} \right]$0
+endsnippet
+snippet \< "<...>" "is_math()" eA
+\left\langle ${1} \right\rangle$0
+endsnippet
 
 # ===================
 # Environment Blocks
