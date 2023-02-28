@@ -185,8 +185,13 @@ for _, lsp_name in ipairs(builtin_lsp_servers) do
   ---@diagnostic disable-next-line: undefined-field
   if ok and not lsp:is_installed() then
     vim.defer_fn(function()
-      -- lsp:install()   -- headless
-      lsp_installer.install(lsp_name)   -- with UI (so that users can be notified)
+      if vim.fn.executable("npm") > 0 then
+        -- lsp:install()   -- headless
+        lsp_installer.install(lsp_name)   -- with UI (so that users can be notified)
+      else
+        local msg = "You do not have nodejs/npm installed; LSP installation has been interrupted. Please reinstall node."
+        vim.notify_once(msg, vim.log.levels.ERROR, { title = "nvim-lsp-installer" })
+      end
     end, 0)
   end
 end
