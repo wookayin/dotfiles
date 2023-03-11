@@ -110,7 +110,10 @@ local builtin_lsp_servers = {
   'pyright',
   'vimls',
   'tsserver',
-  'sumneko_lua',
+}
+local remove_lsp_servers = {
+  -- To support seamless (automatic) migration, we uninstall some LSP servers automatically
+  'sumneko_lua'
 }
 
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
@@ -178,6 +181,15 @@ lsp_installer.on_server_ready(function(server)
   server:setup(opts)
   vim.cmd [[ do User LspAttachBuffers ]]
 end)
+
+for _, lsp_name in ipairs(remove_lsp_servers) do
+  local ok, lsp = require('nvim-lsp-installer.servers').get_server(lsp_name)
+  if ok and lsp:is_installed() then
+    vim.notify("Removing deprecated LSP : " .. lsp_name .. ". Please restart neovim.",
+               vim.log.levels.WARN, { title = "nvim-lsp-installer" })
+    require('nvim-lsp-installer').uninstall_sync({ lsp_name })
+  end
+end
 
 -- Automatically install if a required LSP server is missing.
 for _, lsp_name in ipairs(builtin_lsp_servers) do
