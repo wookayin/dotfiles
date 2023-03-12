@@ -213,7 +213,8 @@ endif
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
 if has('nvim')
   Plug 'neovim/nvim-lspconfig'
-  Plug 'williamboman/nvim-lsp-installer'
+  Plug 'williamboman/mason.nvim'
+  Plug 'williamboman/mason-lspconfig.nvim'
   Plug 'folke/neodev.nvim'
 
   Plug 'hrsh7th/nvim-cmp', {'commit': '4c05626'}

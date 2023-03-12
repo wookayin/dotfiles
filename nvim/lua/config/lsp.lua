@@ -7,6 +7,11 @@ if not pcall(require, 'lspconfig') then
   print("Warning: lspconfig not available, skipping configuration.")
   return
 end
+if not pcall(require, 'mason-lspconfig') then
+  local msg = "mason or mason-lspconfig not installed. Please update plugins and restart."
+  vim.notify_once(msg, vim.log.levels.ERROR, { title = "~/.nvim/lua/config/lsp.lua" })
+  return
+end
 local lspconfig = require('lspconfig')
 
 -- lsp_signature
@@ -81,7 +86,7 @@ local on_attach = function(client, bufnr)
   end, { nargs = '?', desc = "Rename the current symbol at the cursor." })
 
   -- Disable specific LSP capabilities: see nvim-lspconfig#1891
-  if client.name == "sumneko_lua" and client.server_capabilities then
+  if client.name == "lua_ls" and client.server_capabilities then
     client.server_capabilities.documentFormattingProvider = false
   end
 end
@@ -102,25 +107,29 @@ do
 end
 
 
--- Register and activate LSP servers (managed by nvim-lsp-installer)
+-- Register and activate LSP servers (managed by mason.nvim)
 local builtin_lsp_servers = {
   -- List name of LSP servers that will be automatically installed and managed by :LspInstall.
-  -- LSP servers will be installed locally at: ~/.local/share/nvim/lsp_servers
-  -- @see(lspinstall): https://github.com/williamboman/nvim-lsp-installer
+  -- LSP servers will be installed locally via mason at: ~/.local/share/nvim/mason/packages/
   'pyright',
   'vimls',
   'tsserver',
+  'lua_ls',
 }
-local remove_lsp_servers = {
-  -- To support seamless (automatic) migration, we uninstall some LSP servers automatically
-  'sumneko_lua'
+
+-- Mason: LSP Auto installer
+-- https://github.com/williamboman/mason.nvim#default-configuration
+require("mason").setup()
+require("mason-lspconfig").setup {
+  ensure_installed = builtin_lsp_servers,
 }
+local lsp_setup_opts = {}
+_G.lsp_setup_opts = lsp_setup_opts
 
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-_G.lsp_setup_opts = {}
 
-_G.lsp_setup_opts['pyright'] = {
+lsp_setup_opts['pyright'] = {
   settings = {
     -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
     python = {
@@ -131,7 +140,9 @@ _G.lsp_setup_opts['pyright'] = {
   },
 }
 
-_G.lsp_setup_opts['sumneko_lua'] = {
+-- Configure lua_ls to support neovim Lua runtime APIs
+require("neodev").setup { }
+lsp_setup_opts['lua_ls'] = {
   settings = {
     Lua = {
       runtime = {
@@ -159,54 +170,37 @@ _G.lsp_setup_opts['sumneko_lua'] = {
   },
 }
 
--- Configure sumneko_lua to support neovim Lua runtime APIs
-require("neodev").setup { }
-
-local lsp_installer = require("nvim-lsp-installer")
-lsp_installer.on_server_ready(function(server)
+-- Call lspconfig[...].setup for all installed LSP servers with common opts
+local installed_mason_packages = require('mason-registry').get_installed_packages()
+local function setup_lsp(lsp_name)
   local cmp_nvim_lsp = require('cmp_nvim_lsp')
   local opts = {
     on_attach = on_attach,
 
     -- Suggested configuration by nvim-cmp
-    capabilities = (cmp_nvim_lsp.default_capabilities or cmp_nvim_lsp.update_capabilities)(
+    capabilities = (require'cmp_nvim_lsp'.default_capabilities or
+                    require'cmp_nvim_lsp'.update_capabilities)(
       vim.lsp.protocol.make_client_capabilities()
     ),
   }
-
   -- Customize the options passed to the server
-  opts = vim.tbl_extend("error", opts, _G.lsp_setup_opts[server.name] or {})
+  opts = vim.tbl_extend("error", opts, _G.lsp_setup_opts[lsp_name] or {})
+  lspconfig[lsp_name].setup(opts)
+end
 
-  -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
-  server:setup(opts)
-  vim.cmd [[ do User LspAttachBuffers ]]
-end)
-
-for _, lsp_name in ipairs(remove_lsp_servers) do
-  local ok, lsp = require('nvim-lsp-installer.servers').get_server(lsp_name)
-  if ok and lsp:is_installed() then
-    vim.notify("Removing deprecated LSP : " .. lsp_name .. ". Please restart neovim.",
-               vim.log.levels.WARN, { title = "nvim-lsp-installer" })
-    require('nvim-lsp-installer').uninstall_sync({ lsp_name })
+do  -- setup all known and available LSP servers that are installed
+  local lsp_names = require('mason-lspconfig.mappings.server').lspconfig_to_package
+  for lsp_name, package_name in pairs(lsp_names) do
+    if require('mason-registry').is_installed(package_name) then
+      setup_lsp(lsp_name)
+    end
   end
 end
 
--- Automatically install if a required LSP server is missing.
-for _, lsp_name in ipairs(builtin_lsp_servers) do
-  local ok, lsp = require('nvim-lsp-installer.servers').get_server(lsp_name)
-  ---@diagnostic disable-next-line: undefined-field
-  if ok and not lsp:is_installed() then
-    vim.defer_fn(function()
-      if vim.fn.executable("npm") > 0 then
-        -- lsp:install()   -- headless
-        lsp_installer.install(lsp_name)   -- with UI (so that users can be notified)
-      else
-        local msg = "You do not have nodejs/npm installed; LSP installation has been interrupted. Please reinstall node."
-        vim.notify_once(msg, vim.log.levels.ERROR, { title = "nvim-lsp-installer" })
-      end
-    end, 0)
-  end
-end
+-- Add backward-compatible lsp installation related commands
+vim.cmd [[
+  command! LspInstallInfo   Mason
+]]
 
 -------------------------
 -- LSP Handlers (general)
