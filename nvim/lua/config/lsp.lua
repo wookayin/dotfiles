@@ -370,7 +370,6 @@ end
 local cmp = require('cmp')
 local cmp_helper = {}
 local cmp_types = require('cmp.types.cmp')
-local cmp_theme = cmp.config.window and 'dark' or 'light'
 
 -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
 cmp.setup {
@@ -385,7 +384,7 @@ cmp.setup {
     },
     completion = {
       -- Use border for the completion window.
-      border = (cmp_theme == 'dark' and { '┌', '─', '┐', '│', '┘', '─', '└', '│' } or nil),
+      border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 
       -- Due to the border, move left the completion window by 1 column
       -- so that text in the editor and on completion item can be aligned.
@@ -531,30 +530,8 @@ cmp_helper.compare = {
 }
 
 
--- Highlights for nvim-cmp's custom popup menu (GH-224)
-do
-  vim.cmd [[
-    " Light theme: Compatible with Pmenu (#fff3bf)
-    hi! link CmpPmenu         Pmenu
-    hi! link CmpPmenuBorder   Pmenu
-
-    hi! CmpItemAbbr           guifg=#111111
-    hi! CmpItemAbbrMatch      guifg=#f03e3e gui=bold
-    hi! CmpItemAbbrMatchFuzzy guifg=#fd7e14 gui=bold
-    hi! CmpItemAbbrDeprecated guifg=#adb5bd
-    hi! CmpItemKindDefault    guifg=#cc5de8
-    hi! link CmpItemKind      CmpItemKindDefault
-    hi! CmpItemMenu           guifg=#ededcf
-    hi! CmpItemMenuDetail     guifg=#ffe066
-    hi! CmpItemMenuBuffer     guifg=#898989
-    hi! CmpItemMenuSnippet    guifg=#cc5de8
-    hi! CmpItemMenuLSP        guifg=#cfa050
-    hi link CmpItemMenuPath   CmpItemMenu
-  ]]
-end
-
--- Highlights with bordered completion window (GH-472)
-if cmp_theme == 'dark' then
+-- Highlights with bordered completion window (GH-224, GH-472)
+_G.setup_cmp_highlight = function()
   vim.cmd [[
     " Dark background, and white-ish foreground
     highlight! CmpPmenu         guibg=#242a30
@@ -587,8 +564,15 @@ if cmp_theme == 'dark' then
     highlight!      CmpItemKindUnit          guibg=NONE guifg=#D4D4D4
     highlight!      CmpItemKindConstant      guibg=NONE guifg=#409F31
     highlight!      CmpItemKindSnippet       guibg=NONE guifg=#E3E300
+
+  " Make these highlights applied when colorscheme changes
+  augroup CmpHighlights
+    autocmd!
+    autocmd ColorScheme * lua _G.setup_cmp_highlight()
+  augroup END
   ]]
 end
+_G.setup_cmp_highlight()
 
 -----------------------------
 -- Configs for PeekDefinition
