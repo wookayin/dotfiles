@@ -145,8 +145,13 @@ require("neodev").setup { }
 lsp_setup_opts['lua_ls'] = {
   settings = {
     Lua = {
+      -- See https://github.com/LuaLS/lua-language-server/blob/master/doc/en-us/config.md
       runtime = {
         version = 'LuaJIT',   -- Lua 5.1/LuaJIT
+      },
+      diagnostics = {
+        -- Ignore some false-positive diagnostics for neovim lua config
+        disable = { 'redundant-parameter', 'duplicate-set-field', },
       },
       completion = { callSnippet = "Disable" },
       workspace = {
