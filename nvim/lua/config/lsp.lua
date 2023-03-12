@@ -188,14 +188,38 @@ local function setup_lsp(lsp_name)
   lspconfig[lsp_name].setup(opts)
 end
 
+-- lsp configs are lazy-loaded or can be triggered after LSP installation,
+-- so we need a way to make LSP clients attached to already existing buffers.
+local reload_lsp = vim.schedule_wrap(function()
+  -- this can be easily achieved by firing an autocmd event for the open buffers.
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[bufnr].buftype == "" then
+      vim.api.nvim_exec_autocmds("BufReadPost", { buffer = bufnr })
+    end
+  end
+end)
+
 do  -- setup all known and available LSP servers that are installed
   local lsp_names = require('mason-lspconfig.mappings.server').lspconfig_to_package
   for lsp_name, package_name in pairs(lsp_names) do
     if require('mason-registry').is_installed(package_name) then
       setup_lsp(lsp_name)
+    else
+      -- mason.nvim does not launch lsp when installed for the first time
+      -- we attach a manual callback to setup LSP and launch
+      local ok, pkg = pcall(require('mason-registry').get_package, package_name)
+      if ok then
+        pkg:on("install:success", vim.schedule_wrap(function()
+          setup_lsp(lsp_name)
+          reload_lsp()  -- TODO: reload only the buffers that matches filetype.
+        end))
+      end
     end
   end
 end
+
+-- Make sure LSP clients are attached to already existing buffers prior to this config.
+reload_lsp()
 
 -- Add backward-compatible lsp installation related commands
 vim.cmd [[
