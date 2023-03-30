@@ -448,6 +448,10 @@ if [[ "$(uname)" == "Darwin" ]]; then
         alias pbcopy='reattach-to-user-namespace pbcopy'
         alias pbpaste='reattach-to-user-namespace pbpaste'
     fi
+
+    # Misc.
+    alias texshop-preview="texshop"
+
 fi
 
 

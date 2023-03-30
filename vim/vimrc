@@ -3062,9 +3062,9 @@ endif
 " for :Vimtexview, move Skim's position to where the cursor currently points to.
 if has('mac')
   let s:texshop_present = isdirectory('/Applications/TeX/TeXShop.app') || isdirectory('/Applications/TeXShop.app')
-  if executable('texshop-preview') && s:texshop_present
-    " ~/.dotfiles/bin/texshop-preview
-    let g:vimtex_view_general_viewer = 'texshop-preview'
+  if executable('texshop') && s:texshop_present
+    " ~/.dotfiles/bin/texshop
+    let g:vimtex_view_general_viewer = 'texshop'
   else
     " skim
     let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
