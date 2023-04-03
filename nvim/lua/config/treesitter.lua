@@ -9,6 +9,11 @@ end
 local ts_configs = require("nvim-treesitter.configs")
 local ts_parsers = require("nvim-treesitter.parsers")
 
+-- Compatibility layer for neovim < 0.9.0 (see neovim#22761)
+if not vim.treesitter.query.set then
+  vim.treesitter.query.set = require("vim.treesitter.query").set_query
+end
+
 -- Note: parsers are installed at ~/.vim/plugged/nvim-treesitter/parser/
 local parsers_to_install = {
   default = {
