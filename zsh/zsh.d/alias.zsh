@@ -398,7 +398,10 @@ if (( $+commands[http-server] )); then
     alias http-server="http-server -c-1"
 fi
 
-if (( $+commands[pydf] )); then
+if (( $+commands[duf] )); then
+    # dotfiles install duf
+    alias df="duf"
+elif (( $+commands[pydf] )); then
     # pip install --user pydf
     # pydf: a colorized df
     alias df="pydf"
