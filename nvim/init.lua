@@ -28,6 +28,13 @@ if vim.fn.has('nvim-0.8') > 0 then
   vim.g.ts_highlight_lua = true
 end
 
+-- Workaround for neovim 0.9.0+: Suppress deprecation warning
+-- Many third-party plugins need migration to the new treesitter API
+if vim.fn.has('nvim-0.9') > 0 then
+  vim.treesitter.query.get_node_text = vim.treesitter.get_node_text
+end
+
+
 -- Source plain vimrc for basic settings.
 vim.cmd [[
   source ~/.vimrc
