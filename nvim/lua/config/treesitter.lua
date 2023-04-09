@@ -130,7 +130,7 @@ function _G.TreesitterLoadCustomQuery(lang, query_name)
     vim.notify(msg, 'WARN', { title = "nvim/lua/config/treesitter.lua" })
     return
   end
-  require("vim.treesitter.query").set_query(lang, query_name, readfile(query_file))
+  vim.treesitter.query.set(lang, query_name, readfile(query_file))
 end
 
 -- python(fold): until GH-1451 is merged
