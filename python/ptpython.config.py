@@ -142,13 +142,28 @@ def configure(repl: ptpython.python_input.PythonInput):
     # Add custom key binding.
     # ControlA and ControlE should work as Home/End (emac-style keybindings).
     @repl.add_key_binding(Keys.ControlA)
-    def _(event): event.cli.key_processor.feed(KeyPress(Keys.Home))
+    def _(event: KeyPressEvent): event.cli.key_processor.feed(KeyPress(Keys.Home))
     @repl.add_key_binding(Keys.ControlE)
-    def _(event): event.cli.key_processor.feed(KeyPress(Keys.End))
+    def _(event: KeyPressEvent): event.cli.key_processor.feed(KeyPress(Keys.End))
 
+    # Ctrl-P and Ctrl-N should navigate the history when completion is not shown.
+    @repl.add_key_binding(Keys.ControlP)
+    def _(event: KeyPressEvent):
+        if event.app.current_buffer.complete_state:
+            event.app.current_buffer.complete_previous(disable_wrap_around=True)
+        else:
+            event.app.current_buffer.history_backward()
+
+    @repl.add_key_binding(Keys.ControlN)
+    def _(event: KeyPressEvent):
+        if event.app.current_buffer.complete_state:
+            event.app.current_buffer.complete_next(disable_wrap_around=True)
+        else:
+            event.app.current_buffer.history_forward()
+
+    # Ctrl-Space: Starts auto-completion
     @repl.add_key_binding(Keys.ControlSpace)
-    def _(event):
-        """Starts auto-completion on ctrl-space."""
+    def _(event: KeyPressEvent):
         event.app.current_buffer.start_completion(select_first=False)
 
     """
