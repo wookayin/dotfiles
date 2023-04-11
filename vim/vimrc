@@ -1384,13 +1384,21 @@ map z? <Plug>(incsearch-fuzzy-?)
 map zg/ <Plug>(incsearch-fuzzy-stay)
 
 " ---------------------------------------------------------------- }}}
-" vim-highlightedyank {{{
-if has_key(g:plugs, 'vim-highlightedyank') && !exists('##TextYankPost')
-  map y <Plug>(highlightedyank)
+" highlightedyank (neovim) {{{
+
+let g:highlightedyank_highlight_duration = 300
+
+if has('nvim')
+  " vim-highlightedyank is not used, neovim has built-in support
+  " https://neovim.io/doc/user/lua.html#lua-highlight
+  augroup HighlightedYank
+    autocmd!
+    autocmd TextYankPost * silent! lua vim.highlight.on_yank {
+          \ higroup = "IncSearch",
+          \ timeout = vim.g.highlightedyank_highlight_duration }
+  augroup END
 endif
 
-"hi HighlightedyankRegion cterm=reverse gui=reverse
-let g:highlightedyank_highlight_duration = 1000
 
 " ---------------------------------------------------------------- }}}
 " vim-quickhl {{{
