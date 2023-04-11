@@ -1484,7 +1484,7 @@ require("notify").setup({
     vim.api.nvim_win_set_config(win, { focusable = false })
     vim.api.nvim_win_set_option(win, "winblend", vim.g.nvim_notify_winblend)
   end,
-  timeout = 5000,
+  timeout = 3000,
   background_colour = "#000000",
 })
 
