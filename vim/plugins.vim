@@ -285,9 +285,28 @@ silent unlet g:_nerdtree_lazy_events
 
 
 " Automatically install missing plugins on startup
-let g:plugs_missing_on_startup = filter(values(g:plugs), '!isdirectory(v:val.dir) && !empty(get(v:val, "uri"))')
+function! s:plug_missing(plug)
+  return !isdirectory(a:plug.dir) && !empty(get(a:plug, "uri"))
+endfunction
+let g:plugs_missing_on_startup = filter(values(g:plugs), 's:plug_missing(v:val)')
 if len(g:plugs_missing_on_startup) > 0
   PlugInstall --sync | q
 endif
+
+" PlugInject: dynamically install and load plugins after startup
+command! -nargs=1 PlugInject       Plug <args> | call s:plug_install(<args>)
+function! s:plug_install(name, ...) abort
+  let l:name = fnamemodify(a:name, ':t')
+  if a:0 >= 1 && has_key(a:1, 'as')
+    let l:name = a:1['as']
+  endif
+  if s:plug_missing(g:plugs[l:name])
+    exec printf('PlugInstall %s --sync | if &ft == "vim-plug" | q | endif', l:name)
+  else
+    call plug#load(l:name)
+    echohl Special | echom "Loaded plugin: " . l:name | echohl NONE
+  endif
+endfunction
+
 
 " vim: set ts=2 sts=2 sw=2 foldenable foldmethod=marker:
