@@ -39,8 +39,10 @@ fi
 
 # See https://github.com/neovim/neovim/issues/22717
 # There is really no reason for $VIM and $VIMRUNTIME need to be set on zsh.
-unset VIM
-unset VIMRUNTIME
+if [[ -o interactive ]]; then
+  unset VIM
+  unset VIMRUNTIME
+fi
 
 #
 # Language
