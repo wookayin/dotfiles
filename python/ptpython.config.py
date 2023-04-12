@@ -7,7 +7,7 @@ https://github.com/prompt-toolkit/ptpython/blob/master/examples/ptpython_config/
 # pyright: reportGeneralTypeIssues=false
 
 from prompt_toolkit.filters import ViInsertMode
-from prompt_toolkit.key_binding.key_processor import KeyPress
+from prompt_toolkit.key_binding.key_processor import KeyPress, KeyPressEvent
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.output import ColorDepth
 from prompt_toolkit.styles import Style
