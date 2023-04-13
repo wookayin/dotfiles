@@ -29,7 +29,8 @@ let s:floating_available = exists('*nvim_open_win') &&
 " }}}
 
 "==============================================
-call plug#begin('~/.vim/plugged')
+let $VIMPLUG='~/.vim/plugged'
+call plug#begin($VIMPLUG)
 "==============================================
 
 " General Plugins
