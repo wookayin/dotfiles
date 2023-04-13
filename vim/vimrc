@@ -2527,6 +2527,10 @@ EOF
         \ 'right': [' ', wilder#popupmenu_scrollbar()],
         \ }
   call wilder#set_option('renderer', wilder#popupmenu_renderer(l:wilder_renderer_option))
+
+  " Additional custom keymap for wilder
+  " <C-space> in the command line: refresh completion (close and start again)
+  cmap <expr> <C-space> [wilder#main#stop(), wilder#main#start_from_normal_mode()][-1]
 endfunction
 
 function! s:check_wilder_rplugins() abort
