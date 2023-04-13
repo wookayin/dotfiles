@@ -977,6 +977,10 @@ xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
 "  (to open files in the same directory as the current buffer)
 function! EatWhitespace()
   let c = nr2char(getchar(0))
+  " Invoke wilder manually because the completion is lost due to command-line abbrev.
+  if exists('*wilder#start_from_normal_mode')
+    call wilder#start_from_normal_mode()
+  endif
   return index([nr2char(9), nr2char(10), nr2char(13), ' '], c) >= 0 ? '' : c
 endfunction
 call CommandAlias('eh', "e %:h/<C-R>=EatWhitespace()<CR>")
