@@ -985,6 +985,10 @@ call CommandAlias('sph', "sp %:h/<C-R>=EatWhitespace()<CR>")
 call CommandAlias('tabnewh', "tabnew %:h/<C-R>=EatWhitespace()<CR>")
 call CommandAlias('th',      "tabnew %:h/<C-R>=EatWhitespace()<CR>")
 
+" :eplug, :vsplug => :e $VIMPLUG/, :vs $VIMPLUG/
+call CommandAlias('eplug', "e $VIMPLUG/<C-R>=EatWhitespace()<CR>")
+call CommandAlias('vsplug', "vs $VIMPLUG/<C-R>=EatWhitespace()<CR>")
+
 
 " :Toggle... command aliases
 if has('lambda') && exists('##CmdlineEnter')
