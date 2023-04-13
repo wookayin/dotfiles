@@ -166,6 +166,36 @@ def configure(repl: ptpython.python_input.PythonInput):
     def _(event: KeyPressEvent):
         event.app.current_buffer.start_completion(select_first=False)
 
+    # Ctrl-R: History search fzf (requires pyfzf)
+    @repl.add_key_binding(Keys.ControlR)
+    def _(event: KeyPressEvent):
+        import subprocess, collections
+
+        # REPL history. Oldest item first -> Newest item first
+        lines = event.app.current_buffer.history.get_strings()[::-1]
+        lines = list(collections.OrderedDict.fromkeys(lines))  # uniquify
+
+        fzf = subprocess.Popen([
+            'fzf',
+            "--layout=reverse",
+            "--scheme=history",
+            "--prompt", 'REPL History> ',
+            "--height", '~30%',
+            "+m"
+        ], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        for line in lines:
+            line = line.replace('\n', '\r')
+            fzf.stdin.write((line + '\n').encode())  # type: ignore
+        fzf.stdin.flush()  # type: ignore
+        fzf_output = fzf.communicate()[0].decode()
+
+        if fzf_output:
+            fzf_output = fzf_output.replace('\r', '\n').rstrip('\n')
+            event.app.current_buffer.text = ''   # clear the input buffer
+            event.app.current_buffer.insert_text(fzf_output, overwrite=True)
+
+        event.app.renderer.reset()
+
     """
     @repl.add_key_binding("c-b")
     def _(event):
