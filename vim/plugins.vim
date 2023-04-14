@@ -180,7 +180,7 @@ endif
 if has('nvim')
   function! TSUpdate(arg) abort
     if luaeval('pcall(require, "nvim-treesitter")')
-      TSUpdate
+      TSUpdateSync
     endif
   endfunction
 
