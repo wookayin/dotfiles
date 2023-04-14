@@ -187,10 +187,10 @@ if has('nvim')
   let g:_plug_ts_config = {'do': function('TSUpdate')}
   if !has('nvim-0.8')
     " Since 42ab95d5, nvim 0.8.0+ is required
-    let g:_plug_ts_config['commit'] = '4cccb6f4'
+    let g:_plug_ts_config['tag'] = 'v0.7.2'
   endif
   Plug 'nvim-treesitter/nvim-treesitter', g:_plug_ts_config
-  Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground'}
+  Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground', 'commit': '4044b53'}
 
   Plug 'SmiteshP/nvim-gps'
 endif
