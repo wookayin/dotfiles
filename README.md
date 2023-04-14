@@ -74,8 +74,11 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
       they will not be overwritten by default.
       In such cases you should delete these files *manually*.
 
-* If you are using [**neovim**][neovim] and seeing any startup errors (e.g. `no module named neovim`):
-    * Use **latest neovim** (e.g., neovim 0.7.0).
+* If neovim + treesitter emits an error like `query: invalid node type`, Run `:TSUpdate` (and wait for installation is done).
+  * See [nvim-treesitter#3092](https://github.com/nvim-treesitter/nvim-treesitter/issues/3092) for more details.
+
+* If [**neovim**][neovim] emits any startup errors (e.g. `no module named neovim`):
+    * Use **latest neovim** (e.g., neovim 0.9.0).
       To install/upgrade neovim on your system, you can run `dotfiles install neovim` (linux) or `brew install neovim` (mac).
     * Try `:checkhealth`.
     * Try `:PlugUpdate`: some errors from vim plugin could be easily solved by running `:PlugUpdate` (in vim) or `$ dotfiles update`.
@@ -89,12 +92,12 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 
 * [Powerline symbols](https://github.com/powerline/powerline#screenshots) are not displayed properly? Do you see some weird letters like `⍰` due to missing fonts?
   Install [Powerline fonts](https://github.com/powerline/fonts) or
-  [Nerd fonts](https://github.com/ryanoasis/nerd-fonts).
+  [Nerd fonts](https://github.com/ryanoasis/nerd-fonts) and configure your terminal emulator program to use those fonts.
     * Mac users can do: `brew search nerd-font`
 * Does vim color look weird (e.g. only black-and-white)?
   * Check whether your terminal emulator supports [24-bit color](https://github.com/wookayin/dotfiles/pull/9). Use iTerm2 or kitty rather than built-in Terminal.
-  * Mosh (1.3.x) does not support 24-bit colors yet.
-  * Try `:set notermguicolors` to disable 24-bit colors.
+  * Latest Mosh (1.4.0+) support 24-bit colors yet, so try upgrading mosh if you are using it.
+  * Try `:set notermguicolors` to temporarily disable 24-bit colors.
 * Does tmux look weird? Make sure that tmux version is [2.3](etc/ubuntu-setup.sh) or higher.
     * Run `$ dotfiles install tmux` to install `tmux` into `$HOME/.local/bin`, if you do not have sudo.
 * If you still have no idea or have found a bug, please feel free to contact me or raise an issue,
