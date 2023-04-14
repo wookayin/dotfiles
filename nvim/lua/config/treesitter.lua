@@ -19,13 +19,16 @@ local parsers_to_install = {
   default = {
     "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
     "html", "http", "java", "javascript", "json", "json5", "jsonc", "latex", "lua", "make", "perl",
-    "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "vimdoc", "yaml",
+    "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml",
   },
   minimal = {
-    "bash", "json", "latex", "lua", "make", "python", "vim", "vimdoc", "yaml"
+    "bash", "json", "latex", "lua", "make", "python", "vim", "yaml"
   },
 }
 parsers_to_install = parsers_to_install.minimal
+if vim.fn.has('nvim-0.9.0') > 0 then
+  table.insert(parsers_to_install, "vimdoc")
+end
 
 if vim.fn.has('mac') > 0 then
   -- Disable 'dockerfile' until nvim-treesitter/nvim-treesitter#3515 is resolved
