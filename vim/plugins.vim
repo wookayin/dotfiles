@@ -139,7 +139,7 @@ if executable('diff') && has('patch-7.4.1685')
 endif
 
 
-Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-peekaboo'
 Plug 'sjl/gundo.vim'
 if has('python3') && s:has_py35

@@ -1458,6 +1458,16 @@ hi WhichKeyFloat  guibg=#1a2a3a
 
 
 " ---------------------------------------------------------------- }}}
+" vim-commentary {{{
+
+if HasPlug('vim-commentary')
+  nmap <leader>c<space>  <Plug>CommentaryLine
+  xmap <leader>c<space>  <Plug>Commentary
+endif
+
+
+" ---------------------------------------------------------------- }}}
+" }}}
 " vim-peekaboo {{{
 
 " Use floating window instead of vsplit for peeking registers.
