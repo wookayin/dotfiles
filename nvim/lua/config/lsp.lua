@@ -115,6 +115,7 @@ local builtin_lsp_servers = {
   'vimls',
   'tsserver',
   'lua_ls',
+  'bashls',
 }
 
 -- Mason: LSP Auto installer
@@ -173,6 +174,10 @@ lsp_setup_opts['lua_ls'] = {
       },
     },
   },
+}
+
+lsp_setup_opts['bashls'] = {
+  filetypes = { 'sh', 'zsh' },
 }
 
 -- Call lspconfig[...].setup for all installed LSP servers with common opts
