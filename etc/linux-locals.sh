@@ -278,12 +278,14 @@ install_vim() {
 
 install_neovim() {
     # install neovim stable or nightly
+    # [NEOVIM_VERSION=...] dotfiles install neovim
     set -e
 
-    local NEOVIM_VERSION=$(\
+    local NEOVIM_LATEST_VERSION=$(\
         curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
         python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
     )   # starts with "v", e.g. "v0.7.0"
+    : "${NEOVIM_VERSION:=$NEOVIM_LATEST_VERSION}"
     test -n "$NEOVIM_VERSION"
 
     local VERBOSE=""
@@ -298,7 +300,7 @@ install_neovim() {
     if [ "${NEOVIM_VERSION}" == "nightly" ]; then
       echo -e "${COLOR_YELLOW}Installing neovim nightly. ${COLOR_NONE}"
     else
-      echo -e "${COLOR_YELLOW}Installing neovim stable ${NEOVIM_VERSION}. ${COLOR_NONE}"
+      echo -e "${COLOR_YELLOW}Installing neovim ${NEOVIM_VERSION}. ${COLOR_NONE}"
       echo -e "${COLOR_YELLOW}To install a nightly version, add flag: --nightly ${COLOR_NONE}"
     fi
     sleep 1;  # allow users to read above comments
