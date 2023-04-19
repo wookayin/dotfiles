@@ -71,9 +71,13 @@ path=( $path $HOME/.cargo/bin )
 # }}}
 
 # GO {{{
-export GOROOT=$HOME/.go
-export GOPATH=$GOROOT/packages
-path=( $path $GOROOT/bin $GOPATH/bin )
+
+# $GOPATH is where go-installed libraries or command line utilities will be installed.
+# Especially, binaries will be located at $HOME/.go/bin, which should be added to $PATH.
+export GOPATH=$HOME/.go
+mkdir -p $GOPATH
+path=( $path $GOPATH/bin )
+
 # }}}
 
 # Bazel {{{

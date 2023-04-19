@@ -988,6 +988,10 @@ xnoremap <leader>! "gy:call <SID>goog(@g, 1)<cr>gv
 "  (to open files in the same directory as the current buffer)
 function! EatWhitespace()
   let c = nr2char(getchar(0))
+  " Invoke wilder manually because the completion is lost due to command-line abbrev.
+  if exists('*wilder#start_from_normal_mode')
+    call wilder#start_from_normal_mode()
+  endif
   return index([nr2char(9), nr2char(10), nr2char(13), ' '], c) >= 0 ? '' : c
 endfunction
 call CommandAlias('eh', "e %:h/<C-R>=EatWhitespace()<CR>")
@@ -995,6 +999,10 @@ call CommandAlias('vsh', "vs %:h/<C-R>=EatWhitespace()<CR>")
 call CommandAlias('sph', "sp %:h/<C-R>=EatWhitespace()<CR>")
 call CommandAlias('tabnewh', "tabnew %:h/<C-R>=EatWhitespace()<CR>")
 call CommandAlias('th',      "tabnew %:h/<C-R>=EatWhitespace()<CR>")
+
+" :eplug, :vsplug => :e $VIMPLUG/, :vs $VIMPLUG/
+call CommandAlias('eplug', "e $VIMPLUG/<C-R>=EatWhitespace()<CR>")
+call CommandAlias('vsplug', "vs $VIMPLUG/<C-R>=EatWhitespace()<CR>")
 
 
 " :Toggle... command aliases
@@ -1395,13 +1403,21 @@ map z? <Plug>(incsearch-fuzzy-?)
 map zg/ <Plug>(incsearch-fuzzy-stay)
 
 " ---------------------------------------------------------------- }}}
-" vim-highlightedyank {{{
-if has_key(g:plugs, 'vim-highlightedyank') && !exists('##TextYankPost')
-  map y <Plug>(highlightedyank)
+" highlightedyank (neovim) {{{
+
+let g:highlightedyank_highlight_duration = 300
+
+if has('nvim')
+  " vim-highlightedyank is not used, neovim has built-in support
+  " https://neovim.io/doc/user/lua.html#lua-highlight
+  augroup HighlightedYank
+    autocmd!
+    autocmd TextYankPost * silent! lua vim.highlight.on_yank {
+          \ higroup = "IncSearch",
+          \ timeout = vim.g.highlightedyank_highlight_duration }
+  augroup END
 endif
 
-"hi HighlightedyankRegion cterm=reverse gui=reverse
-let g:highlightedyank_highlight_duration = 1000
 
 " ---------------------------------------------------------------- }}}
 " vim-quickhl {{{
@@ -1453,6 +1469,16 @@ hi WhichKeyFloat  guibg=#1a2a3a
 
 
 " ---------------------------------------------------------------- }}}
+" vim-commentary {{{
+
+if HasPlug('vim-commentary')
+  nmap <leader>c<space>  <Plug>CommentaryLine
+  xmap <leader>c<space>  <Plug>Commentary
+endif
+
+
+" ---------------------------------------------------------------- }}}
+" }}}
 " vim-peekaboo {{{
 
 " Use floating window instead of vsplit for peeking registers.
@@ -1495,7 +1521,7 @@ require("notify").setup({
     vim.api.nvim_win_set_config(win, { focusable = false })
     vim.api.nvim_win_set_option(win, "winblend", vim.g.nvim_notify_winblend)
   end,
-  timeout = 5000,
+  timeout = 3000,
   background_colour = "#000000",
 })
 
@@ -2526,6 +2552,10 @@ EOF
         \ 'right': [' ', wilder#popupmenu_scrollbar()],
         \ }
   call wilder#set_option('renderer', wilder#popupmenu_renderer(l:wilder_renderer_option))
+
+  " Additional custom keymap for wilder
+  " <C-space> in the command line: refresh completion (close and start again)
+  cmap <expr> <C-space> [wilder#main#stop(), wilder#main#start_from_normal_mode()][-1]
 endfunction
 
 function! s:check_wilder_rplugins() abort
@@ -3073,9 +3103,9 @@ endif
 " for :Vimtexview, move Skim's position to where the cursor currently points to.
 if has('mac')
   let s:texshop_present = isdirectory('/Applications/TeX/TeXShop.app') || isdirectory('/Applications/TeXShop.app')
-  if executable('texshop-preview') && s:texshop_present
-    " ~/.dotfiles/bin/texshop-preview
-    let g:vimtex_view_general_viewer = 'texshop-preview'
+  if executable('texshop') && s:texshop_present
+    " ~/.dotfiles/bin/texshop
+    let g:vimtex_view_general_viewer = 'texshop'
   else
     " skim
     let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'

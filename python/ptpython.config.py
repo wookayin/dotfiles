@@ -7,7 +7,7 @@ https://github.com/prompt-toolkit/ptpython/blob/master/examples/ptpython_config/
 # pyright: reportGeneralTypeIssues=false
 
 from prompt_toolkit.filters import ViInsertMode
-from prompt_toolkit.key_binding.key_processor import KeyPress
+from prompt_toolkit.key_binding.key_processor import KeyPress, KeyPressEvent
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.output import ColorDepth
 from prompt_toolkit.styles import Style
@@ -142,9 +142,59 @@ def configure(repl: ptpython.python_input.PythonInput):
     # Add custom key binding.
     # ControlA and ControlE should work as Home/End (emac-style keybindings).
     @repl.add_key_binding(Keys.ControlA)
-    def _(event): event.cli.key_processor.feed(KeyPress(Keys.Home))
+    def _(event: KeyPressEvent): event.cli.key_processor.feed(KeyPress(Keys.Home))
     @repl.add_key_binding(Keys.ControlE)
-    def _(event): event.cli.key_processor.feed(KeyPress(Keys.End))
+    def _(event: KeyPressEvent): event.cli.key_processor.feed(KeyPress(Keys.End))
+
+    # Ctrl-P and Ctrl-N should navigate the history when completion is not shown.
+    @repl.add_key_binding(Keys.ControlP)
+    def _(event: KeyPressEvent):
+        if event.app.current_buffer.complete_state:
+            event.app.current_buffer.complete_previous(disable_wrap_around=True)
+        else:
+            event.app.current_buffer.history_backward()
+
+    @repl.add_key_binding(Keys.ControlN)
+    def _(event: KeyPressEvent):
+        if event.app.current_buffer.complete_state:
+            event.app.current_buffer.complete_next(disable_wrap_around=True)
+        else:
+            event.app.current_buffer.history_forward()
+
+    # Ctrl-Space: Starts auto-completion
+    @repl.add_key_binding(Keys.ControlSpace)
+    def _(event: KeyPressEvent):
+        event.app.current_buffer.start_completion(select_first=False)
+
+    # Ctrl-R: History search fzf (requires pyfzf)
+    @repl.add_key_binding(Keys.ControlR)
+    def _(event: KeyPressEvent):
+        import subprocess, collections
+
+        # REPL history. Oldest item first -> Newest item first
+        lines = event.app.current_buffer.history.get_strings()[::-1]
+        lines = list(collections.OrderedDict.fromkeys(lines))  # uniquify
+
+        fzf = subprocess.Popen([
+            'fzf',
+            "--layout=reverse",
+            "--scheme=history",
+            "--prompt", 'REPL History> ',
+            "--height", '~30%',
+            "+m"
+        ], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        for line in lines:
+            line = line.replace('\n', '\r')
+            fzf.stdin.write((line + '\n').encode())  # type: ignore
+        fzf.stdin.flush()  # type: ignore
+        fzf_output = fzf.communicate()[0].decode()
+
+        if fzf_output:
+            fzf_output = fzf_output.replace('\r', '\n').rstrip('\n')
+            event.app.current_buffer.text = ''   # clear the input buffer
+            event.app.current_buffer.insert_text(fzf_output, overwrite=True)
+
+        event.app.renderer.reset()
 
     """
     @repl.add_key_binding("c-b")

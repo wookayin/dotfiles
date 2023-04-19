@@ -427,6 +427,17 @@ install_go() {
     $HOME/.go/bin/go version
 }
 
+install_duf() {
+  # https://github.com/muesli/duf/releases
+  _template_github_latest "duf" "muesli/duf" "duf_*_linux_x86_64.tar.gz"
+  [[ $(pwd) =~ ^/tmp/$USER/ ]]
+
+  cp -v "./duf" $PREFIX/bin
+
+  echo -e "\n\n${COLOR_WHITE}$(which duf)${COLOR_NONE}"
+  $PREFIX/bin/duf --version
+}
+
 install_lazydocker() {
   set -e
   _template_github_latest "lazydocker" "jesseduffield/lazydocker" "lazydocker_*_Linux_x86_64.tar.gz"

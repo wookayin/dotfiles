@@ -7,6 +7,11 @@ if not pcall(require, 'lspconfig') then
   print("Warning: lspconfig not available, skipping configuration.")
   return
 end
+if not pcall(require, 'mason-lspconfig') then
+  local msg = "mason or mason-lspconfig not installed. Please update plugins and restart."
+  vim.notify_once(msg, vim.log.levels.ERROR, { title = "~/.nvim/lua/config/lsp.lua" })
+  return
+end
 local lspconfig = require('lspconfig')
 
 -- lsp_signature
@@ -81,7 +86,7 @@ local on_attach = function(client, bufnr)
   end, { nargs = '?', desc = "Rename the current symbol at the cursor." })
 
   -- Disable specific LSP capabilities: see nvim-lspconfig#1891
-  if client.name == "sumneko_lua" and client.server_capabilities then
+  if client.name == "lua_ls" and client.server_capabilities then
     client.server_capabilities.documentFormattingProvider = false
   end
 end
@@ -102,22 +107,29 @@ do
 end
 
 
--- Register and activate LSP servers (managed by nvim-lsp-installer)
+-- Register and activate LSP servers (managed by mason.nvim)
 local builtin_lsp_servers = {
   -- List name of LSP servers that will be automatically installed and managed by :LspInstall.
-  -- LSP servers will be installed locally at: ~/.local/share/nvim/lsp_servers
-  -- @see(lspinstall): https://github.com/williamboman/nvim-lsp-installer
+  -- LSP servers will be installed locally via mason at: ~/.local/share/nvim/mason/packages/
   'pyright',
   'vimls',
   'tsserver',
-  'sumneko_lua',
+  'lua_ls',
 }
+
+-- Mason: LSP Auto installer
+-- https://github.com/williamboman/mason.nvim#default-configuration
+require("mason").setup()
+require("mason-lspconfig").setup {
+  ensure_installed = builtin_lsp_servers,
+}
+local lsp_setup_opts = {}
+_G.lsp_setup_opts = lsp_setup_opts
 
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-_G.lsp_setup_opts = {}
 
-_G.lsp_setup_opts['pyright'] = {
+lsp_setup_opts['pyright'] = {
   settings = {
     -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
     python = {
@@ -128,11 +140,18 @@ _G.lsp_setup_opts['pyright'] = {
   },
 }
 
-_G.lsp_setup_opts['sumneko_lua'] = {
+-- Configure lua_ls to support neovim Lua runtime APIs
+require("neodev").setup { }
+lsp_setup_opts['lua_ls'] = {
   settings = {
     Lua = {
+      -- See https://github.com/LuaLS/lua-language-server/blob/master/doc/en-us/config.md
       runtime = {
         version = 'LuaJIT',   -- Lua 5.1/LuaJIT
+      },
+      diagnostics = {
+        -- Ignore some false-positive diagnostics for neovim lua config
+        disable = { 'redundant-parameter', 'duplicate-set-field', },
       },
       completion = { callSnippet = "Disable" },
       workspace = {
@@ -156,40 +175,61 @@ _G.lsp_setup_opts['sumneko_lua'] = {
   },
 }
 
--- Configure sumneko_lua to support neovim Lua runtime APIs
-require("neodev").setup { }
-
-local lsp_installer = require("nvim-lsp-installer")
-lsp_installer.on_server_ready(function(server)
+-- Call lspconfig[...].setup for all installed LSP servers with common opts
+local installed_mason_packages = require('mason-registry').get_installed_packages()
+local function setup_lsp(lsp_name)
   local cmp_nvim_lsp = require('cmp_nvim_lsp')
   local opts = {
     on_attach = on_attach,
 
     -- Suggested configuration by nvim-cmp
-    capabilities = (cmp_nvim_lsp.default_capabilities or cmp_nvim_lsp.update_capabilities)(
+    capabilities = (require'cmp_nvim_lsp'.default_capabilities or
+                    require'cmp_nvim_lsp'.update_capabilities)(
       vim.lsp.protocol.make_client_capabilities()
     ),
   }
-
   -- Customize the options passed to the server
-  opts = vim.tbl_extend("error", opts, _G.lsp_setup_opts[server.name] or {})
+  opts = vim.tbl_extend("error", opts, _G.lsp_setup_opts[lsp_name] or {})
+  lspconfig[lsp_name].setup(opts)
+end
 
-  -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
-  server:setup(opts)
-  vim.cmd [[ do User LspAttachBuffers ]]
+-- lsp configs are lazy-loaded or can be triggered after LSP installation,
+-- so we need a way to make LSP clients attached to already existing buffers.
+local reload_lsp = vim.schedule_wrap(function()
+  -- this can be easily achieved by firing an autocmd event for the open buffers.
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[bufnr].buftype == "" then
+      vim.api.nvim_exec_autocmds("BufReadPost", { buffer = bufnr })
+    end
+  end
 end)
 
--- Automatically install if a required LSP server is missing.
-for _, lsp_name in ipairs(builtin_lsp_servers) do
-  local ok, lsp = require('nvim-lsp-installer.servers').get_server(lsp_name)
-  ---@diagnostic disable-next-line: undefined-field
-  if ok and not lsp:is_installed() then
-    vim.defer_fn(function()
-      -- lsp:install()   -- headless
-      lsp_installer.install(lsp_name)   -- with UI (so that users can be notified)
-    end, 0)
+do  -- setup all known and available LSP servers that are installed
+  local lsp_names = require('mason-lspconfig.mappings.server').lspconfig_to_package
+  for lsp_name, package_name in pairs(lsp_names) do
+    if require('mason-registry').is_installed(package_name) then
+      setup_lsp(lsp_name)
+    else
+      -- mason.nvim does not launch lsp when installed for the first time
+      -- we attach a manual callback to setup LSP and launch
+      local ok, pkg = pcall(require('mason-registry').get_package, package_name)
+      if ok then
+        pkg:on("install:success", vim.schedule_wrap(function()
+          setup_lsp(lsp_name)
+          reload_lsp()  -- TODO: reload only the buffers that matches filetype.
+        end))
+      end
+    end
   end
 end
+
+-- Make sure LSP clients are attached to already existing buffers prior to this config.
+reload_lsp()
+
+-- Add backward-compatible lsp installation related commands
+vim.cmd [[
+  command! LspInstallInfo   Mason
+]]
 
 -------------------------
 -- LSP Handlers (general)
@@ -330,7 +370,6 @@ end
 local cmp = require('cmp')
 local cmp_helper = {}
 local cmp_types = require('cmp.types.cmp')
-local cmp_theme = cmp.config.window and 'dark' or 'light'
 
 -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
 cmp.setup {
@@ -345,7 +384,7 @@ cmp.setup {
     },
     completion = {
       -- Use border for the completion window.
-      border = (cmp_theme == 'dark' and { '┌', '─', '┐', '│', '┘', '─', '└', '│' } or nil),
+      border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 
       -- Due to the border, move left the completion window by 1 column
       -- so that text in the editor and on completion item can be aligned.
@@ -491,30 +530,8 @@ cmp_helper.compare = {
 }
 
 
--- Highlights for nvim-cmp's custom popup menu (GH-224)
-do
-  vim.cmd [[
-    " Light theme: Compatible with Pmenu (#fff3bf)
-    hi! link CmpPmenu         Pmenu
-    hi! link CmpPmenuBorder   Pmenu
-
-    hi! CmpItemAbbr           guifg=#111111
-    hi! CmpItemAbbrMatch      guifg=#f03e3e gui=bold
-    hi! CmpItemAbbrMatchFuzzy guifg=#fd7e14 gui=bold
-    hi! CmpItemAbbrDeprecated guifg=#adb5bd
-    hi! CmpItemKindDefault    guifg=#cc5de8
-    hi! link CmpItemKind      CmpItemKindDefault
-    hi! CmpItemMenu           guifg=#ededcf
-    hi! CmpItemMenuDetail     guifg=#ffe066
-    hi! CmpItemMenuBuffer     guifg=#898989
-    hi! CmpItemMenuSnippet    guifg=#cc5de8
-    hi! CmpItemMenuLSP        guifg=#cfa050
-    hi link CmpItemMenuPath   CmpItemMenu
-  ]]
-end
-
--- Highlights with bordered completion window (GH-472)
-if cmp_theme == 'dark' then
+-- Highlights with bordered completion window (GH-224, GH-472)
+_G.setup_cmp_highlight = function()
   vim.cmd [[
     " Dark background, and white-ish foreground
     highlight! CmpPmenu         guibg=#242a30
@@ -547,8 +564,15 @@ if cmp_theme == 'dark' then
     highlight!      CmpItemKindUnit          guibg=NONE guifg=#D4D4D4
     highlight!      CmpItemKindConstant      guibg=NONE guifg=#409F31
     highlight!      CmpItemKindSnippet       guibg=NONE guifg=#E3E300
+
+  " Make these highlights applied when colorscheme changes
+  augroup CmpHighlights
+    autocmd!
+    autocmd ColorScheme * lua _G.setup_cmp_highlight()
+  augroup END
   ]]
 end
+_G.setup_cmp_highlight()
 
 -----------------------------
 -- Configs for PeekDefinition

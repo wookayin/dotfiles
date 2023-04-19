@@ -9,18 +9,26 @@ end
 local ts_configs = require("nvim-treesitter.configs")
 local ts_parsers = require("nvim-treesitter.parsers")
 
+-- Compatibility layer for neovim < 0.9.0 (see neovim#22761)
+if not vim.treesitter.query.set then
+  vim.treesitter.query.set = require("vim.treesitter.query").set_query
+end
+
 -- Note: parsers are installed at ~/.vim/plugged/nvim-treesitter/parser/
 local parsers_to_install = {
   default = {
     "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
     "html", "http", "java", "javascript", "json", "json5", "jsonc", "latex", "lua", "make", "perl",
-    "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml"
+    "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml",
   },
   minimal = {
     "bash", "json", "latex", "lua", "make", "python", "vim", "yaml"
   },
 }
 parsers_to_install = parsers_to_install.minimal
+if vim.fn.has('nvim-0.9.0') > 0 then
+  table.insert(parsers_to_install, "vimdoc")
+end
 
 if vim.fn.has('mac') > 0 then
   -- Disable 'dockerfile' until nvim-treesitter/nvim-treesitter#3515 is resolved
@@ -125,7 +133,7 @@ function _G.TreesitterLoadCustomQuery(lang, query_name)
     vim.notify(msg, 'WARN', { title = "nvim/lua/config/treesitter.lua" })
     return
   end
-  require("vim.treesitter.query").set_query(lang, query_name, readfile(query_file))
+  vim.treesitter.query.set(lang, query_name, readfile(query_file))
 end
 
 -- python(fold): until GH-1451 is merged

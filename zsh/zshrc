@@ -232,6 +232,8 @@ conda() {
   _conda_initialize
   conda "$@"
 }
+# Workaround conda's bug where $HOST gets altered to 'x86_64-conda-linux-gnu', etc.
+export HOST=$(hostname)
 
 if [[ -z "$CONDA_EXE" && -d "/opt/homebrew/Caskroom/miniconda" ]]; then
   echo "Warning: Please install miniconda locally on your HOME, not via Homebrew."

@@ -29,7 +29,8 @@ let s:floating_available = exists('*nvim_open_win') &&
 " }}}
 
 "==============================================
-call plug#begin('~/.vim/plugged')
+let $VIMPLUG='~/.vim/plugged'
+call plug#begin($VIMPLUG)
 "==============================================
 
 " General Plugins
@@ -93,7 +94,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'rbong/vim-flog'
 if has('nvim')
-  Plug 'lewis6991/gitsigns.nvim'
+  " see GH-768
+  Plug 'lewis6991/gitsigns.nvim', PinIf(!has('nvim-0.8.0'), {'commit': '76b71f74'})
 else
   Plug 'airblade/vim-gitgutter'
 endif
@@ -136,12 +138,8 @@ if executable('diff') && has('patch-7.4.1685')
   Plug 'machakann/vim-highlightedundo'
 endif
 
-if v:version >= 800 || v:version == 704 && has('patch786')
-  " requires vim 7.4.786+ (see issue #23)
-  Plug 'machakann/vim-highlightedyank'
-endif
 
-Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-peekaboo'
 Plug 'sjl/gundo.vim'
 if has('python3') && s:has_py35
@@ -182,17 +180,17 @@ endif
 if has('nvim')
   function! TSUpdate(arg) abort
     if luaeval('pcall(require, "nvim-treesitter")')
-      TSUpdate
+      TSUpdateSync
     endif
   endfunction
 
   let g:_plug_ts_config = {'do': function('TSUpdate')}
   if !has('nvim-0.8')
     " Since 42ab95d5, nvim 0.8.0+ is required
-    let g:_plug_ts_config['commit'] = '4cccb6f4'
+    let g:_plug_ts_config['tag'] = 'v0.7.2'
   endif
   Plug 'nvim-treesitter/nvim-treesitter', g:_plug_ts_config
-  Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground'}
+  Plug 'nvim-treesitter/playground', {'as': 'nvim-treesitter-playground', 'commit': '4044b53'}
 
   Plug 'SmiteshP/nvim-gps'
 endif
@@ -213,7 +211,8 @@ endif
 " See also for more config: ~/.config/nvim/lua/config/lsp.lua
 if has('nvim')
   Plug 'neovim/nvim-lspconfig'
-  Plug 'williamboman/nvim-lsp-installer'
+  Plug 'williamboman/mason.nvim'
+  Plug 'williamboman/mason-lspconfig.nvim'
   Plug 'folke/neodev.nvim'
 
   Plug 'hrsh7th/nvim-cmp', {'commit': '4c05626'}
@@ -283,9 +282,28 @@ silent unlet g:_nerdtree_lazy_events
 
 
 " Automatically install missing plugins on startup
-let g:plugs_missing_on_startup = filter(values(g:plugs), '!isdirectory(v:val.dir) && !empty(get(v:val, "uri"))')
+function! s:plug_missing(plug)
+  return !isdirectory(a:plug.dir) && !empty(get(a:plug, "uri"))
+endfunction
+let g:plugs_missing_on_startup = filter(values(g:plugs), 's:plug_missing(v:val)')
 if len(g:plugs_missing_on_startup) > 0
   PlugInstall --sync | q
 endif
+
+" PlugInject: dynamically install and load plugins after startup
+command! -nargs=1 PlugInject       Plug <args> | call s:plug_install(<args>)
+function! s:plug_install(name, ...) abort
+  let l:name = fnamemodify(a:name, ':t')
+  if a:0 >= 1 && has_key(a:1, 'as')
+    let l:name = a:1['as']
+  endif
+  if s:plug_missing(g:plugs[l:name])
+    exec printf('PlugInstall %s --sync | if &ft == "vim-plug" | q | endif', l:name)
+  else
+    call plug#load(l:name)
+    echohl Special | echom "Loaded plugin: " . l:name | echohl NONE
+  endif
+endfunction
+
 
 " vim: set ts=2 sts=2 sw=2 foldenable foldmethod=marker:
