@@ -77,6 +77,10 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 * If neovim + treesitter emits an error like `query: invalid node type`, Run `:TSUpdate` (and wait for installation is done).
   * See [nvim-treesitter#3092](https://github.com/nvim-treesitter/nvim-treesitter/issues/3092) for more details.
 
+* If neovim cannot run due to `version 'GLIBC_2.29' not found` errors (on Ubuntu 18.04 or earlier),
+  you should upgrade your Ubuntu distribution to 20.04+ in order to run nvim 0.8.x or higher.
+  If you need a workaround, you can install nvim 0.7.2: `NEOVIM_VERSION=0.7.2 dotfiles install neovim`.
+
 * If [**neovim**][neovim] emits any startup errors (e.g. `no module named neovim`):
     * Use **latest neovim** (e.g., neovim 0.9.0).
       To install/upgrade neovim on your system, you can run `dotfiles install neovim` (linux) or `brew install neovim` (mac).
