@@ -284,8 +284,12 @@ install_neovim() {
     local NEOVIM_LATEST_VERSION=$(\
         curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
         python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
-    )   # starts with "v", e.g. "v0.7.0"
+    )   # usually "stable"
     : "${NEOVIM_VERSION:=$NEOVIM_LATEST_VERSION}"
+
+    if [[ $NEOVIM_VERSION != "stable" ]] && [[ $NEOVIM_VERSION != v* ]]; then
+        NEOVIM_VERSION="v$NEOVIM_VERSION"  # e.g. "0.7.0" -> "v0.7.0"
+    fi
     test -n "$NEOVIM_VERSION"
 
     local VERBOSE=""
