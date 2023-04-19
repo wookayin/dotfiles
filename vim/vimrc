@@ -386,6 +386,19 @@ imap <F3> <Nop>
 inoremap <C-Space> <C-x><C-o>
 inoremap <C-@> <C-x><C-o>
 
+" dd: do not yank an empty line into the default register
+if has('nvim')
+lua << EOF
+vim.keymap.set('n', 'dd', function()
+  if vim.api.nvim_get_current_line():match("^%s*$") then
+    return '"_dd'
+  else
+    return "dd"
+  end
+end, { expr = true, desc = 'dd (do not yank empty line)'})
+EOF
+endif
+
 " window navigation
 noremap <C-h> <C-w>h
 noremap <C-j> <C-w>j
