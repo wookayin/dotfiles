@@ -518,6 +518,22 @@ cmp.setup {
   },
 }
 
+-- filetype-specific sources
+cmp.setup.filetype({'sh', 'zsh', 'bash'}, {
+  sources = cmp.config.sources({
+    { name = 'zsh', priorty = 100 },
+    { name = 'nvim_lsp', priority = 50 },
+    { name = 'ultisnips', keyword_length = 2, priority = 50 },  -- workaround '.' trigger
+    { name = 'path', priority = 30, },
+    { name = 'buffer', priority = 10 },
+  }),
+  __dependencies__ = function()
+    -- Make sure cmp-zsh setup is called before cmp.setup
+    require("cmp_zsh").setup {
+      filetypes = { "bash", "zsh" },
+    }
+  end,
+})
 -- Custom sorting/ranking for completion items.
 cmp_helper.compare = {
   -- Deprioritize items starting with underscores (private or protected)
@@ -542,6 +558,7 @@ _G.setup_cmp_highlight = function()
     highlight! CmpPmenu         guibg=#242a30
     highlight! CmpPmenuBorder   guibg=#242a30
     highlight! CmpItemAbbr      guifg=#eeeeee
+    highlight! CmpItemMenuDefault   guifg=white
     " gray
     highlight! CmpItemAbbrDeprecated    guibg=NONE gui=strikethrough guifg=#808080
     " fuzzy matching

@@ -220,6 +220,7 @@ if has('nvim')
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-path'
   Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+  Plug 'tamago324/cmp-zsh'
 
   Plug 'ray-x/lsp_signature.nvim'
   Plug 'nvim-lua/lsp-status.nvim'
