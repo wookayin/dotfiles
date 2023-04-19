@@ -482,6 +482,16 @@ cmp.setup {
           vim_item.menu_hl_group = 'CmpItemMenuDetail'
         end
 
+      elseif entry.source.name == 'zsh' then
+        -- cmp-zsh: Display documentation for cmdline flag ('' denotes zsh)
+        ---@diagnostic disable-next-line: undefined-field
+        local detail = cmp_item.documentation
+        if detail then
+          vim_item.menu = detail
+          vim_item.menu_hl_group = 'CmpItemMenuZsh'
+          vim_item.kind = '  ' .. 'zsh'
+        end
+
       elseif entry.source.name == 'ultisnips' then
         if (cmp_item.snippet or {}).description then
           vim_item.menu = truncate(cmp_item.snippet.description, 40)
