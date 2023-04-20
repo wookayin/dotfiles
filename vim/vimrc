@@ -618,11 +618,12 @@ command! -nargs=1 MakeprgLocal  let &l:makeprg="<args>" | echo "&l:makeprg = <ar
 
 
 " Make for vim script files is to reload itself.
+" See <leader>so keymappings as well
 augroup VimscriptMakeprg
   autocmd!
-  autocmd FileType vim   nmap <buffer> <F5>
-        \ <cmd>source %<CR><cmd>call VimNotify("Sourced " . bufname('%'))<CR>
+  autocmd FileType vim   nmap <buffer> <F5>   <cmd>SourceThis<CR>
 augroup END
+command! -nargs=0 SourceThis   source % | call VimNotify("Sourced " . bufname('%'), 'info', {'title': 'SourceThis'})
 
 " }}}
 
@@ -764,6 +765,21 @@ if v:vim_did_enter == 0   " Do not redefine the function
     endif
   endfunction
 endif
+
+" <leader>so: source or execute the selection as vimscript or lua
+nnoremap <leader>so   <cmd>SourceThis<CR>
+xnoremap <leader>so   <cmd>call _source_visual_notify()<CR>:so<CR>
+function! _source_visual_notify() abort
+  if !has('nvim') | return | endif
+lua << EOF
+  local vstart = vim.fn.getpos("'<")
+  local vend = vim.fn.getpos("'>")
+  local line_start = vstart[2]
+  local line_end = vend[2]
+  local lines = vim.api.nvim_buf_get_lines(0, line_start - 1, line_end, true)
+  vim.notify(table.concat(lines, '\n'), 'info', {title = 'Sourced visual selection'})
+EOF
+endfunction
 
 " :Vimrc opens vim config files in a new tab
 command! -nargs=0 Vimrc   call s:open_vimrc_tab()
