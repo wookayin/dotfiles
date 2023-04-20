@@ -292,7 +292,7 @@ if len(g:plugs_missing_on_startup) > 0
 endif
 
 " PlugInject: dynamically install and load plugins after startup
-command! -nargs=1 PlugInject       Plug <args> | call s:plug_install(<args>)
+command! -bar -nargs=1 PlugInject       Plug <args> | call s:plug_install(<args>)
 function! s:plug_install(name, ...) abort
   let l:name = fnamemodify(a:name, ':t')
   if a:0 >= 1 && has_key(a:1, 'as')
