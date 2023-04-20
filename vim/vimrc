@@ -1252,10 +1252,16 @@ if get(g:, 'dotfiles_completion_backend') == '@lsp'
 endif
 
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
-function! ShowSyntaxGroup()
+" neovim 0.9: vim.inspect_pos() or :Inspect
+function! ShowSyntaxGroup() abort
+  if has('nvim-0.9.0')
+    :Inspect
+    return
+  endif
+
   if exists(':TSHighlightCapturesUnderCursor')
     :TSHighlightCapturesUnderCursor
-  end
+  endif
   echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<'
         \ . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<'
         \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
