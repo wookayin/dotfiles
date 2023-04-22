@@ -92,7 +92,6 @@ if !has('nvim')
 endif
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
-Plug 'rbong/vim-flog'
 if has('nvim')
   " see GH-768
   Plug 'lewis6991/gitsigns.nvim', PinIf(!has('nvim-0.8.0'), {'commit': '76b71f74'})
