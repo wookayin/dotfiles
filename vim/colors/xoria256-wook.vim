@@ -60,6 +60,10 @@ highlight CursorLine    cterm=none
 highlight Pmenu             ctermfg=black guifg=black ctermbg=yellow guibg=#ffec99
 highlight PmenuSel          ctermfg=red guifg=red ctermbg=white guibg=white gui=bold
 
+" neovim: Default background for floating windows (should be dark, not Pmenu)
+if hlexists('NormalFloat')
+  highlight NormalFloat     ctermbg=233 guibg=#121212
+endif
 
 " Minimal treesitter syntax support
 " The highlight mapping is not exhaustive; to see the list, try:

@@ -1240,11 +1240,6 @@ if has('nvim') && has('termguicolors') && (&termguicolors)
   silent! set pumblend=10
 endif
 
-" neovim 0.4.0+ : Default background for floating windows (should be dark, not Pmenu)
-if hlexists('NormalFloat')
-  highlight NormalFloat     ctermbg=233 guibg=#121212
-endif
-
 " Use different popupmenu highlight color for nvim-lsp
 if get(g:, 'dotfiles_completion_backend') == '@lsp'
   " oc-yellow-1
