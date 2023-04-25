@@ -2975,50 +2975,8 @@ let g:echodoc#enable_at_startup = 1
 " ---------------------------------------------------------------- }}}
 " semshi {{{
 
-" Disable diagonostics sign in favor of ALE, LSP, etc.
+" Disable diagonostics sign in favor of LSP.
 let g:semshi#error_sign = 0
-
-" ---------------------------------------------------------------- }}}
-" ALE {{{
-" Note: This ALE configuration is legacy, and is not used any more
-" in favor of builtin LSP and null-ls.nvim)
-
-" Specify linters.
-" You may find the configuration file for each linter engine useful.
-"  (e.g. ~/.pylintrc for pylint)
-
-" python: pycodestyle was dropped.
-let g:ale_linters = {
-      \ 'python': ['pylint', 'mypy' ],
-      \}
-
-let g:ale_type_map = {
-      \ 'pycodestyle' : {'ES' : 'WS', 'E': 'W'}
-      \}
-
-" linter-specific settings
-let g:ale_python_mypy_options = '--ignore-missing-imports'
-
-" Also show which linter is showing the message
-let g:ale_echo_msg_format = '[%linter%] %code: %%s'
-
-" better error/warning sign
-let g:ale_sign_error = '✘'
-let g:ale_sign_warning = '⚠'
-hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=167
-hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
-
-" no highlight (underline) on detected errors/warnings
-let g:ale_set_highlights = 0
-
-" :h airline-ale
-let g:airline#extensions#ale#enabled = 1
-let g:airline#extensions#ale#show_line_numbers = 0
-
-" Suppress a warning for the conflict with Neomake.
-" Neomake is used for job execution, not as a lint engine,
-" so it would be fine.
-let g:ale_emit_conflict_warnings = 0
 
 " ---------------------------------------------------------------- }}}
 " python (pymode, jedi) {{{
