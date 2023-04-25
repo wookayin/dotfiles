@@ -1170,6 +1170,16 @@ if !exists('g:colors_name')
   endtry
 endif
 
+" Helper to register Colorscheme autocmd events (and call once immediately)
+" so that custom highlight overrides can still be applied after changing colorscheme
+function! RegisterHighlights(funcname) abort
+  call funcref(a:funcname)()
+  augroup Colorscheme_RegisterHighlights
+    exec "autocmd Colorscheme *  call " .. a:funcname .. "()"
+  augroup END
+endfunction
+augroup Colorscheme_RegisterHighlights | autocmd! | augroup END
+
 " airline theme: status line and tab line
 if has('termguicolors') && &termguicolors
   let g:airline_theme = 'deus'
@@ -1214,8 +1224,11 @@ augroup AutoStripTrailingWhitespaces
 augroup END
 
 " highlight trailing whitespaces
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
+function! HighlightsExtraWhitespace() abort
+  highlight ExtraWhitespace ctermbg=red guibg=red
+  match ExtraWhitespace /\s\+$/
+endfunction
+call RegisterHighlights('HighlightsExtraWhitespace')
 
 augroup trailing_whitespaces
   autocmd!
@@ -1484,7 +1497,10 @@ EOF
 endfunction
 
 " appearances for which-key
-hi WhichKeyFloat  guibg=#1a2a3a
+function! HighlightsWhichkey() abort
+  hi WhichKeyFloat  guibg=#1a2a3a
+endfunction
+call RegisterHighlights('HighlightsWhichkey')
 
 
 " ---------------------------------------------------------------- }}}
@@ -1794,10 +1810,13 @@ function! s:NeomakeNotificationSet(value) abort
         \ "info", {'title': 'Neomake'})
 endfunction
 
-hi NeomakeErrorSign    gui=bold guifg=#e6645f ctermfg=167
-hi NeomakeWarningSign  gui=bold guifg=#b1b14d ctermfg=143
-hi NeomakeInfoSign     gui=bold guifg=#3e6e9e ctermfg=75
-hi NeomakeMessageSign  gui=bold guifg=LightGreen ctermfg=75
+function! HighlightsNeomake() abort
+  hi NeomakeErrorSign    gui=bold guifg=#e6645f ctermfg=167
+  hi NeomakeWarningSign  gui=bold guifg=#b1b14d ctermfg=143
+  hi NeomakeInfoSign     gui=bold guifg=#3e6e9e ctermfg=75
+  hi NeomakeMessageSign  gui=bold guifg=LightGreen ctermfg=75
+endfunction
+call RegisterHighlights('HighlightsNeomake')
 
 " General hook/callback on starting and finishing jobs {
 function! s:OnNeomakeJobStart()
@@ -1878,8 +1897,11 @@ let g:errormarker_warningtextgroup = "DiagnosticSignWarn"
 let g:errormarker_errorgroup = 'ErrormarkerErrorText'
 let g:errormarker_warninggroup = 'ErrormarkerWarningText'
 
-hi ErrormarkerErrorText       guibg=#3d0f0f
-hi ErrormarkerWarningText     guibg=NONE
+function! HighlightsErrormarker() abort
+  hi ErrormarkerErrorText       guibg=#3d0f0f
+  hi ErrormarkerWarningText     guibg=NONE
+endfunction
+call RegisterHighlights('HighlightsErrormarker')
 
 " ---------------------------------------------------------------- }}}
 " FZF {{{
@@ -1943,7 +1965,10 @@ if has('nvim-0.4')
 
   endfunction
 
-  hi FZFFloatNormal term=None guibg=#1a2a31
+  function! HighlightsFZF() abort
+    hi FZFFloatNormal term=None guibg=#1a2a31
+  endfunction
+  call RegisterHighlights('HighlightsFZF')
 endif
 
 " Inside vim, set environment variable FZF_DEFAULT_COMMAND
@@ -2368,11 +2393,14 @@ endif
 let g:floaterm_position = 'center'
 let g:floaterm_background = '#1a2a31'
 
-hi Floaterm         guibg=#1a2a31
-hi FloatermBorder   guibg=#1a2a31 guifg=white
-hi def link FloatermNF        Floaterm
-hi def link FloatermNC        Floaterm
-hi def link FloatermBorderNF  FloatermBorder
+function! HighlightsFloaterm() abort
+  hi Floaterm         guibg=#1a2a31
+  hi FloatermBorder   guibg=#1a2a31 guifg=white
+  hi def link FloatermNF        Floaterm
+  hi def link FloatermNC        Floaterm
+  hi def link FloatermBorderNF  FloatermBorder
+endfunction
+call RegisterHighlights('HighlightsFloaterm')
 
 command! -bang -nargs=? -complete=shellcmd  T                    :FloatermToggleOrNew<bang> <args>
 command! -bang -nargs=? -complete=shellcmd  FT                   :FloatermToggleOrNew<bang> <args>
@@ -2757,9 +2785,12 @@ if has_key(g:plugs, 'neo-tree.nvim')
   nmap <leader>E  :Neotree toggle<CR>
 
   " Highlights
-  hi link NeoTreeDirectoryName Directory
-  hi NeoTreeGitUntracked guifg=#E3DB88
-  hi NeoTreeGitIgnored guifg=#acacac
+  function! HighlightsNeotree() abort
+    hi link NeoTreeDirectoryName Directory
+    hi NeoTreeGitUntracked guifg=#E3DB88
+    hi NeoTreeGitIgnored guifg=#acacac
+  endfunction
+  call RegisterHighlights('HighlightsNeotree')
 
 endif
 
@@ -2839,9 +2870,11 @@ let g:EasyMotion_space_jump_first = 1
 " Trigger a highlight in the appropriate direction when pressing these keys:
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
-highlight QuickScopePrimary   guifg=#afff5f gui=underline ctermfg=155 cterm=underline
-highlight QuickScopeSecondary guifg=#5fffff gui=underline ctermfg=81  cterm=underline
-
+function! HighlightsQuickscope() abort
+  highlight QuickScopePrimary   guifg=#afff5f gui=underline ctermfg=155 cterm=underline
+  highlight QuickScopeSecondary guifg=#5fffff gui=underline ctermfg=81  cterm=underline
+endfunction
+call RegisterHighlights('HighlightsQuickscope')
 
 " ---------------------------------------------------------------- }}}
 " vim-easy-align {{{
@@ -2861,12 +2894,16 @@ if has_key(g:plugs, 'indent-blankline.nvim')
   let g:indent_blankline_buftype_exclude = ['terminal']
   let g:indent_blankline_show_first_indent_level = v:false
 
-  highlight IndentBlanklineChar guifg=#444444 gui=nocombine
+  function! HighlightsIndentBlankline() abort
+    highlight! IndentBlanklineChar guifg=#444444 gui=nocombine
+  endfunction
+  call RegisterHighlights('HighlightsIndentBlankline')
 endif
 
 " ---------------------------------------------------------------- }}}
 " indentLine {{{
-"
+" (not used in neovim)
+
 if has_key(g:plugs, 'indentLine')
 
   " conceal might break latex/json/markdown syntax, etc.
@@ -3205,13 +3242,16 @@ function! ReloadFugitiveBlobs(...) abort
 endfunction
 
 " highlights for fugitive
-hi fugitiveUntrackedHeading  gui=bold  guifg=#000087    guibg=Gold1
-hi fugitiveUntrackedSection  gui=bold  guifg=#bbbb00    guibg=NONE
-hi fugitiveUnstagedHeading   gui=bold  guifg=black      guibg=#d7875f
-hi fugitiveUnstagedSection   gui=bold  guifg=#af0000    guibg=NONE
-hi fugitiveStagedHeading     gui=bold  guifg=black      guibg=SeaGreen2
-hi fugitiveStagedSection     gui=bold  guifg=#009900    guibg=NONE
-hi fugitiveHeading           gui=bold                   guibg=NONE
+function! HighlightsFugitive() abort
+  hi fugitiveUntrackedHeading  gui=bold  guifg=#000087    guibg=Gold1
+  hi fugitiveUntrackedSection  gui=bold  guifg=#bbbb00    guibg=NONE
+  hi fugitiveUnstagedHeading   gui=bold  guifg=black      guibg=#d7875f
+  hi fugitiveUnstagedSection   gui=bold  guifg=#af0000    guibg=NONE
+  hi fugitiveStagedHeading     gui=bold  guifg=black      guibg=SeaGreen2
+  hi fugitiveStagedSection     gui=bold  guifg=#009900    guibg=NONE
+  hi fugitiveHeading           gui=bold                   guibg=NONE
+endfunction
+call RegisterHighlights('HighlightsFugitive')
 
 " fugitive://... buffers (index) should have better statusline;
 " display nothing but buffer/file names (would contain SHA, or ref, etc.)
