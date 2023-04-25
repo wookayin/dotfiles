@@ -167,7 +167,8 @@ if has('nvim')
   " Some lua-powered plugins for UI
   Plug 'nvim-lua/plenary.nvim'
   Plug 'rcarriga/nvim-notify'
-  Plug 'norcalli/nvim-colorizer.lua'
+  Plug 'NvChad/nvim-colorizer.lua'
+  ForcePlugURI 'nvim-colorizer.lua'
   Plug 'nvim-neo-tree/neo-tree.nvim', {'branch': 'main'}
   Plug 'MunifTanjim/nui.nvim'
   Plug 'stevearc/dressing.nvim'
