@@ -75,3 +75,17 @@ hi! @punctuation.bracket     guifg=#afd700
 hi! @punctuation.delimiter   guifg=NONE
 hi! @variable                guifg=NONE
 hi def link @none            Normal
+
+hi! @text.strong                       gui=bold
+hi! @text.emphasis                     gui=italic
+hi! @text.underline                    gui=underline
+hi! @text.strike                       gui=strikethrough
+hi! link @text.strike                  Title
+hi! @text.literal                      gui=italic
+hi! @text.uri                          gui=italic,underline
+hi def link @text.math                 Special
+hi def link @text.environment          PreProc
+hi def link @text.environment.name     Function
+hi def link @text.environment.name     Keyword
+
+
