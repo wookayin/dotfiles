@@ -598,9 +598,9 @@ _G.setup_cmp_highlight = function()
     highlight!      CmpItemKindSnippet       guibg=NONE guifg=#E3E300
 
   " Make these highlights applied when colorscheme changes
-  augroup CmpHighlights
+  augroup Colorscheme_cmp
     autocmd!
-    autocmd ColorScheme * lua _G.setup_cmp_highlight()
+    autocmd ColorScheme * lua vim.schedule(_G.setup_cmp_highlight)
   augroup END
   ]]
 end
