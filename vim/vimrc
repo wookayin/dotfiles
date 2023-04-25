@@ -3262,19 +3262,6 @@ EOF
 endif
 
 " ---------------------------------------------------------------- }}}
-" vim-flog {{{
-" https://github.com/rbong/vim-flog/blob/master/EXAMPLES.md
-
-" Default arguments. See help :Flog and flog#get_internal_default_args()
-let s:flog_format_string = '%C(yellow)[%h]%Creset  %Cblue%ad%Creset %Cred%d%Creset %s  %Cgreen{%an}%Creset'
-let g:flog_permanent_default_arguments = {
-      \ 'date': 'short',
-      \ 'format': s:flog_format_string,
-      \ }
-
-hi flogHash  guifg=#ffd43b
-
-" ---------------------------------------------------------------- }}}
 " gundo key mappings and options {{{
 let g:gundo_right = 1   " show at right
 nnoremap <leader>G :GundoToggle<CR>
