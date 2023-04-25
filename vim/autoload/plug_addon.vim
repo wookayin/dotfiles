@@ -12,9 +12,20 @@ function! s:unplug(repo)
 endfunction
 command! -nargs=1 -bar UnPlug call s:unplug(<args>)
 
-
-" ForcePlugURI: In case when plugin repo URI changes, PlugClean is required.
+" ForcePlugURI: In case when plugin repo URI changes, :PlugClean is required.
 " To automatically fix it for individual plugin, we force-correct URI of an existing one.
+" The correction will be actually executed when running :PlugInstall or :PlugUpate
+command! -nargs=1 -bar ForcePlugURI call s:force_plug_uri_register(<args>)
+
+let s:force_plugs = {}
+function! s:force_plug_uri_register(plug_name) abort
+  let s:force_plugs[a:plug_name] = g:plugs[a:plug_name].uri
+endfunction
+augroup PlugAddon
+  autocmd!
+  autocmd FileType vim-plug   call map(s:force_plugs, 's:force_plug_uri(v:key)')
+augroup END
+
 function! s:force_plug_uri(plug_name) abort
   let dir = g:plugs[a:plug_name].dir
   let expected_uri = substitute(g:plugs[a:plug_name].uri,
@@ -31,10 +42,9 @@ function! s:force_plug_uri(plug_name) abort
 
   if !v:shell_error && actual_uri != expected_uri
       " Update the remote repository URI.
-      echo printf("NOTE: We have automatically corrected URL of the plugin %s: ", a:plug_name)
-      echo printf("    %s", actual_uri)
-      echo printf(" -> %s", expected_uri)
-      echo printf("Please run :PlugUpdate again.")
+      echom printf("NOTE: We have automatically corrected URL of the plugin %s: ", a:plug_name)
+      echom printf("    %s", actual_uri)
+      echom printf(" -> %s", expected_uri)
       call system(printf("git config -f %s remote.origin.url %s",
             \ shellescape(dir . '/.git/config'),
             \ shellescape(g:plugs[a:plug_name].uri))
@@ -47,7 +57,6 @@ function! s:force_plug_uri(plug_name) abort
             \ shellescape(dir)))
   endif
 endfunction
-command! -nargs=1 -bar ForcePlugURI call s:force_plug_uri(<args>)
 
 
 " util for version comparison (e.g. 'v11.1.0' < 'v8.10')
