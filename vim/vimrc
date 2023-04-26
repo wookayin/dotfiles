@@ -2608,9 +2608,13 @@ EOF
         \   wilder#vim_search_pipeline(),
         \ )])
 
-  " renderer: use popupmenu
+  " renderer: use popupmenu (may be different than Pmenu, some yellow-ish color)
   let l:wilder_hl = {
-        \ 'accent': wilder#make_hl('WilderAccent', 'Pmenu', [
+        \ 'default': wilder#make_hl('WilderPmenu', [
+        \     {}, {'foreground': 0, 'background': 11},
+        \     {'foreground': 'black', 'background': '#ffec99'}
+        \ ]),
+        \ 'accent': wilder#make_hl('WilderAccent', 'WilderPmenu', [
         \     {}, {}, {'foreground': '#f03e3e', 'bold': 1, 'underline': 1}])
         \ }
   let l:wilder_renderer_option = {
