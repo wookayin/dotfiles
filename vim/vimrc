@@ -1226,7 +1226,6 @@ augroup END
 " highlight trailing whitespaces
 function! HighlightsExtraWhitespace() abort
   highlight ExtraWhitespace ctermbg=red guibg=red
-  match ExtraWhitespace /\s\+$/
 endfunction
 call RegisterHighlights('HighlightsExtraWhitespace')
 
