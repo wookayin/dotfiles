@@ -410,7 +410,7 @@ noremap <M-l> <C-w>l
 
 " window navigation: aware of tmux
 let g:tmux_navigator_no_mappings = 1
-if has_key(g:plugs, 'vim-tmux-navigator') && !empty($TMUX)
+if HasPlug('vim-tmux-navigator') && !empty($TMUX)
   nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
   nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
   nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
@@ -1354,7 +1354,7 @@ let g:startify_skiplist = [
 " vim-eunuch {{{
 
 " remove all rm-like commands, which are too dangerous (even no confirm...)
-if has_key(g:plugs, 'vim-eunuch')
+if HasPlug('vim-eunuch')
   autocmd User LazyInit call s:remove_eunuch_commands()
   function! s:remove_eunuch_commands()
     if !exists('g:loaded_eunuch') | return | endif
@@ -1405,7 +1405,7 @@ endfunction
 " vim-asterisk (enhanced *) {{{
 
 " Use z (stay) behavior as default
-if has_key(g:plugs, 'vim-asterisk')
+if HasPlug('vim-asterisk')
   map *  <Plug>(asterisk-z*)
   map #  <Plug>(asterisk-z#)
   map g* <Plug>(asterisk-gz*)
@@ -1419,7 +1419,7 @@ let g:asterisk#keeppos = 1
 " incsearch {{{
 
 " incsearch.vim
-if has_key(g:plugs, 'incsearch.vim')
+if HasPlug('incsearch.vim')
   if !has('patch-8.0.1238')
     map /  <Plug>(incsearch-forward)
     map ?  <Plug>(incsearch-backward)
@@ -1461,7 +1461,7 @@ xmap <leader>8 <Plug>(quickhl-manual-reset)
 " ---------------------------------------------------------------- }}}
 " vim-highlightedundo {{{
 
-if has_key(g:plugs, 'vim-highlightedundo')
+if HasPlug('vim-highlightedundo')
   nmap u     <Plug>(highlightedundo-undo)
   nmap <C-r> <Plug>(highlightedundo-redo)
   nmap U     <Plug>(highlightedundo-Undo)
@@ -2381,7 +2381,7 @@ command! GStatus GFiles?
 command! H History
 
 " Marks
-if has_key(g:plugs, 'fzf.vim')
+if HasPlug('fzf.vim')
   nnoremap '' :Marks<CR>
 endif
 
@@ -2494,7 +2494,7 @@ autocmd VimEnter * hi QuickPreview guibg=#262d2d
 
 let g:xtabline_settings = {}
 
-if has("patch-7.4.1658") && has_key(g:plugs, 'vim-xtabline')
+if has("patch-7.4.1658") && HasPlug('vim-xtabline')
   if has('nvim-0.8')
     " Using global statusline, so always prefer tabs mode
     augroup TablineHybridMode
@@ -2773,7 +2773,7 @@ EOF
 
 endfunction
 
-if has_key(g:plugs, 'neo-tree.nvim')
+if HasPlug('neo-tree.nvim')
   " Use 2.x compatibility mode
   let g:neo_tree_remove_legacy_commands = 1
 
@@ -2834,7 +2834,7 @@ lua << EOF
 EOF
 endfunction
 
-if has_key(g:plugs, 'nvim-tree.lua')
+if HasPlug('nvim-tree.lua')
   autocmd User LazyInit      call s:setup_nvimtree()
   nmap <leader>E  :NvimTreeToggle<CR>
 
@@ -2890,7 +2890,7 @@ nmap ga <Plug>(EasyAlign)
 " indent-blankline.nvim {{{
 " :help indent-blankline
 
-if has_key(g:plugs, 'indent-blankline.nvim')
+if HasPlug('indent-blankline.nvim')
   let g:indent_blankline_char = '┊'
   let g:indent_blankline_filetype_exclude = ['help', 'NvimTree', 'pandoc']
   let g:indent_blankline_buftype_exclude = ['terminal']
@@ -2906,7 +2906,7 @@ endif
 " indentLine {{{
 " (not used in neovim)
 
-if has_key(g:plugs, 'indentLine')
+if HasPlug('indentLine')
 
   " conceal might break latex/json/markdown syntax, etc.
   " see also after/ftplugin/*.vim settings for conceal level configuration.
@@ -3006,7 +3006,7 @@ call CommandAlias('EditSnippets', 'UltiSnipsEdit', v:true)
 " ---------------------------------------------------------------- }}}
 " vim-pandoc {{{
 
-if has_key(g:plugs, 'vim-pandoc')
+if HasPlug('vim-pandoc')
 
   " disable automatic folding
   let g:pandoc#modules#disabled = ['folding']
@@ -3257,7 +3257,7 @@ call RegisterHighlights('HighlightsFugitive')
 
 " fugitive://... buffers (index) should have better statusline;
 " display nothing but buffer/file names (would contain SHA, or ref, etc.)
-if has_key(g:plugs, 'vim-airline')
+if HasPlug('vim-airline')
   function! FugitiveAirlinePatch(...)
     if bufname('%') =~ '^fugitive://'
       let w:airline_section_b = airline#section#create(['branch'])
