@@ -1513,7 +1513,6 @@ endif
 
 
 " ---------------------------------------------------------------- }}}
-" }}}
 " vim-peekaboo {{{
 
 " Use floating window instead of vsplit for peeking registers.
