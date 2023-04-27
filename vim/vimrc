@@ -3067,22 +3067,8 @@ let g:pymode_doc_bind = '<leader>PK'
 " https://google.github.io/styleguide/pyguide.html#34-indentation
 let g:pymode_indent_hanging_width = 4
 
-" pymode lint (code checking):
-" disable in favor of ALE (but only if pylint exists) or built-in LSP
-if HasPlug('ale')
-  let s:py_linters_exists = executable('pylint')
-  if s:py_linters_exists
-    let g:pymode_lint = 0
-  else
-    autocmd VimEnter *.py echomsg
-          \ '[Warning] Please install `pylint` using pip.' .
-          \ ' As a fallback, pymode linter (slow and outdated) will be used for linting.'
-  endif
-endif
-
-if HasPlug('nvim-lspconfig')  " g:dotfiles_completion_backend == @lsp
-  let g:pymode_lint = 0
-endif
+" Disable linting feature in favor of LSP.
+let g:pymode_lint = 0
 
 " Check code on every save (not on the fly)
 let g:pymode_lint_on_write = 1
