@@ -3172,7 +3172,7 @@ augroup FugitiveCustomizeCommands
   autocmd CmdlineEnter * ++once silent! delcommand GDelete
 
  " :G -> :GDiff + :Git,  or :Git <args>
-  autocmd CmdlineEnter * ++once command! -nargs=?  G    call s:G(<q-args>)
+  autocmd CmdlineEnter * ++once command! -nargs=?  -complete=customlist,fugitive#Complete  G    call s:G(<q-args>)
 augroup END
 
 function! s:G(arg) abort
