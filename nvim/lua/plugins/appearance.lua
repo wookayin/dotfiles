@@ -1,0 +1,18 @@
+-- Appearance plugins.
+
+local Plug = require('utils.plug_utils').Plug
+local PlugConfig = require('utils.plug_utils').PlugConfig
+
+return {
+  Plug 'flazz/vim-colorschemes' { lazy = false, priority = 1000 };
+
+  -- statusline
+  Plug 'nvim-lualine/lualine.nvim';
+
+  -- tabline
+  Plug 'mg979/vim-xtabline' {
+    -- must be initialized lazily after vim UI is ready
+    event = 'VimEnter',
+    init = PlugConfig,
+  };
+}

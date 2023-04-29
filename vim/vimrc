@@ -35,7 +35,10 @@ endif
 " and listed up in the separate file 'plugins.vim',
 " so that this vimrc would still work standalone without plugins.
 let g:plugs = {}
-if filereadable(expand('~/.vim/plugins.vim'))
+if filereadable(expand('~/.vim/plugins.vim')) && !has('nvim-0.8.0')
+  " Note: on neovim, we will switch to lazy.vim (see init.lua).
+  " For the time being neovim <= 0.7.x will have limited support with vim-plug
+  " during the gradual transition period.
   source \~/.vim/plugins.vim
 endif
 
@@ -1161,7 +1164,8 @@ endif
 
 " apply colorscheme (base: xoria256 + customization)
 " See ~/.vim/colors/xoria256-wook.vim
-if !exists('g:colors_name')
+" For neovim + lazy.nvim: see init.lua
+if !has('nvim') && !exists('g:colors_name')
   try
     silent! colorscheme xoria256-wook
   catch /E185/  " Cannot find color scheme

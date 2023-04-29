@@ -36,6 +36,7 @@ end
 
 
 -- Source plain vimrc for basic settings.
+-- This should precede plugin loading via lazy.nvim.
 vim.cmd [[
   source ~/.vimrc
   set rtp+=~/.vim
@@ -47,6 +48,15 @@ if vim.fn.has('nvim-0.7') == 0 then
     echohl WarningMsg | echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.7.0+ or higher.' | echohl None
   ]]
   return
+end
+
+if vim.fn.has('nvim-0.8') > 0 then
+  -- Load all the plugins (lazy.nvim, requires nvim 0.8+)
+  require 'config/plugins'
+
+  -- Colorscheme needs to be called AFTER plugins are loaded,
+  -- because of the different plugin loading mechanism and order.
+  vim.cmd [[ colorscheme xoria256-wook ]]
 end
 
 -- require a lua module, but force reload it (RC files can be re-sourced)
