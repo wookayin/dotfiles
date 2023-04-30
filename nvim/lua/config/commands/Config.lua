@@ -20,6 +20,12 @@ function M.build_directory_map()
     local basename = abspath:match '([^/]+)%.lua$'
     map[basename .. '.lua'] = vim.fn.resolve(abspath)  -- resolve symlink
   end
+  -- and plugins/*.lua too
+  local plugin_files = vim.split(vim.fn.glob('~/.config/nvim/lua/plugins/*.lua'), '\n')
+  for _, abspath in ipairs(plugin_files) do
+    local basename = abspath:match '(plugins/[^/]+)%.lua$'
+    map[basename .. '.lua'] = vim.fn.resolve(abspath)  -- resolve symlink
+  end
   return map
 end
 
@@ -34,7 +40,8 @@ end
 function M.action(arg)
   map = map or M.build_directory_map()
   local aliases = {
-    ['plug'] = 'plugins.vim'
+    ['plug'] = 'plugins.vim',
+    ['lazy'] = 'plugins.lua',
   }
   local file = map[arg] or map[arg .. '.lua'] or map[arg .. '.vim'] or map[aliases[arg]]
 
