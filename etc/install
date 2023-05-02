@@ -12,6 +12,18 @@ cat <<EOF
    ╚═════╝  ╚═════╝   ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
 EOF
 
+# Check minimal dependencies
+if ! command -v git &> /dev/null; then echo "ERROR: git not found. (Try $APT install git)"; exit; fi
+if ! command -v curl &> /dev/null; then echo "ERROR: curl not found. (Try $APT install curl)"; exit; fi
+if ! command -v wget &> /dev/null; then echo "ERROR: wget not found. (Try $APT install wget)"; exit; fi
+
+if which python3 > /dev/null; then
+    PYTHON="python3"
+else
+    PYTHON="python"
+fi
+if ! command -v $PYTHON &> /dev/null; then echo "ERROR: python not found. (Try $APT install python3-pip)"; exit; fi
+
 _version_check() {
     curver="$1"; targetver="$2";
     [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
@@ -22,12 +34,6 @@ if _version_check "$(git --version | cut -d' ' -f3)" "2.8"; then
 fi
 
 GIT_REPO="https://github.com/wookayin/dotfiles.git"
-
-if which python3 > /dev/null; then
-    PYTHON="python3"
-else
-    PYTHON="python"
-fi
 
 set -x
 set -e
