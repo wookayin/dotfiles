@@ -314,8 +314,9 @@ install_neovim() {
 
     cd $TMP_NVIM_DIR
     wget --backups=1 $NVIM_DOWNLOAD_URL      # always overwrite, having only one backup
+    rm -rf "$TMP_NVIM_DIR/nvim-linux64"
     tar $VERBOSE -xzf "nvim-linux64.tar.gz"
-    ls --color -d $TMP_NVIM_DIR/nvim-linux64
+    ls --color -d "$TMP_NVIM_DIR/nvim-linux64"
 
     # copy and merge into ~/.local/bin
     echo -e "${COLOR_GREEN}[*] Copying to $PREFIX ... ${COLOR_NONE}"
