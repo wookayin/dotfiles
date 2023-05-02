@@ -77,7 +77,8 @@ if has('nvim') || v:version >= 800
 endif
 Plug 'vim-scripts/errormarker.vim'
 if has('nvim')
-  Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemote') }
+  Plug 'wookayin/wilder.nvim', { 'do': function('UpdateRemote') }
+        \ | ForcePlugURI 'wilder.nvim'
   Plug 'romgrk/fzy-lua-native'
 endif
 Plug 'tpope/vim-tbone'
