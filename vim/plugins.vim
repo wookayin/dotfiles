@@ -230,7 +230,7 @@ if has('nvim')
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'onsails/lspkind-nvim'
 
-  Plug 'jose-elias-alvarez/null-ls.nvim'
+  Plug 'jose-elias-alvarez/null-ls.nvim', PinIf(!has('nvim-0.8.0'), {'branch': '0.7-compat'})
 endif
 
 " Other language-specific plugins (supplementary and orthogonal to LSP)
