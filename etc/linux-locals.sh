@@ -3,6 +3,8 @@
 # A collection of bash scripts for installing some libraries/packages in
 # user namespaces (e.g. ~/.local/), without having root privileges.
 
+set -o pipefail
+
 PREFIX="$HOME/.local/"
 
 COLOR_NONE="\033[0m"
@@ -156,6 +158,7 @@ install_zsh() {
 install_node() {
     # Install node.js LTS at ~/.local
     set -e
+
     local NODE_VERSION
     if [ -z "$NODE_VERSION" ]; then
         if _version_check $(_glibc_version) 2.28; then
@@ -167,7 +170,8 @@ install_node() {
         fi
     fi
 
-    curl -sL "https://install-node.vercel.app/$NODE_VERSION" \
+    set -x
+    curl -L "https://install-node.vercel.app/$NODE_VERSION" \
         | bash -s -- --prefix=$HOME/.local --verbose --yes
 
     echo -e "\n$(which node) : $(node --version)"
