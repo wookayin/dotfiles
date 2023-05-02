@@ -14,6 +14,18 @@ COLOR_WHITE="\033[1;37m"
 
 #---------------------------------------------------------------------------------------------------
 
+_glibc_version() {
+    # https://stackoverflow.com/questions/71070969/how-to-extract-and-compare-the-libc-versions-at-runtime
+    local libcfile="$(grep -azm1 '/libc.so.6$' /etc/ld.so.cache | tr -d '\0')"
+    grep -aoP 'GNU C Library [^\n]* release version \K[0-9]*.[0-9]*' "$libcfile"
+}
+
+_version_check() {
+    # _version_check {curver} {targetver}: exit code is 0 if curver >= targetver
+    local curver="$1"; local targetver="$2";
+    [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
+}
+
 _template_github_latest() {
   set -e
   local name="$1"
@@ -144,7 +156,19 @@ install_zsh() {
 install_node() {
     # Install node.js LTS at ~/.local
     set -e
-    curl -sL install-node.now.sh | bash -s -- --prefix=$HOME/.local --verbose --yes
+    local NODE_VERSION
+    if [ -z "$NODE_VERSION" ]; then
+        if _version_check $(_glibc_version) 2.28; then
+            # Use LTS version if GLIBC >= 2.28 (Ubuntu 20.04+)
+            NODE_VERSION="lts"
+        else
+            # Older distro (Ubuntu 18.04) have GLIBC < 2.28
+            NODE_VERSION="v16"
+        fi
+    fi
+
+    curl -sL "https://install-node.vercel.app/$NODE_VERSION" \
+        | bash -s -- --prefix=$HOME/.local --verbose --yes
 
     echo -e "\n$(which node) : $(node --version)"
     node --version
@@ -281,6 +305,14 @@ install_neovim() {
     # [NEOVIM_VERSION=...] dotfiles install neovim
     set -e
 
+    if [[ -z "$NEOVIM_VERSION" ]]; then
+        # Use neovim 0.7.x if GLIBC version is too old (Ubuntu 18.04)
+        if ! _version_check $(_glibc_version) 2.28; then
+            NEOVIM_VERSION="v0.7.2"
+        fi
+    fi
+
+    # Otherwise, use the latest stable version.
     local NEOVIM_LATEST_VERSION=$(\
         curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
         python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
