@@ -47,6 +47,19 @@ if vim.fn.has('nvim-0.7') == 0 then
     echohl WarningMsg | echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.7.0+ or higher.' | echohl None
   ]]
   return
+
+elseif vim.fn.has('nvim-0.8.0') == 0 then
+  vim.defer_fn(function()
+    local like_false = function(x) return x == nil or x == "0" or x == "" end
+    if not like_false(vim.env.DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING) then return end
+    local msg = 'Please upgrade to latest neovim (0.9.0+).\n'
+    msg = msg .. 'Support for neovim < 0.8 will be dropped soon.'
+    msg = msg .. '\n\n' .. string.format('Try: $ %s install neovim', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
+    msg = msg .. '\n\n' .. ('If you cannot upgrade yet but want to suppress this warning,\n'
+                            .. 'use `export DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING=1`.')
+    ---@diagnostic disable-next-line: param-type-mismatch
+    vim.notify(msg, 'error', { title = 'Deprecation Warning', timeout = 5000 })
+  end, 100)
 end
 
 -- require a lua module, but force reload it (RC files can be re-sourced)
