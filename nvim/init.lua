@@ -32,6 +32,7 @@ end
 -- Many third-party plugins need migration to the new treesitter API
 if vim.fn.has('nvim-0.9') > 0 then
   vim.treesitter.query.get_node_text = vim.treesitter.get_node_text
+  vim.treesitter.query.get_query = vim.treesitter.query.get
 end
 
 
