@@ -6,9 +6,9 @@ local UpdateRemotePlugins = require('utils.plug_utils').UpdateRemotePlugins
 
 return {
   -- Basic UI Components
-  Plug 'MunifTanjim/nui.nvim';
-  Plug 'stevearc/dressing.nvim';
-  Plug 'skywind3000/vim-quickui';
+  Plug 'MunifTanjim/nui.nvim' { lazy = true };  -- see config/ui.lua
+  Plug 'stevearc/dressing.nvim' { lazy = true };  -- see config/ui.lua
+  Plug 'skywind3000/vim-quickui' { event = 'UIEnter' };
 
   -- FZF & Grep
   Plug 'junegunn/fzf' {
@@ -16,25 +16,31 @@ return {
     dir = '~/.fzf',
     build = './install --all --no-update-rc',
   };
-  Plug 'junegunn/fzf.vim';
-  Plug 'wookayin/fzf-ripgrep.vim';
+  Plug 'junegunn/fzf.vim' {
+    event = 'CmdlineEnter',
+  };
+  Plug 'wookayin/fzf-ripgrep.vim' {
+    cmd = { 'RgFzf', 'Rg', 'RgDefFzf' },
+  };
 
-  -- Telescope
-  Plug 'nvim-telescope/telescope.nvim';
+  -- Telescope (config/telescope.lua)
+  Plug 'nvim-telescope/telescope.nvim' { lazy = true };
 
   -- Terminal
-  Plug 'voldikss/vim-floaterm';
+  Plug 'voldikss/vim-floaterm' { event = 'CmdlineEnter' };
 
   -- Wildmenu
   Plug 'gelguy/wilder.nvim' {
     dependencies = {'romgrk/fzy-lua-native'},
     build = UpdateRemotePlugins,
+    event = 'CmdlineEnter',
   };
 
   -- Explorer
   Plug 'nvim-neo-tree/neo-tree.nvim' {
     branch = 'main',
     init = PlugConfig['neo-tree.nvim'],
+    event = 'UIEnter',
   };
 
   Plug 'scrooloose/nerdtree' {
@@ -48,15 +54,21 @@ return {
 
   -- Navigation
   Plug 'vim-voom/VOoM' { cmd = { 'Voom', 'VoomToggle' } };
-  Plug 'majutsushi/tagbar';
+  Plug 'majutsushi/tagbar' { cmd = { 'Tagbar', 'TagbarOpen', 'TagbarToggle' } };
 
   -- Quickfix
-  Plug 'kevinhwang91/nvim-bqf';
+  Plug 'kevinhwang91/nvim-bqf' { ft = 'qf' };
 
   -- Marks and Signs
-  Plug 'kshenoy/vim-signature';
-  Plug 'vim-scripts/errormarker.vim';
+  Plug 'kshenoy/vim-signature' {
+    event = 'UIEnter',
+    config = function()
+      -- hlgroups are registered on VimEnter, so need to setup after lazy loading
+      pcall(vim.fn['signature#utils#SetupHighlightGroups'])
+    end
+  };
+  Plug 'vim-scripts/errormarker.vim' { event = 'UIEnter' };
 
   -- Etc
-  Plug 'NvChad/nvim-colorizer.lua';
+  Plug 'NvChad/nvim-colorizer.lua' { lazy = true };
 }

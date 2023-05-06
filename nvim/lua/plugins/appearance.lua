@@ -11,8 +11,8 @@ return {
 
   -- tabline
   Plug 'mg979/vim-xtabline' {
-    -- must be initialized lazily after vim UI is ready
-    event = 'VimEnter',
+    -- can be initialized lazily after vim UI is ready
+    event = 'UIEnter',
     init = PlugConfig,
   };
 }

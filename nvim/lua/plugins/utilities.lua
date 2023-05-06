@@ -7,25 +7,24 @@ return {
   -- Folding
   Plug 'kevinhwang91/nvim-ufo' {
     dependencies = {'kevinhwang91/promise-async'},
+    lazy = true,  -- see config/folding.lua
   };
 
   -- Indent Guideline and Scrollbar
-  Plug 'lukas-reineke/indent-blankline.nvim' { init = PlugConfig };
-  Plug 'dstein64/nvim-scrollview';
+  Plug 'lukas-reineke/indent-blankline.nvim' { init = PlugConfig, event = 'UIEnter' };
+  Plug 'dstein64/nvim-scrollview' { event = 'UIEnter' };
 
   -- Tmux support
-  Plug 'christoomey/vim-tmux-navigator' {
-    init = PlugConfig
-  };
-  Plug 'tpope/vim-tbone';
+  Plug 'christoomey/vim-tmux-navigator' { init = PlugConfig, event = 'UIEnter' };
+  Plug 'tpope/vim-tbone' { cmd = 'Tmux' };
 
   -- Misc
-  Plug 'tpope/vim-commentary' { init = PlugConfig };
-  Plug 'szw/vim-maximizer';
-  Plug 'tpope/vim-eunuch';
+  Plug 'tpope/vim-commentary' { init = PlugConfig, event = 'UIEnter' };
+  Plug 'szw/vim-maximizer' { cmd = 'MaximizerToggle' };
+  Plug 'tpope/vim-eunuch' { event = 'CmdlineEnter' };
   Plug 'junegunn/vim-emoji';
-  Plug 'junegunn/goyo.vim';
-  Plug 'junegunn/vader.vim';
+  Plug 'junegunn/goyo.vim' { cmd = 'Goyo' };
+  Plug 'junegunn/vader.vim' { cmd = 'Vader', ft = 'vader' };
   Plug 'cocopon/colorswatch.vim' { cmd = 'ColorSwatchGenerate' };
   Plug 'wookayin/vim-typora' { cmd = 'Typora' };
   Plug 'mrjones2014/dash.nvim' {

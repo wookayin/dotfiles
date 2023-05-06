@@ -1,6 +1,8 @@
 -- neovim plugins managed by lazy.nvim
 -- Plugins specs are located at: ~/.config/nvim/lua/plugins/
 
+local M = {}
+
 local PLUGIN_SPEC = {
   { import = "plugins.basic" },
   { import = "plugins.appearance" },
@@ -89,3 +91,10 @@ vim.api.nvim_create_autocmd("FileType", {
     end, 0)
   end,
 })
+
+-- load: immediately load (lazy) plugins synchronously
+function M.load(names)
+  require("lazy.core.loader").load(names, {}, { force = true })
+end
+
+return M
