@@ -147,7 +147,14 @@ function _G.lazy_foldexpr(lnum)
 end
 
 
+-- list_plugs: Get all the registered plugins (including non-loaded ones)
+---@return string[]
+function M.list_plugs()
+  return vim.tbl_keys(require("lazy.core.config").plugins)
+end
+
 -- load: immediately load (lazy) plugins synchronously
+---@return LazyPlugin?
 function M.load(names)
   require("lazy.core.loader").load(names, {}, { force = true })
 end

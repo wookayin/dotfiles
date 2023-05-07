@@ -45,6 +45,15 @@ endif
 " Functions to be executed for each plugin BEFORE the plugin loads.
 let g:PlugConfig = {}
 
+" private helper functions
+function! s:list_plugs() abort
+  if has('nvim-0.8')   " lazy.nvim
+    return luaeval('require "config/plugins".list_plugs()')
+  else
+    return keys(g:plugs)
+  end
+endfunction
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""
 " 1. General Settings {{{
@@ -2240,11 +2249,11 @@ function! s:rgfzf_plug(qargs, bang) abort
   let l:args[0] = Trim(l:args[0])
   if l:args[0] == '*'   " search all packages.
     let l:args[0] = ''
-  elseif index(keys(g:plugs), l:args[0]) == -1
+  elseif index(s:list_plugs(), l:args[0]) == -1
     echom printf("Unknown plug: %s", l:args[0]) | return
   endif
   call fzf#vim#ripgrep#rg_fzf(l:query, {'fullscreen': a:bang,
-        \ 'path': g:plug_home . "/" . l:args[0],
+        \ 'path': $VIMPLUG . "/" . l:args[0],
         \ 'rg_additional_arg': '-u'} )
 endfunction
 
@@ -2259,7 +2268,7 @@ function! CompletePlugs(...)
   if !empty(l:prefix)
     let filter_expr .= printf(' && v:val =~# "^%s"', escape(l:prefix, "'\""))
   endif
-  return filter(sort(keys(g:plugs)), filter_expr)
+  return filter(sort(s:list_plugs()), filter_expr)
 endfunction
 
 
@@ -2342,7 +2351,8 @@ command! -nargs=* Z call fzf#run
       \}))
 
 " :Plugs -- list all vim plugins and open the directory of the selected
-command! -nargs=* Plugs call fzf#run
+if !empty(g:plugs)
+  command! -nargs=* Plugs call fzf#run
       \(fzf#wrap({
       \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home . "/" . s:yellow(v:val)'),
       \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
@@ -2350,6 +2360,17 @@ command! -nargs=* Plugs call fzf#run
       \             ] + s:fzf_preview_directory_if_applicable(),
       \ 'sink':    'NERDTree'
       \}))
+elseif has('nvim-0.8')
+  autocmd User VeryLazy command! -nargs=* Plugs call fzf#run
+      \(fzf#wrap({
+      \ 'source':  map(sort(luaeval('vim.tbl_keys(require("lazy.core.config").plugins)')),
+      \                '$VIMPLUG . "/" . s:yellow(v:val)'),
+      \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
+      \             '--query', <q-args>, '--prompt', 'Plugs> ',
+      \             ] + s:fzf_preview_directory_if_applicable(),
+      \ 'sink':    'NERDTree'
+      \}))
+endif
 
 " :SitePackages -- quickly jump to the site-packages directory for the current python
 command! -nargs=* SitePackages call fzf#run
