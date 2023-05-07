@@ -48,6 +48,10 @@ require("lazy").setup(PLUGIN_SPEC, {
   ui = {
     wrap = true,
     border = 'double',
+    icons = {  -- Nerd-font v3 (https://www.nerdfonts.com/cheat-sheet)
+      func = "󰊕",
+      list = { "●", "➜", "", "-" },
+    }
   },
   performance = {
     rtp = {
@@ -75,6 +79,29 @@ require("lazy.manage").clean = function(opts)
   return require("lazy.manage").run({ pipeline = {} })
 end
 
+-- Additional lazy-load events: 'func' (until it's officially supported)
+local Lazy_FuncUndefined = vim.api.nvim_create_augroup('Lazy_FuncUndefined', { clear = true })
+vim.tbl_map(function(p)   ---@type LazyPluginSpec
+  if p.lazy and p.func then
+    vim.api.nvim_create_autocmd('FuncUndefined', {
+      pattern = p.func,
+      group = Lazy_FuncUndefined,
+      once = true,
+      callback = function(ev)
+        -- the actual function that was required and triggered the plugin.
+        local reason = { func = ev.match }
+        require("lazy.core.loader").load(p.name, reason, { force = true })
+      end,
+      desc = string.format("Lazy plugin: %s, func: %s", p.name, (function()
+        if type(p.func) == 'string' then return p.func
+        else return "{ " .. table.concat(p.func, ", ") .. " }"
+        end
+      end)()),
+    })
+  end
+end, require("lazy").plugins())
+
+
 -- remap keymaps and configure lazy window
 require("lazy.view.config").keys.profile_filter = "<C-g>"
 vim.api.nvim_create_autocmd("FileType", {
@@ -87,6 +114,7 @@ vim.api.nvim_create_autocmd("FileType", {
       -- Highlights
       vim.cmd [[
         hi! LazyProp guibg=NONE
+        hi def link LazyReasonFunc  Function
       ]]
     end, 0)
   end,

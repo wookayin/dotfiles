@@ -22,7 +22,7 @@ return {
   Plug 'tpope/vim-commentary' { init = PlugConfig, event = 'UIEnter' };
   Plug 'szw/vim-maximizer' { cmd = 'MaximizerToggle' };
   Plug 'tpope/vim-eunuch' { event = 'CmdlineEnter' };
-  Plug 'junegunn/vim-emoji';
+  Plug 'junegunn/vim-emoji' { lazy = true, func = 'emoji#*' };
   Plug 'junegunn/goyo.vim' { cmd = 'Goyo' };
   Plug 'junegunn/vader.vim' { cmd = 'Vader', ft = 'vader' };
   Plug 'cocopon/colorswatch.vim' { cmd = 'ColorSwatchGenerate' };

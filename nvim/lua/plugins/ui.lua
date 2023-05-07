@@ -15,13 +15,17 @@ return {
     name = 'fzf',
     dir = '~/.fzf',
     build = './install --all --no-update-rc',
+    cmd = 'FZF', func = 'fzf#*',
   };
   Plug 'junegunn/fzf.vim' {
     event = 'CmdlineEnter',
+    func = 'fzf#vim#*', lazy = true,
   };
   Plug 'wookayin/fzf-ripgrep.vim' {
     cmd = { 'RgFzf', 'Rg', 'RgDefFzf' },
+    func = 'fzf#vim#ripgrep#*', lazy = true,
   };
+  Plug 'rking/ag.vim' { func = 'ag#*', lazy = true };
 
   -- Telescope (config/telescope.lua)
   Plug 'nvim-telescope/telescope.nvim' { lazy = true };
@@ -30,10 +34,11 @@ return {
   Plug 'voldikss/vim-floaterm' { event = 'CmdlineEnter' };
 
   -- Wildmenu
-  Plug 'gelguy/wilder.nvim' {
+  Plug 'wookayin/wilder.nvim' {
     dependencies = {'romgrk/fzy-lua-native'},
     build = UpdateRemotePlugins,
     event = 'CmdlineEnter',
+    func = 'wilder#*',
   };
 
   -- Explorer

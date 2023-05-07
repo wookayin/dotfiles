@@ -14,7 +14,7 @@ return {
     keys = { '<Plug>(EasyAlign)', { '<Plug>(EasyAlign)', mode = 'v' } },
   };
   Plug 'tpope/vim-surround' { event = 'UIEnter' };
-  Plug 'tpope/vim-repeat';
+  Plug 'tpope/vim-repeat' { lazy = true, func = 'repeat#*' };
   Plug 'haya14busa/vim-asterisk' { init = PlugConfig, event = 'UIEnter' };
   Plug 'haya14busa/incsearch-fuzzy.vim' {
     event = 'UIEnter',

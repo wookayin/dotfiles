@@ -6,6 +6,7 @@ return {
   Plug 'tpope/vim-fugitive' {
     ft = 'fugitiveblame',
     event = {'CmdlineEnter'},   -- so many :G.. commands
+    func = {'Fugitive*', 'fugitive#*'},
   };
   Plug 'junegunn/gv.vim' {
     cmd = 'GV',

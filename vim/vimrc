@@ -2023,10 +2023,6 @@ endfunction
 " }}}
 
 function! s:get_git_dir(path)
-  if has('nvim-0.8')  " Ensure fugitive is (lazy) loaded, see plugins/git.lua. TODO: Remove it
-    lua require("config/plugins").load("vim-fugitive")
-  endif
-
   let curr = fnamemodify(expand(a:path), ':p')
   if empty(curr)   " empty buffer, etc.: fall back to current dir
     let curr = getcwd()
@@ -2660,10 +2656,6 @@ EOF
 endfunction
 
 function! s:check_wilder_rplugins() abort
-  if has('nvim-0.8')   " TODO: Remove this lazy-loading hack.
-    lua require("config/plugins").load("wilder.nvim")
-  endif
-
   " Note that rplugin functions are defined only after its first invocation,
   " so we first force loading it even before wilder initialization is complete.
   doautocmd FuncUndefined _wilder_init
