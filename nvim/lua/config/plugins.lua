@@ -106,7 +106,8 @@ end, require("lazy").plugins())
 require("lazy.view.config").keys.profile_filter = "<C-g>"
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "lazy",
-  callback = function()
+  callback = function(args)
+    local buf = args.buf
     vim.defer_fn(function()
       -- Ctrl+C: to quit the window
       vim.keymap.set("n", "<C-c>", "q", { buffer = true, remap = true })
@@ -116,9 +117,35 @@ vim.api.nvim_create_autocmd("FileType", {
         hi! LazyProp guibg=NONE
         hi def link LazyReasonFunc  Function
       ]]
+      -- folding support
+      vim.cmd [[ setlocal sw=2 foldmethod=expr foldexpr=v:lua.lazy_foldexpr() ]]
+      pcall(function()
+        -- UFO somehow doesn't get attached automatically, so manually enable folding
+        require("ufo").attach(buf)
+      end)
     end, 0)
   end,
 })
+
+-- foldexpr for Lazy
+function _G.lazy_foldexpr(lnum)
+  lnum = lnum or vim.v.lnum
+  local l = vim.fn.getline(lnum)
+  if l:match("^%s*$") then
+    return 0
+  end
+  local indent_next = vim.fn.indent(lnum + 1)
+  local indent_this = vim.fn.indent(lnum)
+  local sw = 2  -- tab size
+  if indent_next < indent_this then
+    return '<' .. (indent_this / sw - 1)
+  elseif indent_next > indent_this then
+    return '>' .. (indent_next / sw - 1)
+  else
+    return indent_this / sw - 1
+  end
+end
+
 
 -- load: immediately load (lazy) plugins synchronously
 function M.load(names)
