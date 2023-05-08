@@ -35,6 +35,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Setup and load plugins. All plugins will be source HERE!
 -- https://github.com/folke/lazy.nvim#%EF%B8%8F-configuration
+-- @see $VIMPLUG/lazy.nvim/lua/lazy/core/config.lua
 require("lazy").setup(PLUGIN_SPEC, {
   root = vim.env.VIMPLUG,
   defaults = {
@@ -109,14 +110,23 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local buf = args.buf
     vim.defer_fn(function()
-      -- Ctrl+C: to quit the window
-      vim.keymap.set("n", "<C-c>", "q", { buffer = true, remap = true })
+      -- Ctrl+C: to quit the window (only if it's floating)
+      vim.keymap.set("n", "<C-c>", function()
+        local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
+        return is_float and "q" or ""
+      end, { buffer = true, remap = true, expr = true })
 
       -- Highlights
       vim.cmd [[
         hi! LazyProp guibg=NONE
         hi def link LazyReasonFunc  Function
       ]]
+
+      -- make goto-file (gf, ]f) work, but open in a new tab
+      vim.opt_local.path:append(vim.env.VIMPLUG)
+      vim.keymap.set('n', 'gf', '<cmd>wincmd gf<CR>', { remap = false, buffer = true })
+      vim.keymap.set('n', ']f', 'gf', { remap = true, buffer = true })
+
       -- folding support
       vim.cmd [[ setlocal sw=2 foldmethod=expr foldexpr=v:lua.lazy_foldexpr() ]]
       pcall(function()
