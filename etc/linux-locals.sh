@@ -309,13 +309,6 @@ install_neovim() {
     # [NEOVIM_VERSION=...] dotfiles install neovim
     set -e
 
-    if [[ -z "$NEOVIM_VERSION" ]]; then
-        # Use neovim 0.7.x if GLIBC version is too old (Ubuntu 18.04)
-        if ! _version_check $(_glibc_version) 2.28; then
-            NEOVIM_VERSION="v0.7.2"
-        fi
-    fi
-
     # Otherwise, use the latest stable version.
     local NEOVIM_LATEST_VERSION=$(\
         curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
@@ -346,22 +339,28 @@ install_neovim() {
     sleep 1;  # allow users to read above comments
 
     local TMP_NVIM_DIR="/tmp/$USER/neovim"; mkdir -p $TMP_NVIM_DIR
-    local NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim-linux64.tar.gz"
+    local NVIM_DOWNLOAD_URL="https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim.appimage"
 
+    set -x
     cd $TMP_NVIM_DIR
     wget --backups=1 $NVIM_DOWNLOAD_URL      # always overwrite, having only one backup
-    rm -rf "$TMP_NVIM_DIR/nvim-linux64"
-    tar $VERBOSE -xzf "nvim-linux64.tar.gz"
-    ls --color -d "$TMP_NVIM_DIR/nvim-linux64"
 
-    # copy and merge into ~/.local/bin
-    echo -e "${COLOR_GREEN}[*] Copying to $PREFIX ... ${COLOR_NONE}"
-    mkdir -p "$PREFIX/bin/"
-    cp $VERBOSE "nvim-linux64/bin/nvim" $PREFIX/bin/nvim \
+    chmod +x nvim.appimage
+    rm -rf "$TMP_NVIM_DIR/squashfs-root"
+    ./nvim.appimage --appimage-extract >/dev/null   # into ./squashfs-root
+
+    # Install into ~/.local/neovim/ and put a symlink into ~/.local/bin
+    local NEOVIM_DEST="$HOME/.local/neovim"
+    echo -e "${COLOR_GREEN}[*] Copying neovim files to $NEOVIM_DEST ... ${COLOR_NONE}"
+    mkdir -p $NEOVIM_DEST/bin/
+    cp -f squashfs-root/usr/bin/nvim "$NEOVIM_DEST/bin/nvim" \
         || (echo -e "${COLOR_RED}Copy failed, please kill all nvim instances. (killall nvim)${COLOR_NONE}"; exit 1)
-    cp -RT $VERBOSE "nvim-linux64/" "$PREFIX"
+    rm -rf "$NEOVIM_DEST"
+    cp -r squashfs-root/usr "$NEOVIM_DEST"
+    rm -f "$PREFIX/bin/nvim"
+    ln -sf "$NEOVIM_DEST/bin/nvim" "$PREFIX/bin/nvim"
 
-    $PREFIX/bin/nvim --version
+    $PREFIX/bin/nvim --version | head -n3
 }
 
 install_exa() {
