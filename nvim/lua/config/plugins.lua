@@ -156,6 +156,39 @@ function _G.lazy_foldexpr(lnum)
   end
 end
 
+-- :Plugs -- quickly locate and find plugin defs
+-- TODO: Use lazy API to retrieve full plugin spec instead of grep.
+vim.api.nvim_create_user_command('Plugs', function(opts)
+  local entry_maker = require('telescope.make_entry').gen_from_vimgrep({ })
+  require('telescope.builtin').grep_string({
+    search_dirs = { '~/.config/nvim/lua/plugins' },
+    only_sort_text = true,
+    use_regex = true,
+    search = 'Plug \'.+\'',
+    default_text = opts.args,
+    entry_maker = function(line)
+      local e = entry_maker(line)
+      e.ordinal = e.text
+      e.display = function()
+        local plug_id = e.text:match([['(.-)']])  -- extract string within '' (shorturl)
+        local display = plug_id .. ('   ') .. string.format('[%s]', e.filename:match(".+/(.*)$") )
+        return display, {
+          { {plug_id:find('/'), #plug_id}, 'Identifier' },
+          { {#plug_id + 1, #display}, 'Comment' },
+        }
+      end
+      e.col = e.col + 6  -- a hack to make the jump location (column) located in the shorturl
+      return e
+    end,
+    layout_config = {
+      preview_cutoff = 80,
+      preview_width = 0.5,
+    },
+  })
+end, { nargs = '?', desc = 'Plugs: find lazy plugin declaration.',
+complete = function()
+  local names = M.list_plugs(); table.sort(names); return names
+end})
 
 -- list_plugs: Get all the registered plugins (including non-loaded ones)
 ---@return string[]

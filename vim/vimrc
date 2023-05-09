@@ -2347,16 +2347,6 @@ if !empty(g:plugs)
       \             ] + s:fzf_preview_directory_if_applicable(),
       \ 'sink':    'NERDTree'
       \}))
-elseif has('nvim-0.8')
-  autocmd User VeryLazy command! -nargs=* Plugs call fzf#run
-      \(fzf#wrap({
-      \ 'source':  map(sort(luaeval('vim.tbl_keys(require("lazy.core.config").plugins)')),
-      \                '$VIMPLUG . "/" . s:yellow(v:val)'),
-      \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
-      \             '--query', <q-args>, '--prompt', 'Plugs> ',
-      \             ] + s:fzf_preview_directory_if_applicable(),
-      \ 'sink':    'NERDTree'
-      \}))
 endif
 
 " :SitePackages -- quickly jump to the site-packages directory for the current python
