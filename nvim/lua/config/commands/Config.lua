@@ -40,7 +40,7 @@ end
 function M.action(arg)
   map = map or M.build_directory_map()
   local aliases = {
-    ['plug'] = 'plugins.vim',
+    ['plug'] = 'plugins.lua',
     ['lazy'] = 'plugins.lua',
   }
   local file = map[arg] or map[arg .. '.lua'] or map[arg .. '.vim'] or map[aliases[arg]]

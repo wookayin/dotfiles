@@ -14,18 +14,6 @@ else  " No timer support, this will run during VimEnter (before UI draws)
   autocmd! VimEnter * call execute('doautocmd User LazyInit')
 endif
 
-" Check neovim version.
-if has('nvim') && !has('nvim-0.8.0')
-  let s:warning_msg = 'Please upgrade to latest neovim (0.9.0+). Support for neovim < 0.8 will be dropped soon. '
-  let s:warning_msg .= printf('(Try: %s install neovim)', has('mac') ? 'brew' : 'dotfiles')
-  if exists('*luaeval')
-    autocmd VimEnter * call timer_start(100, { ->
-          \ luaeval("vim.notify(_A[1], _A[2], _A[3])", [s:warning_msg, 'error', {'title': 'Deprecation Warning'}])
-          \ })
-  else
-    autocmd VimEnter * echohl WarningMsg | echom s:warning_msg | echohl None
-  endif
-endif
 
 """""""""""""""""""""""""""""""""""""""""
 " 0. Load Plugin {{{
@@ -35,7 +23,7 @@ endif
 " and listed up in the separate file 'plugins.vim',
 " so that this vimrc would still work standalone without plugins.
 let g:plugs = {}
-if filereadable(expand('~/.vim/plugins.vim')) && !has('nvim-0.8.0')
+if filereadable(expand('~/.vim/plugins.vim')) && !has('nvim')
   " Note: on neovim, we will switch to lazy.vim (see init.lua).
   " For the time being neovim <= 0.7.x will have limited support with vim-plug
   " during the gradual transition period.
@@ -813,17 +801,13 @@ function! s:open_vimrc_tab()
     exec printf(":resize %d", l:addon_height)
   endif
 
-  exec ":botright vnew " . resolve(expand("~/.vim/plugins.vim"))
+  exec ":botright vnew " . resolve(expand("~/.config/nvim/lua/config/plugins.lua"))
   exec printf(":vertical resize %d", l:plug_width)
-  if filereadable(expand("~/.vim/plugins.local.vim"))
-    exec ":belowright sp " . resolve(expand("~/.vim/plugins.local.vim"))
-    exec printf(":resize %d", l:addon_height)
-  endif
   wincmd t  " focus on the first window (~/.vimrc)
 endfunction
 
 " :Plugins
-command! -nargs=0 Plugins  exec ":rightbelow vs " . resolve(expand("~/.vim/plugins.vim"))
+command! -nargs=0 Plugins  exec ":Config plugins"
 
 " <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
 map <leader>y "*y
@@ -1713,6 +1697,9 @@ let g:airline#extensions#tabline#show_buffers = 1
 
 " suppress mixed-indent warning for javadoc-like comments (/** */)
 let g:airline#extensions#whitespace#mixed_indent_algo = 1
+
+" Disable neomake
+let g:airline#extensions#neomake#enabled = 0
 
 " ---------------------------------------------------------------- }}}
 " nvim-bqf (enhanced quickfix) {{{
