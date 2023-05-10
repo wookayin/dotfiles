@@ -88,6 +88,7 @@ local on_attach = function(client, bufnr)
   -- Disable specific LSP capabilities: see nvim-lspconfig#1891
   if client.name == "lua_ls" and client.server_capabilities then
     client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.semanticTokensProvider = false  -- turn off semantic tokens
   end
 end
 
