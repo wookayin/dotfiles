@@ -74,6 +74,10 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
       they will not be overwritten by default.
       In such cases you should delete these files *manually*.
 
+* Q: I see some weird icons like `⍰` in (neo)vim or in the [statusline](https://github.com/powerline/powerline#vim-statusline).
+  * A: Use [Nerd fonts](https://github.com/ryanoasis/nerd-fonts) v3. If you haven't upgrade to Nerd fonts [**v3** or higher](https://github.com/ryanoasis/nerd-fonts/releases/tag/v3.0.0), upgrade to v3 due to the new (breaking) Material Design Icons codepoints.
+  * Mac users can do: `brew install font-*-nerd-font`. If you want to upgrade from v2, try `brew reinstall --cask $(brew list | grep nerd-font)`.
+
 * If neovim + treesitter emits an error like `query: invalid node type`, Run `:TSUpdate` (and wait for installation is done).
   * See [nvim-treesitter#3092](https://github.com/nvim-treesitter/nvim-treesitter/issues/3092) for more details.
 
@@ -95,10 +99,6 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
           [`:echo g:python3_host_prog`](https://github.com/wookayin/dotfiles/blob/master/nvim/init.vim).
       * If you are not sure, manually running `python3 -m pip install --user pynvim` might help.
 
-* [Powerline symbols](https://github.com/powerline/powerline#screenshots) are not displayed properly? Do you see some weird letters like `⍰` due to missing fonts?
-  Install [Powerline fonts](https://github.com/powerline/fonts) or
-  [Nerd fonts](https://github.com/ryanoasis/nerd-fonts) and configure your terminal emulator program to use those fonts.
-    * Mac users can do: `brew search nerd-font`
 * Does vim color look weird (e.g. only black-and-white)?
   * Check whether your terminal emulator supports [24-bit color](https://github.com/wookayin/dotfiles/pull/9). Use iTerm2 or kitty rather than built-in Terminal.
   * Latest Mosh (1.4.0+) support 24-bit colors yet, so try upgrading mosh if you are using it.

@@ -51,7 +51,7 @@ end
 -- Part of code brought from #38, credit goes to @ranjithshegde
 M.virtual_text_handler = function(virt_text, lnum, end_lnum, width, truncate, ctx)
 
-  local counts = ("  ( %d lines)"):format(end_lnum - lnum + 1)
+  local counts = ("  (󰁂 %d lines)"):format(end_lnum - lnum + 1)
   local ellipsis = "⋯"
   local padding = ""
 
