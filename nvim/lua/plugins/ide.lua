@@ -28,6 +28,7 @@ return {
   Plug 'folke/trouble.nvim' { lazy = true };
   Plug 'kyazdani42/nvim-web-devicons' { lazy = true };
   Plug 'onsails/lspkind-nvim' { lazy = true };
+  Plug 'SmiteshP/nvim-navic' { lazy = true };
 
   -- Completion
   Plug 'hrsh7th/nvim-cmp' {

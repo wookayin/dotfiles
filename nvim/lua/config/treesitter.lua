@@ -43,6 +43,7 @@ ts_configs.setup {
   highlight = {
     -- TreeSitter's highlight/syntax support is yet experimental and has some issues.
     -- It overrides legacy filetype-based vim syntax, and colorscheme needs to be treesitter-aware.
+    -- Note: for some ftplugins (e.g. for lua and vim), treesitter highlight might be manually started
     enable = false,   -- TODO: Enable again when it becomes mature and usable enough.
 
     -- List of language that will be disabled.
@@ -150,14 +151,4 @@ augroup TSPlaygroundConfig
   autocmd!
   autocmd FileType tsplayground  setlocal ts=2 sts=2 sw=2
 augroup END
-]]
-
-
--- nvim-gps
--- https://github.com/SmiteshP/nvim-gps#%EF%B8%8F-configuration
-if pcall(require, 'nvim-gps') then
-  require("nvim-gps").setup {
-    -- Use the same separator as lualine.nvim
-    separator = '  ',
-  }
-end
+]];

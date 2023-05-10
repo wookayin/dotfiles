@@ -84,11 +84,13 @@ local custom_components = {
   lsp_status = function()
     return LspStatus()
   end,
-  -- GPS (https://github.com/SmiteshP/nvim-gps)
-  treesitter_context = function()
-    local ok, gps = pcall(require, "nvim-gps")
-    if ok and gps.is_available() then
-      return gps.get_location()
+  -- context (https://github.com/SmiteshP/nvim-navic)
+  lsp_context = function()
+    if pcall(require, "nvim-navic") then
+      local navic = require("nvim-navic")
+      if navic.is_available() then
+        return navic.get_location() or ''
+      end
     end
     return ''
   end
@@ -120,7 +122,7 @@ function M.setup_lualine()
         custom_components.asyncrun_status,
         custom_components.neomake_status,
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
-        { custom_components.treesitter_context },
+        { custom_components.lsp_context },
       },
       lualine_x = {
         --{ custom_components.lsp_status, fmt = truncate(120, 20, 60, false) },
@@ -162,7 +164,7 @@ function M.setup_winbar()
         { 'vim.fn.winnr()', color = { fg = 'white', bg = '#37b24d' } },
         { 'filename', path = 1, color = { fg = '#c92a2a', bg = '#eeeeee', gui = 'bold' } },
         'diagnostics',
-        { custom_components.treesitter_context, fmt = truncate(80, 20, 60, true) },
+        { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
         function() return ' ' end,
       },
     },
@@ -171,7 +173,7 @@ function M.setup_winbar()
         { 'vim.fn.winnr()', color = { fg = '#eeeeee' } },
         { 'filename', path = 1 },
         'diagnostics',
-        { custom_components.treesitter_context, fmt = truncate(80, 20, 60, true) },
+        { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
         function() return ' ' end,
       },
     },

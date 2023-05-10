@@ -46,6 +46,11 @@ local on_attach = function(client, bufnr)
   -- Activate LSP status on attach (see a configuration below).
   require('lsp-status').on_attach(client)
 
+  -- Activate nvim-navic
+  if client.server_capabilities.documentSymbolProvider then
+    require('nvim-navic').attach(client, bufnr)
+  end
+
   -- Keybindings
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -798,6 +803,16 @@ local function define_lsp_commands()
 end
 define_lsp_commands()
 
+-----------------------------------
+--- navic (LSP context)
+-----------------------------------
+
+if pcall(require, 'nvim-navic') then
+  require('nvim-navic').setup {
+    -- Use the same separator as lualine.nvim
+    separator = '  ',
+  }
+end
 
 -----------------------------------
 --- Fidget.nvim (LSP status widget)

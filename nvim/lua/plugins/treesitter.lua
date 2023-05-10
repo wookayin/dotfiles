@@ -21,6 +21,4 @@ return {
     cmd = { 'TSPlaygroundToggle', 'TSHighlightCapturesUnderCursor' },
     commit = '4044b53',
   };
-
-  Plug 'SmiteshP/nvim-gps' { lazy = true };  -- see config/treesitter.lua
 }
