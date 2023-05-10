@@ -30,7 +30,7 @@ return {
   };
 
   -- Undo
-  Plug 'sjl/gundo.vim' { cond = false };  -- TODO: Use mundo
+  Plug 'sjl/gundo.vim' { enabled = false };  -- TODO: Use mundo
   Plug 'machakann/vim-highlightedundo' {
     cond = vim.fn.executable('diff') > 0,
     init = PlugConfig,

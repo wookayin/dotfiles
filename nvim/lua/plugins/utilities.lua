@@ -28,7 +28,7 @@ return {
   Plug 'cocopon/colorswatch.vim' { cmd = 'ColorSwatchGenerate' };
   Plug 'wookayin/vim-typora' { cmd = 'Typora' };
   Plug 'mrjones2014/dash.nvim' {
-    cond = vim.fn.isdirectory('/Applications/Dash.app'),
+    enabled = vim.fn.isdirectory('/Applications/Dash.app') > 0,
     build = 'make install',
     cmd = { 'Dash', 'DashWord' },
   };
