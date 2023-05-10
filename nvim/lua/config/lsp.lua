@@ -90,6 +90,10 @@ local on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = false
     client.server_capabilities.semanticTokensProvider = false  -- turn off semantic tokens
   end
+  if client.name == "ruff_lsp" and client.server_capabilities then
+    -- Disable hover in favor of Pyright
+    client.server_capabilities.hoverProvider = false
+  end
 end
 
 -- Add global keymappings for LSP actions
@@ -114,6 +118,7 @@ end
 local auto_lsp_servers = {
   -- @see $VIMPLUG/mason-lspconfig.nvim/lua/mason-lspconfig/mappings/filetype.lua
   ['pyright'] = true,
+  ['ruff_lsp'] = false,  -- experimental
   ['vimls'] = true,
   ['lua_ls'] = true,
   ['bashls'] = true,
@@ -202,6 +207,22 @@ lsp_setup_opts['pyright'] = {
       }
     },
   },
+}
+
+lsp_setup_opts['ruff_lsp'] = {
+  init_options = {
+    -- https://github.com/charliermarsh/ruff-lsp#settings
+    settings = {
+      fixAll = true,
+      organizeImports = false,  -- let isort take care of organizeImports
+      -- extra CLI arguments
+      -- https://beta.ruff.rs/docs/configuration/#command-line-interface
+      -- https://beta.ruff.rs/docs/rules/
+      -- E402: Module level import not at top of file
+      -- E501: Line too long
+      args = { "--ignore", "E402,E501" },
+    },
+  }
 }
 
 -- Configure lua_ls to support neovim Lua runtime APIs
