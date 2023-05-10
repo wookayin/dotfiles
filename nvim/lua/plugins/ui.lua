@@ -50,7 +50,8 @@ return {
       if vim.tbl_contains(vim.tbl_map(vim.fn.isdirectory, vim.fn.argv()), 1) then return nil
       else return 'UIEnter' end
     end)(),
-    config = function() require 'config/neotree' end
+    init = function() vim.g.neo_tree_remove_legacy_commands = 1; end,
+    config = require 'config.neotree'.setup_neotree,
   };
 
   Plug 'scrooloose/nerdtree' {
