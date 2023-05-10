@@ -238,6 +238,12 @@ endif
 " Retain more history (:, search strings, etc.)
 set history=10000
 set undolevels=1000
+if has('nvim')
+  " ': Keep 10000 oldfiles (:h 'shada')
+  " <: Maximum number of lines saved for each register.
+  " default: set shada=!,'100,<50,s10,h
+  set shada=!,'10000,<100,s10,h
+endif
 
 " miscellanious
 set visualbell
