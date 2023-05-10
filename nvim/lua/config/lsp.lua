@@ -121,6 +121,8 @@ local auto_lsp_servers = {
   ['cssls'] = true,
   ['clangd'] = true,
   ['texlab'] = true,
+  ['yamlls'] = true,
+  ['taplo'] = true,
 }
 
 -- Mason: LSP Auto installer
@@ -239,6 +241,15 @@ lsp_setup_opts['lua_ls'] = {
 
 lsp_setup_opts['bashls'] = {
   filetypes = { 'sh', 'zsh' },
+}
+
+lsp_setup_opts['yamlls'] = {
+  settings = {
+    -- https://github.com/redhat-developer/yaml-language-server#language-server-settings
+    yaml = {
+      keyOrdering = false,
+    },
+  }
 }
 
 -- Call lspconfig[...].setup for all installed LSP servers with common opts
