@@ -2304,7 +2304,7 @@ command! -nargs=* Z call fzf#run
       \                   escape(empty(<q-args>) ? '' : <q-args>, '"\')),
       \ 'options': ['-1', '-0', '--no-sort', '--no-multi',
       \             '--prompt', 'Z> '],
-      \ 'sink':    'NERDTree'
+      \ 'sink':    'Neotree'
       \}))
 
 " :Plugs -- list all vim plugins and open the directory of the selected
@@ -2315,7 +2315,7 @@ if !empty(g:plugs)
       \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
       \             '--query', <q-args>, '--prompt', 'Plugs> ',
       \             ] + s:fzf_preview_directory_if_applicable(),
-      \ 'sink':    'NERDTree'
+      \ 'sink':    'Neotree'
       \}))
 endif
 
@@ -2330,7 +2330,7 @@ command! -nargs=* SitePackages call fzf#run
       \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
       \             '--query', <q-args>, '--prompt', 'SitePackages> ',
       \             ] + s:fzf_preview_directory_if_applicable(),
-      \ 'sink':    'NERDTree'
+      \ 'sink':    'Neotree'
       \}))
 
 function! s:fzf_preview_directory_if_applicable()
@@ -2688,6 +2688,10 @@ let NERDTreeRespectWildIgnore = 1   " see wildignore
 
 " see nvim/lua/plugins/ui.lua
 " see nvim/lua/config/neotree.lua
+
+if !exists(':Neotree')  " fallback to NERDTree for vanilla vim
+  command! -complete=dir -nargs=* Neotree  NERDTree
+end
 
 " ---------------------------------------------------------------- }}}
 " nvim-tree.lua {{{
