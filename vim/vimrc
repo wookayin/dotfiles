@@ -241,7 +241,14 @@ set undolevels=1000
 
 " miscellanious
 set visualbell
-set lazyredraw              " no redrawing during macro execution
+
+" lazyredraw: no redrawing during macro execution
+" This should NOT be set during startup if < 0.9.1, see neovim#23534
+if has('nvim')
+  lua vim.defer_fn(function() vim.opt.lazyredraw = true; end, 0)
+else  " vanilla vim
+  set lazyredraw
+endif
 
 " Make gitgutter signs, etc. be more responsive (default is 4000ms)
 set updatetime=200
