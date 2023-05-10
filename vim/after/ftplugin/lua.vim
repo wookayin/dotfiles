@@ -8,3 +8,10 @@ endif
 
 " Make goto-file (gf, ]f) detect lua config files.
 setlocal path+=~/.dotfiles/nvim/lua
+
+if has('nvim-0.8') > 0 && luaeval('pcall(require, "nvim-treesitter")')
+  " Workaround for neovim#20456: vim syntax for lua files are broken in neovim 0.8+
+  " Disable the erroneous $VIMRUNTIME/syntax/lua.vim from loading
+  let b:ts_highlight = 1
+  lua vim.treesitter.start()
+endif
