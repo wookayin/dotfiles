@@ -16,14 +16,13 @@ function M.setup_neotree()
           -- Do not reserve default vim keybindings (I want zt, zz, etc.)
           ["z"] = "none",
           ["H"] = "none",
+          ["l"] = "none",  -- make h,l navigation work
           -- neo-tree's search does not work well, so I don't use it
           ["/"] = "none",
         },
       },
 
-      -- This is a useful feature to turn on,
-      -- but should be disabled for a workaround until #111 is fixed
-      follow_current_file = false,
+      follow_current_file = true,
       use_libuv_file_watcher = false,
 
       -- #320: Do not hide hidden files when the root folder is otherwise empty
@@ -31,7 +30,7 @@ function M.setup_neotree()
         force_visible_in_empty_folder = true,
       },
 
-      -- Append trailing slashes on directories (#112)
+      -- Append trailing slashes on directories (#112, $483)
       components = {
         trailing_slash = function ()
           return {
