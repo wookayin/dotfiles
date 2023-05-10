@@ -58,7 +58,7 @@ command! -nargs=? -complete=help  Help        :lua require"telescope.builtin".he
 -- Telescope extensions
 -- These should be executed *AFTER* other plugins are loaded
 vim.defer_fn(function()
-  if vim.fn['HasPlug']('nvim-notify') == 1 then
+  if pcall(require, "notify") then  -- nvim-notify
     telescope.load_extension("notify")
     vim.cmd [[ command! -nargs=0 Notifications  :Telescope notify ]]
   end
