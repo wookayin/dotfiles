@@ -4,7 +4,7 @@ local Plug = require('utils.plug_utils').Plug
 
 return {
   Plug 'nvim-lua/plenary.nvim' { priority = 10000 };
-  Plug 'rcarriga/nvim-notify' { priority = 10000 };
+  Plug 'rcarriga/nvim-notify' { config = require 'config.ui'.setup_notify };
 
   Plug 'tweekmonster/helpful.vim' {
     cmd = 'HelpfulVersion',

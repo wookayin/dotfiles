@@ -79,7 +79,9 @@ function _require(name)
   return require(name)
 end
 
-_require 'config/ui'
+-- Source some individual rc files on startup.
+-- Note that some config modules are called upon plugin loading.
+-- (see each plugin spec, e.g. 'plugins/ui' and 'config/ui')
 _require 'config/commands'
 _require 'config/quickfix'
 

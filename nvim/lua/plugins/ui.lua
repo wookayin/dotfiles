@@ -7,7 +7,7 @@ local UpdateRemotePlugins = require('utils.plug_utils').UpdateRemotePlugins
 return {
   -- Basic UI Components
   Plug 'MunifTanjim/nui.nvim' { lazy = true };  -- see config/ui.lua
-  Plug 'stevearc/dressing.nvim' { lazy = true };  -- see config/ui.lua
+  Plug 'stevearc/dressing.nvim' { event = 'UIEnter', config = require 'config.ui'.setup_dressing };
   Plug 'skywind3000/vim-quickui' { event = 'UIEnter' };
 
   -- FZF & Grep
@@ -44,8 +44,13 @@ return {
   -- Explorer
   Plug 'nvim-neo-tree/neo-tree.nvim' {
     branch = 'main',
-    init = PlugConfig['neo-tree.nvim'],
-    event = 'UIEnter',
+    event = (function()
+      -- If any of the startup argument is a directory,
+      -- we don't lazy-load neotree so it can hijack netrw.
+      if vim.tbl_contains(vim.tbl_map(vim.fn.isdirectory, vim.fn.argv()), 1) then return nil
+      else return 'UIEnter' end
+    end)(),
+    config = function() require 'config/neotree' end
   };
 
   Plug 'scrooloose/nerdtree' {

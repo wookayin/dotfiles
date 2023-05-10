@@ -1558,45 +1558,6 @@ let g:EditorConfig_core_mode = 'vim_core'
 
 
 " ---------------------------------------------------------------- }}}
-" nvim-notify {{{
-
-let g:nvim_notify_winblend = 20
-
-function! s:setup_nvim_notify() abort
-  if !has('nvim') | return | endif
-lua << EOF
-if not pcall(require, 'notify') then return end
-require("notify").setup({
-  stages = "slide",
-  on_open = function(win)
-    vim.api.nvim_win_set_config(win, { focusable = false })
-    vim.api.nvim_win_set_option(win, "winblend", vim.g.nvim_notify_winblend)
-  end,
-  timeout = 3000,
-  background_colour = "#000000",
-})
-
--- Notification APIs (lua function, command)
--- See config/lsp.lua for telescope extensions as well
-vim.notify = require("notify")
-vim.cmd [[
-command! -nargs=0 NotificationsPrint   :lua require('notify')._print_history()
-command! -nargs=0 PrintNotifications   :NotificationsPrint
-]]
-EOF
-endfunction
-
-if has('nvim') && luaeval("pcall(require, 'notify')")
-  lua function VimNotify(msg, log_level, opts) return vim.notify(msg, log_level, opts) end
-  " Eagerly load first so that other plugins can use vim.notify before initialized.
-  " At this point telescope is not loaded, so lua import should be fast enough
-  " Note: to lazyload, autocmd User LazyInit  call s:setup_nvim_notify()
-  call s:setup_nvim_notify()
-else
-  autocmd User LazyInit call s:setup_nvim_notify()
-endif
-
-" ---------------------------------------------------------------- }}}
 " nvim-colorizer {{{
 " https://github.com/NvChad/nvim-colorizer.lua#customization
 
