@@ -18,7 +18,7 @@ return {
 
   Plug 'nvim-treesitter/playground' {
     name = 'nvim-treesitter-playground',
-    cmd = 'TSPlaygroundToggle',
+    cmd = { 'TSPlaygroundToggle', 'TSHighlightCapturesUnderCursor' },
     commit = '4044b53',
   };
 
