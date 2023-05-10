@@ -387,7 +387,7 @@ inoremap <C-Space> <C-x><C-o>
 inoremap <C-@> <C-x><C-o>
 
 " dd: do not yank an empty line into the default register
-if has('nvim')
+if has('nvim-0.7')
 lua << EOF
 vim.keymap.set('n', 'dd', function()
   if vim.api.nvim_get_current_line():match("^%s*$") then
@@ -1556,6 +1556,7 @@ let g:EditorConfig_core_mode = 'vim_core'
 let g:nvim_notify_winblend = 20
 
 function! s:setup_nvim_notify() abort
+  if !has('nvim') | return | endif
 lua << EOF
 if not pcall(require, 'notify') then return end
 require("notify").setup({
@@ -1594,6 +1595,7 @@ endif
 
 autocmd User LazyInit      call s:setup_nvim_colorizer()
 function! s:setup_nvim_colorizer() abort
+  if !has('nvim') | return | endif
 lua << EOF
   if not pcall(require, 'colorizer') then return end
   require('colorizer').setup {
@@ -2556,12 +2558,12 @@ if has('nvim')  " FIXME IsPlugInstalled('wilder.nvim')
     autocmd CmdlineEnter * ++once call s:setup_wilder() | call wilder#main#start()
   augroup END
 endif
-function! s:setup_wilder()
-  cmap <expr> <Tab>   wilder#in_context() ? wilder#next()     : "\<Tab>"
-  cmap <expr> <S-Tab> wilder#in_context() ? wilder#previous() : "\<S-Tab>"
-
+function! s:setup_wilder() abort
   " only / and ? are enabled by default
   call wilder#setup({'modes': ['/', '?', ':']})
+
+  cmap <expr> <Tab>   wilder#in_context() ? wilder#next()     : "\<Tab>"
+  cmap <expr> <S-Tab> wilder#in_context() ? wilder#previous() : "\<S-Tab>"
 
   " pipeline: enable fuzzy command matching, fuzzy file search (GH-101), search history
   let l:pipeline = {}
