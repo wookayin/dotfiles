@@ -5,7 +5,7 @@
 "-------------
 
 if has('nvim')
-  lua vim.notify("plugins.vim is no longer is used in neovim.", error", { title = "vim/plugins.vim" })
+  lua vim.notify("plugins.vim is no longer is used in neovim.", "error", { title = "vim/plugins.vim" })
   finish
 endif
 

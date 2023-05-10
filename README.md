@@ -85,8 +85,9 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
     * Use **latest neovim** (e.g., neovim 0.9.0).
       To install/upgrade neovim on your system, you can run `dotfiles install neovim` (linux) or `brew install neovim` (mac).
     * Try `:checkhealth`.
-    * Try `:PlugUpdate`: some errors from vim plugin could be easily solved by running `:PlugUpdate` (in vim) or `$ dotfiles update`.
-    * We require python3 version not less than 3.4.  **Python 3.6+** is recommended (semshi: 3.5+)
+    * Try `:Lazy update`: some errors from vim plugin could be easily solved by updating plugins to date.
+      You can do `:Lazy update` (in vim) or `$ dotfiles update` (in zsh).
+    * We require python3 version not less than 3.6. See https://endoflife.date/python
     * Make sure that the [`pynvim`](https://pypi.python.org/pypi/pynvim/) pypi package is installed on *local* python 3,
       i.e. the python3 on conda, virtualenv, etc.
       This should have been automatically installed.

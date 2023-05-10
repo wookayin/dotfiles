@@ -2521,7 +2521,7 @@ function! s:init_xtabline() abort
     " Using global statusline, so always prefer tabs mode
     augroup TablineHybridMode
       autocmd!
-      autocmd VimEnter * call timer_start(0, { -> nvim_command('silent XTabMode tabs') })
+      autocmd VimEnter * call timer_start(0, { -> nvim_command('silent! XTabMode tabs') })
     augroup end
   else
     " Use tabs mode if there are 2+ tabs, or buffers mode if there is only one
