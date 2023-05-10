@@ -125,9 +125,12 @@ local auto_lsp_servers = {
   ['tsserver'] = true,
   ['cssls'] = true,
   ['clangd'] = true,
+  ['rust_analyzer'] = true,
   ['texlab'] = true,
   ['yamlls'] = true,
-  ['taplo'] = true,
+  ['taplo'] = true,  -- toml
+  ['jsonls'] = true,
+  ['lemminx'] = true,  -- xml
 }
 
 -- Mason: LSP Auto installer
