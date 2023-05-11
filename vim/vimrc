@@ -2615,7 +2615,7 @@ EOF
         \ 'highlighter': wilder#lua_fzy_highlighter(),
         \ 'highlights': l:wilder_hl,
         \ 'reverse': v:false,
-        \ 'max_height': '33%',
+        \ 'max_height': '50%',
         \ 'max_width': '90%',
         \ 'left': [' ', wilder#popupmenu_devicons()],
         \ 'right': [' ', wilder#popupmenu_scrollbar()],
