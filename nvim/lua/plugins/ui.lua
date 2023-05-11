@@ -20,6 +20,7 @@ return {
   Plug 'junegunn/fzf.vim' {
     event = 'CmdlineEnter',
     func = 'fzf#vim#*', lazy = true,
+    dependencies = { 'fzf' },
   };
   Plug 'wookayin/fzf-ripgrep.vim' {
     cmd = { 'RgFzf', 'Rg', 'RgDefFzf' },
