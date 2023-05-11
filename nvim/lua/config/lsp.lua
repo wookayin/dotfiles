@@ -1,18 +1,9 @@
 -------------
 -- LSP config
 -------------
--- See ~/.dotfiles/vim/plugins.vim for the Plug directives
+-- See 'plugins.ide' for the Plug specs
 
-if not pcall(require, 'lspconfig') then
-  print("Warning: lspconfig not available, skipping configuration.")
-  return
-end
-if not pcall(require, 'mason-lspconfig') then
-  local msg = "mason or mason-lspconfig not installed. Please update plugins and restart."
-  vim.notify_once(msg, vim.log.levels.ERROR, { title = "~/.nvim/lua/config/lsp.lua" })
-  return
-end
-local lspconfig = require('lspconfig')
+local M = {}
 
 -- lsp_signature
 local on_attach_lsp_signature = function(client, bufnr)
@@ -102,7 +93,7 @@ local on_attach = function(client, bufnr)
 end
 
 -- Add global keymappings for LSP actions
-do
+function M._setup_lsp_keymap()
   vim.cmd [[
     " F3, F12: goto definition
     map  <F12>  gd
@@ -138,13 +129,27 @@ local auto_lsp_servers = {
   ['lemminx'] = true,  -- xml
 }
 
--- Mason: LSP Auto installer
--- https://github.com/williamboman/mason.nvim#default-configuration
-require("mason").setup()
-require("mason-lspconfig").setup()
+function M.setup_mason()
+  -- Mason: LSP Auto installer
+  -- https://github.com/williamboman/mason.nvim#default-configuration
+  require("mason").setup()
+  require("mason-lspconfig").setup()
+
+  -- ensure_installed: Install auto_lsp_servers on demand (FileType)
+  if vim.tbl_count(require("mason-registry").get_all_packages()) == 0 then
+    vim.notify("Initializing mason.nvim registry for the first time,\n" ..
+               "please wait a bit until LSP servers start installed.",
+               vim.log.levels.INFO, { title = "config/lsp.lua" })
+    require("mason-registry").refresh(function()
+      M._ensure_mason_installed()
+    end)
+  else
+    M._ensure_mason_installed()
+  end
+end
 
 -- Install auto_lsp_servers on demand (FileType)
-local function ensure_mason_installed()
+M._ensure_mason_installed = function()
   local augroup = vim.api.nvim_create_augroup('mason_autoinstall_ft', { clear = true })
   local lspconfig_to_package = require("mason-lspconfig.mappings.server").lspconfig_to_package
   local filetype_mappings = require("mason-lspconfig.mappings.filetype")
@@ -188,20 +193,8 @@ local function ensure_mason_installed()
   end, vim.api.nvim_list_bufs())
 end
 
-do  -- Install auto_lsp_servers on demand (FileType)
-  if vim.tbl_count(require("mason-registry").get_all_packages()) == 0 then
-    vim.notify("Initializing mason.nvim registry for the first time,\n" ..
-               "please wait a bit until LSP servers start installed.", nil, { title = "config/lsp.lua" })
-    require("mason-registry").refresh(function()
-      ensure_mason_installed()
-    end)
-  else
-    ensure_mason_installed()
-  end
-end
-
 local lsp_setup_opts = {}
-_G.lsp_setup_opts = lsp_setup_opts
+M.lsp_setup_opts = lsp_setup_opts
 
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
@@ -234,7 +227,6 @@ lsp_setup_opts['ruff_lsp'] = {
 }
 
 -- Configure lua_ls to support neovim Lua runtime APIs
-require("neodev").setup { }
 lsp_setup_opts['lua_ls'] = {
   settings = {
     Lua = {
@@ -282,7 +274,6 @@ lsp_setup_opts['yamlls'] = {
 }
 
 -- Call lspconfig[...].setup for all installed LSP servers with common opts
-local installed_mason_packages = require('mason-registry').get_installed_packages()
 local function setup_lsp(lsp_name)
   local cmp_nvim_lsp = require('cmp_nvim_lsp')
   local opts = {
@@ -294,9 +285,14 @@ local function setup_lsp(lsp_name)
       vim.lsp.protocol.make_client_capabilities()
     ),
   }
+
+  if lsp_name == 'lua_ls' then
+    require("neodev").setup { }
+  end
+
   -- Customize the options passed to the server
-  opts = vim.tbl_extend("error", opts, _G.lsp_setup_opts[lsp_name] or {})
-  lspconfig[lsp_name].setup(opts)
+  opts = vim.tbl_extend("error", opts, M.lsp_setup_opts[lsp_name] or {})
+  require('lspconfig')[lsp_name].setup(opts)
 end
 
 -- lsp configs are lazy-loaded or can be triggered after LSP installation,
@@ -311,7 +307,8 @@ local reload_lsp = vim.schedule_wrap(function()
   end
 end)
 
-do  -- setup all known and available LSP servers that are installed
+--- setup all known and available LSP servers that are installed
+function M.setup_lspconfig()
   local lsp_names = require('mason-lspconfig.mappings.server').lspconfig_to_package
   for lsp_name, package_name in pairs(lsp_names) do
     if require('mason-registry').is_installed(package_name) then
@@ -328,20 +325,20 @@ do  -- setup all known and available LSP servers that are installed
       end
     end
   end
+
+  -- Add backward-compatible lsp installation related commands
+  vim.cmd [[
+    command! LspInstallInfo   Mason
+  ]]
+
+  -- Make sure LSP clients are attached to already existing buffers prior to this config.
+  reload_lsp()
 end
-
--- Make sure LSP clients are attached to already existing buffers prior to this config.
-reload_lsp()
-
--- Add backward-compatible lsp installation related commands
-vim.cmd [[
-  command! LspInstallInfo   Mason
-]]
 
 -------------------------
 -- LSP Handlers (general)
 -------------------------
-do
+function M._setup_lsp_handlers()
   -- :help lsp-method
   -- :help lsp-handler
   -- :help lsp-handler-configuration
@@ -362,7 +359,7 @@ end
 ------------------
 -- LSP diagnostics
 ------------------
-if vim.diagnostic then
+function M.setup_diagnostic()
   -- Customize how to show diagnostics:
   -- @see https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
   -- @see https://github.com/neovim/neovim/pull/16057 for new APIs
@@ -397,13 +394,12 @@ if vim.diagnostic then
       end,
     }
   }
+
   _G.LspDiagnosticsShowPopup = function()
     return vim.diagnostic.open_float(0, { scope = "cursor" })
   end
-end
 
--- Show diagnostics in a pop-up window on hover
-do
+  -- Show diagnostics in a pop-up window on hover
   _G.LspDiagnosticsPopupHandler = function()
     local current_cursor = vim.api.nvim_win_get_cursor(0)
     local last_popup_cursor = vim.w.lsp_diagnostics_last_cursor or { nil, nil }
@@ -419,35 +415,36 @@ do
       end
     end
   end
-  vim.cmd [[
-  augroup LSPDiagnosticsOnHover
-    autocmd!
-    autocmd CursorHold *   lua _G.LspDiagnosticsPopupHandler()
-  augroup END
-  ]]
-end
 
--- Redefine signs (:help diagnostic-signs)
-do
-  vim.fn.sign_define("DiagnosticSignError",  {text = "✘", texthl = "DiagnosticSignError"})
-  vim.fn.sign_define("DiagnosticSignWarn",   {text = "", texthl = "DiagnosticSignWarn"})
-  vim.fn.sign_define("DiagnosticSignInfo",   {text = "i", texthl = "DiagnosticSignInfo"})
-  vim.fn.sign_define("DiagnosticSignHint",   {text = "󰌶", texthl = "DiagnosticSignHint"})
   vim.cmd [[
-    hi DiagnosticSignError    guifg=#e6645f ctermfg=167
-    hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
-    hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
+    augroup LSPDiagnosticsOnHover
+      autocmd!
+      autocmd CursorHold *   lua _G.LspDiagnosticsPopupHandler()
+    augroup END
   ]]
-end
 
--- Commands for temporarily turning on and off diagnostics (for the current buffer or globally)
-do
-  vim.cmd [[
-    command! DiagnosticsDisable     :lua vim.diagnostic.disable(0)
-    command! DiagnosticsEnable      :lua vim.diagnostic.enable(0)
-    command! DiagnosticsDisableAll  :lua vim.diagnostic.disable()
-    command! DiagnosticsEnableAll   :lua vim.diagnostic.enable()
-  ]]
+  -- Redefine signs (:help diagnostic-signs)
+  do
+    vim.fn.sign_define("DiagnosticSignError",  {text = "✘", texthl = "DiagnosticSignError"})
+    vim.fn.sign_define("DiagnosticSignWarn",   {text = "", texthl = "DiagnosticSignWarn"})
+    vim.fn.sign_define("DiagnosticSignInfo",   {text = "i", texthl = "DiagnosticSignInfo"})
+    vim.fn.sign_define("DiagnosticSignHint",   {text = "󰌶", texthl = "DiagnosticSignHint"})
+    vim.cmd [[
+      hi DiagnosticSignError    guifg=#e6645f ctermfg=167
+      hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
+      hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
+    ]]
+  end
+
+  -- Commands for temporarily turning on and off diagnostics (for the current buffer or globally)
+  do
+    vim.cmd [[
+      command! DiagnosticsDisable     :lua vim.diagnostic.disable(0)
+      command! DiagnosticsEnable      :lua vim.diagnostic.enable(0)
+      command! DiagnosticsDisableAll  :lua vim.diagnostic.disable()
+      command! DiagnosticsEnableAll   :lua vim.diagnostic.enable()
+    ]]
+  end
 end
 
 ---------------------------------
@@ -455,8 +452,6 @@ end
 ---------------------------------
 -- https://github.com/hrsh7th/nvim-cmp#recommended-configuration
 -- ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
-
-vim.o.completeopt = "menu,menuone,noselect"
 
 local has_words_before = function()
   if vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt' then
@@ -477,10 +472,12 @@ end
 
 local cmp_helper = {}
 
-_G.setup_cmp = function()
+M.setup_cmp = function()
   local cmp = require('cmp')
   local SelectBehavior = require('cmp.types.cmp').SelectBehavior
   local ContextReason = require('cmp.types.cmp').ContextReason
+
+  vim.o.completeopt = "menu,menuone,noselect"
 
   -- cmp.setup { ... }
   -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
@@ -656,17 +653,21 @@ _G.setup_cmp = function()
     }),
   })
 
+  -- Highlights
+  require('utils.rc_utils').RegisterHighlights(cmp_helper.apply_highlight)
 end
-_G.setup_cmp()
 
 -- Custom sorting/ranking for completion items.
 cmp_helper.compare = {
   -- Deprioritize items starting with underscores (private or protected)
+  --- @param lhs cmp.Entry
+  --- @param rhs cmp.Entry
   deprioritize_underscore = function(lhs, rhs)
     local l = (lhs.completion_item.label:find "^_+") and 1 or 0
     local r = (rhs.completion_item.label:find "^_+") and 1 or 0
     if l ~= r then return l < r end
   end,
+
   -- Prioritize items that ends with "= ..." (usually for argument completion).
   prioritize_argument = function(lhs, rhs)
     local l = (lhs.completion_item.label:find "=$") and 1 or 0
@@ -675,9 +676,8 @@ cmp_helper.compare = {
   end,
 }
 
-
 -- Highlights with bordered completion window (GH-224, GH-472)
-_G.setup_cmp_highlight = function()
+function cmp_helper.apply_highlight()
   vim.cmd [[
     " Dark background, and white-ish foreground
     highlight! CmpPmenu         guibg=#242a30
@@ -711,15 +711,8 @@ _G.setup_cmp_highlight = function()
     highlight!      CmpItemKindUnit          guibg=NONE guifg=#D4D4D4
     highlight!      CmpItemKindConstant      guibg=NONE guifg=#409F31
     highlight!      CmpItemKindSnippet       guibg=NONE guifg=#E3E300
-
-  " Make these highlights applied when colorscheme changes
-  augroup Colorscheme_cmp
-    autocmd!
-    autocmd ColorScheme * lua vim.schedule(_G.setup_cmp_highlight)
-  augroup END
   ]]
 end
-_G.setup_cmp_highlight()
 
 -----------------------------
 -- Configs for PeekDefinition
@@ -760,7 +753,8 @@ _G.PeekDefinition = function(lsp_request_method)
   end
 end
 
-do  -- Commands and Keymaps for PeekDefinition
+-- Commands and Keymaps for PeekDefinition
+function M._define_peek_definition()
   vim.cmd [[
     command! -nargs=0 PeekDefinition      :lua _G.PeekDefinition()
     command! -nargs=0 PreviewDefinition   :PeekDefinition
@@ -776,28 +770,20 @@ end
 ------------
 -- LSPstatus
 ------------
-local lsp_status = require('lsp-status')
-lsp_status.config({
-  -- Avoid using use emoji-like or full-width characters
-  -- because it can often break rendering within tmux and some terminals
-  -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
-  indicator_hint = '!',
-  status_symbol = ' ',
+function M.setup_lsp_status()
+  local lsp_status = require('lsp-status')
+  lsp_status.config({
+    -- Avoid using use emoji-like or full-width characters
+    -- because it can often break rendering within tmux and some terminals
+    -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
+    indicator_hint = '!',
+    status_symbol = ' ',
 
-  -- If true, automatically sets b:lsp_current_function
-  -- (no longer used in favor of treesitter + nvim-gps)
-  current_function = false,
-})
-lsp_status.register_progress()
-
--- LspStatus(): status string for airline
-do
-  _G.LspStatus = function()
-    if #vim.lsp.get_active_clients({bufnr = 0}) > 0 then
-      return lsp_status.status()
-    end
-    return ''
-  end
+    -- If true, automatically sets b:lsp_current_function
+    -- (no longer used in favor of treesitter + nvim-gps)
+    current_function = false,
+  })
+  lsp_status.register_progress()
 
   -- :LspStatus (command): display lsp status
   vim.cmd [[
@@ -805,9 +791,17 @@ do
   ]]
 end
 
+-- LspStatus(): status string for airline
+_G.LspStatus = function()
+  if #vim.lsp.get_active_clients({bufnr = 0}) > 0 then
+    return require('lsp-status').status()
+  end
+  return ''
+end
+
 -- Other LSP commands
 -- :LspDebug, :CodeActions
-local function define_lsp_commands()
+function M._setup_lsp_commands()
   vim.cmd [[
     command! -nargs=0 LspDebug  :tab drop $HOME/.cache/nvim/lsp.log
 
@@ -815,13 +809,11 @@ local function define_lsp_commands()
     call CommandAlias("CA", "CodeActions")
   ]]
 end
-define_lsp_commands()
 
 -----------------------------------
 --- navic (LSP context)
 -----------------------------------
-
-if pcall(require, 'nvim-navic') then
+function M.setup_navic()
   require('nvim-navic').setup {
     -- Use the same separator as lualine.nvim
     separator = '  ',
@@ -831,8 +823,7 @@ end
 -----------------------------------
 --- Fidget.nvim (LSP status widget)
 -----------------------------------
-
-if pcall(require, 'fidget') then
+function M.setup_fidget()
   -- https://github.com/j-hui/fidget.nvim/blob/main/doc/fidget.md
   -- Note: This will override lsp-status.nvim (progress handlers).
   require("fidget").setup {
@@ -847,21 +838,21 @@ if pcall(require, 'fidget') then
   }
 end
 
-
 ---------------
 -- trouble.nvim
 ---------------
-require("trouble").setup {
-  -- https://github.com/folke/trouble.nvim#setup
-  mode = "document_diagnostics",
-  auto_preview = false,
-}
-
+function M.setup_trouble()
+  require("trouble").setup {
+    -- https://github.com/folke/trouble.nvim#setup
+    mode = "document_diagnostics",
+    auto_preview = false,
+  }
+end
 
 ----------------------------------------
 -- Formatting, Linting, and Code actions
 ----------------------------------------
-if pcall(require, "null-ls") then
+function M.setup_null_ls()
   local null_ls = require("null-ls")
   local h = require("null-ls.helpers")
 
@@ -1005,5 +996,36 @@ if pcall(require, "null-ls") then
     vim.cmd [[ autocmd! LspAutoFormatting ]]
     vim.notify("Lsp Auto-Formatting has been turned off.", 'warn')
   end
+end
 
-end -- if null-ls
+
+-- Entrypoint
+function M.setup_lsp()
+  M.setup_lspconfig()
+  M.setup_diagnostic()
+  M._setup_lsp_keymap()
+  M._setup_lsp_commands()
+  M._define_peek_definition()
+end
+
+-- Entrypoint: setup all
+function M.setup_all()
+  M.setup_mason()
+  M.setup_lspconfig()
+  M.setup_diagnostic()
+  M.setup_cmp()
+  M.setup_lsp_status()
+  M.setup_navic()
+  M.setup_fidget()
+  M.setup_trouble()
+  M.setup_null_ls()
+end
+
+
+-- Resourcing support
+if vim.v.vim_did_enter > 0 then
+  M.setup_all()
+end
+
+(RC or {}).lsp = M
+return M

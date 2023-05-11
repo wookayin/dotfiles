@@ -7,7 +7,8 @@ return {
   -- Folding
   Plug 'kevinhwang91/nvim-ufo' {
     dependencies = {'kevinhwang91/promise-async'},
-    lazy = true,  -- see config/folding.lua
+    event = 'UIEnter',
+    config = require('config.folding').setup,
   };
 
   -- Indent Guideline and Scrollbar

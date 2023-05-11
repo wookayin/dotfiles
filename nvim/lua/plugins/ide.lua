@@ -5,6 +5,16 @@ local PlugConfig = require('utils.plug_utils').PlugConfig
 local UpdateRemotePlugins = require('utils.plug_utils').UpdateRemotePlugins
 
 local function has(f) return vim.fn.has(f) > 0 end
+local LspSetup = 'User LspSetup'
+
+-- Register LspSetup after UIEnter
+vim.api.nvim_create_autocmd('UIEnter', {
+  pattern = '*',
+  once = true,
+  callback = vim.schedule_wrap(function()
+    vim.cmd('doautocmd ' .. LspSetup)
+  end)
+})
 
 return {
   Plug 'Sirver/ultisnips' {
@@ -13,22 +23,28 @@ return {
   };
 
   -- LSP (lazy loaded, see config/lsp.lua)
-  Plug 'neovim/nvim-lspconfig' { lazy = true };
-  Plug 'williamboman/mason.nvim' { lazy = true,
+  Plug 'neovim/nvim-lspconfig' {
+    event = LspSetup,
+    dependencies = { 'mason.nvim' },
+    config = require('config.lsp').setup_lsp,
+  };
+  Plug 'williamboman/mason.nvim' {
+    event = LspSetup,
     dependencies = {
       Plug 'williamboman/mason-lspconfig.nvim';
-    }
+    },
+    config = require('config.lsp').setup_mason,
   };
-  Plug 'folke/neodev.nvim' { lazy = true };
-  Plug 'jose-elias-alvarez/null-ls.nvim' { lazy = true };
+  Plug 'folke/neodev.nvim' { event = LspSetup };
+  Plug 'ray-x/lsp_signature.nvim' { event = LspSetup };
+  Plug 'jose-elias-alvarez/null-ls.nvim' { event = LspSetup, config = require('config.lsp').setup_null_ls };
+  Plug 'nvim-lua/lsp-status.nvim' { event = LspSetup, config = require('config.lsp').setup_lsp_status };
+  Plug 'j-hui/fidget.nvim' { event = LspSetup, config = require('config.lsp').setup_fidget };
+  Plug 'folke/trouble.nvim' { event = LspSetup, config = require('config.lsp').setup_trouble };
+  Plug 'SmiteshP/nvim-navic' { event = LspSetup, config = require('config.lsp').setup_navic };
 
-  Plug 'ray-x/lsp_signature.nvim' { lazy = true };
-  Plug 'nvim-lua/lsp-status.nvim' { lazy = true };
-  Plug 'j-hui/fidget.nvim' { lazy = true };
-  Plug 'folke/trouble.nvim' { lazy = true };
   Plug 'kyazdani42/nvim-web-devicons' { lazy = true };
   Plug 'onsails/lspkind-nvim' { lazy = true };
-  Plug 'SmiteshP/nvim-navic' { lazy = true };
 
   -- Completion
   Plug 'hrsh7th/nvim-cmp' {
@@ -42,6 +58,7 @@ return {
       Plug 'tamago324/cmp-zsh';
       Plug 'petertriho/cmp-git';
     },
+    config = require('config.lsp').setup_cmp,
   };
 
   -- Python
@@ -78,13 +95,13 @@ return {
 
   -- Testing
   Plug 'nvim-neotest/neotest' {
-    lazy = true,  -- see config/testing.lua
     dependencies = {
       'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
       'antoinemadec/FixCursorHold.nvim',
       Plug 'nvim-neotest/neotest-plenary';
       Plug 'nvim-neotest/neotest-python';
     },
+    event = 'UIEnter',
+    config = require('config.testing').setup,
   };
 }

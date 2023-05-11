@@ -43,4 +43,11 @@ function M.setup_dressing()
   }
 end
 
+
+-- Resourcing support
+if vim.v.vim_did_enter > 0 then
+  M.setup_notify()
+  M.setup_dressing()
+end
+
 return M

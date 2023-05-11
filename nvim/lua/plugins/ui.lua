@@ -29,7 +29,13 @@ return {
   Plug 'rking/ag.vim' { func = 'ag#*', lazy = true };
 
   -- Telescope (config/telescope.lua)
-  Plug 'nvim-telescope/telescope.nvim' { lazy = true };
+  Plug 'nvim-telescope/telescope.nvim' {
+    event = 'CmdlineEnter',
+    config = function()
+      -- as a script, not as a module yet
+      require 'config/telescope'
+    end,
+  };
 
   -- Terminal
   Plug 'voldikss/vim-floaterm' { event = 'CmdlineEnter' };
@@ -52,7 +58,7 @@ return {
       else return 'UIEnter' end
     end)(),
     init = function() vim.g.neo_tree_remove_legacy_commands = 1; end,
-    config = require 'config.neotree'.setup_neotree,
+    config = require('config.neotree').setup_neotree,
   };
 
   Plug 'scrooloose/nerdtree' {
@@ -69,7 +75,7 @@ return {
   Plug 'majutsushi/tagbar' { cmd = { 'Tagbar', 'TagbarOpen', 'TagbarToggle' } };
 
   -- Quickfix
-  Plug 'kevinhwang91/nvim-bqf' { ft = 'qf' };
+  Plug 'kevinhwang91/nvim-bqf' { ft = 'qf', config = require('config.quickfix').setup_bqf };
 
   -- Marks and Signs
   Plug 'kshenoy/vim-signature' {

@@ -3,11 +3,6 @@
 
 -- neovim 0.7.0 or higher is required.
 
-if not pcall(require, 'neotest') then
-  print("Warning: neotest not available, skipping config.")
-  return
-end
-
 local M = {}
 M.custom_consumers = {}
 
@@ -168,13 +163,17 @@ function M.custom_consumers.attach_or_output()
 end
 
 
-M.setup_neotest()
-M.setup_commands_keymaps()
--- See ~/.vim/after/ftplugin/python.vim for filetype-specfic mapping to neotest commands
+function M.setup()
+  M.setup_neotest()
+  -- See also ~/.vim/after/ftplugin/python.vim for filetype-specfic mapping to neotest commands
+  M.setup_commands_keymaps()
 
-pcall(function()
-  neotest = require('neotest')
-  RC.testing = M
-end)
+  _G.neotest = require('neotest')
+end
 
+if vim.v.vim_did_enter > 0 then
+  M.setup()
+end
+
+(RC or {}).testing = M
 return M

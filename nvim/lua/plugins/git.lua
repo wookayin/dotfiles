@@ -17,8 +17,13 @@ return {
     -- See GH-768
     commit = vim.fn.has('nvim-0.8.0') == 0 and '76b71f74' or nil,
     event = 'UIEnter',
+    config = require('config.git').setup_gitsigns,
   };
 
-  Plug 'sindrets/diffview.nvim' { lazy = true };  -- config/git.lua
+  Plug 'sindrets/diffview.nvim' {
+    event = 'UIEnter',
+    config = require('config.git').setup_diffview,
+  };
+
   Plug 'rhysd/git-messenger.vim' { keys = '<leader>gm' };
 }

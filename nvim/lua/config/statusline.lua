@@ -1,13 +1,6 @@
 -- Statusline config: lualine.nvim
 
-local M = {
-  setup = function() end,
-}
-
-if not pcall(require, 'lualine') then
-  print("Warning: lualine not available, skipping configuration.")
-  return M
-end
+local M = {}
 
 -- From nvim-lualine/lualine.nvim/wiki/Component-snippets
 --- @param trunc_width number trunctates component when screen width is less then trunc_width
@@ -206,20 +199,24 @@ function M.setup_winbar()
   return true
 end
 
-M.setup = function()
+function M.setup()
   M.setup_lualine()
   M.setup_winbar()
+
+  -- Register colorscheme autocmd to recover statusline after colorscheme change
+  vim.api.nvim_create_autocmd('Colorscheme', {
+    pattern = '*',
+    group = vim.api.nvim_create_augroup('Colorscheme_statusline', { clear = true }),
+    callback = function()
+      vim.schedule(M.setup)
+    end,
+  })
 end
 
-M.setup()
+-- Resourcing support
+if vim.v.vim_did_enter > 0 then
+  M.setup()
+end
 
--- Register colorscheme autocmd to recover statusline after colorscheme change
-vim.api.nvim_create_autocmd('Colorscheme', {
-  pattern = '*',
-  group = vim.api.nvim_create_augroup('Colorscheme_statusline', { clear = true }),
-  callback = function()
-    vim.schedule(M.setup)
-  end,
-})
-
+(RC or {}).statusline = M
 return M

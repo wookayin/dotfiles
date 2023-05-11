@@ -1,18 +1,13 @@
 -- config/quickfix.lua
 
--- [[ nvim-bqf ]]
-if not pcall(require, 'bqf') then
-  print("Warning: telescope not available, skipping configuration.")
-  return
-end
-
 local M = {}
 
 -- [[ Useful commands and keys (https://github.com/kevinhwang91/nvim-bqf#function-table)
 --     zf: Enter the fzf search mode
 -- ]]
 
-M.setup_bqf = function()
+
+function M.setup_bqf()
   -- https://github.com/kevinhwang91/nvim-bqf#setup-and-description
   -- https://github.com/kevinhwang91/nvim-bqf#advanced-configuration
   require "bqf".setup {
@@ -33,7 +28,7 @@ M.setup_bqf = function()
     },
   }
 
-  do  -- Highlights for the preview window
+  require "utils.rc_utils".RegisterHighlights(function()
     vim.cmd [[
 
       " use more discernable colors
@@ -43,12 +38,9 @@ M.setup_bqf = function()
       highlight! link BqfPreviewCursor      BqfPreviewFloat
 
     ]]
-  end
-end
+  end)
 
-
--- Custom commands (local) on the quickfix windowfix window
-M.setup_qf_commands = function()
+  -- Custom commands (local) on the quickfix windowfix window
   vim.cmd [[
     augroup bqfQuickfixWindow
       autocmd!
@@ -63,5 +55,10 @@ M.setup_qf_commands = function()
   ]]
 end
 
-M.setup_bqf()
-M.setup_qf_commands()
+-- Resourcing support
+if vim.v.vim_did_enter > 0 then
+  M.setup_bqf()
+end
+
+(RC or {}).quickfix = M
+return M

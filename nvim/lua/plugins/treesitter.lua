@@ -13,7 +13,11 @@ return {
       return 'v0.7.2'
     end)(),
     build = ':TSUpdateSync',
-    lazy = true,  -- see config/treesitter.lua
+    event = 'UIEnter',  -- lazy, or on demand (vim.treesitter)
+    config = function()
+      -- Note: this works as a script, not as a module
+      require('config.treesitter')
+    end
   };
 
   Plug 'nvim-treesitter/playground' {

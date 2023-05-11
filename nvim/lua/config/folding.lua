@@ -1,24 +1,19 @@
 -- Config for nvim-ufo
 
-if not pcall(require, 'ufo') then
-  print("Warning: nvim-ufo not available, skipping configuration.")
-  return
-end
-if not (vim.fn.has('nvim-0.7.0') > 0) then
-  print("Warning: we require neovim 0.7.0 or higher for folding config.")
-  return
-end
-
--- This is required by nvim-ufo (see #30, #57)
--- otherwise folds will be unwantedly open/closed when nvim-ufo is in action
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
-vim.g.has_folding_ufo = 1
-
-local ufo = require('ufo')
 local M = {}
 
+local ufo
+
+
 M.setup_ufo = function()
+  ufo = require('ufo')
+
+  -- This is required by nvim-ufo (see #30, #57)
+  -- otherwise folds will be unwantedly open/closed when nvim-ufo is in action
+  vim.o.foldlevel = 99
+  vim.o.foldlevelstart = 99
+  vim.g.has_folding_ufo = 1
+
   -- See ~/.vim/plugged/nvim-ufo/lua/ufo/config.lua
   -- See https://github.com/kevinhwang91/nvim-ufo/blob/master/README.md#setup-and-description
   ufo.setup {
@@ -141,10 +136,6 @@ M.get_fold_summary = function(lnum, end_lnum, ctx)
   return ""
 end
 
--- Entrypoint.
-M.setup_ufo()
-
-
 -- Keymaps for nvim-ufo
 -- Most of fold-related keys such as zR, zM, etc. need to be remapped
 -- because nvim-ufo overrides most of fold operations and foldlevel.
@@ -185,16 +176,31 @@ M.more_folding = function()  -- zm
   ufo.openFoldsExceptKinds()
 end
 
-vim.keymap.set('n', 'zR', M.open_all_folds,  {desc='ufo - open all folds'})
-vim.keymap.set('n', 'zM', M.close_all_folds, {desc='ufo - close all folds'})
-vim.keymap.set('n', 'zr', M.reduce_folding,  {desc='ufo - reduce fold (zr)'})
-vim.keymap.set('n', 'zm', M.more_folding,    {desc='ufo - fold more (zm)'})
-
-
 -- Peek/preview a closed fold.
 M.peek_folded_lines = function()
   local enter = false
   local include_next_line = false
   ufo.peekFoldedLinesUnderCursor(enter, include_next_line)
 end
-vim.keymap.set('n', 'zp', M.peek_folded_lines, {desc='ufo - peek and preview folded lines'})
+
+function M.setup_folding_keymaps()
+  vim.keymap.set('n', 'zR', M.open_all_folds,  {desc='ufo - open all folds'})
+  vim.keymap.set('n', 'zM', M.close_all_folds, {desc='ufo - close all folds'})
+  vim.keymap.set('n', 'zr', M.reduce_folding,  {desc='ufo - reduce fold (zr)'})
+  vim.keymap.set('n', 'zm', M.more_folding,    {desc='ufo - fold more (zm)'})
+  vim.keymap.set('n', 'zp', M.peek_folded_lines, {desc='ufo - peek and preview folded lines'})
+end
+
+
+function M.setup()
+  M.setup_ufo()
+  M.setup_folding_keymaps()
+end
+
+-- Resourcing support
+if vim.v.vim_did_enter > 0 then
+  M.setup()
+end
+
+(RC or {}).folding = M
+return M

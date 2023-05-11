@@ -2,7 +2,7 @@ local M = {}
 
 function M.setup_neotree()
   -- https://github.com/nvim-neo-tree/neo-tree.nvim#quickstart
-  -- ~/.vim/plugged/neo-tree.nvim/lua/neo-tree/defaults.lua
+  -- $VIMPLUG/neo-tree.nvim/lua/neo-tree/defaults.lua
   require('neo-tree').setup {
     filesystem = {
       hijack_netrw_behavior = "open_current",
@@ -111,6 +111,15 @@ function M.setup_neotree()
   vim.cmd [[
     nmap <leader>E  :Neotree toggle<CR>
   ]]
+
+  _G.neotree = require('neo-tree')
 end
 
+
+-- Resourcing support
+if vim.v.vim_did_enter > 0 then
+  M.setup_neotree()
+end
+
+(RC or {}).neotree = M
 return M

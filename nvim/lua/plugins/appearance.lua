@@ -7,7 +7,10 @@ return {
   Plug 'flazz/vim-colorschemes' { lazy = false, priority = 1000 };
 
   -- statusline
-  Plug 'nvim-lualine/lualine.nvim';
+  Plug 'nvim-lualine/lualine.nvim' {
+    event = 'UIEnter',
+    config = require('config.statusline').setup,
+  };
 
   -- tabline
   Plug 'mg979/vim-xtabline' {

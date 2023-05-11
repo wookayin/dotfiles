@@ -72,25 +72,10 @@ function _require(name)
   return require(name)
 end
 
--- Source some individual rc files on startup.
--- Note that some config modules are called upon plugin loading.
+-- Source some individual rc files on startup, manually in sequence.
+-- Note that many other config modules are called upon plugin loading.
 -- (see each plugin spec, e.g. 'plugins/ui' and 'config/ui')
 _require 'config/commands'
-_require 'config/quickfix'
-
--- Source individiual rc files. (lazy loading)
-function RC.source_config_lazy()
-  _require 'config/statusline'
-  _require 'config/lsp'
-  _require 'config/treesitter'
-  _require 'config/telescope'
-  _require 'config/git'
-  _require 'config/folding'
-  _require 'config/testing'
-end
-vim.cmd [[
-  autocmd User LazyInit  lua RC.source_config_lazy()
-]]
 
 -- Source local-only lua configs (not git tracked)
 if vim.fn.filereadable(vim.fn.expand('~/.config/nvim/lua/config/local.lua')) > 0 then
