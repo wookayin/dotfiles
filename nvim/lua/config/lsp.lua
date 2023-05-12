@@ -473,18 +473,22 @@ local truncate = function(text, max_width)
   end
 end
 
-local cmp = require('cmp')
-local cmp_helper = {}
-local cmp_types = require('cmp.types.cmp')
 
--- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
-cmp.setup {
-  snippet = {
+local cmp_helper = {}
+
+_G.setup_cmp = function()
+  local cmp = require('cmp')
+  local SelectBehavior = require('cmp.types.cmp').SelectBehavior
+  local ContextReason = require('cmp.types.cmp').ContextReason
+
+  -- cmp.setup { ... }
+  -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
+  local snippet = {
     expand = function(args)
       vim.fn["UltiSnips#Anon"](args.body)
     end,
-  },
-  window = {
+  }
+  local window = {
     documentation = {
       border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
     },
@@ -497,19 +501,19 @@ cmp.setup {
       col_offset = -1,
 
       winhighlight = 'Normal:CmpPmenu,FloatBorder:CmpPmenuBorder,CursorLine:PmenuSel,Search:None',
-    },
-  },
-  mapping = {
+    }
+  }
+  local mapping = {
     -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/mapping.lua
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-Space>'] = cmp.mapping.complete({ reason = ContextReason.Manual }),
     ['<C-y>'] = cmp.config.disable,
     ['<C-e>'] = cmp.mapping.close(),
-    ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp_types.SelectBehavior.Select }),
-    ['<Up>'] = cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Select }),
-    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp_types.SelectBehavior.Insert }),
-    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Insert }),
+    ['<Down>'] = cmp.mapping.select_next_item({ behavior = SelectBehavior.Select }),
+    ['<Up>'] = cmp.mapping.select_prev_item({ behavior = SelectBehavior.Select }),
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = SelectBehavior.Insert }),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
     ['<Tab>'] = { -- see GH-880, GH-897
       i = function(fallback) -- see GH-231, GH-286
@@ -524,8 +528,8 @@ cmp.setup {
         else fallback() end
       end,
     },
-  },
-  formatting = {
+  }
+  local formatting = {
     format = function(entry, vim_item)
       -- Truncate the item if it is too long
       vim_item.abbr = truncate(vim_item.abbr, 80)
@@ -594,25 +598,27 @@ cmp.setup {
         end
 
       elseif entry.source.name == 'ultisnips' then
-        if (cmp_item.snippet or {}).description then
-          vim_item.menu = truncate(cmp_item.snippet.description, 40)
+        ---@diagnostic disable-next-line: undefined-field
+        local description = (cmp_item.snippet or {}).description
+        if description then
+          vim_item.menu = truncate(description, 40)
         end
       end
 
       -- Add a little bit more padding
       vim_item.menu = " " .. vim_item.menu
       return vim_item
-    end,
-  },
-  sources = {
+    end
+  }
+  local sources = {
     -- Note: make sure you have proper plugins specified in plugins.vim
     -- https://github.com/topics/nvim-cmp
     { name = 'nvim_lsp', priority = 100 },
     { name = 'ultisnips', keyword_length = 2, priority = 50 },  -- workaround '.' trigger
     { name = 'path', priority = 30, },
     { name = 'buffer', priority = 10 },
-  },
-  sorting = {
+  }
+  local sorting = {
     -- see ~/.vim/plugged/nvim-cmp/lua/cmp/config/compare.lua
     comparators = {
       cmp.config.compare.offset,
@@ -626,25 +632,32 @@ cmp.setup {
       cmp.config.compare.length,
       cmp.config.compare.order,
     },
-  },
-}
+  }
 
--- filetype-specific sources
-cmp.setup.filetype({'sh', 'zsh', 'bash'}, {
-  sources = cmp.config.sources({
-    { name = 'zsh', priorty = 100 },
-    { name = 'nvim_lsp', priority = 50 },
-    { name = 'ultisnips', keyword_length = 2, priority = 50 },  -- workaround '.' trigger
-    { name = 'path', priority = 30, },
-    { name = 'buffer', priority = 10 },
-  }),
-  __dependencies__ = function()
-    -- Make sure cmp-zsh setup is called before cmp.setup
-    require("cmp_zsh").setup {
-      filetypes = { "bash", "zsh" },
-    }
-  end,
-})
+  cmp.setup {
+    snippet = snippet,
+    window = window,
+    mapping = mapping,
+    formatting = formatting,
+    sources = sources,
+    sorting = sorting,
+  }
+
+  -- filetype-specific sources
+  require("cmp_zsh").setup { filetypes = { "bash", "zsh" } }
+  cmp.setup.filetype({'sh', 'zsh', 'bash'}, {
+    sources = cmp.config.sources({
+      { name = 'zsh', priorty = 100 },
+      { name = 'nvim_lsp', priority = 50 },
+      { name = 'ultisnips', keyword_length = 2, priority = 50 },  -- workaround '.' trigger
+      { name = 'path', priority = 30, },
+      { name = 'buffer', priority = 10 },
+    }),
+  })
+
+end
+_G.setup_cmp()
+
 -- Custom sorting/ranking for completion items.
 cmp_helper.compare = {
   -- Deprioritize items starting with underscores (private or protected)
