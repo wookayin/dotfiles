@@ -23,10 +23,24 @@ snippet p
 print(vim.inspect(${1}))
 endsnippet
 snippet notify
-vim.notify('${1:message}', '${3:info}', {title = '${2:Title}'})
+vim.notify('${1:message}', vim.log.levels.${3:INFO}, {title = '${2:Title}'})
 endsnippet
 snippet reload
 require('plenary.reload').reload_module('$1')
+endsnippet
+
+# Log levels
+snippet INFO
+vim.log.levels.INFO
+endsnippet
+snippet WARN
+vim.log.levels.WARN
+endsnippet
+snippet ERROR
+vim.log.levels.ERROR
+endsnippet
+snippet DEBUG
+vim.log.levels.DEBUG
 endsnippet
 
 # Defining User Commands and Keymaps (neovim 0.7.0+)
