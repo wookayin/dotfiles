@@ -43,11 +43,35 @@ function M.setup_dressing()
   }
 end
 
+function M.init_quickui()
+  -- Use unicode-style border (┌─┐) which is more pretty
+  vim.g.quickui_border_style = 2
+
+  -- Default preview window size (more lines and width)
+  vim.g.quickui_preview_w = 100
+  vim.g.quickui_preview_h = 25
+
+  -- Customize color scheme
+  vim.g.quickui_color_scheme = 'papercol light'
+end
+
+function M.setup_quickui()
+  -- Quickui overrides highlight when colorscheme is set (when lazy loaded),
+  -- so make sure this callback is executed AFTER plugin init
+  -- to correctly override the highlight
+  require "utils.rc_utils".RegisterHighlights(function()
+    vim.cmd [[
+      hi! QuickPreview guibg=#262d2d
+    ]]
+  end)
+end
 
 -- Resourcing support
 if vim.v.vim_did_enter > 0 then
   M.setup_notify()
   M.setup_dressing()
+  M.init_quickui()
+  M.setup_quickui()
 end
 
 return M

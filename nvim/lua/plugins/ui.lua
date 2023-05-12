@@ -8,7 +8,11 @@ return {
   -- Basic UI Components
   Plug 'MunifTanjim/nui.nvim' { lazy = true };  -- see config/ui.lua
   Plug 'stevearc/dressing.nvim' { event = 'UIEnter', config = require 'config.ui'.setup_dressing };
-  Plug 'skywind3000/vim-quickui' { event = 'UIEnter' };
+  Plug 'skywind3000/vim-quickui' {
+    event = 'UIEnter',
+    init = require('config.ui').init_quickui,
+    config = require('config.ui').setup_quickui,
+  };
 
   -- FZF & Grep
   Plug 'junegunn/fzf' {
