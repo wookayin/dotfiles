@@ -304,7 +304,8 @@ end
 local reload_lsp = vim.schedule_wrap(function()
   -- this can be easily achieved by firing an autocmd event for the open buffers.
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[bufnr].buftype == "" then
+    local valid = vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_get_option(bufnr, 'buflisted')
+    if valid and vim.bo[bufnr].buftype == "" then
       vim.api.nvim_exec_autocmds("BufReadPost", { buffer = bufnr })
     end
   end
