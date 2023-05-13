@@ -764,6 +764,22 @@ function M._define_peek_definition()
     " Preview type definition.
     nmap <silent> gT   <cmd>lua _G.PeekDefinition('textDocument/typeDefinition')<CR>
   ]]
+
+  -- workaround a bug where quickpreview winhighlight (background) is not cleaned up
+  -- for the buffer that was opened in the preview window for the first time.
+  vim.api.nvim_create_autocmd('BufWinEnter', {
+    pattern = '*',
+    group = vim.api.nvim_create_augroup('PeekDefinition_quickui_workaround', { clear = true }),
+    callback = function()
+      local is_floating = vim.api.nvim_win_get_config(0).relative ~= ""
+      if is_floating then return end
+      for key, value in pairs(vim.opt_local.winhighlight:get()) do
+        if value == "QuickPreview" then
+          vim.opt_local.winhighlight:remove(key)
+        end
+      end
+    end,
+  })
 end
 
 
