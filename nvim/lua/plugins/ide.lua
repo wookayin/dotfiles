@@ -88,6 +88,9 @@ return {
   Plug 'Tyilo/applescript.vim' { ft = 'applescript' };
   Plug 'rdolgushin/groovy.vim' { ft = 'groovy' };
 
+  -- Lua REPL
+  Plug 'ii14/neorepl.nvim' { lazy = true };  -- :LuaREPL
+
   -- Build
   Plug 'neomake/neomake' { event = 'CmdlineEnter' };
   Plug 'skywind3000/asyncrun.vim' { event = 'UIEnter' };
