@@ -129,28 +129,46 @@ local auto_lsp_servers = {
   ['lemminx'] = true,  -- xml
 }
 
-function M.setup_mason()
+-- Refresh or force-update mason-registry if needed (e.g. pkgs are missing)
+-- and execute the callback asynchronously.
+local function maybe_refresh_mason_registry_and_then(callback, opts)
+  local mason_registry = require("mason-registry")
+  local function _notify(msg, opts)
+    return vim.notify_once(msg, vim.log.levels.INFO,
+      vim.tbl_deep_extend("force", { title = "config/lsp.lua" }, (opts or {})))
+  end
+  local h = nil
+  if vim.tbl_count(mason_registry.get_all_packages()) == 0 then
+    h = _notify("Initializing mason.nvim registry for the first time,\n" ..
+               "please wait a bit until LSP servers start installed.")
+    mason_registry.update(function()
+      _notify("Updating mason.nvim registry done.")
+      vim.schedule(callback)  -- must detach
+    end)
+  elseif (opts or {}).force then
+    _notify("Updating mason.nvim registry ...")
+    mason_registry.update(function()
+      _notify("Updating mason.nvim registry done.")
+      vim.schedule(callback)  -- must detach
+    end)
+  else
+    callback()  -- don't refresh, for fast startup
+  end
+end
+
+function M._setup_mason()
   -- Mason: LSP Auto installer
   -- https://github.com/williamboman/mason.nvim#default-configuration
   require("mason").setup()
   require("mason-lspconfig").setup()
 
   -- ensure_installed: Install auto_lsp_servers on demand (FileType)
-  if vim.tbl_count(require("mason-registry").get_all_packages()) == 0 then
-    vim.notify("Initializing mason.nvim registry for the first time,\n" ..
-               "please wait a bit until LSP servers start installed.",
-               vim.log.levels.INFO, { title = "config/lsp.lua" })
-    require("mason-registry").refresh(function()
-      M._ensure_mason_installed()
-    end)
-  else
-    M._ensure_mason_installed()
-  end
+  maybe_refresh_mason_registry_and_then(M._ensure_mason_installed)
 end
 
 -- Install auto_lsp_servers on demand (FileType)
 M._ensure_mason_installed = function()
-  local augroup = vim.api.nvim_create_augroup('mason_autoinstall_ft', { clear = true })
+  local augroup = vim.api.nvim_create_augroup('mason_autoinstall', { clear = true })
   local lspconfig_to_package = require("mason-lspconfig.mappings.server").lspconfig_to_package
   local filetype_mappings = require("mason-lspconfig.mappings.filetype")
   local _requested = {}
@@ -164,8 +182,8 @@ M._ensure_mason_installed = function()
     ft_handler[ft] = vim.schedule_wrap(function()
       for _, lsp_name in pairs(lsp_names) do
         local pkg_name = lspconfig_to_package[lsp_name]
-        local pkg = require("mason-registry").get_package(pkg_name)
-        if not pkg:is_installed() and not _requested[pkg_name] then
+        local ok, pkg = pcall(require("mason-registry").get_package, pkg_name)
+        if ok and not pkg:is_installed() and not _requested[pkg_name] then
           _requested[pkg_name] = true
           require("mason-lspconfig.install").install(pkg)  -- async
         end
@@ -297,7 +315,7 @@ end
 
 -- lsp configs are lazy-loaded or can be triggered after LSP installation,
 -- so we need a way to make LSP clients attached to already existing buffers.
-local reload_lsp = vim.schedule_wrap(function()
+local attach_lsp_to_existing_buffers = vim.schedule_wrap(function()
   -- this can be easily achieved by firing an autocmd event for the open buffers.
   -- See lspconfig.configs (config.autostart)
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -310,31 +328,44 @@ local reload_lsp = vim.schedule_wrap(function()
 end)
 
 --- setup all known and available LSP servers that are installed
-function M.setup_lspconfig()
-  local lsp_names = require('mason-lspconfig.mappings.server').lspconfig_to_package
-  for lsp_name, package_name in pairs(lsp_names) do
+function M._setup_lspconfig()
+  local all_known_lsps = require('mason-lspconfig.mappings.server').lspconfig_to_package
+  local lsp_uninstalled = {}   --- { lspconfig name => mason package name }
+  local mason_need_refresh = false
+
+  for lsp_name, package_name in pairs(all_known_lsps) do
     if require('mason-registry').is_installed(package_name) then
+      -- Perform lspconfig[lsp_name].setup {}
       setup_lsp(lsp_name)
     else
-      -- mason.nvim does not launch lsp when installed for the first time
-      -- we attach a manual callback to setup LSP and launch
+      if not require('mason-registry').has_package(package_name) then
+        mason_need_refresh = true
+      end
+      lsp_uninstalled[lsp_name] = package_name
+    end
+  end
+
+  maybe_refresh_mason_registry_and_then(function()
+    -- mason.nvim does not launch lsp when installed for the first time
+    -- we attach a manual callback to setup LSP and launch
+    for lsp_name, package_name in pairs(lsp_uninstalled) do
       local ok, pkg = pcall(require('mason-registry').get_package, package_name)
       if ok then
         pkg:on("install:success", vim.schedule_wrap(function()
           setup_lsp(lsp_name)
-          reload_lsp()  -- TODO: reload only the buffers that matches filetype.
+          attach_lsp_to_existing_buffers()  -- TODO: reload only the buffers that matches filetype.
         end))
       end
     end
-  end
+
+    -- Make sure LSP clients are attached to already existing buffers prior to this config.
+    attach_lsp_to_existing_buffers()
+  end, { force = mason_need_refresh })
 
   -- Add backward-compatible lsp installation related commands
   vim.cmd [[
     command! LspInstallInfo   Mason
   ]]
-
-  -- Make sure LSP clients are attached to already existing buffers prior to this config.
-  reload_lsp()
 end
 
 -------------------------
@@ -362,7 +393,7 @@ end
 ------------------
 -- LSP diagnostics
 ------------------
-function M.setup_diagnostic()
+function M._setup_diagnostic()
   -- Customize how to show diagnostics:
   -- @see https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
   -- @see https://github.com/neovim/neovim/pull/16057 for new APIs
@@ -1020,8 +1051,9 @@ end
 
 -- Entrypoint
 function M.setup_lsp()
-  M.setup_lspconfig()
-  M.setup_diagnostic()
+  M._setup_mason()
+  M._setup_lspconfig()
+  M._setup_diagnostic()
   M._setup_lsp_keymap()
   M._setup_lsp_commands()
   M._setup_lsp_handlers()
@@ -1030,7 +1062,6 @@ end
 
 -- Entrypoint: setup all
 function M.setup_all()
-  M.setup_mason()
   M.setup_lsp()
   M.setup_cmp()
   M.setup_lsp_status()

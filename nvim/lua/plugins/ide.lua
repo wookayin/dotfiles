@@ -26,14 +26,13 @@ return {
   Plug 'neovim/nvim-lspconfig' {
     event = LspSetup,
     dependencies = { 'mason.nvim' },
-    config = require('config.lsp').setup_lsp,
+    config = require('config.lsp').setup_lsp, -- mason, lspconfig, etc.
   };
   Plug 'williamboman/mason.nvim' {
-    event = LspSetup,
+    event = LspSetup, -- as a dependency for nvim-lspconfig
     dependencies = {
       Plug 'williamboman/mason-lspconfig.nvim';
     },
-    config = require('config.lsp').setup_mason,
   };
   Plug 'folke/neodev.nvim' { event = LspSetup };
   Plug 'ray-x/lsp_signature.nvim' { event = LspSetup };
