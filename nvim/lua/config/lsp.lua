@@ -343,6 +343,7 @@ function M._setup_lsp_handlers()
   -- :help lsp-method
   -- :help lsp-handler
   -- :help lsp-handler-configuration
+  --  https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
   local lsp_handlers_hover = vim.lsp.with(vim.lsp.handlers.hover, {
     border = 'single'
   })
@@ -397,7 +398,7 @@ function M.setup_diagnostic()
   }
 
   _G.LspDiagnosticsShowPopup = function()
-    return vim.diagnostic.open_float(0, { scope = "cursor" })
+    return vim.diagnostic.open_float({ bufnr = 0, scope = "cursor" })
   end
 
   -- Show diagnostics in a pop-up window on hover
@@ -1022,14 +1023,14 @@ function M.setup_lsp()
   M.setup_diagnostic()
   M._setup_lsp_keymap()
   M._setup_lsp_commands()
+  M._setup_lsp_handlers()
   M._define_peek_definition()
 end
 
 -- Entrypoint: setup all
 function M.setup_all()
   M.setup_mason()
-  M.setup_lspconfig()
-  M.setup_diagnostic()
+  M.setup_lsp()
   M.setup_cmp()
   M.setup_lsp_status()
   M.setup_navic()
