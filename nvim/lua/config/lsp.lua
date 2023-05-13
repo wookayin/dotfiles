@@ -299,10 +299,11 @@ end
 -- so we need a way to make LSP clients attached to already existing buffers.
 local reload_lsp = vim.schedule_wrap(function()
   -- this can be easily achieved by firing an autocmd event for the open buffers.
+  -- See lspconfig.configs (config.autostart)
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     local valid = vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_get_option(bufnr, 'buflisted')
     if valid and vim.bo[bufnr].buftype == "" then
-      vim.api.nvim_exec_autocmds("BufReadPost", { buffer = bufnr })
+      vim.api.nvim_exec_autocmds("FileType", { group = 'lspconfig', buffer = bufnr })
     end
   end
 end)
