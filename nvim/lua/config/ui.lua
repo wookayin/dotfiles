@@ -7,6 +7,7 @@ function M.setup_notify()
   vim.cmd [[
     command! -nargs=0 NotificationsPrint   :lua require('notify')._print_history()
     command! -nargs=0 PrintNotifications   :NotificationsPrint
+    command! -nargs=0 Messages             :NotificationsPrint
   ]]
   vim.g.nvim_notify_winblend = 20
 
