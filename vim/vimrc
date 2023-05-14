@@ -3089,7 +3089,7 @@ nnoremap <silent> <leader>gb :echo ':Git blame -w'<CR>:Git blame -w<CR>:call Fug
 function! FugitiveResizeGblame() abort
   if &ft == 'fugitiveblame' | vertical resize 10 | endif
 endfunction
-nnoremap <leader>gci :Git commit --verbose<CR>
+nnoremap <leader>gci :tab Git commit --verbose<CR>
 nnoremap <leader>gcA :Git commit --amend --verbose<CR>
 
 " on commit, type 'cA' to enter in amend mode
@@ -3099,8 +3099,6 @@ au FileType gitcommit nnoremap <buffer> <silent>
 " Git: more configuration and keymaps for fugitive index buffers
 augroup FugitiveAddon
   autocmd!
-  " Fix window height to be 16
-  autocmd FileType fugitive    if !&winfixheight | resize 16 | setlocal winfixheight | endif
 
   " [?] show help  / [ci] commit -v
   autocmd FileType fugitive    nnoremap <buffer> <silent> ?  :<C-u>vertical help fugitive-maps<CR>:wincmd p<CR>
