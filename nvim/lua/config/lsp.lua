@@ -81,15 +81,6 @@ local on_attach = function(client, bufnr)
     vim.lsp.buf.rename(opt.args ~= "" and opt.args or nil)
   end, { nargs = '?', desc = "Rename the current symbol at the cursor." })
 
-  -- Disable specific LSP capabilities: see nvim-lspconfig#1891
-  if client.name == "lua_ls" and client.server_capabilities then
-    client.server_capabilities.documentFormattingProvider = false
-    client.server_capabilities.semanticTokensProvider = false  -- turn off semantic tokens
-  end
-  if client.name == "ruff_lsp" and client.server_capabilities then
-    -- Disable hover in favor of Pyright
-    client.server_capabilities.hoverProvider = false
-  end
 end
 
 -- Add global keymappings for LSP actions
@@ -211,11 +202,14 @@ M._ensure_mason_installed = function()
   end, vim.api.nvim_list_bufs())
 end
 
+-- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
+-- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
 
--- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
--- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+-- (lsp_name: string) => function(client, init_result), see :help vim.lsp.start_client()
+local on_init = {}
+M.on_init = {}
 
 lsp_setup_opts['pyright'] = {
   settings = {
@@ -243,8 +237,13 @@ lsp_setup_opts['ruff_lsp'] = {
     },
   }
 }
+on_init['ruff_lsp'] = function(client, _)
+  -- Disable hover in favor of Pyright
+  if client.server_capabilities then
+    client.server_capabilities.hoverProvider = false
+  end
+end
 
--- Configure lua_ls to support neovim Lua runtime APIs
 lsp_setup_opts['lua_ls'] = {
   settings = {
     Lua = {
@@ -277,6 +276,14 @@ lsp_setup_opts['lua_ls'] = {
     },
   },
 }
+on_init['lua_ls'] = function(client, _)
+  -- Note that server_capabilities config shouldn't be done in on_attach
+  -- due to delayed execution (see neovim/nvim-lspconfig#2542)
+  if client.server_capabilities then
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.semanticTokensProvider = false  -- turn off semantic tokens
+  end
+end
 
 lsp_setup_opts['bashls'] = {
   filetypes = { 'sh', 'zsh' },
@@ -295,6 +302,7 @@ lsp_setup_opts['yamlls'] = {
 local function setup_lsp(lsp_name)
   local cmp_nvim_lsp = require('cmp_nvim_lsp')
   local opts = {
+    on_init = on_init[lsp_name],
     on_attach = on_attach,
 
     -- Suggested configuration by nvim-cmp
@@ -304,6 +312,7 @@ local function setup_lsp(lsp_name)
     ),
   }
 
+  -- Configure lua_ls to support neovim Lua runtime APIs
   if lsp_name == 'lua_ls' then
     require("neodev").setup { }
   end
