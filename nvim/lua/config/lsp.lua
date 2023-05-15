@@ -867,7 +867,6 @@ function M.setup_lsp_status()
     -- (no longer used in favor of treesitter + nvim-gps)
     current_function = false,
   })
-  lsp_status.register_progress()
 
   -- :LspStatus (command): display lsp status
   vim.cmd [[
