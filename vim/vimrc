@@ -201,9 +201,10 @@ if empty(&statusline)
   set statusline=%1*%{winnr()}\ %*%<\ %f\ %h%m%r%=%l,%c%V\ (%P)
 endif
 
-" mouse behaviour
+" mouse behaviour: in all modes (normal, visual, and insert)
+" Note: To temporarily disable mouse support, hold the shift or alt key while using the mouse.
 if has('mouse')
-  set mouse=nvc
+  set mouse=a
 endif
 if ! has('nvim')
   " vim only (not in neovim)
