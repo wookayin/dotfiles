@@ -403,12 +403,25 @@ end
 -- LSP diagnostics
 ------------------
 function M._setup_diagnostic()
+  local icons = {
+    [vim.diagnostic.severity.ERROR] = "✘",
+    [vim.diagnostic.severity.WARN] = "",
+    [vim.diagnostic.severity.INFO] = "i",
+    [vim.diagnostic.severity.HINT] = "󰌶",
+  }
+
   -- Customize how to show diagnostics:
   -- @see https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
   -- @see https://github.com/neovim/neovim/pull/16057 for new APIs
+  -- @see :help vim.diagnostic.config()
   vim.diagnostic.config {
     -- No virtual text (distracting!), show popup window on hover.
-    virtual_text = false,
+    virtual_text = {
+      severity = { min = vim.diagnostic.severity.WARN },
+      prefix = vim.fn.has('nvim-0.10') > 0 and function(diagnostic)  ---@param diagnostic Diagnostic
+        return (icons[diagnostic.severity] or "") .. " "
+      end,
+    },
     underline = {
       -- Do not underline text when severity is low (INFO or HINT).
       severity = { min = vim.diagnostic.severity.WARN },
@@ -466,18 +479,24 @@ function M._setup_diagnostic()
     augroup END
   ]]
 
-  -- Redefine signs (:help diagnostic-signs)
+  -- Redefine signs (:help diagnostic-signs) and highlights (:help diagnostic-highlights)
   do
-    vim.fn.sign_define("DiagnosticSignError",  {text = "✘", texthl = "DiagnosticSignError"})
-    vim.fn.sign_define("DiagnosticSignWarn",   {text = "", texthl = "DiagnosticSignWarn"})
-    vim.fn.sign_define("DiagnosticSignInfo",   {text = "i", texthl = "DiagnosticSignInfo"})
-    vim.fn.sign_define("DiagnosticSignHint",   {text = "󰌶", texthl = "DiagnosticSignHint"})
+    vim.fn.sign_define("DiagnosticSignError",  {text = icons[vim.diagnostic.severity.ERROR], texthl = "DiagnosticSignError"})
+    vim.fn.sign_define("DiagnosticSignWarn",   {text = icons[vim.diagnostic.severity.WARN],  texthl = "DiagnosticSignWarn"})
+    vim.fn.sign_define("DiagnosticSignInfo",   {text = icons[vim.diagnostic.severity.INFO],  texthl = "DiagnosticSignInfo"})
+    vim.fn.sign_define("DiagnosticSignHint",   {text = icons[vim.diagnostic.severity.HINT],  texthl = "DiagnosticSignHint"})
+  end
+  require('utils.rc_utils').RegisterHighlights(function()
     vim.cmd [[
       hi DiagnosticSignError    guifg=#e6645f ctermfg=167
       hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
       hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
+
+      hi DiagnosticVirtualTextError   guifg=#a6242f  gui=italic,underdashed,underline
+      hi DiagnosticVirtualTextWarn    guifg=#777744  gui=italic,underdashed,underline
+      hi DiagnosticVirtualTextHint    guifg=#555555  gui=italic,underdashed,underline
     ]]
-  end
+  end)
 
   -- Commands for temporarily turning on and off diagnostics (for the current buffer or globally)
   do
