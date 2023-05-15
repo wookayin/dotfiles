@@ -954,6 +954,7 @@ endfunction
 call CommandAlias('s%', 'source %')
 call CommandAlias('tnew', 'tabnew')
 call CommandAlias('E', 'e')
+call CommandAlias('t', 'tab')  " we don't use :copy
 
 " WinDo: Like :windo, but preserves the current window and view.
 function! WinDo(command) abort
