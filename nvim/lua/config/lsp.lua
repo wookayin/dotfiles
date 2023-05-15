@@ -498,13 +498,19 @@ function M._setup_diagnostic()
     ]]
   end)
 
-  -- Commands for temporarily turning on and off diagnostics (for the current buffer or globally)
+  -- Turning on and off diagnostics
+  -- Disable default commands, assuming the plugin is always lazy-loaded
+  vim.g.toggle_lsp_diagnostics_loaded_install = 1
+  require('toggle_lsp_diagnostics').init(vim.diagnostic.config())
+
   do
     vim.cmd [[
-      command! DiagnosticsDisable     :lua vim.diagnostic.disable(0)
-      command! DiagnosticsEnable      :lua vim.diagnostic.enable(0)
-      command! DiagnosticsDisableAll  :lua vim.diagnostic.disable()
-      command! DiagnosticsEnableAll   :lua vim.diagnostic.enable()
+      command! DiagnosticsDisableBuffer       :lua vim.diagnostic.disable(0)
+      command! DiagnosticsEnableBuffer        :lua vim.diagnostic.enable(0)
+      command! DiagnosticsDisableAll          :lua vim.diagnostic.disable()
+      command! DiagnosticsEnableAll           :lua vim.diagnostic.enable()
+      command! DiagnosticsVirtualTextToggle   :lua require('toggle_lsp_diagnostics').toggle_diagnostic('virtual_text')
+      command! DiagnosticsUnderlineToggle     :lua require('toggle_lsp_diagnostics').toggle_diagnostic('underline')
     ]]
   end
 end

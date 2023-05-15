@@ -36,6 +36,7 @@ return {
   };
   Plug 'folke/neodev.nvim' { event = LspSetup };
   Plug 'ray-x/lsp_signature.nvim' { event = LspSetup };
+  Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim' { lazy = true };
   Plug 'jose-elias-alvarez/null-ls.nvim' { event = LspSetup, config = require('config.lsp').setup_null_ls };
   Plug 'nvim-lua/lsp-status.nvim' { event = LspSetup, config = require('config.lsp').setup_lsp_status };
   Plug 'j-hui/fidget.nvim' { event = LspSetup, config = require('config.lsp').setup_fidget };
