@@ -214,7 +214,7 @@ function M.setup()
 end
 
 -- Resourcing support
-if vim.v.vim_did_enter > 0 then
+if RC and RC.should_resource() then
   M.setup()
 end
 

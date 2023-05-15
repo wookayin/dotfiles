@@ -8,6 +8,17 @@
 -- The global namespace for config-related stuffs.
 RC = {}
 
+function RC.should_resource()
+  -- true only if called in a top-level via :source or :luafile (not require)
+  return vim.v.vim_did_enter > 0 and #vim.split(debug.traceback(), '\n') <= 3
+end
+
+-- require a lua module, but force reload it (RC files can be re-sourced)
+function _require(name)
+  package.loaded[name] = nil
+  return require(name)
+end
+
 -- Configure neovim python host.
 require 'config/pynvim'
 require 'config/fixfnkeys'
@@ -64,12 +75,6 @@ if vim.fn.has('nvim-0.8') > 0 then
   -- Colorscheme needs to be called AFTER plugins are loaded,
   -- because of the different plugin loading mechanism and order.
   vim.cmd [[ colorscheme xoria256-wook ]]
-end
-
--- require a lua module, but force reload it (RC files can be re-sourced)
-function _require(name)
-  package.loaded[name] = nil
-  return require(name)
 end
 
 -- Source some individual rc files on startup, manually in sequence.

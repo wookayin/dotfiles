@@ -68,7 +68,7 @@ function M.setup_quickui()
 end
 
 -- Resourcing support
-if vim.v.vim_did_enter > 0 then
+if RC and RC.should_resource() then
   M.setup_notify()
   M.setup_dressing()
   M.init_quickui()

@@ -108,7 +108,7 @@ function M.setup_diffview()
 end
 
 -- Resourcing support
-if vim.v.vim_did_enter > 0 then
+if RC and RC.should_resource() then
   M.setup_diffview()
   M.setup_gitsigns()
 end
