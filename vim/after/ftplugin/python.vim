@@ -1,4 +1,5 @@
-" python.vim
+" python.vim: python ftplugin
+" (see also python.lua)
 
 if !filereadable('Makefile')
   if bufname('%') =~ '_test.py$' || expand('%:t') =~ '^test_.*\.py'
@@ -117,23 +118,6 @@ nmap <buffer> <leader>ty <Plug>ToggleLineComment_yapf_disable
 
 " Experimental
 " ============
-
-" LSP: turn on auto formatting by default for a 'project'
-" condition: when one have .style.yapf file in a git repository.
-" Executed only once for the current vim session.
-if exists(':LspAutoFormattingOn')
-  if get(g:, '_python_autoformatting_detected', 0) == 0
-    let g:_python_autoformatting_detected = 1  " do not auto-turn on any more
-    let s:project_root = DetermineProjectRoot()
-    if !empty(s:project_root)
-      let s:style_yapf = s:project_root . '/.style.yapf'
-      if filereadable(s:style_yapf)
-        " TODO: Do not affect files outside the project!!
-        execute ":LspAutoFormattingOn " . s:style_yapf
-      endif
-    endif
-  endif
-endif
 
 " <Alt-Enter> for auto import symbol
 if exists(':ImportSymbol')   " plugin vim-autoimport
