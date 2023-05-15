@@ -231,9 +231,11 @@ lsp_setup_opts['ruff_lsp'] = {
       -- extra CLI arguments
       -- https://beta.ruff.rs/docs/configuration/#command-line-interface
       -- https://beta.ruff.rs/docs/rules/
-      -- E402: Module level import not at top of file
-      -- E501: Line too long
-      args = { "--ignore", "E402,E501" },
+      args = { "--ignore", table.concat({
+        "E402", -- module-import-not-at-top-of-file
+        "E501", -- line-too-long
+        "E731", -- lambda-assignment
+      }, ',') },
     },
   }
 }
@@ -941,51 +943,59 @@ function M.setup_null_ls()
 
   -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md
   -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
-  -- @see ~/.vim/plugged/null-ls.nvim/lua/null-ls/builtins
 
-  -- @see BUILTINS.md#conditional-registration
-  local _cond = function(cmd, source)
-    if vim.fn.executable(cmd) > 0 then return source
-    else return nil end
+  local function condition_has_executable(cmd)
+    return function() return vim.fn.executable(cmd) > 0 end
   end
   local _exclude_nil = function(tbl)
     return vim.tbl_filter(function(s) return s ~= nil end, tbl)
   end
 
-  null_ls.setup({
-    sources = _exclude_nil {
-      -- [[ Auto-Formatting ]]
-      -- @python (pip install yapf isort)
-      _cond("yapf", null_ls.builtins.formatting.yapf),
-      _cond("isort", null_ls.builtins.formatting.isort),
-      -- @javascript
-      null_ls.builtins.formatting.prettier,
-
-      -- Linting (diagnostics)
-      -- @python: pylint, flake8
-      _cond("pylint", null_ls.builtins.diagnostics.pylint.with({
+  -- null-ls sources (mason.nvim installation is recommended)
+  -- @see $VIMPLUG/null-ls.nvim/doc/BUILTINS.md
+  -- @see $VIMPLUG/null-ls.nvim/lua/null-ls/builtins/
+  local sources = {}
+  do -- [[ formatting ]]
+    vim.list_extend(sources, {
+      -- python
+      require('null-ls.builtins.formatting.yapf').with {
+        condition = condition_has_executable('yapf'),
+      },
+      require('null-ls.builtins.formatting.isort').with {
+        condition = condition_has_executable('isort'),
+      },
+      -- javascript, css, html, etc.
+      require('null-ls.builtins.formatting.prettier').with {
+        condition = condition_has_executable('prettier'),
+      },
+    })
+  end
+  do -- [[ diagnostics (linting) ]]
+    -- python: pylint, flake8
+    vim.list_extend(sources, {
+      require('null-ls.builtins.diagnostics.pylint').with {
           method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-          condition = function(utils)
+          condition = function(utils)  ---@param utils ConditionalUtils
             -- https://pylint.pycqa.org/en/latest/user_guide/run.html#command-line-options
-            return (
+            return condition_has_executable('pylint') and (
               utils.root_has_file("pylintrc") or
               utils.root_has_file(".pylintrc")) or
               utils.root_has_file("setup.cfg")
           end,
-        })),
-      _cond("flake8", null_ls.builtins.diagnostics.flake8.with({
+      },
+      require('null-ls.builtins.diagnostics.flake8').with {
           method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
           -- Activate when flake8 is available and any project config is found,
           -- per https://flake8.pycqa.org/en/latest/user/configuration.html
-          condition = function(utils)
-            return (
+          condition = function(utils)  ---@param utils ConditionalUtils
+            return condition_has_executable('flake8') and (
               utils.root_has_file("setup.cfg") or
               utils.root_has_file("tox.ini") or
               utils.root_has_file(".flake8"))
           end,
           -- Ignore some too aggressive errors (indentation, lambda, etc.)
           -- @see https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
-          extra_args = {"--extend-ignore", "E111,E114,E731"},
+          extra_args = {"--extend-ignore", "E111,E114,E402,E731"},
           -- Override flake8 diagnostics levels
           -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/issues/538
           on_output = h.diagnostics.from_pattern(
@@ -1003,13 +1013,21 @@ function M.setup_null_ls()
                 C = h.diagnostics.severities["warning"],
               },
             }),
-        })),
-      -- @rust
-      _cond("rustfmt", null_ls.builtins.formatting.rustfmt.with {
-        extra_args = { "--edition=2018" }
-      }),
-    },
+      },
+    })
+    -- rust: rustfmt
+    vim.list_extend(sources, {
+      require('null-ls.builtins.formatting.rustfmt').with {
+        condition = condition_has_executable('rustfmt'),
+        extra_args = { "--edition=2018" },
+      },
+    })
+  end
 
+  null_ls.setup({
+    sources = _exclude_nil(sources),
+
+    on_attach = on_attach,
     should_attach = function(bufnr)
       -- Excludes some files on which it doesn't not make a sense to use linting.
       local bufname = vim.api.nvim_buf_get_name(bufnr)
