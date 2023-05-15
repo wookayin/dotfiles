@@ -941,6 +941,9 @@ function M.setup_null_ls()
   local null_ls = require("null-ls")
   local h = require("null-ls.helpers")
 
+  -- Monkey-patching because of a performance bug on startup (jose-elias-alvarez/null-ls.nvim#1564)
+  require('null-ls.client').retry_add = require('null-ls.client').try_add
+
   -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md
   -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
 
