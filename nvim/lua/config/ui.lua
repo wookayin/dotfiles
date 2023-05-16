@@ -19,6 +19,14 @@ function M.setup_notify()
       vim.api.nvim_win_set_config(win, { focusable = false })
       vim.api.nvim_win_set_option(win, "winblend", vim.g.nvim_notify_winblend)
     end,
+    level = (function()
+      local is_debug = #(os.getenv("DEBUG") or "") > 0 and os.getenv("DEBUG") ~= "0";
+      if is_debug then
+        vim.schedule(function() vim.notify("vim.notify threshold = DEBUG", vim.log.levels.DEBUG, { title = 'nvim-notify' }) end)
+        return vim.log.levels.DEBUG
+      else return vim.log.levels.INFO
+      end
+    end)(),
     timeout = 3000,
     fps = 60,
     background_colour = "#000000",
