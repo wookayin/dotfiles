@@ -303,15 +303,18 @@ lsp_setup_opts['yamlls'] = {
 -- Call lspconfig[...].setup for all installed LSP servers with common opts
 local function setup_lsp(lsp_name)
   local cmp_nvim_lsp = require('cmp_nvim_lsp')
-  local opts = {
+  local default_opts = {
     on_init = on_init[lsp_name],
     on_attach = on_attach,
 
-    -- Suggested configuration by nvim-cmp
-    capabilities = (require'cmp_nvim_lsp'.default_capabilities or
-                    require'cmp_nvim_lsp'.update_capabilities)(
-      vim.lsp.protocol.make_client_capabilities()
-    ),
+    capabilities = (function()
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      -- nvim-cmp completion support
+      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+      -- Make sure to use utf-8 offset. clangd defaults to utf-16 (see null-ls.vim#428)
+      capabilities.offsetEncoding = 'utf-8'
+      return capabilities
+    end)(),
   }
 
   -- Configure lua_ls to support neovim Lua runtime APIs
@@ -320,7 +323,7 @@ local function setup_lsp(lsp_name)
   end
 
   -- Customize the options passed to the server
-  opts = vim.tbl_extend("error", opts, M.lsp_setup_opts[lsp_name] or {})
+  local opts = vim.tbl_extend("force", default_opts, M.lsp_setup_opts[lsp_name] or {})
   require('lspconfig')[lsp_name].setup(opts)
 end
 
