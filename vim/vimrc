@@ -190,10 +190,8 @@ set laststatus=2            " show anytime (legacy vim behavior)
 set noshowmode              " don't display mode, e.g. '-- INSERT --'
 set showcmd
 
-" title: turn on if tmux is ON
-if !empty($TMUX)
-  set title
-endif
+" title: turn on (for tmux and terminal apps tab title)
+set title
 
 " customize the native statusline, just in case airline/lualine is not available
 " (this setting will be replaced afterwards by airline/lualine)
