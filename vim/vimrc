@@ -1042,6 +1042,10 @@ call CommandAlias('th',      "tabnew %:h/<C-R>=EatWhitespace()<CR>")
 call CommandAlias('eplug', "e $VIMPLUG/<C-R>=EatWhitespace()<CR>")
 call CommandAlias('vsplug', "vs $VIMPLUG/<C-R>=EatWhitespace()<CR>")
 
+" command line mode mapping
+" Use Ctrl-A for Home, Ctrl-E for End. (:help tcsh-style)
+" Note: [Ctrl-F {norm}] executes
+cnoremap <C-A> <Home>
 
 " :Toggle... command aliases
 if has('lambda') && exists('##CmdlineEnter')
