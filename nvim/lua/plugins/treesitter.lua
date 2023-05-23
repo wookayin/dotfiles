@@ -12,7 +12,10 @@ return {
       -- see https://github.com/nvim-treesitter/nvim-treesitter/issues/3092
       return 'v0.7.2'
     end)(),
-    build = ':TSUpdateSync',
+    build = function(_)
+      -- :TSUpdateSync
+      require('nvim-treesitter.install').update { with_sync = true }
+    end,
     event = 'UIEnter',  -- lazy, or on demand (vim.treesitter)
     config = function()
       -- Note: this works as a script, not as a module
