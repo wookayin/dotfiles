@@ -13,8 +13,8 @@ return {
       return 'v0.7.2'
     end)(),
     build = function(_)
-      -- :TSUpdateSync
-      require('nvim-treesitter.install').update { with_sync = true }
+      -- :TSUpdateSync (blocks UI)
+      (require('nvim-treesitter.install').update { with_sync = true })()
     end,
     event = 'UIEnter',  -- lazy, or on demand (vim.treesitter)
     config = function()
