@@ -34,6 +34,7 @@ return {
 
   -- Telescope (config/telescope.lua)
   Plug 'nvim-telescope/telescope.nvim' {
+    branch = '0.1.x',  -- for nvim 0.8 compatibility
     event = 'CmdlineEnter',
     config = function()
       -- as a script, not as a module yet
