@@ -154,12 +154,7 @@ if not (ts_configs.get_module('highlight') or {}).enable then
   ]]
 
   -- Apply TreesitterParse() at least once for the existing buffers.
-  vim.tbl_map(function(buf)
-    local valid = vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_option(buf, 'buflisted')
-    if valid then
-      _G.TreesitterParse(buf)
-    end
-  end, vim.api.nvim_list_bufs())
+  require('utils.rc_utils').bufdo(_G.TreesitterParse)
 end
 
 
