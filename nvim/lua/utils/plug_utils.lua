@@ -1,6 +1,9 @@
 -- Legacy vimscript config support. see vimrc:PlugConfig
 -- can be used as { init = PlugConfig } or { init = PlugConfig['plugin_name'] }
+---@type fun(plugin: LazyPlugin)
+---@diagnostic disable-next-line: assign-type-mismatch
 local PlugConfig = setmetatable({}, {
+  ---@param name string
   __index = function(_, name)
     return function()
       if vim.g.PlugConfig[name] == nil then
@@ -9,16 +12,28 @@ local PlugConfig = setmetatable({}, {
       vim.cmd(string.format('call g:PlugConfig["%s"]()', name))
     end
   end,
+  ---@param lazy_plugin LazyPlugin
   __call = function(self, lazy_plugin)
     return self[lazy_plugin.name]()
   end,
 })
 
+
+---@alias LazyPluginSpecFunctor fun(opt: LazyPluginSpecExt): LazyPluginSpecExt
+
+---@class LazyPluginSpecExt:LazyPluginSpec
+---@field dependencies? string|string[]|LazyPluginSpec[]|LazyPluginSpecFunctor[]
+
 -- Plug, a syntactic sugar for LazyPlugin specs.
+---@param name string
+---@return LazyPluginSpecFunctor
 local Plug = function(name)
-  return setmetatable({name}, {__call = function(self, opt)
-    return vim.tbl_extend("error", self, opt)
-  end})
+  ---@diagnostic disable-next-line: return-type-mismatch
+  return setmetatable({name}, {
+    __call = function(self, opt)
+      return vim.tbl_extend("error", self, opt)
+    end,
+  })
 end
 
 -- :UpdateRemotePlugins build hook for (python) rplugins
