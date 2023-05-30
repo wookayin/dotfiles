@@ -994,7 +994,15 @@ if has('nvim')
 
   " neorepl.nvim
   let g:loaded_neorepl = v:true   " no built-in commands (:Repl)
-  command! -count=16 -bar LuaREPL   <mods> <count>new | lua require('neorepl').new { lang = "lua" }
+  command! -count=16 -bar LuaREPL   call s:LuaREPL('<mods>', <count>)
+  function! s:LuaREPL(mods, count) abort
+    if a:mods == "vertical"
+      exec printf("%s new | lua require('neorepl').new { lang = 'lua' }", a:mods)
+    else
+      exec printf("%s %dnew | lua require('neorepl').new { lang = 'lua' }", a:mods, a:count)
+    endif
+  endfunction
+  call CommandAlias('REPL', 'LuaREPL', v:true)
 endif
 
 " In the command mode, <CTRL-/> will toggle the command between `:lua` and `:lua=`
