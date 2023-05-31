@@ -945,7 +945,7 @@ function! CommandAlias(aliasname, target, ...)
 
   " optionally, make a dummy command to facilitate cmdline completion
   if l:register_cmd
-    exec printf(':command! -nargs=0 %s  <mods> %s', a:aliasname, a:target)
+    exec printf(':command! -nargs=* %s  <mods> %s <args>', a:aliasname, a:target)
   endif
 endfunction
 
