@@ -984,25 +984,27 @@ if has('nvim')
   " (nvim 0.7.0+) :lua= ... is equivalent as :lua print(vim.inspect(...))
   call CommandAlias('LuaEcho', 'lua=')
   call CommandAlias('luaecho', 'lua=')
-  call CommandAlias('luae', 'lua=')
-  call CommandAlias('le', 'lua=')
   call CommandAlias('l', 'lua=')
-  call CommandAlias('L', 'Lua')
+  call CommandAlias('L', 'LuaREPL')
 
   " There is no ':require' command in vim; it is a common mistake with intending lua require...
   call CommandAlias('require', 'lua= require')
 
   " neorepl.nvim
   let g:loaded_neorepl = v:true   " no built-in commands (:Repl)
-  command! -count=16 -bar LuaREPL   call s:LuaREPL('<mods>', <count>)
-  function! s:LuaREPL(mods, count) abort
+  command! -nargs=* -count=16 -complete=lua LuaREPL   call s:LuaREPL('<mods>', <count>, <q-args>)
+  function! s:LuaREPL(mods, count, args) abort
     if a:mods == "vertical"
       exec printf("%s new | lua require('neorepl').new { lang = 'lua' }", a:mods)
     else
       exec printf("%s %dnew | lua require('neorepl').new { lang = 'lua' }", a:mods, a:count)
     endif
+    if !empty(a:args)
+      call nvim_input(a:args .. "<CR>")
+    endif
   endfunction
   call CommandAlias('REPL', 'LuaREPL', v:true)
+  call CommandAlias('Lua', 'LuaREPL', v:true)
 endif
 
 " In the command mode, <CTRL-/> will toggle the command between `:lua` and `:lua=`
