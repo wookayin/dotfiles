@@ -2838,6 +2838,9 @@ endfunction
 " Make the scrollbar aware of foldings (see #11).
 let g:scrollview_mode = 'virtual'
 
+" Do not use signs, it looks a bit messy without proper configs (see #85).
+let g:scrollview_signs_on_startup = ['']
+
 " Disable scrollbar on some filetypes
 " (to avoid which can cause floating-window related errors)
 let g:scrollview_excluded_filetypes = ['vim-plug', 'GV', 'git', 'neo-tree']
