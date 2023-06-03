@@ -377,6 +377,9 @@ function M._setup_lspconfig()
     attach_lsp_to_existing_buffers()
   end, { force = mason_need_refresh })
 
+  -- Use a border for the floating :LspInfo window
+  require("lspconfig.ui.windows").default_options.border = 'single'
+
   -- Add backward-compatible lsp installation related commands
   vim.cmd [[
     command! LspInstallInfo   Mason
@@ -1047,6 +1050,9 @@ function M.setup_null_ls()
       if bufname:match("/lib/python%d%.%d+/") then return false end
       return true
     end,
+
+    -- Use a border for the :NullLsLog window
+    border = 'single',
 
     -- Debug mode: Use :NullLsLog for viewing log files (~/.cache/nvim/null-ls.log)
     debug = false,
