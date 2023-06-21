@@ -23,6 +23,22 @@ def t_get(index, default=''):
         return default
 endglobal
 
+
+# ┏━━━━━━━━━┓
+# ┃ Shebang ┃
+# ┗━━━━━━━━━┛
+
+snippet #! "Shebang"
+`!p snip.rv = shebang()`
+
+endsnippet
+global !p
+def shebang():
+	if snip.ft == 'sh':  # shell or bash
+		return "#!/bin/bash"
+	return "#!/usr/bin/env " + snip.ft
+endglobal
+
 # ┏━━━━━━━┓
 # ┃ Boxes ┃
 # ┗━━━━━━━┛

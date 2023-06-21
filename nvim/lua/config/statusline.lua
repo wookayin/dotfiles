@@ -1,9 +1,6 @@
 -- Statusline config: lualine.nvim
 
-if not pcall(require, 'lualine') then
-  print("Warning: lualine not available, skipping configuration.")
-  return
-end
+local M = {}
 
 -- From nvim-lualine/lualine.nvim/wiki/Component-snippets
 --- @param trunc_width number trunctates component when screen width is less then trunc_width
@@ -80,11 +77,13 @@ local custom_components = {
   lsp_status = function()
     return LspStatus()
   end,
-  -- GPS (https://github.com/SmiteshP/nvim-gps)
-  treesitter_context = function()
-    local ok, gps = pcall(require, "nvim-gps")
-    if ok and gps.is_available() then
-      return gps.get_location()
+  -- context (https://github.com/SmiteshP/nvim-navic)
+  lsp_context = function()
+    if pcall(require, "nvim-navic") then
+      local navic = require("nvim-navic")
+      if navic.is_available() then
+        return navic.get_location() or ''
+      end
     end
     return ''
   end
@@ -93,58 +92,64 @@ _G.lualine_components = custom_components
 
 -- With neovim 0.8.0+, we can use laststatus = 3 and winbar.
 -- Configure winbar here for the time being, re-using lualine components.
-use_global_statusline = vim.fn.has('nvim-0.8.0') > 0
+local use_global_statusline = vim.fn.has('nvim-0.8.0') > 0
 
-require('lualine').setup {
-  options = {
-    globalstatus = use_global_statusline,
+function M.setup_lualine()
+  require('lualine').setup {
+    options = {
+      globalstatus = use_global_statusline,
 
-    -- https://github.com/shadmansaleh/lualine.nvim/blob/master/THEMES.md
-    theme = 'onedark'
-  },
-  -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/config.lua
-  -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/components
-  sections = {
-    lualine_a = {
-      { 'mode', cond = min_statusline_width(40) },
+      -- https://github.com/shadmansaleh/lualine.nvim/blob/master/THEMES.md
+      theme = 'onedark'
     },
-    lualine_b = {
-      { 'branch', cond = min_statusline_width(120) },
+    -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/config.lua
+    -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/components
+    sections = {
+      lualine_a = {
+        { 'mode', cond = min_statusline_width(40) },
+      },
+      lualine_b = {
+        { 'branch', cond = min_statusline_width(120) },
+      },
+      lualine_c = {
+        custom_components.asyncrun_status,
+        custom_components.neomake_status,
+        { 'filename', path = 1, color = { fg = '#eeeeee' } },
+        { custom_components.lsp_context },
+      },
+      lualine_x = {
+        --{ custom_components.lsp_status, fmt = truncate(120, 20, 60, false) },
+        { custom_components.encoding,   color = { fg = '#d70000' } },
+        { custom_components.fileformat, color = { fg = '#d70000' } },
+        { 'filetype', cond = min_statusline_width(120) },
+      },
+      lualine_y = { -- excludes 'progress'
+        { 'diff', cond = using_global_statusline },
+        'diagnostics',
+      },
+      lualine_z = {
+        { 'location', cond = min_statusline_width(90) },
+      },
     },
-    lualine_c = {
-      custom_components.asyncrun_status,
-      custom_components.neomake_status,
-      { 'filename', path = 1, color = { fg = '#eeeeee' } },
-      { custom_components.treesitter_context },
+    inactive_sections = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {
+        { 'filename', path = 1 }
+      },
+      lualine_x = {}, -- excludes 'location'
+      lualine_y = {},
+      lualine_z = {}
     },
-    lualine_x = {
-      --{ custom_components.lsp_status, fmt = truncate(120, 20, 60, false) },
-      { custom_components.encoding,   color = { fg = '#d70000' } },
-      { custom_components.fileformat, color = { fg = '#d70000' } },
-      { 'filetype', cond = min_statusline_width(120) },
-    },
-    lualine_y = { -- excludes 'progress'
-      { 'diff', cond = using_global_statusline },
-      'diagnostics',
-    },
-    lualine_z = {
-      { 'location', cond = min_statusline_width(90) },
-    },
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {
-      { 'filename', path = 1 }
-    },
-    lualine_x = {}, -- excludes 'location'
-    lualine_y = {},
-    lualine_z = {}
-  },
-}
+  }
+end
 
 -- Now configure winbar, if laststatus = 3 is used.
-if use_global_statusline then
+function M.setup_winbar()
+  if not use_global_statusline then
+    return false
+  end
+
   -- Define winbar using lualine components (see lualine.config.apply_configuration)
   local winbar_config = {
     sections = {
@@ -152,7 +157,7 @@ if use_global_statusline then
         { 'vim.fn.winnr()', color = { fg = 'white', bg = '#37b24d' } },
         { 'filename', path = 1, color = { fg = '#c92a2a', bg = '#eeeeee', gui = 'bold' } },
         'diagnostics',
-        { custom_components.treesitter_context, fmt = truncate(80, 20, 60, true) },
+        { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
         function() return ' ' end,
       },
     },
@@ -161,7 +166,7 @@ if use_global_statusline then
         { 'vim.fn.winnr()', color = { fg = '#eeeeee' } },
         { 'filename', path = 1 },
         'diagnostics',
-        { custom_components.treesitter_context, fmt = truncate(80, 20, 60, true) },
+        { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
         function() return ' ' end,
       },
     },
@@ -191,4 +196,27 @@ if use_global_statusline then
   end
 
   vim.opt.winbar = "%{%v:lua.winbarline()%}"
+  return true
 end
+
+function M.setup()
+  M.setup_lualine()
+  M.setup_winbar()
+
+  -- Register colorscheme autocmd to recover statusline after colorscheme change
+  vim.api.nvim_create_autocmd('Colorscheme', {
+    pattern = '*',
+    group = vim.api.nvim_create_augroup('Colorscheme_statusline', { clear = true }),
+    callback = function()
+      vim.schedule(M.setup)
+    end,
+  })
+end
+
+-- Resourcing support
+if RC and RC.should_resource() then
+  M.setup()
+end
+
+(RC or {}).statusline = M
+return M

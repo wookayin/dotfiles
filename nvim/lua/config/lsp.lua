@@ -1,18 +1,9 @@
 -------------
 -- LSP config
 -------------
--- See ~/.dotfiles/vim/plugins.vim for the Plug directives
+-- See 'plugins.ide' for the Plug specs
 
-if not pcall(require, 'lspconfig') then
-  print("Warning: lspconfig not available, skipping configuration.")
-  return
-end
-if not pcall(require, 'mason-lspconfig') then
-  local msg = "mason or mason-lspconfig not installed. Please update plugins and restart."
-  vim.notify_once(msg, vim.log.levels.ERROR, { title = "~/.nvim/lua/config/lsp.lua" })
-  return
-end
-local lspconfig = require('lspconfig')
+local M = {}
 
 -- lsp_signature
 local on_attach_lsp_signature = function(client, bufnr)
@@ -45,6 +36,11 @@ local on_attach = function(client, bufnr)
 
   -- Activate LSP status on attach (see a configuration below).
   require('lsp-status').on_attach(client)
+
+  -- Activate nvim-navic
+  if client.server_capabilities.documentSymbolProvider then
+    require('nvim-navic').attach(client, bufnr)
+  end
 
   -- Keybindings
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
@@ -85,14 +81,10 @@ local on_attach = function(client, bufnr)
     vim.lsp.buf.rename(opt.args ~= "" and opt.args or nil)
   end, { nargs = '?', desc = "Rename the current symbol at the cursor." })
 
-  -- Disable specific LSP capabilities: see nvim-lspconfig#1891
-  if client.name == "lua_ls" and client.server_capabilities then
-    client.server_capabilities.documentFormattingProvider = false
-  end
 end
 
 -- Add global keymappings for LSP actions
-do
+function M._setup_lsp_keymap()
   vim.cmd [[
     " F3, F12: goto definition
     map  <F12>  gd
@@ -107,27 +99,117 @@ do
 end
 
 
--- Register and activate LSP servers (managed by mason.nvim)
-local builtin_lsp_servers = {
-  -- List name of LSP servers that will be automatically installed and managed by :LspInstall.
-  -- LSP servers will be installed locally via mason at: ~/.local/share/nvim/mason/packages/
-  'pyright',
-  'vimls',
-  'tsserver',
-  'lua_ls',
+-- List LSP servers that will be automatically installed upon entering filetype for the first time.
+-- LSP servers will be installed locally via mason at: ~/.local/share/nvim/mason/packages/
+-- (lspconfig_name => { filetypes } or true)
+local auto_lsp_servers = {
+  -- @see $VIMPLUG/mason-lspconfig.nvim/lua/mason-lspconfig/mappings/filetype.lua
+  ['pyright'] = true,
+  ['ruff_lsp'] = false,  -- experimental
+  ['vimls'] = true,
+  ['lua_ls'] = true,
+  ['bashls'] = true,
+  ['tsserver'] = true,
+  ['cssls'] = true,
+  ['clangd'] = true,
+  ['rust_analyzer'] = true,
+  ['texlab'] = true,
+  ['yamlls'] = true,
+  ['taplo'] = true,  -- toml
+  ['jsonls'] = true,
+  ['lemminx'] = true,  -- xml
 }
 
--- Mason: LSP Auto installer
--- https://github.com/williamboman/mason.nvim#default-configuration
-require("mason").setup()
-require("mason-lspconfig").setup {
-  ensure_installed = builtin_lsp_servers,
-}
-local lsp_setup_opts = {}
-_G.lsp_setup_opts = lsp_setup_opts
+-- Refresh or force-update mason-registry if needed (e.g. pkgs are missing)
+-- and execute the callback asynchronously.
+local function maybe_refresh_mason_registry_and_then(callback, opts)
+  local mason_registry = require("mason-registry")
+  local function _notify(msg, opts)
+    return vim.notify_once(msg, vim.log.levels.INFO,
+      vim.tbl_deep_extend("force", { title = "config/lsp.lua" }, (opts or {})))
+  end
+  local h = nil
+  if vim.tbl_count(mason_registry.get_all_packages()) == 0 then
+    h = _notify("Initializing mason.nvim registry for the first time,\n" ..
+               "please wait a bit until LSP servers start installed.")
+    mason_registry.update(function()
+      _notify("Updating mason.nvim registry done.")
+      vim.schedule(callback)  -- must detach
+    end)
+  elseif (opts or {}).force then
+    _notify("Updating mason.nvim registry ...")
+    mason_registry.update(function()
+      _notify("Updating mason.nvim registry done.")
+      vim.schedule(callback)  -- must detach
+    end)
+  else
+    callback()  -- don't refresh, for fast startup
+  end
+end
+
+function M._setup_mason()
+  -- Mason: LSP Auto installer
+  -- https://github.com/williamboman/mason.nvim#default-configuration
+  require("mason").setup()
+  require("mason-lspconfig").setup()
+
+  -- ensure_installed: Install auto_lsp_servers on demand (FileType)
+  maybe_refresh_mason_registry_and_then(M._ensure_mason_installed)
+end
+
+-- Install auto_lsp_servers on demand (FileType)
+M._ensure_mason_installed = function()
+  local augroup = vim.api.nvim_create_augroup('mason_autoinstall', { clear = true })
+  local lspconfig_to_package = require("mason-lspconfig.mappings.server").lspconfig_to_package
+  local filetype_mappings = require("mason-lspconfig.mappings.filetype")
+  local _requested = {}
+
+  local ft_handler = {}
+  for ft, lsp_names in pairs(filetype_mappings) do
+    lsp_names = vim.tbl_filter(function(lsp_name)
+      return auto_lsp_servers[lsp_name] == true or vim.tbl_contains(auto_lsp_servers[lsp_name] or {}, lsp_name)
+    end, lsp_names)
+
+    ft_handler[ft] = vim.schedule_wrap(function()
+      for _, lsp_name in pairs(lsp_names) do
+        local pkg_name = lspconfig_to_package[lsp_name]
+        local ok, pkg = pcall(require("mason-registry").get_package, pkg_name)
+        if ok and not pkg:is_installed() and not _requested[pkg_name] then
+          _requested[pkg_name] = true
+          require("mason-lspconfig.install").install(pkg)  -- async
+        end
+      end
+    end)
+
+    -- Create FileType handler to auto-install LSPs for the &filetype
+    if vim.tbl_count(lsp_names) > 0 then
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = ft,
+        group = augroup,
+        desc = string.format('Auto-install LSP server: %s (for %s)', table.concat(lsp_names, ","), ft),
+        callback = function() ft_handler[ft]() end,
+        once = true,
+      })
+    end
+  end
+
+  -- Since this works asynchronously, apply on the already opened buffer as well
+  vim.tbl_map(function(buf)
+    local valid = vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_option(buf, 'buflisted')
+    if not valid then return end
+    local handler = ft_handler[vim.bo[buf].filetype]
+    if handler then handler() end
+  end, vim.api.nvim_list_bufs())
+end
 
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+local lsp_setup_opts = {}
+M.lsp_setup_opts = lsp_setup_opts
+
+-- (lsp_name: string) => function(client, init_result), see :help vim.lsp.start_client()
+local on_init = {}
+M.on_init = {}
 
 lsp_setup_opts['pyright'] = {
   settings = {
@@ -140,8 +222,30 @@ lsp_setup_opts['pyright'] = {
   },
 }
 
--- Configure lua_ls to support neovim Lua runtime APIs
-require("neodev").setup { }
+lsp_setup_opts['ruff_lsp'] = {
+  init_options = {
+    -- https://github.com/charliermarsh/ruff-lsp#settings
+    settings = {
+      fixAll = true,
+      organizeImports = false,  -- let isort take care of organizeImports
+      -- extra CLI arguments
+      -- https://beta.ruff.rs/docs/configuration/#command-line-interface
+      -- https://beta.ruff.rs/docs/rules/
+      args = { "--ignore", table.concat({
+        "E402", -- module-import-not-at-top-of-file
+        "E501", -- line-too-long
+        "E731", -- lambda-assignment
+      }, ',') },
+    },
+  }
+}
+on_init['ruff_lsp'] = function(client, _)
+  -- Disable hover in favor of Pyright
+  if client.server_capabilities then
+    client.server_capabilities.hoverProvider = false
+  end
+end
+
 lsp_setup_opts['lua_ls'] = {
   settings = {
     Lua = {
@@ -174,70 +278,122 @@ lsp_setup_opts['lua_ls'] = {
     },
   },
 }
+on_init['lua_ls'] = function(client, _)
+  -- Note that server_capabilities config shouldn't be done in on_attach
+  -- due to delayed execution (see neovim/nvim-lspconfig#2542)
+  if client.server_capabilities then
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.semanticTokensProvider = false  -- turn off semantic tokens
+  end
+end
+
+lsp_setup_opts['bashls'] = {
+  filetypes = { 'sh', 'zsh' },
+}
+
+lsp_setup_opts['yamlls'] = {
+  settings = {
+    -- https://github.com/redhat-developer/yaml-language-server#language-server-settings
+    yaml = {
+      keyOrdering = false,
+    },
+  }
+}
 
 -- Call lspconfig[...].setup for all installed LSP servers with common opts
-local installed_mason_packages = require('mason-registry').get_installed_packages()
 local function setup_lsp(lsp_name)
   local cmp_nvim_lsp = require('cmp_nvim_lsp')
-  local opts = {
+  local default_opts = {
+    on_init = on_init[lsp_name],
     on_attach = on_attach,
 
-    -- Suggested configuration by nvim-cmp
-    capabilities = (require'cmp_nvim_lsp'.default_capabilities or
-                    require'cmp_nvim_lsp'.update_capabilities)(
-      vim.lsp.protocol.make_client_capabilities()
-    ),
+    capabilities = (function()
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      -- nvim-cmp completion support
+      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+      return capabilities
+    end)(),
   }
+
+  -- Configure lua_ls to support neovim Lua runtime APIs
+  if lsp_name == 'lua_ls' then
+    require("neodev").setup { }
+  elseif lsp_name == 'clangd' then
+    -- Make sure to use utf-8 offset. clangd defaults to utf-16 (see null-ls.vim#428)
+    default_opts.capabilities.offsetEncoding = 'utf-8'
+  end
+
   -- Customize the options passed to the server
-  opts = vim.tbl_extend("error", opts, _G.lsp_setup_opts[lsp_name] or {})
-  lspconfig[lsp_name].setup(opts)
+  local opts = vim.tbl_extend("force", default_opts, M.lsp_setup_opts[lsp_name] or {})
+  require('lspconfig')[lsp_name].setup(opts)
 end
 
 -- lsp configs are lazy-loaded or can be triggered after LSP installation,
 -- so we need a way to make LSP clients attached to already existing buffers.
-local reload_lsp = vim.schedule_wrap(function()
+local attach_lsp_to_existing_buffers = vim.schedule_wrap(function()
   -- this can be easily achieved by firing an autocmd event for the open buffers.
+  -- See lspconfig.configs (config.autostart)
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[bufnr].buftype == "" then
-      vim.api.nvim_exec_autocmds("BufReadPost", { buffer = bufnr })
+    local valid = vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_get_option(bufnr, 'buflisted')
+    if valid and vim.bo[bufnr].buftype == "" then
+      local augroup_lspconfig = vim.api.nvim_create_augroup('lspconfig', { clear = false })
+      vim.api.nvim_exec_autocmds("FileType", { group = augroup_lspconfig, buffer = bufnr })
     end
   end
 end)
 
-do  -- setup all known and available LSP servers that are installed
-  local lsp_names = require('mason-lspconfig.mappings.server').lspconfig_to_package
-  for lsp_name, package_name in pairs(lsp_names) do
+--- setup all known and available LSP servers that are installed
+function M._setup_lspconfig()
+  local all_known_lsps = require('mason-lspconfig.mappings.server').lspconfig_to_package
+  local lsp_uninstalled = {}   --- { lspconfig name => mason package name }
+  local mason_need_refresh = false
+
+  for lsp_name, package_name in pairs(all_known_lsps) do
     if require('mason-registry').is_installed(package_name) then
+      -- Perform lspconfig[lsp_name].setup {}
       setup_lsp(lsp_name)
     else
-      -- mason.nvim does not launch lsp when installed for the first time
-      -- we attach a manual callback to setup LSP and launch
+      if not require('mason-registry').has_package(package_name) then
+        mason_need_refresh = true
+      end
+      lsp_uninstalled[lsp_name] = package_name
+    end
+  end
+
+  maybe_refresh_mason_registry_and_then(function()
+    -- mason.nvim does not launch lsp when installed for the first time
+    -- we attach a manual callback to setup LSP and launch
+    for lsp_name, package_name in pairs(lsp_uninstalled) do
       local ok, pkg = pcall(require('mason-registry').get_package, package_name)
       if ok then
         pkg:on("install:success", vim.schedule_wrap(function()
           setup_lsp(lsp_name)
-          reload_lsp()  -- TODO: reload only the buffers that matches filetype.
+          attach_lsp_to_existing_buffers()  -- TODO: reload only the buffers that matches filetype.
         end))
       end
     end
-  end
+
+    -- Make sure LSP clients are attached to already existing buffers prior to this config.
+    attach_lsp_to_existing_buffers()
+  end, { force = mason_need_refresh })
+
+  -- Use a border for the floating :LspInfo window
+  require("lspconfig.ui.windows").default_options.border = 'single'
+
+  -- Add backward-compatible lsp installation related commands
+  vim.cmd [[
+    command! LspInstallInfo   Mason
+  ]]
 end
-
--- Make sure LSP clients are attached to already existing buffers prior to this config.
-reload_lsp()
-
--- Add backward-compatible lsp installation related commands
-vim.cmd [[
-  command! LspInstallInfo   Mason
-]]
 
 -------------------------
 -- LSP Handlers (general)
 -------------------------
-do
+function M._setup_lsp_handlers()
   -- :help lsp-method
   -- :help lsp-handler
   -- :help lsp-handler-configuration
+  --  https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
   local lsp_handlers_hover = vim.lsp.with(vim.lsp.handlers.hover, {
     border = 'single'
   })
@@ -255,13 +411,26 @@ end
 ------------------
 -- LSP diagnostics
 ------------------
-if vim.diagnostic then
+function M._setup_diagnostic()
+  local icons = {
+    [vim.diagnostic.severity.ERROR] = "✘",
+    [vim.diagnostic.severity.WARN] = "",
+    [vim.diagnostic.severity.INFO] = "i",
+    [vim.diagnostic.severity.HINT] = "󰌶",
+  }
+
   -- Customize how to show diagnostics:
   -- @see https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
   -- @see https://github.com/neovim/neovim/pull/16057 for new APIs
+  -- @see :help vim.diagnostic.config()
   vim.diagnostic.config {
     -- No virtual text (distracting!), show popup window on hover.
-    virtual_text = false,
+    virtual_text = {
+      severity = { min = vim.diagnostic.severity.WARN },
+      prefix = vim.fn.has('nvim-0.10') > 0 and function(diagnostic)  ---@param diagnostic Diagnostic
+        return (icons[diagnostic.severity] or "") .. " "
+      end,
+    },
     underline = {
       -- Do not underline text when severity is low (INFO or HINT).
       severity = { min = vim.diagnostic.severity.WARN },
@@ -290,13 +459,12 @@ if vim.diagnostic then
       end,
     }
   }
-  _G.LspDiagnosticsShowPopup = function()
-    return vim.diagnostic.open_float(0, { scope = "cursor" })
-  end
-end
 
--- Show diagnostics in a pop-up window on hover
-do
+  _G.LspDiagnosticsShowPopup = function()
+    return vim.diagnostic.open_float({ bufnr = 0, scope = "cursor" })
+  end
+
+  -- Show diagnostics in a pop-up window on hover
   _G.LspDiagnosticsPopupHandler = function()
     local current_cursor = vim.api.nvim_win_get_cursor(0)
     local last_popup_cursor = vim.w.lsp_diagnostics_last_cursor or { nil, nil }
@@ -312,35 +480,48 @@ do
       end
     end
   end
-  vim.cmd [[
-  augroup LSPDiagnosticsOnHover
-    autocmd!
-    autocmd CursorHold *   lua _G.LspDiagnosticsPopupHandler()
-  augroup END
-  ]]
-end
 
--- Redefine signs (:help diagnostic-signs)
-do
-  vim.fn.sign_define("DiagnosticSignError",  {text = "✘", texthl = "DiagnosticSignError"})
-  vim.fn.sign_define("DiagnosticSignWarn",   {text = "", texthl = "DiagnosticSignWarn"})
-  vim.fn.sign_define("DiagnosticSignInfo",   {text = "i", texthl = "DiagnosticSignInfo"})
-  vim.fn.sign_define("DiagnosticSignHint",   {text = "", texthl = "DiagnosticSignHint"})
   vim.cmd [[
-    hi DiagnosticSignError    guifg=#e6645f ctermfg=167
-    hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
-    hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
+    augroup LSPDiagnosticsOnHover
+      autocmd!
+      autocmd CursorHold *   lua _G.LspDiagnosticsPopupHandler()
+    augroup END
   ]]
-end
 
--- Commands for temporarily turning on and off diagnostics (for the current buffer or globally)
-do
-  vim.cmd [[
-    command! DiagnosticsDisable     :lua vim.diagnostic.disable(0)
-    command! DiagnosticsEnable      :lua vim.diagnostic.enable(0)
-    command! DiagnosticsDisableAll  :lua vim.diagnostic.disable()
-    command! DiagnosticsEnableAll   :lua vim.diagnostic.enable()
-  ]]
+  -- Redefine signs (:help diagnostic-signs) and highlights (:help diagnostic-highlights)
+  do
+    vim.fn.sign_define("DiagnosticSignError",  {text = icons[vim.diagnostic.severity.ERROR], texthl = "DiagnosticSignError"})
+    vim.fn.sign_define("DiagnosticSignWarn",   {text = icons[vim.diagnostic.severity.WARN],  texthl = "DiagnosticSignWarn"})
+    vim.fn.sign_define("DiagnosticSignInfo",   {text = icons[vim.diagnostic.severity.INFO],  texthl = "DiagnosticSignInfo"})
+    vim.fn.sign_define("DiagnosticSignHint",   {text = icons[vim.diagnostic.severity.HINT],  texthl = "DiagnosticSignHint"})
+  end
+  require('utils.rc_utils').RegisterHighlights(function()
+    vim.cmd [[
+      hi DiagnosticSignError    guifg=#e6645f ctermfg=167
+      hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
+      hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
+
+      hi DiagnosticVirtualTextError   guifg=#a6242f  gui=italic,underdashed,underline
+      hi DiagnosticVirtualTextWarn    guifg=#777744  gui=italic,underdashed,underline
+      hi DiagnosticVirtualTextHint    guifg=#555555  gui=italic,underdashed,underline
+    ]]
+  end)
+
+  -- Turning on and off diagnostics
+  -- Disable default commands, assuming the plugin is always lazy-loaded
+  vim.g.toggle_lsp_diagnostics_loaded_install = 1
+  require('toggle_lsp_diagnostics').init(vim.diagnostic.config())
+
+  do
+    vim.cmd [[
+      command! DiagnosticsDisableBuffer       :lua vim.diagnostic.disable(0)
+      command! DiagnosticsEnableBuffer        :lua vim.diagnostic.enable(0)
+      command! DiagnosticsDisableAll          :lua vim.diagnostic.disable()
+      command! DiagnosticsEnableAll           :lua vim.diagnostic.enable()
+      command! DiagnosticsVirtualTextToggle   :lua require('toggle_lsp_diagnostics').toggle_diagnostic('virtual_text')
+      command! DiagnosticsUnderlineToggle     :lua require('toggle_lsp_diagnostics').toggle_diagnostic('underline')
+    ]]
+  end
 end
 
 ---------------------------------
@@ -348,8 +529,6 @@ end
 ---------------------------------
 -- https://github.com/hrsh7th/nvim-cmp#recommended-configuration
 -- ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
-
-vim.o.completeopt = "menu,menuone,noselect"
 
 local has_words_before = function()
   if vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt' then
@@ -367,18 +546,24 @@ local truncate = function(text, max_width)
   end
 end
 
-local cmp = require('cmp')
-local cmp_helper = {}
-local cmp_types = require('cmp.types.cmp')
 
--- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
-cmp.setup {
-  snippet = {
+local cmp_helper = {}
+
+M.setup_cmp = function()
+  local cmp = require('cmp')
+  local SelectBehavior = require('cmp.types.cmp').SelectBehavior
+  local ContextReason = require('cmp.types.cmp').ContextReason
+
+  vim.o.completeopt = "menu,menuone,noselect"
+
+  -- cmp.setup { ... }
+  -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
+  local snippet = {
     expand = function(args)
       vim.fn["UltiSnips#Anon"](args.body)
     end,
-  },
-  window = {
+  }
+  local window = {
     documentation = {
       border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
     },
@@ -391,19 +576,19 @@ cmp.setup {
       col_offset = -1,
 
       winhighlight = 'Normal:CmpPmenu,FloatBorder:CmpPmenuBorder,CursorLine:PmenuSel,Search:None',
-    },
-  },
-  mapping = {
+    }
+  }
+  local mapping = {
     -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/mapping.lua
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-Space>'] = cmp.mapping.complete({ reason = ContextReason.Manual }),
     ['<C-y>'] = cmp.config.disable,
     ['<C-e>'] = cmp.mapping.close(),
-    ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp_types.SelectBehavior.Select }),
-    ['<Up>'] = cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Select }),
-    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp_types.SelectBehavior.Insert }),
-    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp_types.SelectBehavior.Insert }),
+    ['<Down>'] = cmp.mapping.select_next_item({ behavior = SelectBehavior.Select }),
+    ['<Up>'] = cmp.mapping.select_prev_item({ behavior = SelectBehavior.Select }),
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = SelectBehavior.Insert }),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
     ['<Tab>'] = { -- see GH-880, GH-897
       i = function(fallback) -- see GH-231, GH-286
@@ -418,8 +603,8 @@ cmp.setup {
         else fallback() end
       end,
     },
-  },
-  formatting = {
+  }
+  local formatting = {
     format = function(entry, vim_item)
       -- Truncate the item if it is too long
       vim_item.abbr = truncate(vim_item.abbr, 80)
@@ -477,26 +662,38 @@ cmp.setup {
           vim_item.menu_hl_group = 'CmpItemMenuDetail'
         end
 
+      elseif entry.source.name == 'zsh' then
+        -- cmp-zsh: Display documentation for cmdline flag ('' denotes zsh)
+        ---@diagnostic disable-next-line: undefined-field
+        local detail = cmp_item.documentation
+        if detail then
+          vim_item.menu = detail
+          vim_item.menu_hl_group = 'CmpItemMenuZsh'
+          vim_item.kind = '  ' .. 'zsh'
+        end
+
       elseif entry.source.name == 'ultisnips' then
-        if (cmp_item.snippet or {}).description then
-          vim_item.menu = truncate(cmp_item.snippet.description, 40)
+        ---@diagnostic disable-next-line: undefined-field
+        local description = (cmp_item.snippet or {}).description
+        if description then
+          vim_item.menu = truncate(description, 40)
         end
       end
 
       -- Add a little bit more padding
       vim_item.menu = " " .. vim_item.menu
       return vim_item
-    end,
-  },
-  sources = {
+    end
+  }
+  local sources = {
     -- Note: make sure you have proper plugins specified in plugins.vim
     -- https://github.com/topics/nvim-cmp
     { name = 'nvim_lsp', priority = 100 },
     { name = 'ultisnips', keyword_length = 2, priority = 50 },  -- workaround '.' trigger
     { name = 'path', priority = 30, },
     { name = 'buffer', priority = 10 },
-  },
-  sorting = {
+  }
+  local sorting = {
     -- see ~/.vim/plugged/nvim-cmp/lua/cmp/config/compare.lua
     comparators = {
       cmp.config.compare.offset,
@@ -510,17 +707,44 @@ cmp.setup {
       cmp.config.compare.length,
       cmp.config.compare.order,
     },
-  },
-}
+  }
+
+  cmp.setup {
+    snippet = snippet,
+    window = window,
+    mapping = mapping,
+    formatting = formatting,
+    sources = sources,
+    sorting = sorting,
+  }
+
+  -- filetype-specific sources
+  require("cmp_zsh").setup { filetypes = { "bash", "zsh" } }
+  cmp.setup.filetype({'sh', 'zsh', 'bash'}, {
+    sources = cmp.config.sources({
+      { name = 'zsh', priorty = 100 },
+      { name = 'nvim_lsp', priority = 50 },
+      { name = 'ultisnips', keyword_length = 2, priority = 50 },  -- workaround '.' trigger
+      { name = 'path', priority = 30, },
+      { name = 'buffer', priority = 10 },
+    }),
+  })
+
+  -- Highlights
+  require('utils.rc_utils').RegisterHighlights(cmp_helper.apply_highlight)
+end
 
 -- Custom sorting/ranking for completion items.
 cmp_helper.compare = {
   -- Deprioritize items starting with underscores (private or protected)
+  --- @param lhs cmp.Entry
+  --- @param rhs cmp.Entry
   deprioritize_underscore = function(lhs, rhs)
     local l = (lhs.completion_item.label:find "^_+") and 1 or 0
     local r = (rhs.completion_item.label:find "^_+") and 1 or 0
     if l ~= r then return l < r end
   end,
+
   -- Prioritize items that ends with "= ..." (usually for argument completion).
   prioritize_argument = function(lhs, rhs)
     local l = (lhs.completion_item.label:find "=$") and 1 or 0
@@ -529,14 +753,14 @@ cmp_helper.compare = {
   end,
 }
 
-
 -- Highlights with bordered completion window (GH-224, GH-472)
-_G.setup_cmp_highlight = function()
+function cmp_helper.apply_highlight()
   vim.cmd [[
     " Dark background, and white-ish foreground
     highlight! CmpPmenu         guibg=#242a30
     highlight! CmpPmenuBorder   guibg=#242a30
     highlight! CmpItemAbbr      guifg=#eeeeee
+    highlight! CmpItemMenuDefault   guifg=white
     " gray
     highlight! CmpItemAbbrDeprecated    guibg=NONE gui=strikethrough guifg=#808080
     " fuzzy matching
@@ -564,15 +788,8 @@ _G.setup_cmp_highlight = function()
     highlight!      CmpItemKindUnit          guibg=NONE guifg=#D4D4D4
     highlight!      CmpItemKindConstant      guibg=NONE guifg=#409F31
     highlight!      CmpItemKindSnippet       guibg=NONE guifg=#E3E300
-
-  " Make these highlights applied when colorscheme changes
-  augroup CmpHighlights
-    autocmd!
-    autocmd ColorScheme * lua _G.setup_cmp_highlight()
-  augroup END
   ]]
 end
-_G.setup_cmp_highlight()
 
 -----------------------------
 -- Configs for PeekDefinition
@@ -613,7 +830,8 @@ _G.PeekDefinition = function(lsp_request_method)
   end
 end
 
-do  -- Commands and Keymaps for PeekDefinition
+-- Commands and Keymaps for PeekDefinition
+function M._define_peek_definition()
   vim.cmd [[
     command! -nargs=0 PeekDefinition      :lua _G.PeekDefinition()
     command! -nargs=0 PreviewDefinition   :PeekDefinition
@@ -623,34 +841,41 @@ do  -- Commands and Keymaps for PeekDefinition
     " Preview type definition.
     nmap <silent> gT   <cmd>lua _G.PeekDefinition('textDocument/typeDefinition')<CR>
   ]]
+
+  -- workaround a bug where quickpreview winhighlight (background) is not cleaned up
+  -- for the buffer that was opened in the preview window for the first time.
+  vim.api.nvim_create_autocmd('BufWinEnter', {
+    pattern = '*',
+    group = vim.api.nvim_create_augroup('PeekDefinition_quickui_workaround', { clear = true }),
+    callback = function()
+      local is_floating = vim.api.nvim_win_get_config(0).relative ~= ""
+      if is_floating then return end
+      for key, value in pairs(vim.opt_local.winhighlight:get()) do
+        if value == "QuickPreview" then
+          vim.opt_local.winhighlight:remove(key)
+        end
+      end
+    end,
+  })
 end
 
 
 ------------
 -- LSPstatus
 ------------
-local lsp_status = require('lsp-status')
-lsp_status.config({
-  -- Avoid using use emoji-like or full-width characters
-  -- because it can often break rendering within tmux and some terminals
-  -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
-  indicator_hint = '!',
-  status_symbol = ' ',
+function M.setup_lsp_status()
+  local lsp_status = require('lsp-status')
+  lsp_status.config({
+    -- Avoid using use emoji-like or full-width characters
+    -- because it can often break rendering within tmux and some terminals
+    -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
+    indicator_hint = '!',
+    status_symbol = ' ',
 
-  -- If true, automatically sets b:lsp_current_function
-  -- (no longer used in favor of treesitter + nvim-gps)
-  current_function = false,
-})
-lsp_status.register_progress()
-
--- LspStatus(): status string for airline
-do
-  _G.LspStatus = function()
-    if #vim.lsp.get_active_clients({bufnr = 0}) > 0 then
-      return lsp_status.status()
-    end
-    return ''
-  end
+    -- If true, automatically sets b:lsp_current_function
+    -- (no longer used in favor of treesitter + nvim-gps)
+    current_function = false,
+  })
 
   -- :LspStatus (command): display lsp status
   vim.cmd [[
@@ -658,9 +883,17 @@ do
   ]]
 end
 
+-- LspStatus(): status string for airline
+_G.LspStatus = function()
+  if #vim.lsp.get_active_clients({bufnr = 0}) > 0 then
+    return require('lsp-status').status()
+  end
+  return ''
+end
+
 -- Other LSP commands
 -- :LspDebug, :CodeActions
-local function define_lsp_commands()
+function M._setup_lsp_commands()
   vim.cmd [[
     command! -nargs=0 LspDebug  :tab drop $HOME/.cache/nvim/lsp.log
 
@@ -668,14 +901,21 @@ local function define_lsp_commands()
     call CommandAlias("CA", "CodeActions")
   ]]
 end
-define_lsp_commands()
 
+-----------------------------------
+--- navic (LSP context)
+-----------------------------------
+function M.setup_navic()
+  require('nvim-navic').setup {
+    -- Use the same separator as lualine.nvim
+    separator = '  ',
+  }
+end
 
 -----------------------------------
 --- Fidget.nvim (LSP status widget)
 -----------------------------------
-
-if pcall(require, 'fidget') then
+function M.setup_fidget()
   -- https://github.com/j-hui/fidget.nvim/blob/main/doc/fidget.md
   -- Note: This will override lsp-status.nvim (progress handlers).
   require("fidget").setup {
@@ -690,71 +930,86 @@ if pcall(require, 'fidget') then
   }
 end
 
-
 ---------------
 -- trouble.nvim
 ---------------
-require("trouble").setup {
-  -- https://github.com/folke/trouble.nvim#setup
-  mode = "document_diagnostics",
-  auto_preview = false,
-}
-
+function M.setup_trouble()
+  require("trouble").setup {
+    -- https://github.com/folke/trouble.nvim#setup
+    mode = "document_diagnostics",
+    auto_preview = false,
+  }
+end
 
 ----------------------------------------
 -- Formatting, Linting, and Code actions
 ----------------------------------------
-if pcall(require, "null-ls") then
+function M.setup_null_ls()
   local null_ls = require("null-ls")
   local h = require("null-ls.helpers")
 
+  -- Monkey-patching because of a performance bug on startup (jose-elias-alvarez/null-ls.nvim#1564)
+  require('null-ls.client').retry_add = require('null-ls.client').try_add
+
   -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md
   -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
-  -- @see ~/.vim/plugged/null-ls.nvim/lua/null-ls/builtins
 
-  -- @see BUILTINS.md#conditional-registration
-  local _cond = function(cmd, source)
-    if vim.fn.executable(cmd) > 0 then return source
-    else return nil end
+  local function condition_has_executable(cmd)
+    return function() return vim.fn.executable(cmd) > 0 end
   end
   local _exclude_nil = function(tbl)
     return vim.tbl_filter(function(s) return s ~= nil end, tbl)
   end
 
-  null_ls.setup({
-    sources = _exclude_nil {
-      -- [[ Auto-Formatting ]]
-      -- @python (pip install yapf isort)
-      _cond("yapf", null_ls.builtins.formatting.yapf),
-      _cond("isort", null_ls.builtins.formatting.isort),
-      -- @javascript
-      null_ls.builtins.formatting.prettier,
-
-      -- Linting (diagnostics)
-      -- @python: pylint, flake8
-      _cond("pylint", null_ls.builtins.diagnostics.pylint.with({
+  -- null-ls sources (mason.nvim installation is recommended)
+  -- @see $VIMPLUG/null-ls.nvim/doc/BUILTINS.md
+  -- @see $VIMPLUG/null-ls.nvim/lua/null-ls/builtins/
+  local sources = {}
+  do -- [[ formatting ]]
+    vim.list_extend(sources, {
+      -- python
+      require('null-ls.builtins.formatting.yapf').with {
+        condition = condition_has_executable('yapf'),
+      },
+      require('null-ls.builtins.formatting.isort').with {
+        condition = condition_has_executable('isort'),
+      },
+      -- javascript, css, html, etc.
+      require('null-ls.builtins.formatting.prettier').with {
+        condition = condition_has_executable('prettier'),
+      },
+    })
+  end
+  do -- [[ diagnostics (linting) ]]
+    -- python: pylint, flake8
+    vim.list_extend(sources, {
+      require('null-ls.builtins.diagnostics.pylint').with {
           method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-          condition = function(utils)
+          condition = function(utils)  ---@param utils ConditionalUtils
             -- https://pylint.pycqa.org/en/latest/user_guide/run.html#command-line-options
-            return (
+            return condition_has_executable('pylint') and (
               utils.root_has_file("pylintrc") or
-              utils.root_has_file(".pylintrc")) or
-              utils.root_has_file("setup.cfg")
+              utils.root_has_file(".pylintrc") or
+              utils.root_has_file("setup.cfg") or
+              utils.root_has_file("pyproject.toml")
+            )
           end,
-        })),
-      _cond("flake8", null_ls.builtins.diagnostics.flake8.with({
+      },
+      require('null-ls.builtins.diagnostics.flake8').with {
           method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
           -- Activate when flake8 is available and any project config is found,
           -- per https://flake8.pycqa.org/en/latest/user/configuration.html
-          condition = function(utils)
-            return (
+          condition = function(utils)  ---@param utils ConditionalUtils
+            return condition_has_executable('flake8') and (
               utils.root_has_file("setup.cfg") or
               utils.root_has_file("tox.ini") or
-              utils.root_has_file(".flake8"))
+              utils.root_has_file(".flake8") or
+              utils.root_has_file("pyproject.toml")
+            )
           end,
           -- Ignore some too aggressive errors (indentation, lambda, etc.)
           -- @see https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
-          extra_args = {"--extend-ignore", "E111,E114,E731"},
+          extra_args = {"--extend-ignore", "E111,E114,E402,E731"},
           -- Override flake8 diagnostics levels
           -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/issues/538
           on_output = h.diagnostics.from_pattern(
@@ -772,13 +1027,21 @@ if pcall(require, "null-ls") then
                 C = h.diagnostics.severities["warning"],
               },
             }),
-        })),
-      -- @rust
-      _cond("rustfmt", null_ls.builtins.formatting.rustfmt.with {
-        extra_args = { "--edition=2018" }
-      }),
-    },
+      },
+    })
+    -- rust: rustfmt
+    vim.list_extend(sources, {
+      require('null-ls.builtins.formatting.rustfmt').with {
+        condition = condition_has_executable('rustfmt'),
+        extra_args = { "--edition=2018" },
+      },
+    })
+  end
 
+  null_ls.setup({
+    sources = _exclude_nil(sources),
+
+    on_attach = on_attach,
     should_attach = function(bufnr)
       -- Excludes some files on which it doesn't not make a sense to use linting.
       local bufname = vim.api.nvim_buf_get_name(bufnr)
@@ -787,6 +1050,9 @@ if pcall(require, "null-ls") then
       if bufname:match("/lib/python%d%.%d+/") then return false end
       return true
     end,
+
+    -- Use a border for the :NullLsLog window
+    border = 'single',
 
     -- Debug mode: Use :NullLsLog for viewing log files (~/.cache/nvim/null-ls.log)
     debug = false,
@@ -848,5 +1114,36 @@ if pcall(require, "null-ls") then
     vim.cmd [[ autocmd! LspAutoFormatting ]]
     vim.notify("Lsp Auto-Formatting has been turned off.", 'warn')
   end
+end
 
-end -- if null-ls
+
+-- Entrypoint
+function M.setup_lsp()
+  M._setup_mason()
+  M._setup_lspconfig()
+  M._setup_diagnostic()
+  M._setup_lsp_keymap()
+  M._setup_lsp_commands()
+  M._setup_lsp_handlers()
+  M._define_peek_definition()
+end
+
+-- Entrypoint: setup all
+function M.setup_all()
+  M.setup_lsp()
+  M.setup_cmp()
+  M.setup_lsp_status()
+  M.setup_navic()
+  M.setup_fidget()
+  M.setup_trouble()
+  M.setup_null_ls()
+end
+
+
+-- Resourcing support
+if RC and RC.should_resource() then
+  M.setup_all()
+end
+
+(RC or {}).lsp = M
+return M

@@ -1,11 +1,6 @@
 -- Treesitter config
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
-if not pcall(require, 'nvim-treesitter') then
-  print("Warning: treesitter not available, skipping configuration.")
-  return
-end
-
 local ts_configs = require("nvim-treesitter.configs")
 local ts_parsers = require("nvim-treesitter.parsers")
 
@@ -43,6 +38,7 @@ ts_configs.setup {
   highlight = {
     -- TreeSitter's highlight/syntax support is yet experimental and has some issues.
     -- It overrides legacy filetype-based vim syntax, and colorscheme needs to be treesitter-aware.
+    -- Note: for some ftplugins (e.g. for lua and vim), treesitter highlight might be manually started
     enable = false,   -- TODO: Enable again when it becomes mature and usable enough.
 
     -- List of language that will be disabled.
@@ -75,12 +71,61 @@ ts_configs.setup {
   },
 }
 
+local function try_recover_parser_errors(lang, err)
+  -- This is a fatal, unrecoverable error where treesitter parsers must be re-installed.
+  if err and err:match('invalid node type') then
+  else
+    return false  -- Do not handle any other general errors (e.g. parser does not exist)
+  end
+
+  vim.api.nvim_echo({{ err, 'Error' }}, true, {})
+  vim.cmd [[
+    " workaround: disable TextChangedI autocmds that may cause treesitter errors
+    silent! autocmd! cmp_nvim_ultisnips
+    silent! autocmd! TreesitterUpdateParsing
+  ]]
+
+  -- Try to recover automatically, if nvim-treesitter is still importable.
+  local noti_opts = { print = true, timeout = 10000, title = 'config/treesitter' }
+  vim.notify("Fatal error on treesitter parsers (see :messages). " ..
+             "Trying to reinstall treesitter parsers...",
+             vim.log.levels.WARN, noti_opts)
+
+  -- Force-reinstall all treesitter parsers.
+  vim.schedule(function()
+    vim.defer_fn(function()
+      require('nvim-treesitter.install').commands.TSInstallSync["run!"](lang);
+      require('nvim-treesitter.install').commands.TSUpdateSync.run();
+      vim.notify("Treesitter parsers have been re-installed. Please RESTART neovim.",
+                 vim.log.levels.INFO, noti_opts)
+    end, 1000)
+  end)
+
+  return true
+end
+
 -- Make sure TS syntax tree is updated when needed by plugin (with some throttling)
 -- even if the `highlight` module is not enabled.
 -- See https://github.com/nvim-treesitter/nvim-treesitter/issues/2492
-_G.TreesitterParse = function()
-  local lang = ts_parsers.ft_to_lang(vim.bo.filetype)
-  local parser = ts_parsers.get_parser(vim.fn.bufnr(), lang)
+function _G.TreesitterParse(bufnr)
+  bufnr = bufnr or 0
+  if bufnr == 0 then bufnr = vim.api.nvim_get_current_buf() end
+
+  if not vim.bo[bufnr].filetype or vim.bo[bufnr].buftype ~= "" then
+    return false  -- only works for a normal file-type buffer
+  end
+
+  local lang = ts_parsers.ft_to_lang(vim.bo[bufnr].filetype)
+
+  local ok, parser = pcall(function()
+    return ts_parsers.get_parser(bufnr, lang)
+  end)
+  if not ok then
+    try_recover_parser_errors(lang, parser)
+    parser = nil
+  end
+
+  -- Update the treesitter parse tree for the current buffer.
   if parser then
     return parser:parse()
   else
@@ -104,8 +149,12 @@ if not (ts_configs.get_module('highlight') or {}).enable then
     augroup TreesitterUpdateParsing
       autocmd!
       autocmd TextChanged,TextChangedI *   call v:lua.TreesitterParseDebounce()
+      autocmd BufReadPost *                lua _G.TreesitterParse()
     augroup END
   ]]
+
+  -- Apply TreesitterParse() at least once for the existing buffers.
+  require('utils.rc_utils').bufdo(_G.TreesitterParse)
 end
 
 
@@ -150,14 +199,4 @@ augroup TSPlaygroundConfig
   autocmd!
   autocmd FileType tsplayground  setlocal ts=2 sts=2 sw=2
 augroup END
-]]
-
-
--- nvim-gps
--- https://github.com/SmiteshP/nvim-gps#%EF%B8%8F-configuration
-if pcall(require, 'nvim-gps') then
-  require("nvim-gps").setup {
-    -- Use the same separator as lualine.nvim
-    separator = '  ',
-  }
-end
+]];

@@ -62,6 +62,7 @@ function M.setup_gitsigns()
       map('n', '<leader>hw', '<cmd>Gitsigns toggle_word_diff<CR>')
     end
   }
+  _G.gitsigns = require('gitsigns')
 end
 
 function M.setup_diffview()
@@ -102,13 +103,15 @@ function M.setup_diffview()
   local completers = require('diffview').completers
   completers.GDiff = completers.DiffviewOpen
   completers.GShow = completers.DiffviewOpen
+
+  _G.diffview = require('diffview')
 end
 
-if pcall(require, 'diffview') then
+-- Resourcing support
+if RC and RC.should_resource() then
   M.setup_diffview()
   M.setup_gitsigns()
 end
 
-pcall(function() RC.git = M end)
-
+(RC or {}).git = M
 return M

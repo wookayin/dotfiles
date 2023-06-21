@@ -1,13 +1,7 @@
 ---------------
 -- Telescope
 ---------------
--- @see  :help telescope.setup
--- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
---
-if not pcall(require, 'telescope') then
-  print("Warning: telescope not available, skipping configuration.")
-  return
-end
+
 local telescope = require("telescope")
 
 if not pcall(require, 'telescope.actions.layout') then
@@ -15,9 +9,11 @@ if not pcall(require, 'telescope.actions.layout') then
       {"Warning: Telescope is outdated and disabled. Please update the plugin.", "WarningMsg"}
     }, true, {})
   vim.cmd [[ silent! delcommand! Telescope ]]
-  do return end
+  return false
 end
 
+-- @see  :help telescope.setup
+-- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
 telescope.setup {
   defaults = {
     winblend = 10,
@@ -58,7 +54,7 @@ command! -nargs=? -complete=help  Help        :lua require"telescope.builtin".he
 -- Telescope extensions
 -- These should be executed *AFTER* other plugins are loaded
 vim.defer_fn(function()
-  if vim.fn['HasPlug']('nvim-notify') == 1 then
+  if pcall(require, "notify") then  -- nvim-notify
     telescope.load_extension("notify")
     vim.cmd [[ command! -nargs=0 Notifications  :Telescope notify ]]
   end
