@@ -22,7 +22,9 @@ function M.setup_neotree()
         },
       },
 
-      follow_current_file = true,
+      follow_current_file = {
+        enabled = true,
+      },
       use_libuv_file_watcher = false,
 
       -- #320: Do not hide hidden files when the root folder is otherwise empty
