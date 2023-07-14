@@ -2984,6 +2984,10 @@ let g:pymode_doc_bind = '<leader>PK'
 " https://google.github.io/styleguide/pyguide.html#34-indentation
 let g:pymode_indent_hanging_width = 4
 
+" Disable trimming trailing whitespaces, in favor of user-autocmd (AutoStripTrailingWhitespaces)
+" See https://github.com/python-mode/python-mode/issues/912
+let g:pymode_trim_whitespaces = 0
+
 " Disable linting feature in favor of LSP.
 let g:pymode_lint = 0
 
