@@ -1246,12 +1246,16 @@ autocmd FileType git setlocal foldlevel=1
 autocmd FileType gitcommit setlocal cc=73 textwidth=72
 
 " remove trailing whitespaces on save
-fun! StripTrailingWhitespaces()
+let g:enable_strip_trailing_whitespaces = 1
+function! StripTrailingWhitespaces()
+  if !g:enable_strip_trailing_whitespaces | return | endif
   let l = line('.')
   let c = col('.')
   %s/\s\+$//e
   call cursor(l, c)
 endfun
+command! StripTrailingWhitespacesToggle  let g:enable_strip_trailing_whitespaces = 1 - g:enable_strip_trailing_whitespaces
+      \ | echom 'Auto-strip trailing whitespaces: ' .. (g:enable_strip_trailing_whitespaces ? 'enabled' : 'disabled')
 
 augroup AutoStripTrailingWhitespaces
   autocmd!
