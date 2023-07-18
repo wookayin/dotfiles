@@ -987,7 +987,7 @@ function M.setup_null_ls()
           method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
           condition = function(utils)  ---@param utils ConditionalUtils
             -- https://pylint.pycqa.org/en/latest/user_guide/run.html#command-line-options
-            return condition_has_executable('pylint') and (
+            return condition_has_executable('pylint')() and (
               utils.root_has_file("pylintrc") or
               utils.root_has_file(".pylintrc") or
               utils.root_has_file("setup.cfg") or
@@ -1000,7 +1000,7 @@ function M.setup_null_ls()
           -- Activate when flake8 is available and any project config is found,
           -- per https://flake8.pycqa.org/en/latest/user/configuration.html
           condition = function(utils)  ---@param utils ConditionalUtils
-            return condition_has_executable('flake8') and (
+            return condition_has_executable('flake8')() and (
               utils.root_has_file("setup.cfg") or
               utils.root_has_file("tox.ini") or
               utils.root_has_file(".flake8") or
