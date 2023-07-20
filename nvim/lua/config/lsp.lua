@@ -1009,7 +1009,7 @@ function M.setup_null_ls()
           end,
           -- Ignore some too aggressive errors (indentation, lambda, etc.)
           -- @see https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
-          extra_args = {"--extend-ignore", "E111,E114,E402,E731"},
+          extra_args = {"--extend-ignore", "E111,E114,E402,E502,E731"},
           -- Override flake8 diagnostics levels
           -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/issues/538
           on_output = h.diagnostics.from_pattern(
