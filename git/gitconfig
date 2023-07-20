@@ -28,6 +28,8 @@
 		--pretty=format:'%C(yellow)%h%Creset  %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
 		--abbrev-commit --date=short --date-order
 
+	partial-clone = clone --filter=blob:none
+
 	co = checkout
 	unstage = reset HEAD --
 	discard = checkout --
