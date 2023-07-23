@@ -39,7 +39,7 @@ alias egrep='egrep --color=auto'
 
 # alert for rm, cp, mv
 alias rm='rm -iv'
-alias cp='cp -iv'
+alias cp='cp -ivp'
 alias mv='mv -iv'
 
 # screens

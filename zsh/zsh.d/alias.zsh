@@ -15,7 +15,7 @@ alias c='command'
 alias ZQ='exit'
 alias QQ='exit'
 
-alias cp='nocorrect cp -iv'
+alias cp='nocorrect cp -ivp'
 alias mv='nocorrect mv -iv'
 alias rm='nocorrect rm -iv'
 
