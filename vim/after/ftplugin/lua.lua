@@ -18,6 +18,17 @@ if string.find(vim.fn.expand("%:p"), "nvim/lua/config/") then
   { desc = 'Build: source lua config script.', nargs = 0 })
 end
 
+-- Auto-reload hammerspoon config when applicable.
+-- ~/.hammerspoon/init.lua or ~/.dotfiles/hammerspoon/init.lua
+if vim.fn.has('mac') > 0 and string.match(vim.fn.expand("%:p"), "hammerspoon/init%.lua$") then
+  vim.api.nvim_create_autocmd('BufWritePost', {
+    buffer = vim.fn.bufnr(),
+    group = vim.api.nvim_create_augroup('HammerspoonAutoreload', { clear = false }),
+    callback = function()
+      os.execute('open -g hammerspoon://reload')
+    end
+  })
+end
 
 -- Make goto-file (gf, ]f) detect lua config files.
 setlocal.path:append('~/.dotfiles/nvim/lua')
