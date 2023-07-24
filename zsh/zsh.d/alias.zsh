@@ -238,6 +238,9 @@ function cd-git-root() {
   [ $? -eq 0 ] && cd "$_root" || return 1;
 }
 
+# Unalias some prezto aliases due to conflict
+if alias gpt > /dev/null; then unalias gpt; fi
+
 # }}}
 
 
