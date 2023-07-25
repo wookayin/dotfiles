@@ -58,7 +58,10 @@ def configure(repl: ptpython.python_input.PythonInput):
     repl.wrap_lines = True
 
     # Mouse support.
-    repl.enable_mouse_support = True
+    # This should be disabled so that mouse wheel can be used for navigating
+    # the scrollback buffer of terminal emulator or tmux. This option is for
+    # selecting text and scrolling through ptpython windows.
+    repl.enable_mouse_support = False
 
     # Complete while typing. (Don't require tab before the
     # completion menu is shown.)
