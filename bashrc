@@ -20,6 +20,9 @@ shopt -s histappend		# append, no overwrite
 HISTSIZE=10000
 HISTFILESIZE=20000
 
+# ulimits
+ulimit -n 10240
+
 ##############
 # 2. Aliases #
 ##############

@@ -3,6 +3,9 @@
 # set default permission of file to 644 (rw-r--r--)
 umask 022
 
+# Against "Too many open files"; default value (256) is too low
+ulimit -n 10240
+
 # At this point, /etc/zprofile has been executed (after ~/.zshenv)
 # which messes up $PATH due to the execution of `path_helper`.
 # Correct $PATH so that /usr/local/bin, etc. would come after
