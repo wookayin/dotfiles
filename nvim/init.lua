@@ -20,8 +20,8 @@ function _require(name)
 end
 
 -- Configure neovim python host.
-require 'config/pynvim'
-require 'config/fixfnkeys'
+require 'config.pynvim'
+require 'config.fixfnkeys'
 
 -- VimR support
 -- @see https://github.com/qvacua/vimr/wiki#initvim
@@ -70,7 +70,7 @@ end
 
 if vim.fn.has('nvim-0.8') > 0 then
   -- Load all the plugins (lazy.nvim, requires nvim 0.8+)
-  require 'config/plugins'
+  require 'config.plugins'
 
   -- Colorscheme needs to be called AFTER plugins are loaded,
   -- because of the different plugin loading mechanism and order.
@@ -80,9 +80,10 @@ end
 -- Source some individual rc files on startup, manually in sequence.
 -- Note that many other config modules are called upon plugin loading.
 -- (see each plugin spec, e.g. 'plugins/ui' and 'config/ui')
-_require 'config/commands'
+-- See nvim/lua/config/commands/init.lua
+_require 'config.commands'
 
 -- Source local-only lua configs (not git tracked)
 if vim.fn.filereadable(vim.fn.expand('~/.config/nvim/lua/config/local.lua')) > 0 then
-  require 'config/local'
+  require 'config.local'
 end
