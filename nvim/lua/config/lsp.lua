@@ -605,6 +605,8 @@ M.setup_cmp = function()
     },
   }
   local formatting = {
+    ---@param entry cmp.Entry
+    ---@param vim_item vim.CompletedItem
     format = function(entry, vim_item)
       -- Truncate the item if it is too long
       vim_item.abbr = truncate(vim_item.abbr, 80)
@@ -647,7 +649,7 @@ M.setup_cmp = function()
         -- Some language servers provide details, e.g. type information.
         -- The details info hide the name of lsp server, but mostly we'll have one LSP
         -- per filetype, and we use special highlights so it's OK to hide it..
-        local detail_txt = (function(cmp_item)
+        local detail_txt = (function()
           if not cmp_item.detail then return nil end
 
           if lspserver_name == "pyright" and cmp_item.detail == "Auto-import" then
@@ -656,7 +658,7 @@ M.setup_cmp = function()
           else
             return truncate(cmp_item.detail, 50)
           end
-        end)(cmp_item)
+        end)()
         if detail_txt then
           vim_item.menu = detail_txt
           vim_item.menu_hl_group = 'CmpItemMenuDetail'
@@ -665,7 +667,7 @@ M.setup_cmp = function()
       elseif entry.source.name == 'zsh' then
         -- cmp-zsh: Display documentation for cmdline flag ('' denotes zsh)
         ---@diagnostic disable-next-line: undefined-field
-        local detail = cmp_item.documentation
+        local detail = tostring(cmp_item.documentation)
         if detail then
           vim_item.menu = detail
           vim_item.menu_hl_group = 'CmpItemMenuZsh'
@@ -694,7 +696,7 @@ M.setup_cmp = function()
     { name = 'buffer', priority = 10 },
   }
   local sorting = {
-    -- see ~/.vim/plugged/nvim-cmp/lua/cmp/config/compare.lua
+    -- see $VIMPLUG/nvim-cmp/lua/cmp/config/compare.lua
     comparators = {
       cmp.config.compare.offset,
       cmp.config.compare.exact,
@@ -736,16 +738,16 @@ end
 
 -- Custom sorting/ranking for completion items.
 cmp_helper.compare = {
-  -- Deprioritize items starting with underscores (private or protected)
-  --- @param lhs cmp.Entry
-  --- @param rhs cmp.Entry
+  ---Deprioritize items starting with underscores (private or protected)
+  ---@type fun(lhs: cmp.Entry, rhs: cmp.Entry): boolean|nil
   deprioritize_underscore = function(lhs, rhs)
     local l = (lhs.completion_item.label:find "^_+") and 1 or 0
     local r = (rhs.completion_item.label:find "^_+") and 1 or 0
     if l ~= r then return l < r end
   end,
 
-  -- Prioritize items that ends with "= ..." (usually for argument completion).
+  ---Prioritize items that ends with "= ..." (usually for argument completion).
+  ---@type fun(lhs: cmp.Entry, rhs: cmp.Entry): boolean|nil
   prioritize_argument = function(lhs, rhs)
     local l = (lhs.completion_item.label:find "=$") and 1 or 0
     local r = (rhs.completion_item.label:find "=$") and 1 or 0
@@ -1038,6 +1040,7 @@ function M.setup_null_ls()
     })
   end
 
+  -- See $VIMPLUG/null-ls.nvim/lua/null-ls/config.lua, defaults
   null_ls.setup({
     sources = _exclude_nil(sources),
 
