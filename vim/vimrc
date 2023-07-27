@@ -2515,9 +2515,9 @@ function! s:init_xtabline() abort
     function! _tabline_automode(...) abort
       if !v:vim_did_enter | return | endif
       if tabpagenr('$') >= 2
-        silent XTabMode tabs
+        silent! XTabMode tabs
       else
-        silent XTabMode buffers
+        silent! XTabMode buffers
       endif
     endfunction
   end
