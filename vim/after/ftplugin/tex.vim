@@ -6,6 +6,14 @@ setlocal expandtab
 setlocal iskeyword+=:,-
 let g:tex_isk='48-57,_,a-z,A-Z,192-255,:,-'
 
+" Use treesitter highlight for latex (experimental)
+if has('nvim-0.9') && luaeval('pcall(require, "nvim-treesitter")')
+lua << EOF
+  if vim.treesitter then
+    vim.treesitter.start(vim.fn.bufnr(), 'latex')
+  end
+EOF
+endif
 
 " configure default fold level
 if !get(g:, 'has_folding_ufo')

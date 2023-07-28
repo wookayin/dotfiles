@@ -3034,7 +3034,8 @@ let g:jedi#use_tabs_not_buffers = 0
 " ---------------------------------------------------------------- }}}
 " LaTeX {{{
 
-let g:vimtex_syntax_enabled = 1
+" Use treesitter highlights for tex, see ~/.vim/after/syntax/tex.vim
+let g:vimtex_syntax_enabled = 0
 
 " Always prefer latex instead of plain, etc.
 let g:tex_flavor = 'latex'
