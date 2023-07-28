@@ -10,7 +10,7 @@ setlocal.sw = 2
 if string.find(vim.fn.expand("%:p"), "nvim/lua/config/") then
   vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
     vim.cmd [[
-      w
+      update
       source %
     ]]
     vim.notify("Sourced " .. vim.fn.bufname())
