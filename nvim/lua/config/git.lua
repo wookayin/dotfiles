@@ -24,10 +24,14 @@ function M.setup_gitsigns()
       ignore_whitespace = true,
     },
     diff_opts = {
+      -- Use neovim's builtin diff (see diffopt in vimrc)
+      internal = true,
       -- smarter diff algorithm that is semantically better
       algorithm = 'patience',
       -- Equivalent as git diff --indent-heuristic
       indent_heuristic = true,
+      -- Use line matching algorithm (neovim#14537)
+      linematch = vim.fn.has('nvim-0.9.0') > 0 and 60 or nil,
     },
     on_attach = function(bufnr)
       local function map(mode, lhs, rhs, opts)
