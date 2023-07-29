@@ -277,7 +277,7 @@ def log(msg, cr=True):
 def log_boxed(msg, color_fn=WHITE, use_bold=False, len_adjust=0):
     import unicodedata
     pad_msg = (" " + msg + "  ")
-    l = sum(not unicodedata.combining(ch) for ch in unicode(pad_msg, 'utf-8')) + len_adjust
+    l = sum(not unicodedata.combining(ch) for ch in unicode(pad_msg, 'utf-8')) + len_adjust  # noqa
     if use_bold:
         log(color_fn("┏" + ("━" * l) + "┓\n" +
                      "┃" + pad_msg   + "┃\n" +
@@ -302,7 +302,7 @@ os.chdir(current_dir)
 # check if git submodules are loaded properly
 stat = subprocess.check_output("git submodule status --recursive",
                                shell=True, universal_newlines=True)
-submodule_issues = [(l.split()[1], l[0]) for l in stat.split('\n') if len(l) and l[0] != ' ']
+submodule_issues = [(l.split()[1], l[0]) for l in stat.split('\n') if len(l) and l[0] != ' ']  # noqa
 
 if submodule_issues:
     stat_messages = {'+': 'needs update', '-': 'not initialized', 'U': 'conflict!'}
@@ -318,8 +318,9 @@ if submodule_issues:
         # git 2.8+ supports parallel submodule fetching
         try:
             git_version = str(subprocess.check_output("""git --version | awk '{print $3}'""", shell=True))
-            if git_version >= '2.8': git_submodule_update_cmd += ' --jobs 8'
-        except Exception as ex:
+            if git_version >= '2.8':
+                git_submodule_update_cmd += ' --jobs 8'
+        except Exception:
             pass
         log("Running: %s" % CYAN(git_submodule_update_cmd))
         subprocess.call(git_submodule_update_cmd, shell=True)
@@ -334,7 +335,7 @@ for target, item in sorted(tasks.items()):
     if isinstance(item, str):
         item = {'src': item}
 
-    source, force = item.get('src', None), item.get('force', False)
+    source, force = item['src'], item.get('force', False)
 
     if source:
         source = os.path.join(current_dir, os.path.expanduser(source))
