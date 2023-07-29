@@ -135,6 +135,9 @@ endsnippet
 snippet embed
 from IPython import embed; embed(colors="neutral")  # XXX DEBUG  # yapf: disable
 endsnippet
+snippet pt "ptipython's embed"
+import ptpython.ipython; ptpython.ipython.embed(configure=ptpython.repl.run_config)  # XXX DEBUG  # yapf: disable
+endsnippet
 snippet pdb
 import pdb; pdb.set_trace()  # XXX DEBUG  # yapf: disable
 endsnippet
