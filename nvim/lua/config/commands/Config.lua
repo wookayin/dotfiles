@@ -42,6 +42,7 @@ function M.action(arg)
   local aliases = {
     ['plug'] = 'plugins.lua',
     ['lazy'] = 'plugins.lua',
+    ['ide'] = 'plugins/ide.lua',
   }
   local file = map[arg] or map[arg .. '.lua'] or map[arg .. '.vim'] or map[aliases[arg]]
 
