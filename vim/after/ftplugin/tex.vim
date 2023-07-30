@@ -50,6 +50,8 @@ nmap <leader>A viega*&
 " Make and build support
 " ======================
 
+inoremap <C-b>  <cmd>Build<CR>
+
 " default makeprg
 if filereadable('Makefile')
     let &l:makeprg = 'make'
