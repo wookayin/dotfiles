@@ -19,8 +19,21 @@ endsnippet
 # Neovim Development
 # ------------------
 
+# Lua Debugging
 snippet p
 print(vim.inspect(${1}))
+endsnippet
+snippet i  "vim.notify + vim.inspect"
+`!p
+has_def = any([l.strip().startswith('local _inspect = function') for l in snip.buffer[:-1]])
+if not has_def:
+	snip.rv = "require 'notify'.setup { level = 'DEBUG' }  -- XXX DEBUG"
+	snip += "local _inspect = function(x, ...) return vim.notify(vim.inspect(x), vim.log.levels.DEBUG, { title = vim.split(debug.traceback(), '\\n')[3] }) end;"
+	snip += ""
+`_inspect($1)
+endsnippet
+snippet inspect
+vim.inspect(${1})
 endsnippet
 snippet notify
 vim.notify('${1:message}', vim.log.levels.${3:INFO}, {title = '${2:Title}'})
