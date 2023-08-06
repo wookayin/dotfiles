@@ -193,6 +193,12 @@ complete = function()
   local names = M.list_plugs(); table.sort(names); return names
 end})
 
+-- Some command alias for :Lazy
+pcall(function()
+  local register_cmd = true
+  vim.fn.CommandAlias('LazyProfile', 'Lazy profile', register_cmd)
+end)
+
 -- list_plugs: Get all the registered plugins (including non-loaded ones)
 ---@return string[]
 function M.list_plugs()
