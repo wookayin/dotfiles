@@ -335,10 +335,12 @@ for target, item in sorted(tasks.items()):
     if isinstance(item, str):
         item = {'src': item}
 
-    source, force = item['src'], item.get('force', False)
+    source = item.get('src', None)
+    force = item.get('force', False)
 
     if source:
         source = os.path.join(current_dir, os.path.expanduser(source))
+    assert source is not None
     target = os.path.expanduser(target)
 
     if item.get('action', None) == 'remove':
