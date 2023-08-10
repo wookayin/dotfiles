@@ -340,7 +340,6 @@ for target, item in sorted(tasks.items()):
 
     if source:
         source = os.path.join(current_dir, os.path.expanduser(source))
-    assert source is not None
     target = os.path.expanduser(target)
 
     if item.get('action', None) == 'remove':
@@ -350,6 +349,7 @@ for target, item in sorted(tasks.items()):
             pass
         continue
 
+    assert source is not None
     # bad entry if source does not exists...
     if force:
         pass  # Even if the source does not exist, always make a symlink
