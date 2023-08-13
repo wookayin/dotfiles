@@ -549,7 +549,8 @@ if has('nvim')
   tnoremap <silent> ]t <C-\><C-n>:tabnext<CR>
 endif
 
-nnoremap <C-t>     :tabnew<CR>
+nnoremap <C-t>        <cmd>tabnew<CR>
+nnoremap <leader>tt   <cmd>Tsplit<CR>
 
 nnoremap <silent>   <C-S-tab> :tabprevious<CR>
 nnoremap <silent>   <C-tab>   :tabnext<CR>
@@ -2424,7 +2425,6 @@ call RegisterHighlights('HighlightsFloaterm')
 command! -bang -nargs=? -complete=shellcmd  T                    :FloatermToggleOrNew<bang> <args>
 command! -bang -nargs=? -complete=shellcmd  FT                   :FloatermToggleOrNew<bang> <args>
 command! -bang -nargs=? -complete=shellcmd  FloatermToggleOrNew  call FloatermToggleOrNew(<q-args>, <bang>0)
-nnoremap <leader>tt  :FloatermToggleOrNew<CR>
 
 function! FloatermToggleOrNew(...) abort
   " FloatermToggleOrNew(cmdline: str, bang: int = 0)
