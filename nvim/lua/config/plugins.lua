@@ -33,6 +33,15 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Disable lazy clean by monkey-patching. (see #762)
+require("lazy.manage").clean = function(opts)
+  print("[lazy.nvim] Clean operation is disabled.")
+  return require("lazy.manage").run({ pipeline = {} })
+end
+require("lazy.manage.task.fs").clean.run = function(self)
+  print("[lazy.nvim] Clean operation is disabled. (lazy.manage.task.fs)")
+end
+
 -- Setup and load plugins. All plugins will be source HERE!
 -- https://github.com/folke/lazy.nvim#%EF%B8%8F-configuration
 -- @see $VIMPLUG/lazy.nvim/lua/lazy/core/config.lua
@@ -76,12 +85,6 @@ vim.cmd [[
 
 -- Add rplugins support on startup; see utils/plug_utils.lua
 require("utils.plug_utils").UpdateRemotePlugins()
-
--- Disable lazy clean by monkey-patching. (see #762)
-require("lazy.manage").clean = function(opts)
-  print("[lazy.nvim] Clean operation is disabled.")
-  return require("lazy.manage").run({ pipeline = {} })
-end
 
 -- Additional lazy-load events: 'func' (until it's officially supported)
 local Lazy_FuncUndefined = vim.api.nvim_create_augroup('Lazy_FuncUndefined', { clear = true })
