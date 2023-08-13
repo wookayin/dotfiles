@@ -4,15 +4,17 @@ local Plug = require('utils.plug_utils').Plug
 local function has(f) return vim.fn.has(f) > 0 end
 
 local treesitter_version
--- Use the old, stable version that is compatible with the minimum supported neovim veriso>
+-- Use the old, stable version that is compatible with the minimum supported neovim verison
 -- There are often a lot of breaking changes in treesitter;
 -- when versions bumped up, check whether treesitter highlighter works OK.
 -- When `query: invalid node type` error happens, run :TSUpdate or :TSInstall! [lang] manu>
 -- see https://github.com/nvim-treesitter/nvim-treesitter/issues/3092
-if not has('nvim-0.10') then
-  treesitter_version = '*'  -- Use the latest stable version (0.9.0), works for neovim 0.8+
+if has('nvim-0.10') then
+  treesitter_version = nil  -- Use the 'master' branch (0.x versions); not 'main' (1.x)
+elseif has('nvim-0.9.1') then
+  treesitter_version = '*'  -- Use the latest stable version, see #5234
 else
-  treesitter_version = nil  -- Use the 'master' branch.
+  treesitter_version = 'v0.9.1'  -- Legacy versions. The last compatible version with neovim 0.8.x
 end
 
 return {
