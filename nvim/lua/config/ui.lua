@@ -13,6 +13,7 @@ function M.setup_notify()
 
   -- :help notify.setup()
   -- :help notify.config
+  ---@diagnostic disable-next-line: missing-fields
   require('notify').setup({
     stages = "slide",
     on_open = function(win)
