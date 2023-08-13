@@ -422,6 +422,8 @@ noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
 noremap <M-h> <C-w>h
+noremap <M-j> <C-w>j
+noremap <M-k> <C-w>k
 noremap <M-l> <C-w>l
 
 " window navigation: aware of tmux
@@ -514,6 +516,8 @@ if has('nvim')
   tmap <silent> <C-k> <C-\><C-n><cmd>wincmd k<CR>
   "tmap <silent> <C-l> <C-\><C-n><cmd>wincmd l<CR>   " Ctrl-L is clear screen
   tmap <silent> <M-h> <C-\><C-n><cmd>wincmd h<CR>
+  tmap <silent> <M-j> <C-\><C-n><cmd>wincmd j<CR>
+  tmap <silent> <M-k> <C-\><C-n><cmd>wincmd k<CR>
   tmap <silent> <M-l> <C-\><C-n><cmd>wincmd l<CR>
 
   " Ctrl-E, Ctrl-Y: Scroll window in terminal-normal mode
