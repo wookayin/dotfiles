@@ -17,7 +17,7 @@ local parsers_to_install = {
     "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml",
   },
   minimal = {
-    "bash", "json", "latex", "lua", "make", "python", "vim", "yaml"
+    "bash", "json", "latex", "lua", "make", "python", "query", "vim", "yaml"
   },
 }
 parsers_to_install = parsers_to_install.minimal
