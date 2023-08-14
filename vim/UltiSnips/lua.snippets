@@ -102,3 +102,20 @@ vim.keymap.set('n', '${1:<Key>}', function()
 	${2:-- or a key sequence str instead of function}
 end, {desc = '$3'})
 endsnippet
+
+# Idioms
+snippet is_float "is the window a floating window?"
+vim.api.nvim_win_get_config(${1:winnr}).relative ~= ""$0
+endsnippet
+snippet bufnr "Get the bufnr of the current buffer"
+vim.api.nvim_get_current_buf()
+endsnippet
+snippet bufname "Get the name of a buffer"
+vim.fn.bufname(${1:bufnr})$0
+endsnippet
+snippet buftype "Get the type of a buffer (<empty>, nofile, terminal, etc.)"
+vim.bo.buftype
+endsnippet
+snippet filetype "Get the filetype of a buffer"
+vim.bo.filetype
+endsnippet
