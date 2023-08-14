@@ -13,6 +13,10 @@ local PLUGIN_SPEC = {
   { import = "plugins.treesitter" },
   { import = "plugins.utilities" },
 }
+if pcall(require, "plugins.local") then
+  -- see ~/.config/nvim/lua/plugins/local.lua
+  table.insert(PLUGIN_SPEC, { import = "plugins.local" })
+end
 
 -- $VIMPLUG
 -- vim.env.VIMPLUG = vim.fn.stdpath("data") .. "/lazy"
