@@ -3061,6 +3061,14 @@ if ! (has('clientserver') || has('nvim'))
   let g:vimtex_compiler_latexmk = {'callback' : 0}
 endif
 
+" Disable neovim's popup window for user prompt,
+" the popup window blocks the UI in an unpleasant way
+let g:vimtex_ui_method = {
+      \ 'confirm': 'legacy',
+      \ 'input': 'legacy',
+      \ 'select': 'legacy',
+      \}
+
 " in macOS, use Skim as the default LaTeX PDF viewer (for vimtex)
 " for :Vimtexview, move Skim's position to where the cursor currently points to.
 if has('mac')
