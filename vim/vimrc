@@ -3102,7 +3102,7 @@ endfunction
 command! -nargs=* GCommit   call s:GCommit('<mods>', <q-args>)
 function! s:GCommit(mods, args) abort
   let l:mods = empty(a:mods) ? "tab" : a:mods   " defaults to a new tab
-  exec printf("%s Git commit -v%s", l:mods, a:args)
+  exec printf("%s Git commit -v %s", l:mods, a:args)
 endfunction
 
 " Remove or replace some fugitive commands
