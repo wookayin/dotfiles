@@ -38,6 +38,14 @@ endsnippet
 snippet notify
 vim.notify('${1:message}', vim.log.levels.${3:INFO}, {title = '${2:Title}'})
 endsnippet
+snippet ptrace  "print traceback"
+print(debug.traceback())
+$0
+endsnippet
+snippet trace  "vim.notify + traceback"
+vim.notify(vim.split(debug.traceback(), '\\n'), vim.log.levels.DEBUG, { title = 'DEBUG (traceback)' })
+$0
+endsnippet
 snippet reload
 require('plenary.reload').reload_module('$1')
 endsnippet
