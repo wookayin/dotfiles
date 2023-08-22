@@ -81,6 +81,8 @@ hi! @punctuation.delimiter   guifg=NONE
 hi! @variable                guifg=NONE
 hi def link @none            Normal
 
+hi link @string.documentation          SpecialComment
+
 hi! @text.strong                       gui=bold
 hi! @text.emphasis                     gui=italic
 hi! @text.underline                    gui=underline
@@ -94,3 +96,18 @@ hi def link @text.environment.name     Function
 hi def link @text.environment.name     Keyword
 
 
+" Python (semantic highlighting and more syntax groups)
+" -----------------------------------------------------
+
+" attribute (self.xxx)
+hi! semshiAttribute      ctermfg=157     guifg=#afffaf
+
+" self: more distinctive color
+hi! pythonSelf           ctermfg=174     guifg=#d78787
+hi! semshiSelf           ctermfg=174     guifg=#d78787
+
+hi! link pythonFunction         @function.python
+hi! link pythonParam            @parameter.python
+hi! @parameter.python           guifg=#dfaf5f
+hi! @function.python            guifg=#d7ff5f
+hi! @method.python              guifg=#d7ff5f
