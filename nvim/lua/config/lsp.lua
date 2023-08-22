@@ -252,6 +252,7 @@ lsp_setup_opts['lua_ls'] = {
       -- See https://github.com/LuaLS/lua-language-server/blob/master/doc/en-us/config.md
       runtime = {
         version = 'LuaJIT',   -- Lua 5.1/LuaJIT
+        pathStrict = true,    -- Do not unnecessarily recurse into subdirs of workspace directory
       },
       diagnostics = {
         -- Ignore some false-positive diagnostics for neovim lua config
@@ -263,6 +264,10 @@ lsp_setup_opts['lua_ls'] = {
 
         -- Do not prompt "Do you need to configure your work environment as ..."
         checkThirdParty = false,
+
+        -- If running as a single file on root_dir = ./dotfiles,
+        -- this will be in duplicate with library paths. Do not scan invalid lua libs
+        ignoreDir = { '.*', 'vim/plugged', 'config/nvim', 'nvim/lua', },
 
         -- Add additional paths for lua packages
         library = (function()
