@@ -317,7 +317,17 @@ local function setup_lsp(lsp_name)
 
   -- Configure lua_ls to support neovim Lua runtime APIs
   if lsp_name == 'lua_ls' then
-    require("neodev").setup { }
+    local dotfiles_path = tostring(vim.fn.expand('~/.dotfiles'))
+    require("neodev").setup {
+      -- Always add neovim plugins into lua_ls library, for any lua files (even if they are not nvim configs)
+      -- see also: neodev.lsp.on_new_config(...), folke/neodev.nvim#158
+      override = function(root_dir, library)
+        if string.find(root_dir, dotfiles_path, 1, true) then
+          library.enabled = true
+          library.plugins = true
+        end
+      end,
+    }
   elseif lsp_name == 'clangd' then
     -- Make sure to use utf-8 offset. clangd defaults to utf-16 (see null-ls.vim#428)
     default_opts.capabilities.offsetEncoding = 'utf-8'
