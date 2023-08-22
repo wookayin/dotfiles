@@ -16,9 +16,6 @@ hi semshiSelf           ctermfg=174     guifg=#d78787
 hi semshiAttribute      ctermfg=157     guifg=#afffaf
 
 
-" docstring: gray-ish?
-hi SpecialComment       ctermfg=250     guifg=#99a899
-
 " Highlight test_xxxx() methods and functions.
 syntax match pythonTestCase "\<test_\w\+\ze" contained containedin=pythonFunction
 hi pythonTestCase guifg=#ffff30 gui=bold

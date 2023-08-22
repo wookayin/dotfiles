@@ -33,6 +33,7 @@ hi link GitSignsDelete  GitGutterDelete
 highlight Normal        ctermfg=255 guifg=#ffffff  ctermbg=NONE guibg=NONE
 highlight EndOfBuffer   ctermfg=240 guifg=#585858  ctermbg=NONE guibg=NONE
 highlight Comment       ctermfg=035 guifg=#38B04A
+hi SpecialComment       ctermfg=250 guifg=#99a899  gui=italic   " docstring
 highlight Constant      ctermfg=204 guifg=#ff5f87
 highlight PreProc       ctermfg=219 guifg=#ffafff
 highlight SpecialKey    ctermfg=242 guifg=#666666
