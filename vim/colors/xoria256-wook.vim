@@ -111,3 +111,6 @@ hi! link pythonParam            @parameter.python
 hi! @parameter.python           guifg=#dfaf5f
 hi! @function.python            guifg=#d7ff5f
 hi! @method.python              guifg=#d7ff5f
+
+hi! @function.test.python       guifg=#ffff30 gui=bold
+hi! @method.test.python         guifg=#ffff30 gui=bold
