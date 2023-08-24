@@ -15,3 +15,9 @@
 ((function_definition
   name: (identifier) @function.test)
  (#lua-match? @function.test "^test_"))
+
+
+; Highlight multi-line strings that start with a shebang
+; see python/injections.scm
+(((string_content) @none)
+ (#match? @none "^#!/bin/bash\n"))
