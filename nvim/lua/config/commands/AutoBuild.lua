@@ -2,6 +2,8 @@
 
 local M = {}
 
+M.icon = '⚙️'
+
 -- State variables
 M._augroup = vim.api.nvim_create_augroup('AutoBuild', { clear = true })
 M._state = false  -- turned off by default
@@ -43,7 +45,7 @@ function M.AutoBuild(cmd)
   if cmd == 'toggle' or cmd == '' then
     M.AutoBuild(not M._state)
   elseif cmd == 'status' then
-    local msg = "AutoBuild: turned ".. (M._state and "on" or "off")
+    local msg = M.icon .. " AutoBuild: turned ".. (M._state and "on" or "off")
     vim.notify(msg, vim.log.levels.INFO, { title = 'AutoBuild' })
   elseif cmd == 'off' or cmd == false then
     M._augroup = vim.api.nvim_create_augroup('AutoBuild', { clear = true })
@@ -63,6 +65,10 @@ function M.AutoBuild(cmd)
   else
     error("Invalid arguments for AutoBuild: " .. cmd)
   end
+end
+
+function M.is_enabled()
+  return M._state and true or false
 end
 
 -- Define commands

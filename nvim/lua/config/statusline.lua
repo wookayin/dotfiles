@@ -62,10 +62,15 @@ local custom_components = {
   end,
   -- asyncrun & neomake job status
   asyncrun_status = function()
-    return table.concat(vim.tbl_values(vim.tbl_map(function(job)
+    local status = table.concat(vim.tbl_values(vim.tbl_map(function(job)
       if job.status == 'running' then return '⏳' end
       return (job.status == 'success' and '✅' or '❌')
     end, vim.g.asyncrun_job_status or {})))
+    -- Display whether :AutoBuild is enabled
+    if status == '' and require('config.commands.AutoBuild').is_enabled() then
+      return require('config.commands.AutoBuild').icon or ''
+    end
+    return status
   end,
   neomake_status = function()
     return table.concat(vim.tbl_values(vim.tbl_map(function(job)
