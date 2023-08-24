@@ -35,3 +35,9 @@ if vim.fn.exists('##LspAttach') > 0 then
     callback = maybe_enable_autoformat,
   })
 end
+
+-- Use treesitter highlight for python
+-- (experimental; enable only when nightly neovim is used)
+if vim.fn.has('nvim-0.10') > 0 and pcall(require, "nvim-treesitter") then
+  vim.treesitter.start()
+end
