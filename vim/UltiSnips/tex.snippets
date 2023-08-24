@@ -282,56 +282,73 @@ snippet begin "\begin{} ... \end{} block"
 \end{$1}
 endsnippet
 snippet align "\begin{align} ... \end{align} block"
-\begin{align}${0}
+\begin{align}
+	${0}
 \end{align}
 endsnippet
 snippet align* "\begin{align*} ... \end{align*} block"
-\begin{align*}${0}
+\begin{align*}
+	${0}
 \end{align*}
 endsnippet
 snippet aligned "\begin{aligned} ... \end{aligned} block"
-\begin{aligned}${0}
+\begin{aligned}
+	${0}
 \end{aligned}
 endsnippet
 snippet flalign "\begin{flalign} ... \end{flalign} block"
-\begin{flalign}${0}
+\begin{flalign}
+	${0}
 \end{flalign}
 endsnippet
 snippet tcolorbox "\begin{tcolorbox} ... \end{tcolor} block (requires package tcolorbox)"
 \begin{tcolorbox}[title=$1,colback=red!10!white,colframe=red!70!black]
-	$0
+	${0}
 \end{tcolorbox}
 endsnippet
 snippet center "\begin{center} ... \end{center} block"
-\begin{center}${0}
+\begin{center}
+	${0}
 \end{center}
 endsnippet
 snippet comment "\begin{comment} ... \end{comment} block"
-\begin{comment}${0}
+\begin{comment}
+	${0}
 \end{comment}
 endsnippet
 snippet equation "\begin{equation} ... \end{equation} block"
-\begin{equation}${0}
+\begin{equation}
+	${0}
 \end{equation}
 endsnippet
 snippet minted "\begin{minted} ... \end{minted} block"
-\begin{minted}${0}
+\begin{minted}
+${0}
 \end{minted}
 endsnippet
 snippet verbatim "\begin{verbatim} ... \end{verbatim} block"
-\begin{verbatim}${0}
+\begin{verbatim}
+${0}
 \end{verbatim}
 endsnippet
 snippet tabular "\begin{tabular} ... \end{tabular} block"
-\begin{tabular}{${2:c}}${0}
+\begin{tabular}{${2:c}}
+	${0}
 \end{tabular}
 endsnippet
 snippet enumerate "\begin{enumerate} ... \end{enumerate} block"
-\begin{enumerate}${0}
+\begin{enumerate}
+	${0}
 \end{enumerate}
 endsnippet
 snippet enum "\begin{enumerate} ... \end{enumerate} block"
-\begin{enumerate}${0}
+\begin{enumerate}
+	${0}
+\end{enumerate}
+endsnippet
+snippet enuma "enumerate environment with (a)(b)(c)."
+\begin{enumerate}[(a)]
+	${0}
 \end{enumerate}
 endsnippet
 snippet item "\begin{itemize} ... \end{itemize} block"
@@ -346,14 +363,14 @@ snippet outline "\begin{outline} ... \end{outline} (package outlines)"
 endsnippet
 snippet minipage "\begin{minipage} ... \end{minipage} block"
 \begin{minipage}[t]{\linewidth}
-${0}
+	${0}
 \end{minipage}
 endsnippet
 snippet cases "\begin{cases} ... \end{cases} block"
 \begin{cases}
 	${1}    & \text{ if }  ${2} \\\\
-	${0}    & \text{ otherwise}
-\end{cases}
+	${3}    & \text{ otherwise}
+\end{cases}$0
 endsnippet
 snippet pmatrix "2X2 pmatrix (with round brackets)"
 \begin{pmatrix}
