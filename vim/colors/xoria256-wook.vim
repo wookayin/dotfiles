@@ -95,6 +95,8 @@ hi def link @text.environment          PreProc
 hi def link @text.environment.name     Function
 hi def link @text.environment.name     Keyword
 
+" Bash
+hi! link @preproc.bash             SpecialComment
 
 " Python (semantic highlighting and more syntax groups)
 " -----------------------------------------------------
