@@ -6,9 +6,13 @@
 
 global !p
 def slugify(text):
-    import unidecode, re
-    text = unidecode.unidecode(text).lower()
-    return re.sub(r'[\W_]+', '-', text)
+    try:
+        import unidecode
+        text = unidecode.unidecode(text)
+    except ModuleNotFoundError:
+        pass
+    import re
+    return re.sub(r'[\W_]+', '-', text.lower())
 
 def get_matching_pair(query):
     pairs = ['()', '{}', '<>', '[]' ]
