@@ -26,20 +26,12 @@ end
 ---Ref: https://github.com/nvim-treesitter/nvim-treesitter/issues/1184
 ---@return boolean
 function M.in_mathzone()
-  local ts = vim.treesitter
-
-  local buf = vim.api.nvim_get_current_buf()
   local node = get_node_at_cursor()
   while node do
     if node:type() == 'text_mode' then
       return false
-    end
-    if vim.tbl_contains({ 'displayed_equation', 'inline_formula', 'math_environment' }, node:type() ) then
+    elseif vim.tbl_contains({ 'displayed_equation', 'inline_formula', 'math_environment' }, node:type()) then
       return true
-    end
-    if node:type() == 'generic_environment' then
-      local begin = node:child(0)
-      local names = begin and begin:field('name')
     end
     node = node:parent()
   end
