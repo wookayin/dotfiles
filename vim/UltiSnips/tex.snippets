@@ -27,8 +27,12 @@ endglobal
 # https://castel.dev/post/lecture-notes-1/
 global !p
 
+# Note: "is_math()" requires 'e' snippet qualifier
 def is_math():
-    return int(vim.eval('vimtex#syntax#in_mathzone()')) > 0
+    if vim.eval('b:ts_highlight'):
+        return int(vim.eval('luaeval("require \'lib.latex\'.in_mathzone() and 1 or 0")')) > 0
+    else:
+        return int(vim.eval('vimtex#syntax#in_mathzone()')) > 0
 
 def detect_root_texfile():
     from glob import glob
