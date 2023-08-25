@@ -215,19 +215,30 @@ snippet <== "\Longleftarrow" "is_math()" wAe
 \Longleftarrow
 endsnippet
 
-# automatic subscript
+# automatic subscript and superscript
 snippet _t+1 "_{t+1}" "is_math()" iAe
 _{t+1}
 endsnippet
 snippet _t-1 "_{t-1}" "is_math()" iAe
 _{t-1}
 endsnippet
-snippet '([A-Za-z])(\d)' "is_math()" wrA
+snippet '([a-z])\(i\)' "^{(i)}" "is_math()" ireA
+`!p snip.rv = match.group(1)`^{(i)}
+endsnippet
+snippet '([A-Za-z])(\d)' "x1 -> x_1" "is_math()" wreA
 `!p snip.rv = match.group(1)`_`!p snip.rv = match.group(2)`
 endsnippet
-snippet '([A-Za-z])_(\d\d)' "is_math()" wrA
+snippet '([A-Za-z])_(\d\d)' "x_12 -> x_{12}" "is_math()" wreA
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}
 endsnippet
+snippet '([A-Za-z])_([a-z][a-z])' "x_ij -> x_{ij}" "is_math()" wreA
+`!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}
+endsnippet
+snippet ^( "^{(...)}" "is_math()" iAe
+^{($1)}$0
+endsnippet
+
+# Use \mid instead of | in probability distributions
 
 # Manual triggers: \left..\right pairs for {} [] () <>
 snippet l "left" "is_math()" e
