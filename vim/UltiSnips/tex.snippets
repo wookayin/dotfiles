@@ -274,6 +274,21 @@ snippet \< "<...>" "is_math()" eA
 \left\langle ${1} \right\rangle$0
 endsnippet
 
+# Automatic fraction.  something/ -> \frac{something}{}
+# To use '/' literally, have a whitespace around it (e.g. something /)
+# Reference: https://castel.dev/post/lecture-notes-1
+snippet '((\d+)|(\d*)(\\)?([A-Za-z]+)((\^|_)(\{\d+\}|\d))*)/' "Fraction" "is_math()" wreA
+\\frac{`!p snip.rv = match.group(1)`}{$1}$0
+endsnippet
+
+# Very common expressions and idoms
+snippet sumi "Sigma i=0" "is_math()" wAe
+\sum_{i=1}^{$2}$0
+endsnippet
+snippet E "Expectation" "is_math()" e
+{\mathbb E}_{${1:condition}} \left[ $2 \right]$0
+endsnippet
+
 # ===================
 # Environment Blocks
 # ===================
