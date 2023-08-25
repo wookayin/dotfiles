@@ -160,6 +160,11 @@ endsnippet
 # Common environments
 # ===================
 
+# \newenvironment{<env-name>}[<n-args>][<default>]{<begin-code>}{<end-code>}
+snippet newenvironment "Define a new environment"
+\newenvironment{${1:envname}}${2:[nargs]}{begin-code}{end-code}
+endsnippet
+
 # section and subsection
 # \sec, \section, sec, section, etc.
 # ----------------------------------
