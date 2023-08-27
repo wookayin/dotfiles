@@ -667,9 +667,13 @@ M.setup_cmp = function()
         local detail_txt = (function()
           if not cmp_item.detail then return nil end
 
-          if lspserver_name == "pyright" and cmp_item.detail == "Auto-import" then
+          if cmp_item.detail == "Auto-import" then
             local label = (cmp_item.labelDetails or {}).description
-            return label and (" " .. truncate(label, 20)) or nil
+            if not label or label == "" then return nil end
+            local logo = ({
+              pyright = ""
+            })[lspserver_name] or "󰋺"
+            return logo .. " " .. truncate(label, 20)
           else
             return truncate(cmp_item.detail, 50)
           end
