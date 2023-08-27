@@ -191,12 +191,19 @@ _G.TreesitterLoadCustomQuery("python", "folds")
 -- }}}
 
 
--- Playground keymappings
-vim.cmd [[
-nnoremap <leader>tsh     :TSHighlightCapturesUnderCursor<CR>
+-- treesitter-playground is deprecated in favor of vim.treesitter.* APIs.
+if vim.fn.has('nvim-0.10') > 0 then
+  vim.fn.CommandAlias("TSPlaygroundToggle", "InspectTree", true)
+  vim.keymap.set('n', '<leader>tsh', '<cmd>Inspect<CR>')
 
-augroup TSPlaygroundConfig
-  autocmd!
-  autocmd FileType tsplayground  setlocal ts=2 sts=2 sw=2
-augroup END
-]];
+else  -- nvim < 0.10; fallback to treesitter-playground
+  vim.cmd [[ command! InspectTree :TSPlaygroundToggle ]]
+
+  vim.keymap.set('n', '<leader>tsh', '<cmd>TSHighlightCapturesUnderCursor<CR>')
+  vim.cmd [[
+  augroup TSPlaygroundConfig
+    autocmd!
+    autocmd FileType tsplayground  setlocal ts=2 sts=2 sw=2
+  augroup END
+  ]]
+end
