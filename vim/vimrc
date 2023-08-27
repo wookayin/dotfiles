@@ -589,7 +589,6 @@ nnoremap ]l :lnext<CR>
 " We use <F5> and <Ctrl-F5> to quickly build and execute the code.
 " <C-F5> :Build        => Build and run the program.
 " <F5>   :Debug        => Build and run, in a debug mode (with DAP in the future) if available.
-" <F6>   :Output       => Show the output or build status window (quickfix, terminal, etc.)
 
 " To specialize project-wise, filetype-wise, or buffer-wise behaviors,
 " the Build, Debug, and Output commands be overriden.
@@ -653,14 +652,13 @@ command! -nargs=0 SourceThis   source % | call VimNotify("Sourced " . bufname('%
 " }}}
 
 
-" :OutputToggle or <F6> (Toggle mode)
-" -----------------------------
+" :OutputToggle or <F6> (Toggle quickfix)
+" ---------------------------------------
 
-" F6 :Output
-map  <silent> <F6>   <cmd>Output<CR>
-imap <silent> <F6>   <c-\><c-o><F6>
-":call QuickfixToggle()<CR>G:wincmd w<CR>a
-nmap <silent> <C-Q>  :call QuickfixToggle()<CR>
+" <F6>   :Output       => Show the output or build status window (quickfix, terminal, etc.)
+map               <F6>   <cmd>Output<CR>
+imap              <F6>   :Copen
+nnoremap <silent> <C-Q>  :call QuickfixToggle()<CR>
 
 " By default, :Output opens or closes the quickfix (copen) window
 " filetype plugin or individual buffers may override the command :Output (or :COpen)
@@ -675,10 +673,15 @@ function! QuickfixToggle() abort
   if nr == nr2 | cclose | endif
 endfunction
 
-" Open the quickfix window scroll to the end (to see the status)
-" Note: asyncrun will override Copen later with asyncrun#quickfix_toggle
-command! -nargs=0 -bar       Copen   copen
-
+" <leader><F6>: copen in the vertical
+nnoremap <silent> <leader><F6>   <cmd>CopenVertical<CR>
+command! CopenVertical   call s:copen_vertical()
+function! s:copen_vertical() abort
+  cclose
+  vertical copen 80
+  cbottom
+  wincmd p
+endfunction
 
 " <leader>L: show/close location list window
 function! LocListToggle()
