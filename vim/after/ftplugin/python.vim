@@ -65,8 +65,7 @@ endif
 
 function! s:pcall_require(name) abort
   if !has('nvim') | return 0 | endif
-  call luaeval('pcall(require, _A[0])', a:name)
-  return v:true
+  return luaeval('pcall(require, _A)', a:name)
 endfunction
 
 " shortcuts
@@ -142,7 +141,7 @@ endfunction
 " <F5> to run &makeprg on a floaterm window (experimental)
 " pytest or execute the script itself, as per &makeprg
 let s:is_test_file = (expand('%:t:r') =~# "_test$" || expand('%:t:r') =~# '^test_')
-if s:is_test_file && s:pcall_require('neotest-python')
+if s:is_test_file && s:pcall_require('neotest')
   " see ~/.config/nvim/config/tesing.lua commands
   command! -buffer -nargs=0  Build    echom ':Test' | Test
   command! -buffer -nargs=0  Output   NeotestOutput
