@@ -63,6 +63,11 @@ if has('python3')
   setlocal omnifunc=python3complete#Complete
 endif
 
+function! s:pcall_require(name) abort
+  if !has('nvim') | return 0 | endif
+  call luaeval('pcall(require, _A[0])', a:name)
+  return v:true
+endfunction
 
 " shortcuts
 " =========
@@ -70,7 +75,7 @@ endif
 " CTRL-B: insert breakpoint above?
 imap <buffer> <C-B>   <ESC><leader>ba<Down>
 
-if has_key(g:, 'plugs') && has_key(g:plugs, 'vim-surround')
+if 1  " TODO: HasPlug('vim-surround')
   " Apply str(...) repr(...) to the current word or selection
   " :help surround-replacements
   nmap <buffer>  <leader>str   ysiwfstr<CR>
@@ -137,14 +142,14 @@ endfunction
 " <F5> to run &makeprg on a floaterm window (experimental)
 " pytest or execute the script itself, as per &makeprg
 let s:is_test_file = (expand('%:t:r') =~# "_test$" || expand('%:t:r') =~# '^test_')
-if has_key(g:plugs, 'neotest-python') && s:is_test_file
+if s:is_test_file && s:pcall_require('neotest-python')
   " see ~/.config/nvim/config/tesing.lua commands
   command! -buffer -nargs=0  Build    echom ':Test' | Test
   command! -buffer -nargs=0  Output   NeotestOutput
 
   nnoremap <buffer>    <leader>T   <cmd>NeotestSummary<CR>
 
-elseif has_key(g:plugs, 'vim-floaterm')
+elseif exists('g:loaded_floaterm')
   let s:ftname = 'makepython'
   function! MakeInTerminal() abort
     let l:bufnr = floaterm#terminal#get_bufnr(s:ftname)
