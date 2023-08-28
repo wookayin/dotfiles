@@ -873,6 +873,7 @@ nmap  <leader>s{ ysiw{
 nmap  <leader>s} ysiw}
 " ask function: e.g., word -> function(word)
 nmap  <leader>sf ysiwf
+nmap  <leader>(  ysiwf
 
 vmap  <leader>s" S"
 vmap  <leader>s' S'
@@ -889,6 +890,7 @@ vmap  <leader>s{ S{
 vmap  <leader>s} S}
 " ask function: e.g., word -> function(word)
 vmap  <leader>sf Sf
+vmap  <leader>(  Sf
 
 
 " Zoom Tmux
