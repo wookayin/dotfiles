@@ -99,8 +99,8 @@ function M.setup_commands_keymaps()
       local H = {}
       vim.cmd [[
         " Pressing <F6> again would move the floating window into normal splits
-        nnoremap <buffer> <silent> <F6>    <cmd>lua require("config/testing")._move_neotest_floating_to_split()<CR>
-        tnoremap <buffer> <silent> <F6>    <cmd>lua require("config/testing")._move_neotest_floating_to_split()<CR>
+        nnoremap <buffer> <silent> <F6>    <cmd>lua require("config.testing")._move_neotest_floating_to_split()<CR>
+        tnoremap <buffer> <silent> <F6>    <cmd>lua require("config.testing")._move_neotest_floating_to_split()<CR>
         " Allow window movement via wincmd hotkeys
         tnoremap <buffer> <silent> <C-w>H  <cmd>wincmd H<CR>
         tnoremap <buffer> <silent> <C-w>J  <cmd>wincmd J<CR>
