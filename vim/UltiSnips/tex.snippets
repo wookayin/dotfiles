@@ -29,7 +29,7 @@ global !p
 
 # Note: "is_math()" requires 'e' snippet qualifier
 def is_math():
-    if vim.eval('b:ts_highlight'):
+    if vim.eval('get(b:, "ts_highlight")'):
         return int(vim.eval('luaeval("require \'lib.latex\'.in_mathzone() and 1 or 0")')) > 0
     else:
         return int(vim.eval('vimtex#syntax#in_mathzone()')) > 0
