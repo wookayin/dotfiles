@@ -715,7 +715,8 @@ M.setup_cmp = function()
     -- https://github.com/topics/nvim-cmp
     { name = 'nvim_lsp', priority = 100 },
     { name = 'ultisnips', keyword_length = 2, priority = 50 },  -- workaround '.' trigger
-    { name = 'path', priority = 30, },
+    { name = 'path', priority = 30 },
+    { name = 'omni', priority = 20 },
     { name = 'buffer', priority = 10 },
   }
   local sorting = {
