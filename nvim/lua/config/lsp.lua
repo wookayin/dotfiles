@@ -209,7 +209,7 @@ M.lsp_setup_opts = lsp_setup_opts
 
 -- (lsp_name: string) => function(client, init_result), see :help vim.lsp.start_client()
 local on_init = {}
-M.on_init = {}
+M.on_init = on_init
 
 lsp_setup_opts['pyright'] = {
   settings = {
@@ -292,6 +292,14 @@ on_init['lua_ls'] = function(client, _)
   end
 end
 
+lsp_setup_opts['clangd'] = {
+  -- Make sure to use utf-8 offset. clangd defaults to utf-16 (see null-ls.vim#428)
+  -- against "multiple different client offset_encodings detected for buffer" error
+  capabilities = {
+    offsetEncoding = 'utf-8',
+  }
+}
+
 lsp_setup_opts['bashls'] = {
   filetypes = { 'sh', 'zsh' },
 }
@@ -307,7 +315,6 @@ lsp_setup_opts['yamlls'] = {
 
 -- Call lspconfig[...].setup for all installed LSP servers with common opts
 local function setup_lsp(lsp_name)
-  local cmp_nvim_lsp = require('cmp_nvim_lsp')
   local default_opts = {
     on_init = on_init[lsp_name],
     on_attach = on_attach,
@@ -333,9 +340,6 @@ local function setup_lsp(lsp_name)
         end
       end,
     }
-  elseif lsp_name == 'clangd' then
-    -- Make sure to use utf-8 offset. clangd defaults to utf-16 (see null-ls.vim#428)
-    default_opts.capabilities.offsetEncoding = 'utf-8'
   end
 
   -- Customize the options passed to the server
@@ -730,6 +734,7 @@ M.setup_cmp = function()
     },
   }
 
+  ---@diagnostic disable-next-line: missing-fields
   cmp.setup {
     snippet = snippet,
     window = window,
@@ -741,6 +746,7 @@ M.setup_cmp = function()
 
   -- filetype-specific sources
   require("cmp_zsh").setup { filetypes = { "bash", "zsh" } }
+  ---@diagnostic disable-next-line: missing-fields
   cmp.setup.filetype({'sh', 'zsh', 'bash'}, {
     sources = cmp.config.sources({
       { name = 'zsh', priorty = 100 },
