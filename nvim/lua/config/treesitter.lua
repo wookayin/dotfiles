@@ -32,6 +32,7 @@ if vim.fn.has('mac') > 0 then
 end
 
 -- @see https://github.com/nvim-treesitter/nvim-treesitter#modules
+---@diagnostic disable-next-line: missing-fields
 ts_configs.setup {
   ensure_installed = parsers_to_install,
 
@@ -39,6 +40,7 @@ ts_configs.setup {
     -- TreeSitter's highlight/syntax support is yet experimental and has some issues.
     -- It overrides legacy filetype-based vim syntax, and colorscheme needs to be treesitter-aware.
     -- Note: for some ftplugins (e.g. for lua and vim), treesitter highlight might be manually started
+    -- see individual ftplugins at ~/.config/nvim/after/ftplugin/
     enable = false,   -- TODO: Enable again when it becomes mature and usable enough.
 
     -- List of language that will be disabled.
@@ -167,6 +169,7 @@ vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 
 local function readfile(path)
   local f = io.open(path, 'r')
+  assert(f, "IO Failed : " .. path)
   local content = f:read('*a')
   f:close()
   return content
@@ -179,7 +182,7 @@ function _G.TreesitterLoadCustomQuery(lang, query_name)
 
   if not ts_parsers.has_parser(lang) then
     local msg = string.format("Warning: treesitter parser %s not found. Restart vim or run :TSUpdate?", lang)
-    vim.notify(msg, 'WARN', { title = "nvim/lua/config/treesitter.lua" })
+    vim.notify(msg, vim.log.levels.WARN, { title = "nvim/lua/config/treesitter.lua" })
     return
   end
   vim.treesitter.query.set(lang, query_name, readfile(query_file))
