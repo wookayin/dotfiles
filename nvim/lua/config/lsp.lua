@@ -831,9 +831,22 @@ _G.PeekDefinition = function(lsp_request_method)
       print("PeekDefinition: " .. "cannot find the definition.")
       return nil
     end
-    --- either Location | LocationLink
+
+    --- result is of type either Location | LocationLink (or a list of such)
     --- https://microsoft.github.io/language-server-protocol/specification#location
-    local def_result = result[1]
+    ---@type lsp.Location | lsp.LocationLink
+    local def_result = (function(result)
+      -- If there are multiple locations, usually the first entry would be what we are looking for,
+      -- but heuristically prefer one that is more "far" (e.g., defined in a different file than requested)
+      local requestUri = vim.tbl_get(params, 'textDocument', 'uri')
+      table.sort(result, function(e1, e2)
+        -- TODO: Consider line number as well to better determine distance.
+        local dist1 = (e1.targetUri == requestUri) and 0 or 1
+        local dist2 = (e2.targetUri == requestUri) and 0 or 1
+        return dist1 > dist2
+      end)
+      return result[1]
+    end)(vim.tbl_islist(result) and result or { result })
 
     -- Peek defintion. Currently, use quickui but a better alternative should be found.
     -- vim.lsp.util.preview_location(result[1])
@@ -845,6 +858,7 @@ _G.PeekDefinition = function(lsp_request_method)
       persist = 0,
     })
   end
+
   -- Asynchronous request doesn't work very smoothly, so we use synchronous one with timeout;
   -- return vim.lsp.buf_request(0, 'textDocument/definition', params, definition_callback)
   lsp_request_method = lsp_request_method or 'textDocument/definition'
@@ -854,7 +868,7 @@ _G.PeekDefinition = function(lsp_request_method)
       definition_callback(client_id, result.result)
     end
   else
-    print("PeekDefinition: " .. err)
+    vim.notify("PeekDefinition: " .. err, vim.log.levels.ERROR, {title = 'PeekDefinition'})
   end
 end
 
