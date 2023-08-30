@@ -105,6 +105,8 @@ hi! @text.literal.block.markdown   guibg=#3a3a3a
 " Python (semantic highlighting and more syntax groups)
 " -----------------------------------------------------
 
+hi! link @preproc.python             SpecialComment
+
 " attribute (self.xxx)
 hi! semshiAttribute      ctermfg=157     guifg=#afffaf
 
@@ -112,6 +114,7 @@ hi! semshiAttribute      ctermfg=157     guifg=#afffaf
 hi! pythonSelf           ctermfg=174     guifg=#d78787
 hi! semshiSelf           ctermfg=174     guifg=#d78787
 
+" functions, methods
 hi! link pythonFunction         @function.python
 hi! link pythonParam            @parameter.python
 hi! @parameter.python           guifg=#dfaf5f
