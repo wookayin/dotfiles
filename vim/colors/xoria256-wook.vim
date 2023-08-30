@@ -99,6 +99,9 @@ hi def link @text.environment.name     Keyword
 hi! link @preproc.bash             SpecialComment
 hi!      @parameter.bash           guifg=NONE
 
+" Markdown
+hi! @text.literal.block.markdown   guibg=#3a3a3a
+
 " Python (semantic highlighting and more syntax groups)
 " -----------------------------------------------------
 
