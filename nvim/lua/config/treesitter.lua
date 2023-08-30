@@ -13,11 +13,12 @@ end
 local parsers_to_install = {
   default = {
     "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
-    "html", "http", "java", "javascript", "json", "json5", "jsonc", "latex", "lua", "make", "perl",
-    "python", "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml",
+    "html", "http", "java", "javascript", "json", "json5", "jsonc", "latex", "lua",
+    "make", "markdown", "markdown_inline", "perl", "python",
+    "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml",
   },
   minimal = {
-    "bash", "json", "latex", "lua", "make", "python", "query", "vim", "yaml"
+    "bash", "json", "latex", "lua", "make", "markdown", "python", "query", "vim", "yaml"
   },
 }
 parsers_to_install = parsers_to_install.minimal

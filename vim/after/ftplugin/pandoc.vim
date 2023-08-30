@@ -6,8 +6,21 @@ set sts=2
 setlocal iskeyword+=_,:
 setlocal conceallevel=0
 
-" indentLine is never supposed to enable this for pandoc document,
-" but in some situations it does. We always force disable indentLine.
+" experimental treesitter highlight
+if has('nvim-0.9')
+lua << EOF
+  if pcall(require, 'nvim-treesitter') then
+    vim.treesitter.start(0, 'markdown')
+    -- Use additional vim regex syntax, because some syntax (e.g. link) and
+    -- pandoc extensions (e.g. HTML tags) are not supported by treesitter.
+    vim.bo.syntax = "ON"
+  end
+EOF
+endif
+
+
+" indentLine is never supposed to be enabled for pandoc document,
+" but somehow it often gets turned on. We always force disable indentLine.
 let b:indentLine_enabled = 0
 
 if !filereadable('Makefile')
