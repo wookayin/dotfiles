@@ -40,16 +40,36 @@ vim.cmd [[
   hi TelescopePrompt guibg=#1a2a31
 ]]
 
--- Custom Telescope mappings
-vim.cmd [[
-command! -nargs=0 Highlights    :Telescope highlights
-call CommandAlias("Te", "Telescope")
+-- Custom Telescope mappings and aliases
+local function define_commands()
+  local command = function(name, opts, command)
+    vim.validate {
+      opts = { opts, 'table' },
+      command = { command, { 'function', 'string' } }
+    }
+    if opts.alias then
+      vim.fn.CommandAlias(opts.alias, name)
+      opts.alias = nil
+    end
+    return vim.api.nvim_create_user_command(name, command, opts)
+  end
 
-command! -nargs=?                 LspSymbols  :lua require"telescope.builtin".lsp_dynamic_workspace_symbols({default_text = '<args>'})
-call CommandAlias("Sym", "LspSymbols")
+  -- :te and :Te are shortcuts to telescope
+  vim.fn.CommandAlias("te", "Telescope")
 
-command! -nargs=? -complete=help  Help        :lua require"telescope.builtin".help_tags({default_text = '<args>'})
-]]
+  -- Searching commands w/ telescope (plus, accepts arguments)
+  command("Highlights", { nargs='?', complete='highlight' }, function(e)
+    require("telescope.builtin").highlights({ default_text = e.args })
+  end)
+  command("Help", { nargs='?', complete='help' }, function(e)
+    require("telescope.builtin").help_tags({ default_text = e.args })
+  end)
+  command("LspSymbols", { nargs='?' }, function(e)
+    require("telescope.builtin").lsp_dynamic_workspace_symbols({ default_text = e.args })
+  end)
+
+end
+define_commands()
 
 -- Telescope extensions
 -- These should be executed *AFTER* other plugins are loaded
