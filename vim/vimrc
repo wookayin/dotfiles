@@ -1800,11 +1800,11 @@ function! OnAsyncRunJobFinished() abort
   endif
 
   " Statusline integration
-  " Remove the job from the statusline after 2 seconds
+  " Remove the job from the statusline after 1 seconds
   if !exists('*timer_start')
     silent! unlet g:asyncrun_job_status[l:jobid]
   else
-    call timer_start(2000, { -> execute(printf(
+    call timer_start(1000, { -> execute(printf(
           \"silent! unlet g:asyncrun_job_status[%d]", l:jobid)) })
   endif
 endfunction
