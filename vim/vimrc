@@ -2547,16 +2547,20 @@ endfunction
 set wildchar=<Tab>
 set wildcharm=<Tab>
 
-if has('nvim')  " FIXME IsPlugInstalled('wilder.nvim')
+if has('nvim')
   augroup WilderLazyInit
     autocmd!
     autocmd CmdlineEnter * ++once call s:check_wilder_rplugins()
-    autocmd CmdlineEnter * ++once call s:setup_wilder() | call wilder#main#start()
+    autocmd CmdlineEnter * ++once call s:setup_wilder()
   augroup END
 endif
 function! s:setup_wilder() abort
   " only / and ? are enabled by default
-  call wilder#setup({'modes': ['/', '?', ':']})
+  try
+    call wilder#setup({'modes': ['/', '?', ':']})
+  catch /E117/  " Do nothing when wilder.nvim is not installed.
+    return
+  endtry
 
   cmap <expr> <Tab>   wilder#in_context() ? wilder#next()     : "\<Tab>"
   cmap <expr> <S-Tab> wilder#in_context() ? wilder#previous() : "\<S-Tab>"
@@ -2649,6 +2653,8 @@ EOF
   " Additional custom keymap for wilder
   " <C-space> in the command line: refresh completion (close and start again)
   cmap <expr> <C-space> [wilder#main#stop(), wilder#main#start_from_normal_mode()][-1]
+
+  call wilder#main#start()
 endfunction
 
 function! s:check_wilder_rplugins() abort
