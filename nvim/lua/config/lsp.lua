@@ -996,8 +996,11 @@ function M.setup_null_ls()
   -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/CONFIG.md
   -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
 
-  local function condition_has_executable(cmd)
-    return function() return vim.fn.executable(cmd) > 0 end
+  local executable = function(cmd)
+    return vim.fn.executable(cmd) > 0
+  end
+  local cond_if_executable = function(cmd)
+    return function() return executable(cmd) end
   end
   local _exclude_nil = function(tbl)
     return vim.tbl_filter(function(s) return s ~= nil end, tbl)
@@ -1011,14 +1014,14 @@ function M.setup_null_ls()
     vim.list_extend(sources, {
       -- python
       require('null-ls.builtins.formatting.yapf').with {
-        condition = condition_has_executable('yapf'),
+        condition = cond_if_executable('yapf'),
       },
       require('null-ls.builtins.formatting.isort').with {
-        condition = condition_has_executable('isort'),
+        condition = cond_if_executable('isort'),
       },
       -- javascript, css, html, etc.
       require('null-ls.builtins.formatting.prettier').with {
-        condition = condition_has_executable('prettier'),
+        condition = cond_if_executable('prettier'),
       },
     })
   end
@@ -1029,12 +1032,8 @@ function M.setup_null_ls()
           method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
           condition = function(utils)  ---@param utils ConditionalUtils
             -- https://pylint.pycqa.org/en/latest/user_guide/run.html#command-line-options
-            return condition_has_executable('pylint')() and (
-              utils.root_has_file("pylintrc") or
-              utils.root_has_file(".pylintrc") or
-              utils.root_has_file("setup.cfg") or
-              utils.root_has_file("pyproject.toml")
-            )
+            return executable('pylint') and
+              utils.root_has_file({ "pylintrc", ".pylintrc", "setup.cfg", "pyproject.toml" })
           end,
       },
       require('null-ls.builtins.diagnostics.flake8').with {
@@ -1042,12 +1041,8 @@ function M.setup_null_ls()
           -- Activate when flake8 is available and any project config is found,
           -- per https://flake8.pycqa.org/en/latest/user/configuration.html
           condition = function(utils)  ---@param utils ConditionalUtils
-            return condition_has_executable('flake8')() and (
-              utils.root_has_file("setup.cfg") or
-              utils.root_has_file("tox.ini") or
-              utils.root_has_file(".flake8") or
-              utils.root_has_file("pyproject.toml")
-            )
+            return executable('flake8') and
+              utils.root_has_file({ "setup.cfg", "tox.ini", ".flake8", "pyproject.toml" })
           end,
           -- Ignore some too aggressive errors (indentation, lambda, etc.)
           -- @see https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
@@ -1074,7 +1069,7 @@ function M.setup_null_ls()
     -- rust: rustfmt
     vim.list_extend(sources, {
       require('null-ls.builtins.formatting.rustfmt').with {
-        condition = condition_has_executable('rustfmt'),
+        condition = cond_if_executable('rustfmt'),
         extra_args = { "--edition=2018" },
       },
     })
