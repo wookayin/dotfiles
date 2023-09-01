@@ -248,8 +248,10 @@ end
 
 lsp_setup_opts['lua_ls'] = {
   settings = {
+    -- See https://github.com/LuaLS/lua-language-server/blob/master/doc/en-us/config.md
+    -- See $MASON/packages/lua-language-server/libexec/locale/en-us/setting.lua
+    -- See $MASON/packages/lua-language-server/libexec/script/config/template.lua
     Lua = {
-      -- See https://github.com/LuaLS/lua-language-server/blob/master/doc/en-us/config.md
       runtime = {
         version = 'LuaJIT',   -- Lua 5.1/LuaJIT
         pathStrict = true,    -- Do not unnecessarily recurse into subdirs of workspace directory
@@ -275,7 +277,7 @@ lsp_setup_opts['lua_ls'] = {
           if vim.fn.has('mac') > 0 then
             -- http://www.hammerspoon.org/Spoons/EmmyLua.html
             -- Add a line `hs.loadSpoon('EmmyLua')` on the top in ~/.hammerspoon/init.lua
-            library[string.format('%s/.hammerspoon/Spoons/EmmyLua.spoon/annotations', os.getenv 'HOME')] = true
+            library[vim.fn.expand('$HOME/.hammerspoon/Spoons/EmmyLua.spoon/annotations')] = true
           end
           return library
         end)(),
