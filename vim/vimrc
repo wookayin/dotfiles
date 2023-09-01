@@ -139,6 +139,14 @@ if has('nvim')
   set inccommand=split
 endif
 
+" more sensible jump behavior
+if has('nvim')
+  " Use browser-style (or 'tagstack') navigation (see :help jumplist-stack)
+  set jumpoptions+=stack
+  " Preserve "view" such as relative cursor position to window (see :help mark-view)
+  set jumpoptions+=view
+endif
+
 " Fold level: when starting, let all the folds be open
 set nofoldenable
 
