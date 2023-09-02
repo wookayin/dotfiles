@@ -83,7 +83,8 @@ return {
   Plug 'fladson/vim-kitty' { ft = 'kitty' };
   Plug 'vim-pandoc/vim-pandoc' { ft = { 'pandoc', 'markdown' }, init = PlugConfig };
   Plug 'vim-pandoc/vim-pandoc-syntax' { ft = { 'pandoc', 'markdown' } };
-  Plug 'lervag/vimtex' { ft = { 'tex', 'plaintex' }, func = 'vimtex#*' };
+  Plug 'lervag/vimtex' { ft = { 'tex', 'plaintex' }, func = 'vimtex#*',
+                         init = require('config.tex').init, config = require('config.tex').setup };
   Plug 'machakann/vim-Verdin' { ft = 'vim' };
   Plug 'gisraptor/vim-lilypond-integrator' { ft = 'lilypond' };
   Plug 'tfnico/vim-gradle' { ft = 'gradle' };
