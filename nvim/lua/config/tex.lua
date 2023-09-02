@@ -28,7 +28,88 @@ end
 
 --- Configs that can be set after the plugin is loaded.
 function M.setup()
+  M._setup_compiler()
   M._setup_viewer()
+end
+
+-- Register :Build command for the current buffer, see ftplugin/{tex,bib}
+function M.setup_compiler_commands()
+  -- :Build
+  vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
+    local is_running = function() return vim.fn.eval('b.vimtex.compiler.is_running()') end
+    local was_running = is_running()
+    vim.fn['vimtex#compiler#start']()
+  end, { nargs = '?', desc = 'Build with Vimtex (continuous build mode)' })
+  vim.keymap.set('n', '<S-F5>', 'VimtexStop', { buffer = true, remap = false })
+end
+
+-- Bind vimtex's compiler autocmd events, so it can play nicely with other plugins
+function M._setup_compiler()
+
+  -- Utilities
+  local vimtex_event = vim.api.nvim_create_augroup('vimtex_event', { clear = true })
+  local autocmd = function(event_name, callback)
+    vim.api.nvim_create_autocmd('User', {
+      pattern = event_name,
+      group = vimtex_event,
+      callback = function() callback() end,
+    })
+  end
+  local notify = function(msg)
+    return vim.notify(msg, vim.log.levels.INFO, { title = 'config/tex.lua' })
+  end
+
+  -- Update diagnostics from quickfix result (compiler error messages),
+  -- which can be triggered when vimtex compilation is done
+  local update_sign_from_qf = vim.schedule_wrap(function()
+    vim.api.nvim_exec_autocmds('QuickFixCmdPost', { pattern = 'make',
+      modeline = false, data = nil })
+  end)
+
+  -- Integration with statusline
+  autocmd('VimtexEventCompileStarted', function()
+    notify('Continuous auto-build started. Useful commands: :VimtexStop to stop')
+  end)
+  autocmd('VimtexEventCompiling', function()
+    M._vimtex_compiler_jobs.status = 'running'
+  end)
+  autocmd('VimtexEventCompileSuccess', function()
+    M._vimtex_compiler_jobs.status = 'success'
+    vim.defer_fn(function() M._vimtex_compiler_jobs.status = '' end, 1000)
+    vim.cmd [[ VimtexView ]]   -- open the texshop previewer
+    update_sign_from_qf()
+  end)
+  autocmd('VimtexEventCompileFailed', function()
+    M._vimtex_compiler_jobs.status = 'failed'
+    vim.defer_fn(function() M._vimtex_compiler_jobs.status = '' end, 2000)
+    update_sign_from_qf()
+  end)
+
+  _G.vimtex_status = M.vimtex_status
+
+  -- Make vimtex compiler silent, since we now have statusline integration
+  vim.g.vimtex_compiler_silent = true
+end
+
+M._vimtex_compiler_jobs = { status = '' }
+
+-- statusline integration
+function M.vimtex_status()
+  local icons = {
+    running = '⏳',
+    success = '✅',
+    failed = '❌',
+    [''] = '✍️ ',
+  }
+  local ret = ""
+  for _, data in ipairs(vim.fn['vimtex#state#list_all']()) do
+    local jobid = data.compiler.job
+    local is_running = jobid and vim.fn.jobpid(jobid) > 0
+    if is_running then
+      ret = ret .. (icons[M._vimtex_compiler_jobs.status] or icons[''])
+    end
+  end
+  return ret
 end
 
 -- in macOS, use Skim as the default LaTeX PDF viewer (for vimtex)

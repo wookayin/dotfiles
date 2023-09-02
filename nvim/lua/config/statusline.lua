@@ -78,6 +78,9 @@ local custom_components = {
       return (job.exit_code == 0 and '✅' or '❌')
     end, vim.g.neomake_job_status or {})))
   end,
+  vimtex_status = function()
+    return _G.vimtex_status ~= nil and _G.vimtex_status() or ''
+  end,
   -- LSP status, with some trim
   lsp_status = function()
     return LspStatus()
@@ -119,6 +122,7 @@ function M.setup_lualine()
       lualine_c = {
         custom_components.asyncrun_status,
         custom_components.neomake_status,
+        custom_components.vimtex_status,
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
         { custom_components.lsp_context },
       },
