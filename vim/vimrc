@@ -237,6 +237,9 @@ endif
 " Avoid 'Pattern not found' messages (nvim-compe, etc.)
 set shortmess+=c
 
+" No intro message when starting vim
+set shortmess+=I
+
 " no fucking swap and backup files
 set noswapfile
 set nobackup
