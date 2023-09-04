@@ -2852,12 +2852,12 @@ function! s:init_indent_blankline() abort
   let g:indent_blankline_filetype_exclude = ['help', 'NvimTree', 'pandoc']
   let g:indent_blankline_buftype_exclude = ['terminal']
   let g:indent_blankline_show_first_indent_level = v:false
-
-  function! HighlightsIndentBlankline() abort
-    highlight! IndentBlanklineChar guifg=#444444 gui=nocombine
-  endfunction
-  call RegisterHighlights('HighlightsIndentBlankline')
 endfunction
+
+function! HighlightsIndentBlankline() abort
+  highlight! IndentBlanklineChar guifg=#444444 gui=nocombine
+endfunction
+call RegisterHighlights('HighlightsIndentBlankline')
 
 " ---------------------------------------------------------------- }}}
 " indentLine {{{
