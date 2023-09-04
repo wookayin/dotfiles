@@ -39,11 +39,18 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Disable lazy clean by monkey-patching. (see #762)
 require("lazy.manage").clean = function(opts)
-  print("[lazy.nvim] Clean operation is disabled.")
+  print("[lazy.nvim] Clean operation is disabled. args = " .. ((opts.plugin or {}).dir or ''))
   return require("lazy.manage").run({ pipeline = {} })
 end
 require("lazy.manage.task.fs").clean.run = function(self)
-  print("[lazy.nvim] Clean operation is disabled. (lazy.manage.task.fs)")
+  local plugin_name = (self.plugin or {}).name or '(unknown)'
+  print("[lazy.nvim] Clean operation is disabled. (lazy.manage.task.fs) plugin = " .. plugin_name)
+  local inform_user = function()
+    vim.notify(("[lazy.nvim] Please check and remove %s/*.cloning manually."):format(vim.env.VIMPLUG, plugin_name),
+        vim.log.levels.ERROR, { title = 'config/plugins.lua', timeout = 10000 })
+  end
+  vim.api.nvim_create_autocmd('VimEnter', { pattern = '*', callback = inform_user })
+  inform_user()
 end
 
 -- Setup and load plugins. All plugins will be source HERE!
