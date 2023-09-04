@@ -118,6 +118,31 @@ function M.setup_neotree()
 end
 
 
+--[[ Utilities ]]
+
+--- Get the current path of a specific neotree window or the current neotree window.
+--- https://github.com/nvim-neo-tree/neo-tree.nvim/discussions/319
+function M.get_path(winid)
+  -- On a 'netrw-style' neotree window. If it's not a neotree buffer, returns nil.
+  winid = winid or vim.api.nvim_get_current_win()
+  local state = require("neo-tree.sources.manager").get_state("filesystem", nil, winid)
+  if state.path then
+    return state.path
+  end
+
+  -- Possibly it's a sidebar style neotree.
+  local bufnr = vim.api.nvim_win_get_buf(winid)
+  if vim.bo[bufnr].filetype == 'neo-tree' then
+    state = require("neo-tree.sources.manager").get_state("filesystem")
+    if state.path then
+      return state.path
+    end
+  end
+
+  -- Not found, probably the window is not having a neotree.
+  return nil
+end
+
 -- Resourcing support
 if RC and RC.should_resource() then
   M.setup_neotree()

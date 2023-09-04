@@ -2086,7 +2086,7 @@ function! FzfSmart(path) abort
 
   " (1) If a FZF tree/explorer is shown with no argument,
   " invoke :Files (with preview) rather than :GFiles
-  if empty(l:path) && index(['nerdtree'], &filetype) >= 0
+  if empty(l:path) && &filetype == 'nerdtree'
     let l:target_path = b:NERDTree.root.path._str()
     " if the current buffer is the pinned on in the tab (vim-nerdtree-tabs),
     " let fzf open files in another window. Otherwise, open in the current window.
@@ -2095,6 +2095,13 @@ function! FzfSmart(path) abort
     endif
     call fzf#vim#files(l:target_path, fzf#vim#with_preview())
     return 1
+  endif
+  if empty(l:path) && &filetype == 'neo-tree'
+    let l:target_path = luaeval('require("config.neotree").get_path()')
+    if !empty(l:target_path)
+      call fzf#vim#files(l:target_path, fzf#vim#with_preview())
+      return 1
+    endif
   endif
 
   " (2) If the given path (or CWD) is in a git repo,
