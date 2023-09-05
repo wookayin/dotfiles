@@ -270,8 +270,8 @@ else  " vanilla vim
   set lazyredraw
 endif
 
-" Make gitgutter signs, etc. be more responsive (default is 4000ms)
-set updatetime=200
+" the timeout value for CursorHold.
+set updatetime=1000
 
 set matchpairs+=<:>
 
