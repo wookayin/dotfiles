@@ -11,6 +11,13 @@ return {
     config = require('config.folding').setup,
   };
 
+  -- Better Undo
+  Plug 'kevinhwang91/nvim-fundo' {
+    dependencies = {'kevinhwang91/promise-async'},
+    init = function() vim.o.undofile = true; end,
+    opts = {},
+  };
+
   -- Indent Guideline and Scrollbar
   Plug 'lukas-reineke/indent-blankline.nvim' { tag = 'v2.20.8', init = PlugConfig, event = 'UIEnter' };
   Plug 'dstein64/nvim-scrollview' { event = 'UIEnter' };
