@@ -36,8 +36,6 @@ end
 function M.setup_compiler_commands()
   -- :Build
   vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
-    local is_running = function() return vim.fn.eval('b.vimtex.compiler.is_running()') end
-    local was_running = is_running()
     vim.fn['vimtex#compiler#start']()
   end, { nargs = '?', desc = 'Build with Vimtex (continuous build mode)' })
   vim.keymap.set('n', '<S-F5>', 'VimtexStop', { buffer = true, remap = false })
