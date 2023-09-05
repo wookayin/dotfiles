@@ -53,11 +53,16 @@ local function define_commands()
     end
     return vim.api.nvim_create_user_command(name, command, opts)
   end
+  local nmap = function(...) vim.keymap.set('n', ...) end
 
   -- :te and :Te are shortcuts to telescope
   vim.fn.CommandAlias("te", "Telescope")
 
   -- Searching commands w/ telescope (plus, accepts arguments)
+  command("Buffers", { alias="B", nargs='?', complete='buffer', desc = 'List all buffers with telescope.' }, function(e)
+    require("telescope.builtin").buffers({ default_text = e.args })
+  end)
+  nmap('<leader>B', '<Cmd>Buffers<CR>')
   command("Highlights", { nargs='?', complete='highlight' }, function(e)
     require("telescope.builtin").highlights({ default_text = e.args })
   end)
