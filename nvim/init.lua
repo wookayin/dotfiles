@@ -54,12 +54,12 @@ if vim.fn.has('nvim-0.8') == 0 then
   ]]
   return
 
-elseif vim.fn.has('nvim-0.8.0') == 0 then
+elseif vim.fn.has('nvim-0.9.1') == 0 then
   vim.defer_fn(function()
     local like_false = function(x) return x == nil or x == "0" or x == "" end
     if not like_false(vim.env.DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING) then return end
-    local msg = 'Please upgrade to latest neovim (0.9.0+).\n'
-    msg = msg .. 'Support for neovim < 0.8 will be dropped soon.'
+    local msg = 'Please upgrade to latest neovim (0.9.1+).\n'
+    msg = msg .. 'Support for neovim <= 0.8.x will be dropped soon.'
     msg = msg .. '\n\n' .. string.format('Try: $ %s install neovim', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
     msg = msg .. '\n\n' .. ('If you cannot upgrade yet but want to suppress this warning,\n'
                             .. 'use `export DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING=1`.')
@@ -68,7 +68,7 @@ elseif vim.fn.has('nvim-0.8.0') == 0 then
   end, 100)
 end
 
-if vim.fn.has('nvim-0.8') > 0 then
+do
   -- Load all the plugins (lazy.nvim, requires nvim 0.8+)
   require 'config.plugins'
 

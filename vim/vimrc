@@ -140,7 +140,7 @@ if has('nvim')
 endif
 
 " more sensible jump behavior
-if has('nvim')
+if has('nvim-0.8')
   " Use browser-style (or 'tagstack') navigation (see :help jumplist-stack)
   set jumpoptions+=stack
   " Preserve "view" such as relative cursor position to window (see :help mark-view)
