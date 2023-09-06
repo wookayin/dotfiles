@@ -25,7 +25,9 @@ function M.setup_neotree()
       follow_current_file = {
         enabled = true,
       },
-      use_libuv_file_watcher = false,
+
+      -- Use OS-level file watchers to detect filetree changes
+      use_libuv_file_watcher = true,
 
       -- #320: Do not hide hidden files when the root folder is otherwise empty
       filtered_items = {
