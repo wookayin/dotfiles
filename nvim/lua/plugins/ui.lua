@@ -4,6 +4,8 @@ local Plug = require('utils.plug_utils').Plug
 local PlugConfig = require('utils.plug_utils').PlugConfig
 local UpdateRemotePlugins = require('utils.plug_utils').UpdateRemotePlugins
 
+local has_py3 = function(p) return require('config.pynvim') end
+
 return {
   -- Basic UI Components
   Plug 'MunifTanjim/nui.nvim' { lazy = true };  -- see config/ui.lua
@@ -48,6 +50,7 @@ return {
   -- Wildmenu
   Plug 'wookayin/wilder.nvim' {
     dependencies = {'romgrk/fzy-lua-native'},
+    cond = has_py3,
     build = UpdateRemotePlugins,
     event = 'CmdlineEnter',
     func = 'wilder#*',

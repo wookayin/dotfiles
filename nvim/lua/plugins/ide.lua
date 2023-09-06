@@ -7,6 +7,8 @@ local UpdateRemotePlugins = require('utils.plug_utils').UpdateRemotePlugins
 local function has(f) return vim.fn.has(f) > 0 end
 local LspSetup = 'User LspSetup'
 
+local has_py3 = function(p) return require('config.pynvim') end
+
 -- Register LspSetup after UIEnter
 vim.api.nvim_create_autocmd('UIEnter', {
   pattern = '*',
@@ -18,7 +20,7 @@ vim.api.nvim_create_autocmd('UIEnter', {
 
 return {
   Plug 'Sirver/ultisnips' {
-    cond = has('python3'),
+    cond = has_py3,
     event = { 'InsertEnter', 'CmdlineEnter' },
   };
 
@@ -64,16 +66,17 @@ return {
 
   -- Python
   Plug 'wookayin/semshi' {
-    cond = has('python3'), ft = 'python',
+    ft = 'python',
+    cond = function(p) return require('config.pynvim') end,
     config = function()
       -- Semshi uses FileType autocmds on init. Have it called once again when lazy loaded.
       vim.cmd [[ doautocmd SemshiInit FileType python ]]
     end,
     build = UpdateRemotePlugins,
   };
-  Plug 'stsewd/isort.nvim' { cond = has('python3'), ft = 'python', build = UpdateRemotePlugins };
-  Plug 'wookayin/vim-autoimport' { cond = has('python3'), ft = 'python' };
-  Plug 'klen/python-mode' { cond = has('python3'), branch = 'develop', ft = 'python' };
+  Plug 'stsewd/isort.nvim' { cond = has_py3, ft = 'python', build = UpdateRemotePlugins };
+  Plug 'wookayin/vim-autoimport' { cond = has_py3, ft = 'python' };
+  Plug 'klen/python-mode' { cond = has_py3, branch = 'develop', ft = 'python' };
   Plug 'wookayin/vim-python-enhanced-syntax' { ft = 'python' };
 
   -- Other languages

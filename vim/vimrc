@@ -328,13 +328,6 @@ if has('nvim') && executable('nvr')
   autocmd FileType gitcommit set bufhidden=delete
 endif
 
-" python
-if !has('nvim') && !has('python3')
-  autocmd VimEnter * echohl WarningMsg |
-        \ echom 'WARNING: This version of vim is unsupported, lacking +python3. Install vim from brew/apt or use neovim.' |
-        \ echohl None
-endif
-
 " For debugging
 function! ToggleVerbose()
   if !&verbose
@@ -1146,7 +1139,7 @@ endif
 " :Pyedit (:pye) -- open the file for the python module
 " :Pysplit (:pysp), :Pyvsplit (:pyvs) -- similar, but in :split, :vsplit
 " e.g., :Pyedit numpy.core will open $(site-packages)/numpy/core/__init__.py
-if has('nvim') && has('python3')
+function! s:setup_pyedit_commands() abort
   " This feature requires jedi installed on the host python.
   let g:python_jedi_available = 0
 python3 << EOF
@@ -1195,7 +1188,8 @@ EOF
           \ printf('[c.full_name for c in __import__("jedi").Script("import %s").complete(line=1)]', query))
     return completions
   endfunction
-endif
+endfunction
+autocmd CmdlineEnter * ++once call s:setup_pyedit_commands()
 
 
 " }}}

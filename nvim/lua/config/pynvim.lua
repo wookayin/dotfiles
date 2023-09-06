@@ -40,7 +40,15 @@ else
   return
 end
 
--- Automatically install pynvim on startup
+-- Now that g:python3_host_prog is set, we can call has('python3')
+if vim.fn.has('python3') == 0 then
+  vim.schedule(function()
+    vim.notify('WARNING: This version of neovim is unsupported, lacking +python3.\n',
+      vim.log.levels.WARN, { title = 'config/pynvim' })
+  end)
+  return false
+end
+
 local function determine_pip_options()
   local pip_option = ""
   local has_mac = vim.fn.has('mac') > 0
@@ -64,7 +72,7 @@ local function autoinstall_pynvim()
   -- Require pynvim >= 0.4.0
   local python3_neovim_version = system(vim.g.python3_host_prog .. " -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null")
   if tonumber(python3_neovim_version) == nil or tonumber(python3_neovim_version) < 4 then
-    echom("Automatically installing pynvim into python environment: " .. vim.g.python3_host_prog)
+    echom("Automatically installing pynvim into python environment: " .. vim.g.python3_host_prog, "MoreMsg")
     local pip_install_cmd = (
       vim.g.python3_host_prog .. " -m ensurepip; " ..
       vim.g.python3_host_prog .. " -m pip install " .. determine_pip_options() .. " pynvim"
@@ -77,8 +85,10 @@ local function autoinstall_pynvim()
       notify_later('g:python3_host_prog = ' .. vim.g.python3_host_prog)
       notify_later('Installing pynvim failed (try :Notifications) \n' .. pip_install_cmd)
       warning("Installation of pynvim has failed. Python-based features may not work.")
+      return false
     end
   end
+  return true
 end
 
 -- python version check
@@ -91,7 +101,9 @@ local function python3_version_check()
     msg = msg .. '\n' .. "python 3.6+ is required. Most features are disabled."
     msg = msg .. '\n\n' .. "g:python3_host_prog = " .. vim.g.python3_host_prog
     notify_later(msg)
+    return false
   end
+  return true
 end
 
 -- Make a dummy call first, to workaround a bug neovim#14438
@@ -100,7 +112,8 @@ vim.fn.py3eval("1")
 
 if vim.fn.py3eval("1") ~= 1 then
   -- pynvim is missing, try installing it
-  autoinstall_pynvim()
+  local ret = autoinstall_pynvim()
+  if not ret then return false end
 else
   -- pynvim already there, check versions lazily
   vim.schedule(function()
@@ -108,3 +121,7 @@ else
     python3_version_check()
   end)
 end
+
+-- Return true iff python3 is available.
+-- Instead of calling has('python3'), use require('config.pynvim').
+return true

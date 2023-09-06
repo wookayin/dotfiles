@@ -20,7 +20,8 @@ function _require(name)
 end
 
 -- Configure neovim python host.
-require 'config.pynvim'
+-- This can be executed lazily after entering vim, to save startup time.
+vim.schedule(function() require 'config.pynvim' end)
 require 'config.fixfnkeys'
 
 -- VimR support
