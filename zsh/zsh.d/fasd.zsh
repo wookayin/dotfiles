@@ -16,4 +16,9 @@ function z() {
     # because fasd_cd won't accept absolute path
     local arg=${@%$'/'}
     fasd_cd -d "$arg"
+
+    # rename tmux window after jump (unless manually set)
+    if [[ -n "$TMUX" ]]; then
+        tmux rename-window "${PWD##*/}"
+    fi
 }
