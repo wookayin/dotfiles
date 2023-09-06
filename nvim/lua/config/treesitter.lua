@@ -107,6 +107,16 @@ local function try_recover_parser_errors(lang, err)
   return true
 end
 
+-- Incompatibility between vim.treesitter core API and outdated nvim-treesitter
+-- may cause startup errors. Try to inform users with more informative message.
+vim.schedule(function()
+  if not pcall(require, 'nvim-treesitter') then
+    vim.notify("nvim-treesitter is outdated. Please update the plugin (:Lazy update).",
+      vim.log.levels.ERROR, { title = 'config/treesitter.lua' })
+  end
+end)
+
+
 -- Make sure TS syntax tree is updated when needed by plugin (with some throttling)
 -- even if the `highlight` module is not enabled.
 -- See https://github.com/nvim-treesitter/nvim-treesitter/issues/2492
