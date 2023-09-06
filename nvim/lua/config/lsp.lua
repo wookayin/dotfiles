@@ -202,6 +202,18 @@ M._ensure_mason_installed = function()
   end, vim.api.nvim_list_bufs())
 end
 
+---Create the default capabilities to use for LSP server configuration.
+---@type fun(): lsp.ClientCapabilities
+M.lsp_default_capabilities = function()
+  -- Use default vim.lsp capabilities and apply some tweaks on capabilities.completion for nvim-cmp
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities = vim.tbl_deep_extend("force", capabilities, require('cmp_nvim_lsp').default_capabilities(capabilities))
+  -- [Additional capabilities customization]
+  -- Large workspace scanning may freeze the UI; see https://github.com/neovim/neovim/issues/23291
+  capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+  return capabilities
+end
+
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 local lsp_setup_opts = {}
@@ -320,13 +332,7 @@ local function setup_lsp(lsp_name)
   local default_opts = {
     on_init = on_init[lsp_name],
     on_attach = on_attach,
-
-    capabilities = (function()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      -- nvim-cmp completion support
-      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-      return capabilities
-    end)(),
+    capabilities = M.lsp_default_capabilities(),
   }
 
   -- Configure lua_ls to support neovim Lua runtime APIs
