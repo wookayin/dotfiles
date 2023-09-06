@@ -54,14 +54,12 @@ silent! BracelessEnable +indent +highlight
 " @see g:jedi#auto_vim_configuration
 set completeopt-=longest
 
+" No omnifunc needed, we are backed by LSP
+set omnifunc=
+
 " Prevent vim from removing indentation on python comments
 " https://stackoverflow.com/questions/2360249/
 inoremap <buffer> # X<BS>#
-
-" omnifunc is not used in favor of LSP, but just in case...
-if has('python3')
-  setlocal omnifunc=python3complete#Complete
-endif
 
 function! s:pcall_require(name) abort
   if !has('nvim') | return 0 | endif
