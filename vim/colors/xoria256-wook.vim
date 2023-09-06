@@ -16,6 +16,7 @@ highlight StatusLine    ctermfg=LightGreen
 highlight ColorColumn   ctermbg=52 guibg=#5f0000
 
 highlight LineNr        ctermfg=248 ctermbg=233   guifg=#a8a8a8 guibg=#121212
+highlight CursorLineNr  cterm=none gui=bold
 highlight SignColumn    ctermfg=248 ctermbg=233   guifg=#a8a8a8 guibg=#121212
 highlight VertSplit     ctermfg=246 ctermbg=NONE  guifg=#6d747f guibg=NONE
 
