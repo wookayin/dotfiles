@@ -17,26 +17,6 @@ if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'
 fi
 
-#
-# Editors
-#
-
-if (( $+commands[nvim] )); then
-  export EDITOR='nvim'
-  export VISUAL='nvim'
-else
-  export EDITOR='vim'
-  export VISUAL='vim'
-fi
-
-export PAGER='less'
-
-# Unset GIT_EDITOR (usually nvr) inside a neovim-floaterm session.
-# See ~/.vimrc: $GIT_EDITOR section for more details.
-if [[ -n "$FLOATERM" ]]; then
-  unset GIT_EDITOR
-fi
-
 # See https://github.com/neovim/neovim/issues/22717
 # There is really no reason for $VIM and $VIMRUNTIME need to be set on zsh.
 if [[ -o interactive ]]; then
@@ -149,6 +129,27 @@ unfunction _try_conda_base
 # rust (cargo)
 if [ -d $HOME/.cargo/bin/ ]; then
   path=( $path $HOME/.cargo/bin )
+fi
+
+
+#
+# Editors
+#
+
+if (( $+commands[nvim] )); then
+  export EDITOR='nvim'
+  export VISUAL='nvim'
+else
+  export EDITOR='vim'
+  export VISUAL='vim'
+fi
+
+export PAGER='less'
+
+# Unset GIT_EDITOR (usually nvr) inside a neovim-floaterm session.
+# See ~/.vimrc: $GIT_EDITOR section for more details.
+if [[ -n "$FLOATERM" ]]; then
+  unset GIT_EDITOR
 fi
 
 
