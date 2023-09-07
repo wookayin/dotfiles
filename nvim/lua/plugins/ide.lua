@@ -20,7 +20,7 @@ vim.api.nvim_create_autocmd('UIEnter', {
 
 return {
   Plug 'Sirver/ultisnips' {
-    cond = has_py3,
+    cond = has_py3,  -- no rplugin, but need to check python version
     event = { 'InsertEnter', 'CmdlineEnter' },
   };
 
@@ -67,7 +67,7 @@ return {
   -- Python
   Plug 'wookayin/semshi' {
     ft = 'python',
-    cond = function(p) return require('config.pynvim') end,
+    cond = has_py3,
     config = function()
       -- Semshi uses FileType autocmds on init. Have it called once again when lazy loaded.
       vim.cmd [[ doautocmd SemshiInit FileType python ]]

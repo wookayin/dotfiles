@@ -3,7 +3,11 @@
 
 local M = {}
 
+-- Pin at lazy < v10, because it breaks cond since fbb0bea2
+local LAZY_VERSION = 'v9.25.1'  -- or 'stable'
+
 local PLUGIN_SPEC = {
+  { 'folke/lazy.nvim', tag = LAZY_VERSION },
   { import = "plugins.basic" },
   { import = "plugins.appearance" },
   { import = "plugins.ui" },
@@ -31,7 +35,7 @@ if not vim.loop.fs_stat(lazypath) then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    "--branch=" .. LAZY_VERSION,
     lazypath,
   })
 end
