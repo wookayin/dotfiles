@@ -206,11 +206,16 @@ end
 ---@type fun(): lsp.ClientCapabilities
 M.lsp_default_capabilities = function()
   -- Use default vim.lsp capabilities and apply some tweaks on capabilities.completion for nvim-cmp
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = vim.tbl_deep_extend("force", capabilities, require('cmp_nvim_lsp').default_capabilities(capabilities))
+  local capabilities = vim.tbl_deep_extend("force",
+    vim.lsp.protocol.make_client_capabilities(),
+    require('cmp_nvim_lsp').default_capabilities()
+  )  --[[@as lsp.ClientCapabilities]]
+
   -- [Additional capabilities customization]
   -- Large workspace scanning may freeze the UI; see https://github.com/neovim/neovim/issues/23291
-  capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+  if vim.fn.has('nvim-0.9') > 0 then
+    capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+  end
   return capabilities
 end
 
