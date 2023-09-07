@@ -2529,42 +2529,6 @@ endfunction
 
 
 " ---------------------------------------------------------------- }}}
-" vim-xtabline {{{
-
-let g:xtabline_settings = {}
-
-if has("patch-7.4.1658")
-  let g:PlugConfig['vim-xtabline'] = 's:init_xtabline'
-endif
-function! s:init_xtabline() abort
-  if has('nvim-0.8')
-    " Using global statusline, so always prefer tabs mode
-    augroup TablineHybridMode
-      autocmd!
-      autocmd VimEnter * call timer_start(0, { -> nvim_command('silent! XTabMode tabs') })
-    augroup end
-  else
-    " Use tabs mode if there are 2+ tabs, or buffers mode if there is only one
-    augroup TablineHybridMode
-      autocmd!
-      autocmd TabNew,TabClosed * call timer_start(0, { -> _tabline_automode() })
-    augroup end
-    function! _tabline_automode(...) abort
-      if !v:vim_did_enter | return | endif
-      if tabpagenr('$') >= 2
-        silent! XTabMode tabs
-      else
-        silent! XTabMode buffers
-      endif
-    endfunction
-  end
-
-  " Use 'buffers' as the default xtabline mode (when there is only one tab)
-  let g:xtabline_settings.tabline_modes = ['buffers', 'tabs', 'arglist']
-endfunction
-
-
-" ---------------------------------------------------------------- }}}
 " wilder.nvim - Better wildmenu {{{
 " https://github.com/gelguy/wilder.nvim#example-configs
 
