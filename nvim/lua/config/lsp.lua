@@ -105,7 +105,7 @@ end
 local auto_lsp_servers = {
   -- @see $VIMPLUG/mason-lspconfig.nvim/lua/mason-lspconfig/mappings/filetype.lua
   ['pyright'] = true,
-  ['ruff_lsp'] = false,  -- experimental
+  ['ruff_lsp'] = true,
   ['vimls'] = true,
   ['lua_ls'] = true,
   ['bashls'] = true,
@@ -249,6 +249,8 @@ lsp_setup_opts['ruff_lsp'] = {
       -- https://beta.ruff.rs/docs/configuration/#command-line-interface
       -- https://beta.ruff.rs/docs/rules/
       args = { "--ignore", table.concat({
+        "E111", -- indentation-with-invalid-multiple
+        "E114", -- indentation-with-invalid-multiple-comment
         "E402", -- module-import-not-at-top-of-file
         "E501", -- line-too-long
         "E731", -- lambda-assignment
@@ -1048,35 +1050,6 @@ function M.setup_null_ls()
             return executable('pylint') and
               utils.root_has_file({ "pylintrc", ".pylintrc", "setup.cfg", "pyproject.toml" })
           end,
-      },
-      require('null-ls.builtins.diagnostics.flake8').with {
-          method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-          -- Activate when flake8 is available and any project config is found,
-          -- per https://flake8.pycqa.org/en/latest/user/configuration.html
-          condition = function(utils)  ---@param utils ConditionalUtils
-            return executable('flake8') and
-              utils.root_has_file({ "setup.cfg", "tox.ini", ".flake8", "pyproject.toml" })
-          end,
-          -- Ignore some too aggressive errors (indentation, lambda, etc.)
-          -- @see https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
-          extra_args = {"--extend-ignore", "E111,E114,E402,E502,E731"},
-          -- Override flake8 diagnostics levels
-          -- @see https://github.com/jose-elias-alvarez/null-ls.nvim/issues/538
-          on_output = h.diagnostics.from_pattern(
-            [[:(%d+):(%d+): ((%u)%w+) (.*)]],
-            { "row", "col", "code", "severity", "message" },
-            {
-              severities = {
-                E = h.diagnostics.severities["warning"], -- Changed to warning!
-                W = h.diagnostics.severities["warning"],
-                F = h.diagnostics.severities["information"],
-                D = h.diagnostics.severities["information"],
-                R = h.diagnostics.severities["warning"],
-                S = h.diagnostics.severities["warning"],
-                I = h.diagnostics.severities["warning"],
-                C = h.diagnostics.severities["warning"],
-              },
-            }),
       },
     })
     -- rust: rustfmt
