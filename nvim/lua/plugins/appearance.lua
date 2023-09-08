@@ -20,7 +20,9 @@ return {
       vim.g.xtabline_settings = {
         -- Use 'tab' as the default xtabline mode
         -- since we use global statusline (laststatus = 3)
-        tabline_modes = { 'tabs', 'buffers', 'arglist' }
+        tabline_modes = { 'tabs', 'buffers', 'arglist' },
+        -- always show the current xtabline mode
+        mode_labels = 'all',
       }
     end,
   };
