@@ -9,8 +9,8 @@ local LspSetup = 'User LspSetup'
 
 local has_py3 = function(p) return require('config.pynvim') end
 
--- Register LspSetup after UIEnter
-vim.api.nvim_create_autocmd('UIEnter', {
+-- Register LspSetup, triggered much after VimEnter and VeryLazy plugins.
+vim.api.nvim_create_autocmd('VimEnter', {
   pattern = '*',
   once = true,
   callback = vim.schedule_wrap(function()
@@ -99,7 +99,7 @@ return {
 
   -- Build
   Plug 'neomake/neomake' { event = 'CmdlineEnter' };
-  Plug 'skywind3000/asyncrun.vim' { event = 'UIEnter' };
+  Plug 'skywind3000/asyncrun.vim' { event = 'VeryLazy' };
 
   -- Testing
   Plug 'nvim-neotest/neotest' {
@@ -109,7 +109,7 @@ return {
       Plug 'nvim-neotest/neotest-plenary';
       Plug 'nvim-neotest/neotest-python';
     },
-    event = 'UIEnter',
+    event = 'VeryLazy',
     config = require('config.testing').setup,
   };
 }

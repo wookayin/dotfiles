@@ -26,7 +26,7 @@ return {
       -- :TSUpdateSync (blocks UI)
       (require('nvim-treesitter.install').update { with_sync = true })()
     end,
-    event = 'UIEnter',  -- lazy, or on demand (vim.treesitter)
+    event = 'VeryLazy',  -- lazy, or on demand (vim.treesitter call) via ftplugin
     config = function()
       -- Note: this works as a script, not as a module
       require('config.treesitter')

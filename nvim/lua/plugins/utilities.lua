@@ -7,7 +7,7 @@ return {
   -- Folding
   Plug 'kevinhwang91/nvim-ufo' {
     dependencies = {'kevinhwang91/promise-async'},
-    event = 'UIEnter',
+    event = 'VeryLazy',
     config = require('config.folding').setup,
   };
 
@@ -19,15 +19,15 @@ return {
   };
 
   -- Indent Guideline and Scrollbar
-  Plug 'lukas-reineke/indent-blankline.nvim' { tag = 'v2.20.8', init = PlugConfig, event = 'UIEnter' };
-  Plug 'dstein64/nvim-scrollview' { event = 'UIEnter' };
+  Plug 'lukas-reineke/indent-blankline.nvim' { tag = 'v2.20.8', init = PlugConfig, event = 'VeryLazy' };
+  Plug 'dstein64/nvim-scrollview' { event = 'VeryLazy' };
 
   -- Tmux support
-  Plug 'christoomey/vim-tmux-navigator' { init = PlugConfig, event = 'UIEnter' };
+  Plug 'christoomey/vim-tmux-navigator' { init = PlugConfig, event = 'VeryLazy' };
   Plug 'tpope/vim-tbone' { cmd = 'Tmux' };
 
   -- Misc
-  Plug 'tpope/vim-commentary' { init = PlugConfig, event = 'UIEnter' };
+  Plug 'tpope/vim-commentary' { init = PlugConfig, event = 'VeryLazy' };
   Plug 'szw/vim-maximizer' { cmd = 'MaximizerToggle' };
   Plug 'tpope/vim-eunuch' { event = 'CmdlineEnter', init = function() vim.g.eunuch_no_maps = true; end };
   Plug 'junegunn/vim-emoji' { lazy = true, func = 'emoji#*' };

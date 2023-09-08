@@ -5,21 +5,21 @@ local PlugConfig = require('utils.plug_utils').PlugConfig
 
 return {
   -- Keymaps
-  Plug 'junegunn/vim-peekaboo' { event = 'UIEnter' };
-  Plug 'folke/which-key.nvim' { init = PlugConfig, event = 'UIEnter' };
+  Plug 'junegunn/vim-peekaboo' { event = 'VeryLazy' };
+  Plug 'folke/which-key.nvim' { init = PlugConfig, event = 'VeryLazy' };
 
   -- Actions and operators
   Plug 'Lokaltog/vim-easymotion' { keys = '<leader>f' };
   Plug 'junegunn/vim-easy-align' {
     keys = { '<Plug>(EasyAlign)', { '<Plug>(EasyAlign)', mode = 'v' } },
   };
-  Plug 'tpope/vim-surround' { event = 'UIEnter' };
+  Plug 'tpope/vim-surround' { event = 'VeryLazy' };
   Plug 'tpope/vim-repeat' { lazy = true, func = 'repeat#*' };
-  Plug 'haya14busa/vim-asterisk' { init = PlugConfig, event = 'UIEnter' };
+  Plug 'haya14busa/vim-asterisk' { init = PlugConfig, event = 'VeryLazy' };
   Plug 'haya14busa/incsearch-fuzzy.vim' {
-    event = 'UIEnter',
+    event = 'VeryLazy',
     dependencies = {
-      Plug 'haya14busa/incsearch.vim' { init = PlugConfig, event = 'UIEnter' };
+      Plug 'haya14busa/incsearch.vim' { init = PlugConfig, event = 'VeryLazy' };
     },
   };
   Plug 'unblevable/quick-scope' {
