@@ -68,7 +68,7 @@ tasks = {
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
 
     # kitty
-    '~/.config/kitty/kitty.conf': 'config/kitty/kitty.conf',
+    '~/.config/kitty': dict(src='config/kitty', fail_on_error=True),
 
     # tmux
     '~/.tmux'      : 'tmux',
@@ -302,7 +302,8 @@ os.chdir(current_dir)
 # check if git submodules are loaded properly
 stat = subprocess.check_output("git submodule status --recursive",
                                shell=True, universal_newlines=True)
-submodule_issues = [(l.split()[1], l[0]) for l in stat.split('\n') if len(l) and l[0] != ' ']  # noqa
+submodule_issues = [(l.split()[1], l[0]) for l in stat.split('\n')  # noqa
+                    if len(l) and l[0] != ' ']
 
 if submodule_issues:
     stat_messages = {'+': 'needs update', '-': 'not initialized', 'U': 'conflict!'}
@@ -317,7 +318,8 @@ if submodule_issues:
         git_submodule_update_cmd = 'git submodule update --init --recursive'
         # git 2.8+ supports parallel submodule fetching
         try:
-            git_version = str(subprocess.check_output("""git --version | awk '{print $3}'""", shell=True))
+            git_version = str(subprocess.check_output(
+                """git --version | awk '{print $3}'""", shell=True))
             if git_version >= '2.8':
                 git_submodule_update_cmd += ' --jobs 8'
         except Exception:
@@ -337,6 +339,7 @@ for target, item in sorted(tasks.items()):
 
     source = item.get('src', None)
     force = item.get('force', False)
+    fail_on_error = item.get('fail_on_error', False)
 
     if source:
         source = os.path.join(current_dir, os.path.expanduser(source))
@@ -360,21 +363,28 @@ for target, item in sorted(tasks.items()):
     # if --force option is given, delete and override the previous symlink
     if os.path.lexists(target):
         is_broken_link = os.path.islink(target) and not os.path.exists(os.readlink(target))
+        msg = ""
 
-        if args.force or is_broken_link:
+        if is_broken_link:  # safe to remove
             if os.path.islink(target):
                 os.unlink(target)
+
+        elif os.path.islink(target):
+            if args.force:
+                os.unlink(target)
             else:
-                log("{:50s} : {}".format(
-                    BLUE(target),
-                    YELLOW("already exists but not a symbolic link; --force option ignored")
-                ))
+                msg = GRAY("already exists, skipped")
+        elif fail_on_error:
+            msg = RED("already exists, please remove " + target + " manually.")
         else:
-            log("{:50s} : {}".format(
-                BLUE(target),
-                GRAY("already exists, skipped") if os.path.islink(target) \
-                    else YELLOW("exists, but not a symbolic link. Check by yourself!!")
-            ))
+            if args.force:
+                msg = YELLOW("already exists but not a symbolic link; --force option ignored")
+            else:
+                msg = YELLOW("exists, but not a symbolic link. Check by yourself!!")
+        if msg:
+            log("{:60s} : {}".format(BLUE(target), msg))
+            if fail_on_error:
+                sys.exit(1)
 
     # make a symbolic link if available
     if not os.path.lexists(target):
@@ -383,7 +393,7 @@ for target, item in sorted(tasks.items()):
             makedirs(mkdir_target)
             log(GREEN('Created directory : %s' % mkdir_target))
         os.symlink(source, target)
-        log("{:50s} : {}".format(
+        log("{:60s} : {}".format(
             BLUE(target),
             GREEN("symlink created from '%s'" % source)
         ))
