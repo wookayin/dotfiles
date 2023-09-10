@@ -177,9 +177,9 @@ function _G.lazy_foldexpr(lnum)
   end
 end
 
--- :Plugs -- quickly locate and find plugin defs
+-- :PlugWhere -- quickly locate and find plugin defs
 -- TODO: Use lazy API to retrieve full plugin spec instead of grep.
-vim.api.nvim_create_user_command('Plugs', function(opts)
+vim.api.nvim_create_user_command('PlugWhere', function(opts)
   local entry_maker = require('telescope.make_entry').gen_from_vimgrep({ })
   require('telescope.builtin').grep_string({
     search_dirs = { '~/.config/nvim/lua/plugins' },
@@ -206,10 +206,13 @@ vim.api.nvim_create_user_command('Plugs', function(opts)
       preview_width = 0.5,
     },
   })
-end, { nargs = '?', desc = 'Plugs: find lazy plugin declaration.',
-complete = function()
-  local names = M.list_plugs(); table.sort(names); return names
-end})
+end, {
+  nargs = '?', desc = 'PlugWhere: find lazy plugin declaration.',
+  complete = function()
+    local names = M.list_plugs(); table.sort(names); return names
+  end
+})
+pcall(vim.fn.CommandAlias, 'PW', 'PlugWhere', false)
 
 -- Some command alias for :Lazy
 pcall(function()
