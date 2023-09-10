@@ -80,9 +80,6 @@ require("lazy").setup(PLUGIN_SPEC, {
   },
   performance = {
     rtp = {
-      paths = {
-        '~/.vim',  -- Allows ~/.vim/colors, etc. accessible
-      },
       disabled_plugins = {
         "netrwPlugin",
       },

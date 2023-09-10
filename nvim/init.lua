@@ -45,7 +45,6 @@ end
 -- This should precede plugin loading via lazy.nvim.
 vim.cmd [[
   source ~/.vimrc
-  set rtp+=~/.vim
 ]]
 
 -- Check neovim version

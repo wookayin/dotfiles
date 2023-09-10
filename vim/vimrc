@@ -2916,7 +2916,7 @@ let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
 
 " edit snippets: split the window vertically or horizontally
 let g:UltiSnipsEditSplit = 'context'
-let g:UltiSnipsSnippetDirectories = [$HOME . '/.vim/UltiSnips']
+let g:UltiSnipsSnippetDirectories = [$HOME . '/.config/nvim/UltiSnips']
 
 command! -nargs=0 UltiSnipsRefreshSnippets call UltiSnips#RefreshSnippets()
             \ | call VimNotify("Reloaded Snippets.", 'info', {'title': 'Ultisnips'})
