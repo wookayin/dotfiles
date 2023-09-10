@@ -466,8 +466,7 @@ function M._setup_diagnostic()
       end,
     },
     underline = {
-      -- Do not underline text when severity is low (INFO or HINT).
-      severity = { min = vim.diagnostic.severity.WARN },
+      severity = { min = vim.diagnostic.severity.INFO },
     },
     float = {
       source = 'always',
