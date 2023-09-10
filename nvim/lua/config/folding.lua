@@ -14,7 +14,7 @@ M.setup_ufo = function()
   vim.o.foldlevelstart = 99
   vim.g.has_folding_ufo = 1
 
-  -- See ~/.vim/plugged/nvim-ufo/lua/ufo/config.lua
+  -- See $VIMPLUG/nvim-ufo/lua/ufo/config.lua
   -- See https://github.com/kevinhwang91/nvim-ufo/blob/master/README.md#setup-and-description
   ufo.setup {
     open_fold_hl_timeout = 150,

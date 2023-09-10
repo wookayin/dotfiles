@@ -1,5 +1,5 @@
 -- see :help neotest
--- see ~/.vim/plugged/neotest/lua/neotest/config/init.lua
+-- see $VIMPLUG/neotest/lua/neotest/config/init.lua
 
 -- neovim 0.7.0 or higher is required.
 
@@ -7,7 +7,7 @@ local M = {}
 M.custom_consumers = {}
 
 -- :help neotest.config
--- @see ~/.vim/plugged/neotest/lua/neotest/config/init.lua
+-- @see $VIMPLUG/neotest/lua/neotest/config/init.lua
 function M.setup_neotest()
   require("neotest").setup {
     adapters = {
@@ -45,7 +45,7 @@ function M.setup_neotest()
 end
 
 -- Add command shortcuts and keymappings
--- see ~/.vim/after/ftplugin/python.vim as well
+-- see $DOTVIM/after/ftplugin/python.vim as well
 function M.setup_commands_keymaps()
   vim.cmd [[
     command! -nargs=0 NeotestRun      lua require("neotest").run.run()
@@ -165,7 +165,7 @@ end
 
 function M.setup()
   M.setup_neotest()
-  -- See also ~/.vim/after/ftplugin/python.vim for filetype-specfic mapping to neotest commands
+  -- See also $DOTVIM/after/ftplugin/python.vim for filetype-specfic mapping to neotest commands
   M.setup_commands_keymaps()
 
   _G.neotest = require('neotest')

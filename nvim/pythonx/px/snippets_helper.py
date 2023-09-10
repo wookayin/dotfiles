@@ -1,6 +1,6 @@
 """px.snippets_helper"""
 
-# See ~/.vim/UltiSnips/python.snippets
+# See $DOTVIM/UltiSnips/python.snippets
 
 import vim  # type: ignore
 try:

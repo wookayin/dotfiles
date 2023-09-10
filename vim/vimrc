@@ -23,11 +23,11 @@ endif
 " and listed up in the separate file 'plugins.vim',
 " so that this vimrc would still work standalone without plugins.
 let g:plugs = {}
-if filereadable(expand('~/.vim/plugins.vim')) && !has('nvim')
+if filereadable(expand('$HOME/.vim/plugins.vim')) && !has('nvim')
   " Note: on neovim, we will switch to lazy.vim (see init.lua).
   " For the time being neovim <= 0.7.x will have limited support with vim-plug
   " during the gradual transition period.
-  source \~/.vim/plugins.vim
+  source $HOME/.vim/plugins.vim
 endif
 
 " Functions to be executed for each plugin BEFORE the plugin loads.

@@ -9,7 +9,7 @@ if not vim.treesitter.query.set then
   vim.treesitter.query.set = require("vim.treesitter.query").set_query
 end
 
--- Note: parsers are installed at ~/.vim/plugged/nvim-treesitter/parser/
+-- Note: parsers are installed at $VIMPLUG/nvim-treesitter/parser/
 local parsers_to_install = {
   default = {
     "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",

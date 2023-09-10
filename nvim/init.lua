@@ -19,6 +19,9 @@ function _require(name)
   return require(name)
 end
 
+-- This is the home folder of NVIM config files.
+vim.env.DOTVIM = vim.fn.expand('~/.config/nvim')
+
 -- Configure neovim python host.
 -- This can be executed lazily after entering vim, to save startup time.
 vim.schedule(function() require 'config.pynvim' end)

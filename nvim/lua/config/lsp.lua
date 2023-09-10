@@ -561,7 +561,7 @@ end
 -- nvim-cmp: completion support
 ---------------------------------
 -- https://github.com/hrsh7th/nvim-cmp#recommended-configuration
--- ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
+-- $VIMPLUG/nvim-cmp/lua/cmp/config/default.lua
 
 local has_words_before = function()
   if vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt' then
@@ -590,7 +590,7 @@ M.setup_cmp = function()
   vim.o.completeopt = "menu,menuone,noselect"
 
   -- cmp.setup { ... }
-  -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/default.lua
+  -- See $VIMPLUG/nvim-cmp/lua/cmp/config/default.lua
   local snippet = {
     expand = function(args)
       vim.fn["UltiSnips#Anon"](args.body)
@@ -612,7 +612,7 @@ M.setup_cmp = function()
     }
   }
   local mapping = {
-    -- See ~/.vim/plugged/nvim-cmp/lua/cmp/config/mapping.lua
+    -- See $VIMPLUG/nvim-cmp/lua/cmp/config/mapping.lua
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete({ reason = ContextReason.Manual }),
@@ -810,7 +810,7 @@ function cmp_helper.apply_highlight()
     highlight! CmpItemAbbrMatchFuzzy    guibg=NONE guifg=#fd7e14 gui=bold
 
     " Item Kinds. defaults to CmpItemKind (#cc5de8)
-    " see ~/.vim/plugged/nvim-cmp/lua/cmp/types/lsp.lua
+    " see $VIMPLUG/nvim-cmp/lua/cmp/types/lsp.lua
     " {✅Class, ✅Module, ✅Interface, Struct, ✅Function, ✅Method, ✅Constructor,
     "  ✅Variable, ✅Property, Field, ✅Unit, Value, Enum, EnumMember, Event,
     "  ✅Keyword, Color, File, Reference, Folder, Constant, Operator, TypeParameter,
@@ -924,7 +924,7 @@ function M.setup_lsp_status()
   lsp_status.config({
     -- Avoid using use emoji-like or full-width characters
     -- because it can often break rendering within tmux and some terminals
-    -- See ~/.vim/plugged/lsp-status.nvim/lua/lsp-status.lua
+    -- See $VIMPLUG/lsp-status.nvim/lua/lsp-status.lua
     indicator_hint = '!',
     status_symbol = ' ',
 
@@ -976,7 +976,7 @@ function M.setup_fidget()
   -- Note: This will override lsp-status.nvim (progress handlers).
   require("fidget").setup {
     text = {
-      --see ~/.vim/plugged/fidget.nvim/lua/fidget/spinners.lua
+      --see $VIMPLUG/fidget.nvim/lua/fidget/spinners.lua
       spinner = "zip",
     },
     window = {
@@ -1096,7 +1096,7 @@ function M.setup_null_ls()
   ]]
 
   -- Automatic formatting
-  -- see ~/.vim/after/ftplugin/python.vim for filetype use
+  -- see $DOTVIM/after/ftplugin/python.vim for filetype use
   vim.cmd [[
     augroup LspAutoFormatting
     augroup END

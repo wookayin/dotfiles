@@ -110,8 +110,8 @@ function M.setup_lualine()
       -- https://github.com/shadmansaleh/lualine.nvim/blob/master/THEMES.md
       theme = 'onedark'
     },
-    -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/config.lua
-    -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/components
+    -- see $VIMPLUG/lualine.nvim/lua/lualine/config.lua
+    -- see $VIMPLUG/lualine.nvim/lua/lualine/components
     sections = {
       lualine_a = {
         { 'mode', cond = min_statusline_width(40) },
@@ -193,7 +193,7 @@ function M.setup_winbar()
   require 'lualine.utils.loader'.load_all(winbar_config)
 
   -- The custom winbar function.
-  -- seealso ~/.vim/plugged/lualine.nvim/lua/lualine.lua, function statusline
+  -- seealso $VIMPLUG/lualine.nvim/lua/lualine.lua, function statusline
   _G.winbarline = function()
     local is_focused = require 'lualine.utils.utils'.is_focused()
     local line = require 'lualine.utils.section'.draw_section(

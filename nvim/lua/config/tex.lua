@@ -11,7 +11,7 @@ function M.init()
   -- Always prefer latex instead of plaintex, etc. (:h vimtex-tex-flavor)
   vim.g.tex_flavor = 'latex'
 
-  -- Use treesitter highlights for tex, see ~/.vim/after/syntax/tex.vim
+  -- Use treesitter highlights for tex, see $DOTVIM/after/syntax/tex.vim
   vim.g.vimtex_syntax_enabled = 0
 
   -- suppress version warning

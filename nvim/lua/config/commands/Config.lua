@@ -10,8 +10,7 @@ function M.build_directory_map()
   -- Static mappings
   local map = {
     ['vimrc'] = '~/.vim/vimrc',
-    ['init.lua'] = '~/.config/nvim/init.lua',
-    ['plugins.vim'] = '~/.vim/plugins.vim',
+    ['init.lua'] = vim.fn.expand('$DOTVIM/init.lua'),
   }
   local function _scan(glob_pattern, prefix)
     local files = vim.split(vim.fn.glob(glob_pattern), '\n')

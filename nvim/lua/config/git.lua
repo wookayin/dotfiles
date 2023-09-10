@@ -10,7 +10,7 @@ function M.setup_gitsigns()
 
   require('gitsigns').setup {
     signs = {
-      -- For highlights, see ~/.vim/colors/xoria256-wook.vim
+      -- For highlights, see $DOTVIM/colors/xoria256-wook.vim
       add          = {hl = 'GitSignsAdd'   , text = '┃', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
       change       = {hl = 'GitSignsChange', text = '┃', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
       delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
