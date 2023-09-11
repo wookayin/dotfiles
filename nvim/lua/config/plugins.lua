@@ -57,6 +57,13 @@ require("lazy.manage.task.fs").clean.run = function(self)
   inform_user()
 end
 
+-- Monkey-patch: Normalize git origin, avoid unnecessary re-cloning on update
+---@param repo string path to the git repository
+require("lazy.manage.git").get_origin = function(repo)
+  local origin = require("lazy.manage.git").get_config(repo)["remote.origin.url"]
+  return string.gsub(origin, 'git@github.com:', 'https://github.com/')
+end
+
 -- Setup and load plugins. All plugins will be source HERE!
 -- https://github.com/folke/lazy.nvim#%EF%B8%8F-configuration
 -- @see $VIMPLUG/lazy.nvim/lua/lazy/core/config.lua
