@@ -29,12 +29,13 @@ end
 function M.setup_fonts()
   -- Fonts: https://wezfurlong.org/wezterm/config/fonts.html
   config.font = wezterm.font_with_fallback {
-    'JetBrainsMono Nerd Font Mono',
+    { family = 'JetBrainsMono Nerd Font Mono', weight = 'Light' },
     'Hack Nerd Font Mono',
     'Monaco',
+    'Apple SD Gothic Neo',  -- for Korean (한글) letters
   }
-  config.cell_width = 0.9
-  config.line_height = 0.92
+  config.cell_width = 0.85
+  config.line_height = 0.90
   config.font_size = 18
   -- No ligatures
   config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
