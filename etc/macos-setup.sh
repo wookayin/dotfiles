@@ -3,6 +3,7 @@
 
 # Some sensible settings for macOS
 # insipred by https://mths.be/osx
+# See also for what's possible: https://macos-defaults.com/
 
 # Ensure that this script is running on macOS
 if [ `uname` != "Darwin" ]; then
@@ -37,6 +38,9 @@ configure_general() {
   # Faster key repeat
   defaults write NSGlobalDomain InitialKeyRepeat -int 20
   defaults write NSGlobalDomain KeyRepeat -int 1
+
+  # Use key repeat instead of the accents menu when holding a key
+  defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
   # Always show scrollbars (`WhenScrolling`, `Automatic` and `Always`)
   defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
@@ -105,18 +109,6 @@ configure_skim() {
 
 
 ################################################################
-# VS Code
-################################################################
-
-configure_vscode() {
-  # Enable key-repeating (https://github.com/VSCodeVim/Vim#mac)
-  defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
-  defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
-  defaults delete -g ApplePressAndHoldEnabled || true
-}
-
-
-################################################################
 
 all() {
   configure_general
@@ -125,7 +117,6 @@ all() {
   configure_finder
   configure_safari
   configure_skim
-  configure_vscode
 }
 
 if [ -n "$1" ]; then
