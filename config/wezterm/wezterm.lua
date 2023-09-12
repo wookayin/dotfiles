@@ -40,10 +40,12 @@ function M.setup_fonts()
   config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
 end
 function M.setup_keys()
-  -- Need to turn off use_ime otherwise key repeat gets broken (see #4061)
-  -- Note: this setting makes CJK (e.g., 한글) input not work properly.
   -- https://wezfurlong.org/wezterm/config/lua/config/use_ime.html
-  config.use_ime = false
+  -- See https://github.com/wez/wezterm/issues/4061
+  -- When using macOS IME (true), successive key repeat will get stuck
+  -- unless the ApplePressAndHoldEnabled option is turned off.
+  -- When turning off `use_ime`, key repeat will work but CJK input will be broken.
+  config.use_ime = true
   -- https://wezfurlong.org/wezterm/config/keyboard-concepts.html#dead-keys
   config.use_dead_keys = false
 end
