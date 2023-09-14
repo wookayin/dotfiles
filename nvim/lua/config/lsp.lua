@@ -20,9 +20,9 @@ local on_attach_lsp_signature = function(client, bufnr)
   })
 end
 
--- Customize LSP behavior via on_attach
+-- A callback executed when LSP engine attaches to a buffer.
+---@type fun(client: lsp.Client, bufnr: number)
 local on_attach = function(client, bufnr)
-  -- [[ A callback executed when LSP engine attaches to a buffer. ]]
 
   -- Always use signcolumn for the current buffer
   if vim.bo.filetype == 'python' then
@@ -46,11 +46,12 @@ local on_attach = function(client, bufnr)
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+  local function buf_command(...) vim.api.nvim_buf_create_user_command(bufnr, ...) end
   local opts = { noremap = true, silent = true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  if vim.fn.exists(':Telescope') then
+  if vim.fn.exists(':Telescope') > 0 then
     buf_set_keymap('n', 'gr', '<cmd>Telescope lsp_references<CR>', opts)
     buf_set_keymap('n', 'gd', '<cmd>Telescope lsp_definitions<CR>', opts)
     buf_set_keymap('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts)
@@ -77,7 +78,7 @@ local on_attach = function(client, bufnr)
   --buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 
   -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(opt)
+  buf_command("LspRename", function(opt)
     vim.lsp.buf.rename(opt.args ~= "" and opt.args or nil)
   end, { nargs = '?', desc = "Rename the current symbol at the cursor." })
 
@@ -158,7 +159,7 @@ function M._setup_mason()
 end
 
 -- Install auto_lsp_servers on demand (FileType)
-M._ensure_mason_installed = function()
+function M._ensure_mason_installed()
   local augroup = vim.api.nvim_create_augroup('mason_autoinstall', { clear = true })
   local lspconfig_to_package = require("mason-lspconfig.mappings.server").lspconfig_to_package
   local filetype_mappings = require("mason-lspconfig.mappings.filetype")
@@ -204,7 +205,7 @@ end
 
 ---Create the default capabilities to use for LSP server configuration.
 ---@type fun(): lsp.ClientCapabilities
-M.lsp_default_capabilities = function()
+function M.lsp_default_capabilities()
   -- Use default vim.lsp capabilities and apply some tweaks on capabilities.completion for nvim-cmp
   local capabilities = vim.tbl_deep_extend("force",
     vim.lsp.protocol.make_client_capabilities(),
