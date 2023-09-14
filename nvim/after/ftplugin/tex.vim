@@ -33,24 +33,24 @@ setlocal spell
 " ------------
 
 " wrap current word or selection with textbf/textit (need surround.vim)
-nmap <leader>b ysiw}i\textbf<ESC>
-nmap <leader>i ysiw}i\textit<ESC>
-nmap <leader>u ysiw}i\underline<ESC>
-vmap <leader>b S}i\textbf<ESC>
-vmap <leader>i S}i\textit<ESC>
-vmap <leader>u S}i\underline<ESC>
+nmap <buffer> <leader>b ysiw}i\textbf<ESC>
+nmap <buffer> <leader>i ysiw}i\textit<ESC>
+nmap <buffer> <leader>u ysiw}i\underline<ESC>
+vmap <buffer> <leader>b S}i\textbf<ESC>
+vmap <buffer> <leader>i S}i\textit<ESC>
+vmap <buffer> <leader>u S}i\underline<ESC>
 
 " easy-align of align/tables {{
 " (with block)
-vmap <leader>A ga*&
+vmap <buffer> <leader>A ga*&
 " (inside current environment 'vie')
-nmap <leader>A viega*&
+nmap <buffer> <leader>A viega*&
 " }}
 
 " Make and build support
 " ======================
 
-inoremap <C-b>  <cmd>Build<CR>
+inoremap <buffer> <C-b>  <cmd>Build<CR>
 
 " default makeprg
 if filereadable('Makefile')

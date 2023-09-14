@@ -529,7 +529,7 @@ if has('nvim')
   tmap <silent> <C-y> <C-\><C-n><C-y>
 
   " Ctrl-/ requires key remapping (neovim 0.8.0, see #18735)
-  tnoremap <c-/> <c-_>
+  tmap <c-/> <c-_>
 endif
 
 if has('nvim')
@@ -2127,7 +2127,7 @@ call CommandAlias('Fplug', 'F ~/.dotfiles/vim/plugged/<C-R>=EatWhitespace()<CR>'
 call CommandAlias('Flua', expand("F $VIMRUNTIME/lua"), v:true)
 
 " Invoke F (FZF) Using Ctrl-P
-nmap <C-P> :F<CR>
+nmap <C-P> <cmd>F<CR>
 
 " insert mode completion using fzf  (:h fzf-vim-mappings)
 "   --> ~/.vim/plugged/fzf.vim/autoload/fzf/vim/complete.vim
