@@ -954,20 +954,26 @@ else
 endif
 
 " Command aliases or abbrevations
-" CommandAlias(aliasname, target, [register_cmd = v:false])
+" CommandAlias(aliasname, target, [register_cmd = v:false] | {options})
 function! CommandAlias(aliasname, target, ...)
-  let l:register_cmd = get(a:000, 0, )
+  let l:opts = get(a:000, 0, {})
+  if type(l:opts) != type({})
+    let l:opts = {'register_cmd' : l:opts}  " backward compatibility
+  endif
+  let l:register_cmd = get(l:opts, 'register_cmd', 0)
 
   " :aliasname => :target  (only applicable at the beginning of the command line)
+  let l:target = a:target
   exec printf('cnoreabbrev <expr> %s ', a:aliasname)
     \ .printf('((getcmdtype() ==# ":" && getcmdline() =~# "^%s$") ? ', a:aliasname)
-    \ .printf('("%s") : ("%s"))', escape(a:target, '"'), escape(a:aliasname, '"'))
+    \ .printf('("%s") : ("%s"))', escape(l:target, '"'), escape(a:aliasname, '"'))
 
   " optionally, make a dummy command to facilitate cmdline completion
   if l:register_cmd
-    exec printf(':command! -nargs=* %s  <mods> %s <args>', a:aliasname, a:target)
+    exec printf(':command! -nargs=* %s  <mods> %s <args>', a:aliasname, l:target)
   endif
 endfunction
+command! -nargs=+ CommandAlias call CommandAlias(<f-args>)
 
 " some basic command abbrs
 call CommandAlias('s%', 'source %')
