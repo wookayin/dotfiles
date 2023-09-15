@@ -99,19 +99,3 @@ augroup END
 
 command! -buffer -nargs=0 VimtexViewDisable     let b:neomake_vimtexview_enabled = 0
 command! -buffer -nargs=0 VimtexViewEnable      let b:neomake_vimtexview_enabled = 1
-
-
-
-" FZF-based quickjump
-" ===================
-
-" :Sections
-" Quickly lookup all \section{...} and \subsection{...} definitions.
-" A limitation: can't recognize commands inside comments or verbatim, etc.
-command! -bang -nargs=* Sections
-  \ call fzf#vim#grep(
-  \   'rg -i --column --line-number --no-heading --color=always '
-  \.shellescape('^\\(sub)?section\{'.<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview({'options': '--reverse --no-sort'}, 'up:60%')
-  \           : fzf#vim#with_preview({'options': '--reverse --no-sort'}, 'right:50%', '?'),
-  \ <bang>0)
