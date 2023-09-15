@@ -2059,27 +2059,17 @@ endif
 
 " fzf.vim options
 
+" neovim: fzf.vim is deprecated in favor of fzf-lua.
+" During migration, all fzf-vim commands will be prefixed with Fzf
+" e.g., History => FzfHistory
+let g:fzf_vim = {}
+if has('nvim')
+  let g:fzf_vim.command_prefix = 'Fzf'
+endif
+
 " :Buffers => Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
+let g:fzf_vim.buffers_jump = 1
 
-" Customize built-in commands of 'vim-fzf' (overriden by commands here) {{{
-" For full list, @see https://github.com/junegunn/fzf.vim/blob/master/plugin/fzf.vim#L42
-
-" :GFiles (with preview), :GFiles? (git diff + preview)
-" Note - GFiles only works with the cwd, cannot deal with paths outside the current git repo
-" Pressing '?' when FZF is shown would toggle preview
-command! -bang -nargs=? -complete=dir GFiles
-      \ call s:fzf_gfiles_helpmsg(<q-args>) | call fzf#vim#gitfiles(expand(<q-args>),
-      \ <q-args> != '?' ? (
-      \ <bang>0 ? fzf#vim#with_preview(s:fzf_gfiles_spec, 'up:90%')
-      \         : fzf#vim#with_preview(s:fzf_gfiles_spec, 'right:50%', 'CTRL-/')
-      \) : {}
-      \)
-let s:fzf_gfiles_spec = {'options': []}
-function! s:fzf_gfiles_helpmsg(args)
-  if a:args == '?' | return | endif
-  echohl Special | echon 'Press CTRL-/ for toggle preview.' | echohl NONE
-endfunction
 " }}}
 
 function! s:get_git_dir(path)
@@ -2096,7 +2086,10 @@ endfunction
 
 " Command :F (FzfSmart)
 function! FzfSmart(path) abort
-  " If args are given (e.g. :F <args>), run :Files <args>
+  " If neovim, try to load fzf-lua early because this can be executed much before
+  let l:fzf_lua = has('nvim') && luaeval('pcall(require, "fzf-lua")')
+
+  " If args are given (e.g. :F <args>), resolve it to a directory
   let l:path = Trim(a:path)
   if !empty(l:path)
     let l:path = expand(l:path)
@@ -2104,7 +2097,7 @@ function! FzfSmart(path) abort
       if filereadable(l:path)
         let l:path = fnamemodify(l:path, ":h")
       else  " does not exist, error
-        echohl WarningMsg | call Echom('Does not exist: ' . l:path) | echohl NONE | return 0
+        echohl WarningMsg | call Echom('Path does not exist: ' . l:path) | echohl NONE | return 0
       endif
     endif
   endif
@@ -2118,13 +2111,13 @@ function! FzfSmart(path) abort
     if exists('t:NERDTreeBufName') && bufname('%') == t:NERDTreeBufName
       wincmd w   " we need to move the focus outside nerdtree
     endif
-    call fzf#vim#files(l:target_path, fzf#vim#with_preview())
+    execute ':Files ' . l:target_path
     return 1
   endif
   if empty(l:path) && &filetype == 'neo-tree'
     let l:target_path = luaeval('require("config.neotree").get_path()')
     if !empty(l:target_path)
-      call fzf#vim#files(l:target_path, fzf#vim#with_preview())
+      execute ':Files ' . l:target_path
       return 1
     endif
   endif
@@ -2135,9 +2128,16 @@ function! FzfSmart(path) abort
   if ! empty(l:git_dir)
     let l:old_cwd = getcwd()
     execute ':tcd ' . l:git_dir . '/..'
-    echon ':GFiles (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
-    GFiles -c -o --exclude-standard
-    execute ':tcd ' . l:old_cwd
+    try
+      echon ':GitFiles! (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
+      if l:fzf_lua  " see $DOTVIM/lua/config/fzf.lua
+        exec 'GitFiles! ' . l:path
+      else  " vanilla vim, using fzf.vim
+        exec 'GFiles --cached --others --modified --exclude-standard --deduplicate ' . l:path
+      endif
+    finally
+      execute ':tcd ' . l:old_cwd
+    endtry
     return 2
 
   " (3) not in git repo, invoke :Files <args> by fallback
@@ -2239,21 +2239,6 @@ function! s:rg_star_to_cword(args) abort
 endfunction
 
 " }}}
-
-" fzf-ripgrep.vim
-" [@migrated] :Rg, :RgFzf are defined in ~/.vim/plugged/fzf-ripgrep.vim/plugin/fzf_ripgrep.vim
-"
-" :RgFzf, :RF, :RGF -- Ripgrep + fzf (grep then fuzzy-filter)
-command! -nargs=*     RGF     :RgFzf <args>
-call CommandAlias('RF', 'RgFzf')
-
-" :Rg, :Grep -- Ripgrep + fzf (but refreshs ripgrep result upon updating query)
-command! -nargs=*     Grep    :Rg <args>
-nnoremap <C-g>       :Grep<CR>
-
-" rg-this (current word or visual selection)
-nnoremap <leader>rg   :<c-u>RgF*<CR>
-xnoremap <leader>rg   "gy:RgF <C-R>g<CR>
 
 " :Def, :RgDef -- Easily find definition/declaration (requires ripgrep)
 " e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
