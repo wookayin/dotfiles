@@ -57,7 +57,7 @@ if vim.fn.has('nvim-0.8') == 0 then
   ]]
   return
 
-elseif vim.fn.has('nvim-0.9.1') == 0 then
+elseif vim.fn.has('nvim-0.9.1') == 0 and vim.fn.has('gui_vimr') == 0 then
   vim.defer_fn(function()
     local like_false = function(x) return x == nil or x == "0" or x == "" end
     if not like_false(vim.env.DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING) then return end

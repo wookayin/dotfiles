@@ -36,11 +36,8 @@ return {
 
   -- Telescope (config/telescope.lua)
   Plug 'nvim-telescope/telescope.nvim' {
-    branch = (function()
-      if vim.fn.has('nvim-0.9.0') > 0 then return 'master'
-      else return '0.1.x' -- for nvim 0.8 compatibility
-      end
-    end)(),
+    branch = vim.fn.has('nvim-0.9.0') > 0 and 'master' or '0.1.x', -- nvim 0.8.0 compat
+    name = vim.fn.has('nvim-0.9.0') > 0 and 'telescope.nvim' or 'telescope.nvim.legacy',
     event = 'CmdlineEnter',
     config = function()
       -- as a script, not as a module yet
