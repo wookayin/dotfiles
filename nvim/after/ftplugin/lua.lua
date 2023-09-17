@@ -8,11 +8,12 @@ setlocal.sw = 2
 
 -- <F5> or :Build => source (execute) the lua file
 if vim.fn.filereadable('Makefile') == 0 then
+  local exec_keys = function(keys)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), 'n', false)
+  end
   vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
-    vim.cmd [[
-      update
-      source %
-    ]]
+    vim.cmd [[ update ]]
+    exec_keys '<Esc>:source %<CR>'  -- to clear lua stacktrace (see RC.should_resource)
     vim.notify("Sourced " .. vim.fn.bufname())
   end,
   { desc = 'Build: source as a lua script.', nargs = 0 })
