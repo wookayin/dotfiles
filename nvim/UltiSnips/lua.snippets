@@ -50,6 +50,14 @@ endsnippet
 snippet reload
 require('plenary.reload').reload_module('$1')
 endsnippet
+snippet xpcall "xpcall, like a try-catch"
+xpcall(function()
+	$1
+end, function(err)
+	local msg = debug.traceback(err, 1)
+	vim.notify(msg, vim.log.levels.ERROR)
+end)
+endsnippet
 
 # Log levels
 snippet INFO
