@@ -693,11 +693,8 @@ endfunction
 map  <silent> <leader>L :call LocListToggle()<CR>
 
 " [F4] Next Error [Shift+F4] Previous Error
-map <F4> <ESC>:cn<CR>
-map [26~ <ESC>:cp<CR>
-map [1;2S <ESC>:cp<CR>
-map [29~ <ESC>:cp<CR>
-map <S-F4> <ESC>:cp<CR>
+nnoremap <F4>   <cmd>cnext<CR>
+nnoremap <S-F4> <cmd>cprevious<CR>
 
 " [F2] save
 imap <F2> <ESC>:w<CR>
