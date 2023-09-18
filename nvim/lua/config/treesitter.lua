@@ -1,70 +1,91 @@
 -- Treesitter config
 -- https://github.com/nvim-treesitter/nvim-treesitter
+-- See $DOTVIM/lua/plugins/treesitter.lua
 
-local ts_configs = require("nvim-treesitter.configs")
-local ts_parsers = require("nvim-treesitter.parsers")
+local M = {}
 
 -- Compatibility layer for neovim < 0.9.0 (see neovim#22761)
 if not vim.treesitter.query.set then
+  ---@diagnostic disable-next-line: deprecated
   vim.treesitter.query.set = require("vim.treesitter.query").set_query
 end
 
--- Note: parsers are installed at $VIMPLUG/nvim-treesitter/parser/
-local parsers_to_install = {
-  default = {
+---------------------------------------------------------------------------
+-- Entrypoint.
+---------------------------------------------------------------------------
+
+function M.setup()
+  local ts_configs = require("nvim-treesitter.configs")
+
+  -- @see https://github.com/nvim-treesitter/nvim-treesitter#modules
+  ---@diagnostic disable-next-line: missing-fields
+  ts_configs.setup {
+    ensure_installed = M.parsers_to_install,
+
+    highlight = {
+      -- TreeSitter's highlight/syntax support is yet experimental and has some issues.
+      -- It overrides legacy filetype-based vim syntax, and colorscheme needs to be treesitter-aware.
+      -- Note: for some ftplugins (e.g. for lua and vim), treesitter highlight might be manually started
+      -- see individual ftplugins at ~/.config/nvim/after/ftplugin/
+      enable = false,   -- TODO: Enable again when it becomes mature and usable enough.
+
+      -- List of language that will be disabled.
+      -- For example, some non-programming-language filetypes (e.g., fzf) should be
+      -- explicitly turned off otherwise it will slow down the window.
+      disable = { "fzf", "GV", "gitmessengerpopup", "fugitive", "NvimTree" },
+
+      -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+      -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+      -- Using this option may slow down your editor, and you may see some duplicate highlights.
+      -- Instead of true it can also be a list of languages
+      additional_vim_regex_highlighting = { "python" },
+    },
+
+    -- Deprecated as of neovim 0.10+ in favor of :InspectTree, only used for neovim <= 0.9
+    playground = {
+      enable = true,
+      updatetime = 30,
+      keybindings = {
+        toggle_query_editor = 'o',
+        toggle_hl_groups = 'i',
+        toggle_injected_languages = 't',
+        toggle_anonymous_nodes = 'a',
+        toggle_language_display = 'I',
+        focus_language = 'f',
+        unfocus_language = 'F',
+        update = 'R',
+        goto_node = '<cr>',
+        show_help = '?',
+      },
+    },
+  }
+
+  -- Folding support
+  vim.o.foldmethod = 'expr'
+  vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
+  M.setup_custom_queries()
+
+  M.setup_auto_parsing()
+
+  M.setup_keymap()
+end
+
+
+---------------------------------------------------------------------------
+-- Treesitter Parsers (automatic installation and repair)
+---------------------------------------------------------------------------
+
+  -- Note: parsers are installed at $VIMPLUG/nvim-treesitter/parser/
+M.parsers_to_install = vim.tbl_flatten {
+  false and { -- regular (not applied; using minimal)
     "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
     "html", "http", "java", "javascript", "json", "json5", "jsonc", "latex", "lua",
     "make", "markdown", "markdown_inline", "perl", "python",
     "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml",
   },
-  minimal = {
-    "bash", "json", "latex", "lua", "make", "markdown", "python", "query", "vim", "yaml"
-  },
-}
-parsers_to_install = parsers_to_install.minimal
-if vim.fn.has('nvim-0.9.0') > 0 then
-  table.insert(parsers_to_install, "vimdoc")
-end
-
--- @see https://github.com/nvim-treesitter/nvim-treesitter#modules
----@diagnostic disable-next-line: missing-fields
-ts_configs.setup {
-  ensure_installed = parsers_to_install,
-
-  highlight = {
-    -- TreeSitter's highlight/syntax support is yet experimental and has some issues.
-    -- It overrides legacy filetype-based vim syntax, and colorscheme needs to be treesitter-aware.
-    -- Note: for some ftplugins (e.g. for lua and vim), treesitter highlight might be manually started
-    -- see individual ftplugins at ~/.config/nvim/after/ftplugin/
-    enable = false,   -- TODO: Enable again when it becomes mature and usable enough.
-
-    -- List of language that will be disabled.
-    -- For example, some non-programming-language filetypes (e.g., fzf) should be
-    -- explicitly turned off otherwise it will slow down the window.
-    disable = { "fzf", "GV", "gitmessengerpopup", "fugitive", "NvimTree" },
-
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = { "python" },
-  },
-
-  playground = {
-    enable = true,
-    updatetime = 30,
-    keybindings = {
-      toggle_query_editor = 'o',
-      toggle_hl_groups = 'i',
-      toggle_injected_languages = 't',
-      toggle_anonymous_nodes = 'a',
-      toggle_language_display = 'I',
-      focus_language = 'f',
-      unfocus_language = 'F',
-      update = 'R',
-      goto_node = '<cr>',
-      show_help = '?',
-    },
+  { -- minimal
+    "bash", "json", "latex", "lua", "make", "markdown", "python", "query", "vim", "yaml",
+    vim.fn.has('nvim-0.9.0') > 0 and "vimdoc" or nil,
   },
 }
 
@@ -111,10 +132,14 @@ vim.schedule(function()
 end)
 
 
+---------------------------------------------------------------------------
+-- Automatic TS Parsing
+---------------------------------------------------------------------------
+
 -- Make sure TS syntax tree is updated when needed by plugin (with some throttling)
 -- even if the `highlight` module is not enabled.
 -- See https://github.com/nvim-treesitter/nvim-treesitter/issues/2492
-function _G.TreesitterParse(bufnr)
+function M.TreesitterParse(bufnr)
   bufnr = bufnr or 0
   if bufnr == 0 then bufnr = vim.api.nvim_get_current_buf() end
 
@@ -122,6 +147,7 @@ function _G.TreesitterParse(bufnr)
     return false  -- only works for a normal file-type buffer
   end
 
+  local ts_parsers = require("nvim-treesitter.parsers")
   local lang = ts_parsers.ft_to_lang(vim.bo[bufnr].filetype)
 
   local ok, parser = pcall(function()
@@ -139,6 +165,7 @@ function _G.TreesitterParse(bufnr)
     return false
   end
 end
+
 local function throttle(fn, ms)
   local timer = vim.loop.new_timer()
   local running = false
@@ -150,28 +177,37 @@ local function throttle(fn, ms)
     end
   end
 end
-if not (ts_configs.get_module('highlight') or {}).enable then
-  _G.TreesitterParseDebounce = throttle(_G.TreesitterParse, 100)  -- 100 ms
-  vim.cmd [[
-    augroup TreesitterUpdateParsing
-      autocmd!
-      autocmd TextChanged,TextChangedI *   call v:lua.TreesitterParseDebounce()
-      autocmd BufReadPost *                lua _G.TreesitterParse()
-    augroup END
-  ]]
 
-  -- Apply TreesitterParse() at least once for the existing buffers.
-  require('utils.rc_utils').bufdo(_G.TreesitterParse)
+--- Make sure treesitter parse tree is up-to-date even when highlight module is not globally enabled.
+function M.setup_auto_parsing()
+  if (require("nvim-treesitter.configs").get_module('highlight') or {}).enable then
+    return
+  end
+
+  local throttled_parse = throttle(M.TreesitterParse, 100)  -- 100ms
+  local augroup = vim.api.nvim_create_augroup('TreesitterUpdateParsing', { clear = true })
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
+    pattern = '*', group = augroup, callback = function()
+      throttled_parse()
+    end
+  })
+  vim.api.nvim_create_autocmd({ 'BufReadPost' }, {
+    pattern = '*', group = augroup, callback = function()
+      throttled_parse()
+    end
+  })
+
+  -- Apply TreesitterParse() at least once for the existing buffers
+  -- because this script can be executed in a lazy-loaded manner.
+  require('utils.rc_utils').bufdo(M.TreesitterParse)
 end
 
 
--- Folding support
-vim.o.foldmethod = 'expr'
-vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
-
+---------------------------------------------------------------------------
+-- Custom treesitter queries
+---------------------------------------------------------------------------
 
 -- Language-specific Overrides of query files (see GH-1441, GH-1513) {{{
-
 local function readfile(path)
   local f = io.open(path, 'r')
   assert(f, "IO Failed : " .. path)
@@ -179,39 +215,50 @@ local function readfile(path)
   f:close()
   return content
 end
-function _G.TreesitterLoadCustomQuery(lang, query_name)
+function M.load_custom_query(lang, query_name)
   -- See ~/.config/nvim/queries/
   local return_all_matches = false
   local query_path = string.format("queries/%s/%s.scm", lang, query_name)
   local query_file = vim.api.nvim_get_runtime_file(query_path, return_all_matches)[1]
 
+  local ts_parsers = require("nvim-treesitter.parsers")
   if not ts_parsers.has_parser(lang) then
     local msg = string.format("Warning: treesitter parser %s not found. Restart vim or run :TSUpdate?", lang)
     vim.notify(msg, vim.log.levels.WARN, { title = "nvim/lua/config/treesitter.lua" })
-    return
+    return nil
   end
-  vim.treesitter.query.set(lang, query_name, readfile(query_file))
+  local text = readfile(query_file)
+  vim.treesitter.query.set(lang, query_name, text)
+  return text
 end
 
--- python(fold): until GH-1451 is merged
-_G.TreesitterLoadCustomQuery("python", "folds")
-
--- }}}
-
-
--- treesitter-playground is deprecated in favor of vim.treesitter.* APIs.
-if vim.fn.has('nvim-0.10') > 0 then
-  vim.fn.CommandAlias("TSPlaygroundToggle", "InspectTree", true)
-  vim.keymap.set('n', '<leader>tsh', '<cmd>Inspect<CR>')
-
-else  -- nvim < 0.10; fallback to treesitter-playground
-  vim.cmd [[ command! InspectTree :TSPlaygroundToggle ]]
-
-  vim.keymap.set('n', '<leader>tsh', '<cmd>TSHighlightCapturesUnderCursor<CR>')
-  vim.cmd [[
-  augroup TSPlaygroundConfig
-    autocmd!
-    autocmd FileType tsplayground  setlocal ts=2 sts=2 sw=2
-  augroup END
-  ]]
+function M.setup_custom_queries()
+  -- python(fold): make import regions foldable.
+  M.load_custom_query("python", "folds")  -- $DOTVIM/queries/python/folds.scm
 end
+
+
+---------------------------------------------------------------------------
+-- Utilities
+---------------------------------------------------------------------------
+
+function M.setup_keymap()
+  -- treesitter-playground is deprecated in favor of vim.treesitter.* APIs.
+  if vim.fn.has('nvim-0.10') > 0 then
+    vim.fn.CommandAlias("TSPlaygroundToggle", "InspectTree", true)
+    vim.keymap.set('n', '<leader>tsh', '<cmd>Inspect<CR>')
+
+  else  -- nvim < 0.10; fallback to treesitter-playground
+    vim.cmd [[ command! InspectTree :TSPlaygroundToggle ]]
+
+    vim.keymap.set('n', '<leader>tsh', '<cmd>TSHighlightCapturesUnderCursor<CR>')
+    vim.cmd [[
+    augroup TSPlaygroundConfig
+      autocmd!
+      autocmd FileType tsplayground  setlocal ts=2 sts=2 sw=2
+    augroup END
+    ]]
+  end
+end
+
+return M

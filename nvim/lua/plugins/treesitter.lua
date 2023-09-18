@@ -28,14 +28,13 @@ return {
     end,
     event = 'VeryLazy',  -- lazy, or on demand (vim.treesitter call) via ftplugin
     config = function()
-      -- Note: this works as a script, not as a module
-      require('config.treesitter')
+      require('config.treesitter').setup()
     end
   };
 
   Plug 'nvim-treesitter/playground' {
     name = 'nvim-treesitter-playground',
-    cond = not has('nvim-0.10'),
+    enabled = not has('nvim-0.10'),
     cmd = { 'TSPlaygroundToggle', 'TSHighlightCapturesUnderCursor' },
     commit = '4044b53',
   };
