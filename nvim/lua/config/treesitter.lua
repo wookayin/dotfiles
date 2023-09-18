@@ -26,12 +26,6 @@ if vim.fn.has('nvim-0.9.0') > 0 then
   table.insert(parsers_to_install, "vimdoc")
 end
 
-if vim.fn.has('mac') > 0 then
-  -- Disable 'dockerfile' until nvim-treesitter/nvim-treesitter#3515 is resolved
-  parsers_to_install = vim.tbl_filter(function(x) return x ~= "dockerfile" end, parsers_to_install)
-  pcall(function() require 'nvim-treesitter.install'.uninstall('dockerfile') end)
-end
-
 -- @see https://github.com/nvim-treesitter/nvim-treesitter#modules
 ---@diagnostic disable-next-line: missing-fields
 ts_configs.setup {
