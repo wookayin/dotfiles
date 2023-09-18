@@ -48,6 +48,12 @@ function M.setup()
     autocmds = {
       winopts = { preview = { layout = "vertical", vertical = "down:33%" } },
     },
+
+    -- insert-mode completion: turn on preview by default
+    complete_file = {
+      previewer = "default",
+      winopts = { preview = { hidden = "nohidden" } },
+    },
   }
 
   ---[[ Highlights ]]
@@ -145,8 +151,29 @@ function M.setup()
   command("Jumps", {}, "FzfLua jumps")
   command("Filetypes", {}, "FzfLua filetypes")
 
-  ---[[ Keymaps ]]
-  -- TODO: Add insert mode keymaps <plug>(fzf-complete-*)
+  -- [[ Insert-mode Keymaps ]]
+  -- similar to i_CTRL-X (:help ins-completion)
+  vim.cmd [[
+    "imap <C-x><C-k>         <Plug?(fzf-lua-complete.complete_dictionary)
+    "imap <C-x><C-t>         <Plug?(fzf-lua-complete.complete_thesaurus)
+    "imap <C-x><C-i>         <Plug?(fzf-lua-complete.complete_keywords)
+    "imap <C-x><C-]>         <Plug?(fzf-lua-complete.complete_tags)
+    imap <C-x><C-f>         <Plug>(fzf-lua-complete.complete_file)
+    imap <C-x><C-l>         <Plug>(fzf-lua-complete.complete_line)
+    imap <C-x><C-b>         <Plug>(fzf-lua-complete.complete_bline)
+  ]]
+
+  -- fzf-lua builtin: path, file, line(open windows), bline(buffer-line)
+  local imap = function(...) vim.keymap.set('i', ...) end
+  for _, t in pairs { "file", "line", "bline" } do
+    imap("<Plug>(fzf-lua-complete.complete_" .. t .. ")",
+      function() require("fzf-lua.complete")[t]() end, { silent = true })
+  end
+
+  -- TODO: Implement advanced ins-completions, in the past we had
+  -- <Plug>(fzf-complete-line-allfiles)
+  -- <Plug>(fzf-complete-line-import)
+
 
   ---[[ Misc. ]]
   _G.fzf = require('fzf-lua')
