@@ -119,8 +119,9 @@ M.parsers_to_install = vim.tbl_flatten {
     "make", "markdown", "markdown_inline", "perl", "python",
     "regex", "rst", "ruby", "rust", "scss", "toml", "tsx", "typescript", "vim", "yaml",
   },
-  { -- minimal
-    "bash", "json", "latex", "lua", "make", "markdown", "python", "query", "vim", "yaml",
+  { -- minimal and common parsers to always have installed
+    "bash", "comment", "json", "lua", "luadoc", "make", "markdown", "markdown_inline",
+    "python", "query", "regex", "vim", "yaml",
     vim.fn.has('nvim-0.9.0') > 0 and "vimdoc" or nil,
   },
 }
