@@ -68,6 +68,20 @@ function M.setup()
   M.setup_keymap()
 end
 
+--- Manually setup treesitter highlight (for neovim >= 0.8),
+--- can be used in ftplugin/*.lua to manually enable treesitter highlights.
+function M.setup_highlight(lang, bufnr)
+  if bufnr == 0 or bufnr == nil then
+    bufnr = vim.api.nvim_get_current_buf()
+  end
+
+  if M.has_parser(lang, bufnr) then
+    vim.treesitter.start(bufnr, lang)
+    return true
+  else
+    return false
+  end
+end
 
 ---------------------------------------------------------------------------
 -- Treesitter Parsers (automatic installation and repair)
@@ -86,6 +100,30 @@ M.parsers_to_install = vim.tbl_flatten {
     vim.fn.has('nvim-0.9.0') > 0 and "vimdoc" or nil,
   },
 }
+
+---@return boolean
+function M.has_parser(lang, bufnr)
+  -- Protect get_parser call because nvim-treesitter can still throw errors
+  -- when parsers are outdated
+  local ok, parser = pcall(function()
+    return require("nvim-treesitter.parsers").get_parser(bufnr or 0, lang)
+  end)
+  return ok and parser ~= nil
+end
+
+--- Install treesitter parsers if not have been installed yet.
+--- Note that this works in an asynchronous manner, so doesn't block until installation is complete.
+---@param langs string[]
+function M.ensure_parsers_installed(langs)
+  if not pcall(require, "nvim-treesitter") then
+    return  -- treesitter not available, ignore errors
+  end
+
+  vim.validate { langs = { langs, 'table' } }
+  if vim.tbl_contains(vim.tbl_map(M.has_parser, langs), false) then
+    require("nvim-treesitter.install").ensure_installed(langs)
+  end
+end
 
 local function try_recover_parser_errors(lang, err)
   -- This is a fatal, unrecoverable error where treesitter parsers must be re-installed.
@@ -129,10 +167,6 @@ vim.schedule(function()
   end
 end)
 
-
----------------------------------------------------------------------------
--- Automatic TS Parsing
----------------------------------------------------------------------------
 
 -- Make sure TS syntax tree is updated when needed by plugin (with some throttling)
 -- even if the `highlight` module is not enabled.
@@ -182,8 +216,7 @@ function M.load_custom_query(lang, query_name)
   local query_path = string.format("queries/%s/%s.scm", lang, query_name)
   local query_file = vim.api.nvim_get_runtime_file(query_path, return_all_matches)[1]
 
-  local ts_parsers = require("nvim-treesitter.parsers")
-  if not ts_parsers.has_parser(lang) then
+  if not M.has_parser(lang) then
     local msg = string.format("Warning: treesitter parser %s not found. Restart vim or run :TSUpdate?", lang)
     vim.notify(msg, vim.log.levels.WARN, { title = "nvim/lua/config/treesitter.lua" })
     return nil

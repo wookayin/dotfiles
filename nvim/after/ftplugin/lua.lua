@@ -37,7 +37,5 @@ setlocal.path:append('~/.dotfiles/nvim/lua')
 
 -- Workaround for neovim#20456: vim syntax for lua files are broken in neovim 0.8+
 -- Disable the erroneous $VIMRUNTIME/syntax/lua.vim from loading
-if pcall(require, 'nvim-treesitter') then
-  vim.b.ts_highlight = 1
-  vim.treesitter.start()
-end
+vim.b.ts_highlight = 1
+require("config.treesitter").setup_highlight("lua")
