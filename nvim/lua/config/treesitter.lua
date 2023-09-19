@@ -70,12 +70,15 @@ end
 
 --- Manually setup treesitter highlight (for neovim >= 0.8),
 --- can be used in ftplugin/*.lua to manually enable treesitter highlights.
+--- Compared against `vim.treesitter.start()`, it adds some more "safe-guards";
+--- This works only if treesitter parser has been already installed *through* nvim-treesitter
+--- because the neovim core's built-in parser queries may not be compatible (see M.has_parser)
 function M.setup_highlight(lang, bufnr)
   if bufnr == 0 or bufnr == nil then
     bufnr = vim.api.nvim_get_current_buf()
   end
 
-  if M.has_parser(lang, bufnr) then
+  if M.has_parser(lang, bufnr) then  -- excludes built-in parser
     vim.treesitter.start(bufnr, lang)
     return true
   else
@@ -101,8 +104,25 @@ M.parsers_to_install = vim.tbl_flatten {
   },
 }
 
+---More robust version of has_parser, returning false even when the parser
+---may throw an error when it's outdated or incompatible with the current runtime.
+---It actually concerns treesitter parsers installed through nvim-treesitter ONLY,
+---ignoring neovim core's built-in parsers at $VIMRUNTIME which may cause
+---lots of many errors when loaded and used with incompatible queries.
+---See also "Conflicting parser paths": https://github.com/nvim-treesitter/nvim-treesitter/issues/3970
 ---@return boolean
 function M.has_parser(lang, bufnr)
+  -- first make sure nvim-treesitter is eagerly loaded so &rtp always contains $VIMPLUG/nvim-treesitter
+  pcall(require, "nvim-treesitter")
+
+  -- `all=false` assumes $VIMPLUG/nvim-treesitter precedes $VIMRUNTIME in &runtimepath.
+  local parsers_so = vim.tbl_filter(function(path)
+    return vim.startswith(path, os.getenv("VIMPLUG") or '???')  -- ignore built-in parsers
+  end, vim.api.nvim_get_runtime_file(('parser/%s.so'):format(lang), false))
+  if #parsers_so == 0 then
+    return false
+  end
+
   -- Protect get_parser call because nvim-treesitter can still throw errors
   -- when parsers are outdated
   local ok, parser = pcall(function()
