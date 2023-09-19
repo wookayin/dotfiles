@@ -17,10 +17,15 @@ end
 function M.setup()
   local ts_configs = require("nvim-treesitter.configs")
 
+  ts_configs.define_modules {
+    reattach_after_install = M._reattach_after_install
+  }
+
   -- @see https://github.com/nvim-treesitter/nvim-treesitter#modules
   ---@diagnostic disable-next-line: missing-fields
   ts_configs.setup {
     ensure_installed = M.parsers_to_install,
+    reattach_after_install = { enable = true },
 
     highlight = {
       -- TreeSitter's highlight/syntax support is yet experimental and has some issues.
@@ -82,9 +87,25 @@ function M.setup_highlight(lang, bufnr)
     vim.treesitter.start(bufnr, lang)
     return true
   else
+    -- Maybe start later when parsers become available
+    M._reattach_after_install._deferred[bufnr] = lang
     return false
   end
 end
+
+-- A hack module to reattach vim.treesitter.start (highlight)
+-- as soon as TS parsers are installed asynchronously.
+M._reattach_after_install = {
+  _deferred = { },
+  attach = function(bufnr, lang)
+    local _deferred = M._reattach_after_install._deferred
+    if _deferred[bufnr] == lang then
+      vim.treesitter.start(bufnr, lang)
+      _deferred[bufnr] = nil
+    end
+  end,
+  detach = function(bufnr) end,
+}
 
 ---------------------------------------------------------------------------
 -- Treesitter Parsers (automatic installation and repair)
