@@ -65,8 +65,6 @@ function M.setup()
   vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
   M.setup_custom_queries()
 
-  M.setup_auto_parsing()
-
   M.setup_keymap()
 end
 
@@ -165,43 +163,6 @@ function M.TreesitterParse(bufnr)
     return false
   end
 end
-
-local function throttle(fn, ms)
-  local timer = vim.loop.new_timer()
-  local running = false
-  return function(...)
-    if not running then
-      timer:start(ms, 0, function() running = false end)
-      running = true
-      pcall(vim.schedule_wrap(fn), select(1, ...))
-    end
-  end
-end
-
---- Make sure treesitter parse tree is up-to-date even when highlight module is not globally enabled.
-function M.setup_auto_parsing()
-  if (require("nvim-treesitter.configs").get_module('highlight') or {}).enable then
-    return
-  end
-
-  local throttled_parse = throttle(M.TreesitterParse, 100)  -- 100ms
-  local augroup = vim.api.nvim_create_augroup('TreesitterUpdateParsing', { clear = true })
-  vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
-    pattern = '*', group = augroup, callback = function()
-      throttled_parse()
-    end
-  })
-  vim.api.nvim_create_autocmd({ 'BufReadPost' }, {
-    pattern = '*', group = augroup, callback = function()
-      throttled_parse()
-    end
-  })
-
-  -- Apply TreesitterParse() at least once for the existing buffers
-  -- because this script can be executed in a lazy-loaded manner.
-  require('utils.rc_utils').bufdo(M.TreesitterParse)
-end
-
 
 ---------------------------------------------------------------------------
 -- Custom treesitter queries
