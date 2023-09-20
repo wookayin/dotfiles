@@ -275,6 +275,11 @@ set updatetime=1000
 
 set matchpairs+=<:>
 
+" Note: the built-in plugin matchparen is very slow,
+" (especially Highlight_Matching_Pair) and block the UI.
+" We can use shorter timeout value (default is 300ms)
+let g:matchparen_timeout = 10
+
 " when launching files via quickfix, FZF, or something else,
 " first switch to existing tab (if any) that contains the target buffer,
 " or open a new buffer by splitting window in the current tab otherwise.
