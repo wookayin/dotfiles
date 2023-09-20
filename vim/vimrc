@@ -1408,12 +1408,18 @@ let g:localvimrc_persistent = 2
 " vim-polyglot {{{
 
 " in favor of python-mode and vimtex ...
-let g:polyglot_disabled = ['python', 'python-indent', 'python-compiler', 'latex', 'rust']
+let g:polyglot_disabled = ['python', 'python-indent', 'python-compiler', 'latex']
+
+" rust: no needed
+let g:polyglot_disabled += ['rust']
 
 " polyglot syntax (coming from vim-lua) conflicts with
 " $VIMRUNTIME/syntax/lua.vim shipped with neovim 0.8.0+
 " see https://github.com/neovim/neovim/issues/20456
-call add(g:polyglot_disabled, 'lua')
+let g:polyglot_disabled += ['lua']
+
+" LSP preview conflicts with polyglot's syntax.
+let g:polyglot_disabled += ['markdown']
 
 " ---------------------------------------------------------------- }}}
 " vim-startify {{{
