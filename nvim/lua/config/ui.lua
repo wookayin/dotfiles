@@ -33,7 +33,7 @@ function M.setup_notify()
     background_colour = "#000000",
   })
 
-  vim.notify = setmetatable({}, { __call = function(_, msg, level, opts, ...)
+  vim.notify = function(msg, level, opts, ...)
     if (opts or {}).print then
       local hlgroup = ({
         [vim.log.levels.WARN] = 'WarningMsg', ['warn'] = 'WarningMsg',
@@ -42,7 +42,7 @@ function M.setup_notify()
       vim.api.nvim_echo({{ msg, hlgroup }}, true, {})
     end
     require("notify")(msg, level, opts, ...)
-  end })
+  end
 end
 
 function M.setup_dressing()
