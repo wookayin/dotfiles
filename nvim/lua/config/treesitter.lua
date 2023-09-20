@@ -126,14 +126,13 @@ M.parsers_to_install = vim.tbl_flatten {
   },
 }
 
----More robust version of has_parser, returning false even when the parser
----may throw an error when it's outdated or incompatible with the current runtime.
----It actually concerns treesitter parsers installed through nvim-treesitter ONLY,
----ignoring neovim core's built-in parsers at $VIMRUNTIME which may cause
----lots of many errors when loaded and used with incompatible queries.
+---More robust version of has_parser, ignoring neovim core's built-in parsers
+---and considering ONLY the treesitter parsers installed through nvim-treesitter.
+---This is because neovim's default TS parsers can be incompatible with
+---runtime query files shipped with nvim-treesitter, causing lots of errors.
 ---See also "Conflicting parser paths": https://github.com/nvim-treesitter/nvim-treesitter/issues/3970
 ---@return boolean
-function M.has_parser(lang, bufnr)
+function M.has_parser(lang)
   -- first make sure nvim-treesitter is eagerly loaded so &rtp always contains $VIMPLUG/nvim-treesitter
   pcall(require, "nvim-treesitter")
 
@@ -145,12 +144,11 @@ function M.has_parser(lang, bufnr)
     return false
   end
 
-  -- Protect get_parser call because nvim-treesitter can still throw errors
-  -- when parsers are outdated
-  local ok, parser = pcall(function()
-    return require("nvim-treesitter.parsers").get_parser(bufnr or 0, lang)
+  local ok, has_parser = pcall(function()
+    -- Note: unlike get_parser, has_parser doesn't perform treesitter parsing.
+    return require("nvim-treesitter.parsers").has_parser(lang)
   end)
-  return ok and parser ~= nil
+  return ok and has_parser == true
 end
 
 --- Install treesitter parsers if not have been installed yet.
