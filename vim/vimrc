@@ -387,8 +387,8 @@ nnoremap Q <Nop>
 nnoremap QQ ZQ
 
 " navigation key mapping
-map <silent> k gk
-map <silent> j gj
+noremap <silent> k gk
+noremap <silent> j gj
 sunmap k
 sunmap j
 
