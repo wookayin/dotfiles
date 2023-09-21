@@ -44,7 +44,7 @@ print(debug.traceback())
 $0
 endsnippet
 snippet trace  "vim.notify + traceback"
-vim.notify(vim.split(debug.traceback(), '\\n'), vim.log.levels.DEBUG, { title = 'DEBUG (traceback)' })
+require('utils.debug_utils').notify_traceback()
 $0
 endsnippet
 snippet reload

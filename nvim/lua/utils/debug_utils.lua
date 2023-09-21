@@ -1,8 +1,11 @@
 local M = {}
 
 -- Set log level to DEBUG when this module is used.
----@diagnostic disable-next-line: missing-fields
-require 'notify'.setup { level = 'DEBUG' }
+-- Defer execution because notify.setup {} might be called after init
+vim.schedule(function()
+  ---@diagnostic disable-next-line: missing-fields
+  require("notify").setup { level = 'DEBUG' }
+end)
 
 -- Inspect a lua object and display through vim.notify and :Message.
 function M.inspect(obj, opts)
@@ -13,6 +16,12 @@ function M.inspect(obj, opts)
   })
   vim.notify(repr, vim.log.levels.DEBUG, opts)
   return repr
+end
+
+function M.notify_traceback()
+  -- Strip this stack frame itself
+  vim.notify(vim.trim(debug.traceback("", 2)),
+    vim.log.levels.DEBUG, { title = 'DEBUG (traceback)' })
 end
 
 return M
