@@ -108,7 +108,8 @@ hi! link @preproc.bash             SpecialComment
 hi!      @parameter.bash           guifg=NONE
 
 " Markdown
-hi! @text.literal.block.markdown   guibg=#3a3a3a
+hi!      @text.literal.block.markdown        guibg=#3a3a3a                  " ```codeblock```
+hi!      @text.reference.markdown_inline     guifg=#228be6 gui=underline    " link
 
 " Help
 hi!      @text.reference.vimdoc      ctermfg=182 guifg=#228be6 gui=underline
@@ -118,6 +119,8 @@ hi!      @text.literal.block.vimdoc  guifg=white guibg=#252525 gui=italic
 " luadoc
 hi! link @keyword.luadoc            SpecialComment
 hi! link @keyword.return.luadoc     SpecialComment
+hi! link @include.luadoc            SpecialComment
+hi! link @type.qualifier.luadoc     SpecialComment
 
 " Python (semantic highlighting and more syntax groups)
 " -----------------------------------------------------
