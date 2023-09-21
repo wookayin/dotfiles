@@ -96,6 +96,13 @@ hi def link @text.environment          PreProc
 hi def link @text.environment.name     Function
 hi def link @text.environment.name     Keyword
 
+" Comments (common lang injection)
+" e.g., TODO WIP NOTE XXX INFO DOCS PERF TEST HACK WARN WARNING FIX FIXME BUG ERROR
+hi! link @text.todo                Todo
+hi! @text.note.comment             guibg=#b2f2bb guifg=black
+hi! @text.warning.comment          guibg=#ffa94d guifg=black
+hi! @text.danger.comment           guibg=#e03131 guifg=white
+
 " Bash
 hi! link @preproc.bash             SpecialComment
 hi!      @parameter.bash           guifg=NONE
