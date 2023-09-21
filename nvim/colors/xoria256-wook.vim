@@ -69,7 +69,7 @@ endif
 
 " Minimal treesitter syntax support
 " The highlight mapping is not exhaustive; to see the list, try:
-" :filter /^@/ highlight   (or :Highlights)
+" :filter /^@/ highlight   (or :Highlights @)
 
 hi! @constant                guifg=#ffaf00 gui=bold
 hi! @field                   guifg=NONE

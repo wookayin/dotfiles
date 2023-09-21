@@ -64,7 +64,10 @@ local function define_commands()
   end)
   nmap('<leader>B', '<Cmd>Buffers<CR>')
   command("Highlights", { nargs='?', complete='highlight' }, function(e)
-    require("telescope.builtin").highlights({ default_text = e.args })
+    require("telescope.builtin").highlights({
+      default_text = e.args,
+      sorter = require("telescope.sorters").fuzzy_with_index_bias(),  -- better sorting
+    })
   end)
   command("Help", { nargs='?', complete='help' }, function(e)
     require("telescope.builtin").help_tags({ default_text = e.args })
