@@ -1151,6 +1151,7 @@ endif
 " :Pysplit (:pysp), :Pyvsplit (:pyvs) -- similar, but in :split, :vsplit
 " e.g., :Pyedit numpy.core will open $(site-packages)/numpy/core/__init__.py
 function! s:setup_pyedit_commands() abort
+  if !has('python3') | return | endif
   " This feature requires jedi installed on the host python.
   let g:python_jedi_available = 0
 python3 << EOF
