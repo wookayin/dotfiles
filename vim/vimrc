@@ -542,6 +542,10 @@ if has('nvim')
   tnoremap <ScrollWheelLeft> <nop>
 endif
 
+" jump behavior: gF (follows the line number) by default
+nnoremap gf  gF
+nnoremap ]f  gF
+
 " Buffer navigations
 nnoremap [b  :bprevious<CR>
 nnoremap ]b  :bnext<CR>
