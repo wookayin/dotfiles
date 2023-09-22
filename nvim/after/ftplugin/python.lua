@@ -37,8 +37,5 @@ if vim.fn.exists('##LspAttach') > 0 then
 end
 
 -- Use treesitter highlight for python
--- (experimental; enable only when nightly neovim is used
---  because the new injection feature requires nvim 0.10.0+)
-if vim.fn.has('nvim-0.10') > 0 then
-  require("config.treesitter").setup_highlight('python')
-end
+-- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
+require("config.treesitter").setup_highlight('python')
