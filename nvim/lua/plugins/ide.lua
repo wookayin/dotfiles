@@ -4,10 +4,10 @@ local Plug = require('utils.plug_utils').Plug
 local PlugConfig = require('utils.plug_utils').PlugConfig
 local UpdateRemotePlugins = require('utils.plug_utils').UpdateRemotePlugins
 
-local function has(f) return vim.fn.has(f) > 0 end
 local LspSetup = 'User LspSetup'
 
-local has_py3 = function(p) return require('config.pynvim') end
+local function has(f) return vim.fn.has(f) > 0 end
+local has_py3 = function(p) return require('config.pynvim')() end
 
 -- Register LspSetup, triggered much after VimEnter and VeryLazy plugins.
 vim.api.nvim_create_autocmd('VimEnter', {

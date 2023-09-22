@@ -1,8 +1,13 @@
--- config/pynvim
+--- config/pynvim
+---@return fun(): boolean
 -- Set the g:python3_host_prog variable to path to python3 in $PATH.
 -- pynvim package will be automatically installed if it was missing.
 
 vim.g.python3_host_prog = ''
+
+-- for future has('python3') like use
+local OK_PYNVIM = function() return true end
+local NO_PYNVIM = function() return false end
 
 -- Utility: Run a shell command and capture the output.
 local function system(command)
@@ -37,7 +42,7 @@ if vim.fn.executable("python3") > 0 then
   vim.g.python3_host_prog = vim.fn.exepath("python3")
 else
   warning "ERROR: You don't have python3 on your $PATH. Check $PATH or $SHELL. Most features are disabled."
-  return
+  return NO_PYNVIM
 end
 
 -- Now that g:python3_host_prog is set, we can call has('python3')
@@ -46,7 +51,7 @@ if vim.fn.has('python3') == 0 then
     vim.notify('WARNING: This version of neovim is unsupported, lacking +python3.\n',
       vim.log.levels.WARN, { title = 'config/pynvim' })
   end)
-  return false
+  return OK_PYNVIM
 end
 
 local function determine_pip_options()
@@ -113,7 +118,7 @@ vim.fn.py3eval("1")
 if vim.fn.py3eval("1") ~= 1 then
   -- pynvim is missing, try installing it
   local ret = autoinstall_pynvim()
-  if not ret then return false end
+  if not ret then return NO_PYNVIM end
 else
   -- pynvim already there, check versions lazily
   vim.schedule(function()
@@ -124,4 +129,4 @@ end
 
 -- Return true iff python3 is available.
 -- Instead of calling has('python3'), use require('config.pynvim').
-return true
+return OK_PYNVIM

@@ -4,7 +4,7 @@ local Plug = require('utils.plug_utils').Plug
 local PlugConfig = require('utils.plug_utils').PlugConfig
 local UpdateRemotePlugins = require('utils.plug_utils').UpdateRemotePlugins
 
-local has_py3 = function(p) return require('config.pynvim') end
+local has_py3 = function(p) return require('config.pynvim')() end
 
 return {
   -- Basic UI Components
