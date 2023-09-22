@@ -45,14 +45,6 @@ else
   return NO_PYNVIM
 end
 
--- Now that g:python3_host_prog is set, we can call has('python3')
-if vim.fn.has('python3') == 0 then
-  vim.schedule(function()
-    vim.notify('WARNING: This version of neovim is unsupported, lacking +python3.\n',
-      vim.log.levels.WARN, { title = 'config/pynvim' })
-  end)
-  return OK_PYNVIM
-end
 
 local function determine_pip_options()
   local pip_option = ""
@@ -73,27 +65,82 @@ local function determine_pip_options()
   end
   return pip_option
 end
+
+-- This works "synchronously", blocks until the pip command terminates
+---@return boolean whether installation is successful
 local function autoinstall_pynvim()
-  -- Require pynvim >= 0.4.0
-  local python3_neovim_version = system(vim.g.python3_host_prog .. " -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null")
-  if tonumber(python3_neovim_version) == nil or tonumber(python3_neovim_version) < 4 then
-    echom("Automatically installing pynvim into python environment: " .. vim.g.python3_host_prog, "MoreMsg")
-    local pip_install_cmd = (
-      vim.g.python3_host_prog .. " -m ensurepip; " ..
-      vim.g.python3_host_prog .. " -m pip install " .. determine_pip_options() .. " pynvim"
-    )
-    vim.api.nvim_command("!" .. pip_install_cmd)
-    if vim.v.shell_error == 0 then
-      echom("Successfully installed pynvim. Please restart neovim.", "MoreMsg")
-      notify_later("Successfully installed pynvim. Please restart neovim.", "info")
-    else
-      notify_later('g:python3_host_prog = ' .. vim.g.python3_host_prog)
-      notify_later('Installing pynvim failed (try :Notifications) \n' .. pip_install_cmd)
-      warning("Installation of pynvim has failed. Python-based features may not work.")
-      return false
-    end
+  -- Ensure pynvim >= 0.4.0.
+  local python3_neovim_version = system(assert(vim.g.python3_host_prog) .. " -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null")
+  local needs_install = tonumber(python3_neovim_version) == nil or tonumber(python3_neovim_version) < 4
+  if not needs_install then
+    return false
   end
-  return true
+
+  vim.api.nvim_echo({{ "Automatically installing pynvim for: " .. vim.g.python3_host_prog .. " ...", "Moremsg" }}, true, {})
+  vim.loop.sleep(100)
+  vim.cmd [[ redraw! ]]
+
+  vim.g.pynvim_install_command = (
+    vim.g.python3_host_prog .. " -m ensurepip && " ..
+    vim.g.python3_host_prog .. " -m pip install " .. determine_pip_options() .. " " .. "pynvim"
+  )
+
+  -- !shell execution cannot have a fine-grained control, so we use jobstart() or termopen()
+  _G.pynvim_handler = setmetatable({
+    console = '',
+    __call = function(self, job_id, lines, event)
+      -- On stdout line streamed, inform users what's going on
+      if event == 'stdout' then
+        lines = table.concat(lines, '\n')
+        for _, line in pairs(vim.split(lines, '\n')) do
+          print(line)
+          -- Note: nvim_echo doesn't flush despite redraw, and the overflowing lines are annoying
+          -- vim.api.nvim_echo({{ line, 'MoreMsg' }}, true, {})
+          vim.cmd [[ redraw! ]]
+        end
+        self.console = self.console .. lines
+      -- On stderr, collect and show at once
+      elseif event == 'stderr' then
+        lines = table.concat(lines, '\n')
+        self.console = self.console .. lines
+      end
+    end,
+    --- Show stderr messages in a scratchpad
+    show_stderr = vim.schedule_wrap(function(self)
+      if #self.console > 0 then
+        vim.cmd [[ tabnew ]]
+        vim.cmd [[ setlocal buftype=nofile bufhidden=hide noswapfile nonumber ]]
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(self.console, '\n'))
+        vim.api.nvim_buf_set_name(0, vim.g.pynvim_install_command)
+        vim.bo[0].filetype = 'log'  -- Use some highlighting
+      end
+    end),
+  }, { __call = function(self, ...) return self:__call(...) end })
+
+  vim.cmd [[
+    " Note: Unlike jobstart(), termopen() cannot use on_stderr (neovim/neovim#23660)
+    let jobid = jobstart(['bash', '-x', '-c', g:pynvim_install_command], {
+        \  'on_stdout': { j,d,e -> v:lua.pynvim_handler(j,d,e) },
+        \  'on_stderr': { j,d,e -> v:lua.pynvim_handler(j,d,e) },
+        \})
+    let retcode = jobwait([jobid])[0]
+    if retcode == -2
+      call v:lua.pynvim_handler(jobid, ['ERROR: Interrupted'], 'stderr')
+    endif
+    exec printf('silent !exit %d', retcode)
+  ]]
+
+  if vim.v.shell_error == 0 then
+    echom("Successfully installed pynvim. Please restart neovim.", "MoreMsg")
+    notify_later("Successfully installed pynvim. Please restart neovim.", "info")
+    _G.pynvim_handler = nil
+    return true
+  else
+    _G.pynvim_handler:show_stderr()
+    warning("Failed to install pynvim on " .. assert(vim.g.python3_host_prog))
+    notify_later("Failed to install pynvim on " .. assert(vim.g.python3_host_prog))
+    return false
+  end
 end
 
 -- python version check
@@ -112,13 +159,19 @@ local function python3_version_check()
 end
 
 -- Make a dummy call first, to workaround a bug neovim#14438
--- NOTE: This takes some time, but is necessary otherwise other python plugins will fail
+-- At this point the python3 provider will be loaded.
+-- NOTE: This takes some init time (~50ms), but is necessary otherwise other python plugins will fail
 vim.fn.py3eval("1")
 
 if vim.fn.py3eval("1") ~= 1 then
   -- pynvim is missing, try installing it
-  local ret = autoinstall_pynvim()
-  if not ret then return NO_PYNVIM end
+  local success = vim.F.ok_or_nil(xpcall(autoinstall_pynvim, function(err)
+    local msg = debug.traceback(err, 1)
+    vim.notify(msg, vim.log.levels.ERROR)
+  end))
+  if not success then
+    return NO_PYNVIM
+  end
 else
   -- pynvim already there, check versions lazily
   vim.schedule(function()
