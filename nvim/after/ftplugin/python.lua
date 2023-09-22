@@ -39,3 +39,28 @@ end
 -- Use treesitter highlight for python
 -- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
 require("config.treesitter").setup_highlight('python')
+
+------------------------------------------------------------------------------
+-- Keymaps
+------------------------------------------------------------------------------
+
+-- Breakpoint toggle
+vim.keymap.set('n', '<leader>b', '<Plug>(python-toggle-breakpoint)', { buffer = true, remap = true })
+vim.keymap.set('n', '<Plug>(python-toggle-breakpoint)', function()
+  local pattern = "breakpoint()"  -- Use python >= 3.7.
+  local line = vim.fn.getline(".") --[[@as string]]
+  line = vim.trim(line)
+  local lnum = vim.fn.line(".")  ---@cast lnum integer
+
+  if vim.startswith(line, pattern) then
+    vim.cmd.normal("dd")  -- delete the line
+  else
+    local indents = string.rep(" ", vim.fn.indent(vim.fn.prevnonblank(lnum)) or 0)
+    vim.fn.append(lnum - 1, indents .. pattern)
+    vim.cmd.normal("k")
+  end
+  -- save file without any events
+  if vim.bo.modifiable and vim.bo.modified then
+    vim.cmd [[ silent! noautocmd write ]]
+  end
+end, { buffer = true })
