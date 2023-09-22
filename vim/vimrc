@@ -1418,7 +1418,7 @@ let g:localvimrc_persistent = 2
 " vim-polyglot {{{
 
 " in favor of python-mode and vimtex ...
-let g:polyglot_disabled = ['python', 'python-indent', 'python-compiler', 'latex']
+let g:polyglot_disabled = ['python-indent', 'python-compiler', 'latex']
 
 " rust: no needed
 let g:polyglot_disabled += ['rust']
@@ -2990,78 +2990,6 @@ let g:echodoc#enable_at_startup = 1
 
 " Disable diagonostics sign in favor of LSP.
 let g:semshi#error_sign = 0
-
-" ---------------------------------------------------------------- }}}
-" python (pymode, jedi) {{{
-
-" heavenshell/vim-pydocstring
-" Change default keymapping to <C-_> (default is <C-l>)
-nmap <silent> <C-_> <Plug>(pydocstring)
-
-" Disable unnecessary pymode features to speed up loading.
-let g:pymode_debug = 0
-let g:pymode_folding = 0
-
-" disable rope (terribly slow), in favor of jedi-vim or other LSP engine
-let g:pymode_rope = 0
-
-" prefer jedi's <leader>r (rename), instead of run
-" however, jedi resets all the highlight :( - why?
-let g:pymode_run = 0
-
-" Use ipython pdb for inserting breakpoints
-let g:pymode_breakpoint_cmd = 'breakpoint()'
-
-" show documentation: disable default keymap (K) if better plugins are present
-let g:pymode_doc_bind = '<leader>PK'
-
-" Hanging indent of 4 spaces, in which case there should be nothing after
-" the open parenthesis or bracket on the first line.
-" https://google.github.io/styleguide/pyguide.html#34-indentation
-let g:pymode_indent_hanging_width = 4
-
-" Disable trimming trailing whitespaces, in favor of user-autocmd (AutoStripTrailingWhitespaces)
-" See https://github.com/python-mode/python-mode/issues/912
-let g:pymode_trim_whitespaces = 0
-
-" Disable linting feature in favor of LSP.
-let g:pymode_lint = 0
-
-" Check code on every save (not on the fly)
-let g:pymode_lint_on_write = 1
-let g:pymode_lint_unmodified = 1
-
-" Do NOT open quickfix window when any pymode_lint errors have been found
-let g:pymode_lint_cwindow = 0
-
-" Skip some errors and warnings
-" see also ~/.config/pycodestyle (for ALE)
-"  E401 : multiple imports on one line
-"  E501 : line too long
-let g:pymode_lint_ignore = ['E401', 'E501']
-
-
-" Deprecated: LEGACY jedi-vim support (without LSP)
-
-" Make jedi's completeopt not to include 'longest',
-" to prevent underscore prefix auto-completion (e.g. self.__)
-" @see jedi-vim issues #429
-let g:jedi#auto_vim_configuration = 0
-
-" Do not automatically add the 'import' statement for 'from ...'
-let g:jedi#smart_auto_mappings = 0
-
-" Turn off call signatures temporarily, due to an annoying bug
-" @see https://github.com/davidhalter/jedi-vim/issues/257
-let g:jedi#show_call_signatures = 0
-
-" jedi-vim opens buffer in the current tab (rather than a new tab)
-" when goto (e.g. goto definition) is performed
-let g:jedi#use_tabs_not_buffers = 0
-
-" window splits to open with; for now, it is disabled
-"let g:jedi#use_splits_not_buffers = 'bottom'
-"
 
 " ---------------------------------------------------------------- }}}
 " LaTeX {{{

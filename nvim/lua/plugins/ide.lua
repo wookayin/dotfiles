@@ -76,8 +76,6 @@ return {
   };
   Plug 'stsewd/isort.nvim' { cond = has_py3, ft = 'python', build = UpdateRemotePlugins };
   Plug 'wookayin/vim-autoimport' { cond = has_py3, ft = 'python' };
-  Plug 'klen/python-mode' { cond = has_py3, branch = 'develop', ft = 'python' };
-  Plug 'wookayin/vim-python-enhanced-syntax' { ft = 'python' };
 
   -- Other languages
   Plug 'editorconfig/editorconfig-vim';
