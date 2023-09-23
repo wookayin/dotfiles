@@ -2957,6 +2957,7 @@ augroup END
 
 call CommandAlias('SnippetEdit', 'UltiSnipsEdit', v:true)
 call CommandAlias('EditSnippets', 'UltiSnipsEdit', v:true)
+call CommandAlias('USE', 'UltiSnipsEdit', v:false)
 
 " ---------------------------------------------------------------- }}}
 " vim-pandoc {{{
