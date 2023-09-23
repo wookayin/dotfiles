@@ -109,6 +109,7 @@ hi!      @parameter.bash           guifg=NONE
 
 " Markdown
 hi!      @text.literal.block.markdown        guibg=#3a3a3a                  " ```codeblock```
+hi! link @text.literal.markdown_inline       Constant
 hi!      @text.reference.markdown_inline     guifg=#228be6 gui=underline    " link
 
 " Help
