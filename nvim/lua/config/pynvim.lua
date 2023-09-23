@@ -3,6 +3,12 @@
 -- Set the g:python3_host_prog variable to path to python3 in $PATH.
 -- pynvim package will be automatically installed if it was missing.
 
+-- This config must be sourced before any first call of has('python3'), py3eval, etc.
+-- Note: An invocation of has('python3'), py3, py3eval triggers provider#python3#Call()
+-- See also $VIMRUNTIME/autoload/provider/python3.vim that provides python3 host
+-- See also $VIMRUNTIME/autoload/provider/pythonx.vim for python host detection logic
+-- See also $DOTVIM/ftplugin/python.vim to ensure config.pynvim on startup
+
 vim.g.python3_host_prog = ''
 
 -- for future has('python3') like use
@@ -170,7 +176,20 @@ if vim.fn.py3eval("1") ~= 1 then
     vim.notify(msg, vim.log.levels.ERROR)
   end))
 
+  do  -- Disable autocmds from already-generated rplugins manifest, which will emit annoying errors
+      -- see $VIMRUNTIME/autoload/remote/define.vim
+    vim.cmd [[
+      function! remote#define#AutocmdBootstrap(...)
+      endfunction
+      function! remote#define#FunctionBootstrap(...)
+      endfunction
+      function! remote#define#CommandBootstrap(...)
+      endfunction
+    ]]
+  end
+
   -- Still need to disable python3 provider, it's already broken
+  vim.g.loaded_python3_provider = 1  -- Disable has('python3')
   return NO_PYNVIM
 else
   -- pynvim already there, check versions lazily
