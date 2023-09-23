@@ -9,8 +9,6 @@
 -- See also $VIMRUNTIME/autoload/provider/pythonx.vim for python host detection logic
 -- See also $DOTVIM/ftplugin/python.vim to ensure config.pynvim on startup
 
-vim.g.python3_host_prog = ''
-
 -- for future has('python3') like use
 local OK_PYNVIM = function() return true end
 local NO_PYNVIM = function() return false end
@@ -39,44 +37,58 @@ end
 local function notify_later(msg, level)
   level = level or vim.log.levels.WARN
   vim.schedule(function()
-    vim.notify(msg, level, {title = '~/.config/nvim/lua/config/pynvim.lua', timeout = 10000})
+    vim.notify(msg, level, {title = '~/.config/nvim/lua/config/pynvim.lua', timeout = 10000,
+  })
   end)
 end
 
--- Use python3 as per $PATH as the host python for neovim.
-if vim.fn.executable("python3") > 0 then
-  vim.g.python3_host_prog = vim.fn.exepath("python3")
-else
+
+-- Always python3 w.r.t. $PATH as the host python for neovim.
+vim.g.python3_host_prog = vim.fn.exepath("python3")
+
+if vim.g.python3_host_prog == "" or not vim.g.python3_host_prog then
   warning "ERROR: You don't have python3 on your $PATH. Check $PATH or $SHELL. Most features are disabled."
   return NO_PYNVIM
 end
 
+-- Note: should not use py3eval here because python3 provider is slow, and may not work!
+---@type fun(): table[]  returns a version tuple, e.g., { 3, 11, 5 }
+local python3_version = setmetatable({ _version = nil }, { __call = function(self)
+  if self._version then
+    return self._version
+  end
+  local s = system(vim.g.python3_host_prog .. " -W ignore -c 'import sys; print(list(sys.version_info)[:3])' 2>/dev/null")
+  self._version = vim.F.npcall(vim.json.decode, s)
+  return self._version
+end}) --[[@as fun()]]
 
-local function determine_pip_options()
-  local pip_option = ""
+
+local function determine_pip_args()
+  local pip_option = "--upgrade --force-reinstall "  -- force option is important
+  -- local pip_option = "--upgrade"
   local has_mac = vim.fn.has('mac') > 0
-  if has_mac then
+
+  if not has_mac then  -- for Linux
     -- Use '--user' option when needed
     local py_prefix = system("python3 -c 'import sys; print(sys.prefix)' 2>/dev/null")
     if py_prefix == "/usr" or py_prefix == "/usr/local" then
-      pip_option = "--user"
+      pip_option = "--user "
     end
-    pip_option = pip_option .. " --upgrade --ignore-installed"
-
-    -- mac: Force greenlet to be compiled from source due to potential architecture mismatch (pynvim#473)
-    if has_mac then
-      pip_option = pip_option .. ' --no-binary greenlet'
-    end
-    return pip_option
   end
-  return pip_option
+
+  if python3_version()[2] >= 12 then  -- python 3.12
+    pip_option = pip_option .. "--pre "
+    return pip_option .. "greenlet 'pynvim @ git+https://github.com/neovim/pynvim'"
+  end
+  return pip_option .. "pynvim"
 end
 
 -- This works "synchronously", blocks until the pip command terminates
 ---@return boolean whether installation is successful
 local function autoinstall_pynvim()
   -- Ensure pynvim >= 0.4.0.
-  local python3_neovim_version = system(assert(vim.g.python3_host_prog) .. " -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null")
+  local python3_neovim_version = system(assert(vim.g.python3_host_prog) ..
+    " -W ignore -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null")
   local needs_install = tonumber(python3_neovim_version) == nil or tonumber(python3_neovim_version) < 4
   if not needs_install then
     return false
@@ -86,10 +98,11 @@ local function autoinstall_pynvim()
   vim.loop.sleep(100)
   vim.cmd [[ redraw! ]]
 
-  vim.g.pynvim_install_command = (
-    vim.g.python3_host_prog .. " -m ensurepip && " ..
-    vim.g.python3_host_prog .. " -m pip install " .. determine_pip_options() .. " " .. "pynvim"
-  )
+  vim.g.pynvim_install_command = table.concat({
+    vim.g.python3_host_prog .. " -m ensurepip ",
+    vim.g.python3_host_prog .. " -m pip install " .. determine_pip_args(),
+    vim.g.python3_host_prog .. [[ -c 'import pynvim; print("pynvim:", pynvim.__file__)' ]]
+  }, " && ")
 
   -- !shell execution cannot have a fine-grained control, so we use jobstart() or termopen()
   _G.pynvim_handler = setmetatable({
@@ -125,6 +138,7 @@ local function autoinstall_pynvim()
 
   vim.cmd [[
     " Note: Unlike jobstart(), termopen() cannot use on_stderr (neovim/neovim#23660)
+    echom g:pynvim_install_command
     let jobid = jobstart(['bash', '-x', '-c', g:pynvim_install_command], {
         \  'on_stdout': { j,d,e -> v:lua.pynvim_handler(j,d,e) },
         \  'on_stderr': { j,d,e -> v:lua.pynvim_handler(j,d,e) },
@@ -151,25 +165,29 @@ end
 
 -- python version check
 local function python3_version_check()
-  if vim.fn.py3eval('sys.version_info < (3, 6)') then
-    local py_version = vim.fn.py3eval('".".join(str(x) for x in sys.version_info[:3])')
-    if py_version == 0 then py_version = "cannot read" end
-    local msg = string.format("Your python3 version (%s) is too old; ", py_version)
-    warning(msg)
+  local py_version = python3_version()  ---@type integer[]
+
+  if not py_version or (
+    py_version[1] < 3 or
+    py_version[1] == 3 and py_version[2] < 6  -- checks if version < 3.6
+  ) then
+    local msg = string.format("Your python3 version (%s) is too old; ",
+      table.concat(py_version or { "unknown" }, ".") )
+    warning(msg .. vim.g.python3_host_prog)
     msg = msg .. '\n' .. "python 3.6+ is required. Most features are disabled."
     msg = msg .. '\n\n' .. "g:python3_host_prog = " .. vim.g.python3_host_prog
     notify_later(msg)
-    return false
   end
-  return true
 end
 
--- Make a dummy call first, to workaround a bug neovim#14438
+-- Make a dummy call first, to workaround a bug neovim/neovim#14438 and neovim/pynvim#496
 -- At this point the python3 provider will be loaded.
 -- NOTE: This takes some init time (~50ms), but is necessary otherwise other python plugins will fail
-vim.fn.py3eval("1")
+vim.fn.py3eval("1")  -- TODO: Remove this workaround once pynvim 0.5 is out.
 
 if vim.fn.py3eval("1") ~= 1 then
+  python3_version_check()
+
   -- pynvim is missing, try installing it
   local success = vim.F.ok_or_nil(xpcall(autoinstall_pynvim, function(err)
     local msg = debug.traceback(err, 1)
