@@ -72,6 +72,9 @@ if hlexists('NormalFloat')
   highlight NormalFloat     ctermbg=233 guibg=#121212
 endif
 
+" LSP
+highlight!  LspInlayHint    guifg=#9e9e9e guibg=#232323 gui=italic
+
 " Minimal treesitter syntax support
 " The highlight mapping is not exhaustive; to see the list, try:
 " :filter /^@/ highlight   (or :Highlights @)

@@ -82,6 +82,16 @@ local on_attach = function(client, bufnr)
     vim.lsp.buf.rename(opt.args ~= "" and opt.args or nil)
   end, { nargs = '?', desc = "Rename the current symbol at the cursor." })
 
+  -- inlay hints (experimental), need to turn it on manually
+  if client.server_capabilities.inlayHintProvider and vim.fn.has('nvim-0.10') > 0 then
+    local inlay = function(enable)
+      vim.lsp.inlay_hint(bufnr, enable)
+    end
+    buf_command("InlayHintsToggle", function(_) inlay(nil) end,
+      { nargs = 0, desc = "Toggle inlay hints."})
+    buf_command("ToggleInlayHints", "InlayHintsToggle")
+  end
+
 end
 
 -- Add global keymappings for LSP actions
@@ -280,6 +290,14 @@ lsp_setup_opts['lua_ls'] = {
         -- Ignore some false-positive diagnostics for neovim lua config
         disable = { 'redundant-parameter', 'duplicate-set-field', },
       },
+      hint = vim.fn.has('nvim-0.10') > 0 and {
+        -- https://github.com/LuaLS/lua-language-server/wiki/Settings#hint
+        enable = true, -- inlay hints
+        paramType = true, -- Show type hints at the parameter of the function.
+        paramName = "Literal", -- Show hints of parameter name (literal types only) at the function call.
+        arrayIndex = "Auto", -- Show hints only when the table is greater than 3 items, or the table is a mixed table.
+        setType = true,  -- Show a hint to display the type being applied at assignment operations.
+      } or nil,
       completion = { callSnippet = "Disable" },
       workspace = {
         maxPreload = 8000,
