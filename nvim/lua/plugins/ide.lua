@@ -57,7 +57,7 @@ return {
       Plug 'hrsh7th/cmp-nvim-lsp';
       Plug 'hrsh7th/cmp-path';
       Plug 'hrsh7th/cmp-omni';
-      Plug 'quangnguyen30192/cmp-nvim-ultisnips';
+      Plug 'quangnguyen30192/cmp-nvim-ultisnips' { cond = has_py3 };
       Plug 'tamago324/cmp-zsh';
       Plug 'petertriho/cmp-git';
     },
