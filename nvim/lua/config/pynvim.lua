@@ -65,20 +65,18 @@ end}) --[[@as fun()]]
 
 local function determine_pip_args()
   local pip_option = "--upgrade --force-reinstall "  -- force option is important
-  -- local pip_option = "--upgrade"
   local has_mac = vim.fn.has('mac') > 0
 
   if not has_mac then  -- for Linux
     -- Use '--user' option when needed
     local py_prefix = system("python3 -c 'import sys; print(sys.prefix)' 2>/dev/null")
     if py_prefix == "/usr" or py_prefix == "/usr/local" then
-      pip_option = "--user "
+      pip_option = pip_option .. "--user "
     end
   end
 
   if python3_version()[2] >= 12 then  -- python 3.12
-    pip_option = pip_option .. "--pre "
-    return pip_option .. "greenlet 'pynvim @ git+https://github.com/neovim/pynvim'"
+    return pip_option .. [[ 'pynvim @ git+https://github.com/neovim/pynvim' ]]
   end
   return pip_option .. "pynvim"
 end
