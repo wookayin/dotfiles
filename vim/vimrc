@@ -1323,7 +1323,7 @@ call RegisterHighlights('HighlightsExtraWhitespace')
 
 augroup trailing_whitespaces
   autocmd!
-  autocmd FileType GV,gitmessengerpopup,fugitive highlight clear ExtraWhitespace
+  autocmd FileType GV,gitmessengerpopup,gitcommit,fugitive highlight clear ExtraWhitespace
   autocmd BufWinEnter * if _is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif
   autocmd InsertEnter * if _is_file_buffer() | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
   autocmd InsertLeave * if _is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif

@@ -5,6 +5,7 @@
 "
 " This is a colorscheme based on xoria256 but with more customization added.
 
+" $VIMPLUG/vim-colorschemes/colors/xoria256.vim
 runtime colors/xoria256.vim
 
 let g:colors_name = "xoria256-wook"
@@ -42,7 +43,7 @@ highlight Folded        ctermbg=60  guibg=#404056
 
 highlight FoldColumn    ctermfg=236 guifg=#495057
 
-" colors for gui/24bit mode {{
+" Diff
 " DiffAdd - inserted lines (dark green)
 highlight DiffAdd       guibg=#103a05 guifg=NONE
 " DiffDelete - deleted/filler lines (gray 246)
@@ -51,7 +52,11 @@ highlight DiffDelete    guibg=#949494
 highlight DiffChange    guibg=#471515 guifg=NONE
 " DiffChange - changed 'text'(brighter red)
 highlight DiffText      guibg=#721b1b guifg=NONE
-" }}
+
+" See: diffAdded, diffRemoved, diffChange, diffText, diffIndexLine
+hi! @text.diff.add      guifg=#40c057
+hi! @text.diff.delete   guifg=#f03e3e
+hi! @attribute.diff     guifg=#da77f2
 
 highlight SpellBad guifg=NONE ctermfg=NONE
 
@@ -95,6 +100,7 @@ hi def link @text.math                 Special
 hi def link @text.environment          PreProc
 hi def link @text.environment.name     Function
 hi def link @text.environment.name     Keyword
+hi def link @text.warning              WarningMsg
 
 " Comments (common lang injection)
 " e.g., TODO WIP NOTE XXX INFO DOCS PERF TEST HACK WARN WARNING FIX FIXME BUG ERROR
@@ -123,8 +129,8 @@ hi! link @keyword.return.luadoc     SpecialComment
 hi! link @include.luadoc            SpecialComment
 hi! link @type.qualifier.luadoc     SpecialComment
 
-" Python (semantic highlighting and more syntax groups)
-" -----------------------------------------------------
+" Python (semantic highlighting and more syntax groups) {{{
+" ---------------------------------------------------------
 
 hi! link @preproc.python             SpecialComment
 
@@ -144,3 +150,9 @@ hi! @method.python              guifg=#d7ff5f
 
 hi! @function.test.python       guifg=#ffff30 gui=bold
 hi! @method.test.python         guifg=#ffff30 gui=bold
+
+" }}}
+
+" Gitcommit
+hi link @text.title.gitcommit       PreProc
+hi!     @text.uri.gitcommit         guifg=#df6383 gui=NONE
