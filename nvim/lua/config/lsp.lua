@@ -436,7 +436,7 @@ function M._setup_lsp_handlers()
     local bufnr, winnr = lsp_handlers_hover(err, result, ctx, config)
     if winnr ~= nil then
       -- opacity/alpha for hover window
-      vim.api.nvim_win_set_option(winnr, "winblend", 20)
+      vim.api.nvim_win_set_option(winnr, "winblend", 10)
     end
     return bufnr, winnr
   end
