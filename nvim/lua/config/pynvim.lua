@@ -169,9 +169,9 @@ if vim.fn.py3eval("1") ~= 1 then
     local msg = debug.traceback(err, 1)
     vim.notify(msg, vim.log.levels.ERROR)
   end))
-  if not success then
-    return NO_PYNVIM
-  end
+
+  -- Still need to disable python3 provider, it's already broken
+  return NO_PYNVIM
 else
   -- pynvim already there, check versions lazily
   vim.schedule(function()
