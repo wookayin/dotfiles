@@ -37,8 +37,15 @@ end
 local function notify_later(msg, level)
   level = level or vim.log.levels.WARN
   vim.schedule(function()
-    vim.notify(msg, level, {title = '~/.config/nvim/lua/config/pynvim.lua', timeout = 10000,
-  })
+    vim.notify(msg, level, {
+      title = '~/.config/nvim/lua/config/pynvim.lua', timeout = 10000,
+      -- highlight the notification popup with markdown
+      on_open = vim.schedule_wrap(function(win)
+        local buf = vim.api.nvim_win_get_buf(win)
+        vim.wo[win].conceallevel = 2  -- do not show literally ```, etc.
+        pcall(vim.treesitter.start, buf, 'markdown')
+      end),
+    })
   end)
 end
 
@@ -149,14 +156,16 @@ local function autoinstall_pynvim()
   ]]
 
   if vim.v.shell_error == 0 then
-    echom("Successfully installed pynvim. Please restart neovim.", "MoreMsg")
-    notify_later("Successfully installed pynvim. Please restart neovim.", "info")
+    local msg = "Successfully installed pynvim. Please restart neovim."
+    echom(msg, "MoreMsg")
+    notify_later(msg .. "\n" .. "Run `:messages` to see installation logs.", vim.log.levels.INFO)
     _G.pynvim_handler = nil
     return true
   else
     _G.pynvim_handler:show_stderr()
-    warning("Failed to install pynvim on " .. assert(vim.g.python3_host_prog))
-    notify_later("Failed to install pynvim on " .. assert(vim.g.python3_host_prog))
+    local msg = "Failed to install pynvim on " .. assert(vim.g.python3_host_prog)
+    warning(msg)
+    notify_later(msg, vim.log.levels.ERROR)
     return false
   end
 end
