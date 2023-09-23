@@ -110,6 +110,7 @@ function tmuxp {
 
 alias set-pane-title='set-window-title'
 alias tmux-pane-title='set-window-title'
+alias tmux-window-title='tmux rename-window'
 
 # }}}
 # SSH ========================================= {{{
