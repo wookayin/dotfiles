@@ -161,7 +161,14 @@ end
 function M._setup_mason()
   -- Mason: LSP Auto installer
   -- https://github.com/williamboman/mason.nvim#default-configuration
-  require("mason").setup()
+  require("mason").setup {
+    ui = {
+      border = "rounded",
+      keymaps = {
+        toggle_help = "<F1>",
+      }
+    },
+  }
   require("mason-lspconfig").setup()
 
   -- ensure_installed: Install auto_lsp_servers on demand (FileType)
