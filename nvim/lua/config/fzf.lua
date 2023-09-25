@@ -61,6 +61,7 @@ function M.setup()
   require("utils.rc_utils").RegisterHighlights(function()
     vim.cmd [[
       hi!      FzfLuaNormal guibg=#151b21
+      hi!      FzfLuaPmenu  guibg=#151515
       hi! link FzfLuaBorder FzfLuaNormal
     ]]
   end)
@@ -150,6 +151,8 @@ function M.setup()
   command("Marks", {}, "FzfLua marks")
   command("Jumps", {}, "FzfLua jumps")
   command("Filetypes", {}, "FzfLua filetypes")
+  command("CommandHistory", {}, "FzfLua command_history"):alias("CH")
+  command("SearchHistory", {}, "FzfLua search_history"):alias("CH")
 
   -- [[ Insert-mode Keymaps ]]
   -- similar to i_CTRL-X (:help ins-completion)
@@ -174,6 +177,65 @@ function M.setup()
   -- <Plug>(fzf-complete-line-allfiles)
   -- <Plug>(fzf-complete-line-import)
 
+  --- (command line, Ex-mode)
+  --- Ctrl-R Ctrl-R: Search history and put the selected entry in the command line
+  local cmd_fzf
+  vim.keymap.set("c", "<C-r><C-r>", function()
+    local cmdtype = vim.fn.getcmdtype()
+    local cmdline = vim.fn.getcmdline()
+    local fzf_provider, fzf_action
+    if cmdtype == ":" then
+      fzf_provider, fzf_action = fzf.command_history, require("fzf-lua.actions").ex_run
+    elseif cmdtype == "/" then
+      fzf_provider, fzf_action = fzf.search_history, require("fzf-lua.actions").search
+    else
+      return
+    end
+
+    vim.schedule(function()
+      -- display the cmdline again due to aborting
+      vim.api.nvim_echo({ { cmdtype, 'Special'}, { cmdline, 'Special'}, { " (fzf completion)", "None" } }, false, {})
+      cmd_fzf(fzf_provider, fzf_action, cmdline)
+    end)
+
+    -- need to clear and reject the commandline, otherwise initial query is not empty
+    -- and the current cmdline input will be unwantedly added to the command history
+    return '<C-u><C-c>'
+  end, { expr = true, desc = 'Use fzf-lua command_history to complete command line.' })
+
+  --- Or :: to start searching the history
+  vim.keymap.set("c", ":", function()
+    return (vim.fn.getcmdtype() == ":" and vim.fn.getcmdline() == "") and "<C-r><C-r>" or ":"
+  end, { expr = true, remap = true })
+
+  cmd_fzf = function(fzflua_provider, action, init_query)
+    fzflua_provider({
+      actions = {
+        -- Put in the :ex command line or /search, but do not run yet
+        ['default'] = action,
+      },
+      fzf_opts = {
+        -- see ibhagwan/fzf-lua#883 for shellescape() behavior
+        ['--query'] = vim.fn.shellescape(init_query or ''),
+        ['--layout'] = 'default', -- put prompt in the below
+        ['--header'] = false, -- no header (nil means using the default header msg)
+      },
+      -- TODO: fzf-lua persists this opts table somewhere globally, find out a bug
+      winopts = {
+        width = 1.0,
+        height = math.floor(math.min(30, 0.7 * vim.o.lines)),
+        border = 'none',
+        on_create = function()
+          local winid = vim.api.nvim_get_current_win()
+          -- Use a different color
+          vim.opt_local.winhighlight:append("Normal:FzfLuaPmenu")
+          -- Put the fzf-lua widget below near the command line, similar to wildmenu
+          local height = vim.api.nvim_win_get_config(winid).height
+          vim.api.nvim_win_set_config(winid, { row = math.max(1, vim.o.lines - height), col = 0, relative = 'editor' })
+        end,
+      },
+    })
+  end
 
   ---[[ Misc. ]]
   _G.fzf = require('fzf-lua')
