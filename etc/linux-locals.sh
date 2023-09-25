@@ -506,16 +506,20 @@ install_rsync() {
 
 install_mosh() {
   set -x
-  mkdir -p $DOTFILES_TMPDIR && cd $DOTFILES_TMPDIR/
   rm -rf mosh || true
-  git clone https://github.com/mobile-shell/mosh --depth=1
-  cd mosh
 
-  # bump up mosh version to indicate this is a HEAD version
-  sed -i -e 's/1\.3\.2/1.4.0/g' configure.ac
+  local URL="https://github.com/mobile-shell/mosh/archive/refs/tags/mosh-1.4.0.zip"
+  local TMP_DIR="$DOTFILES_TMPDIR/mosh"; mkdir -p $TMP_DIR
+  rm -rf mosh || true
+  cd "$TMP_DIR"
+
+  wget -N -O "mosh.tar.gz" "$URL"
+  unzip -o "mosh.tar.gz"   # It's actually a zip file, not a tar.gz ....
+  cd "mosh-mosh-1.4.0/"
 
   ./autogen.sh
   ./configure --prefix="$PREFIX"
+  make -j4
   make install
   $PREFIX/bin/mosh-server --version
 }
