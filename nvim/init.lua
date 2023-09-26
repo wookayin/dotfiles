@@ -71,13 +71,22 @@ elseif vim.fn.has('nvim-0.9.1') == 0 and vim.fn.has('gui_vimr') == 0 then
   end, 100)
 end
 
-do
+-- "vim --noplugin" would disable all plugins
+local noplugin = not vim.o.loadplugins
+if not noplugin then
   -- Load all the plugins (lazy.nvim, requires nvim 0.8+)
+  -- Note: lazy.nvim alters &loadplugins by design
   require 'config.plugins'
+end
 
+do
   -- Colorscheme needs to be called AFTER plugins are loaded,
   -- because of the different plugin loading mechanism and order.
   vim.cmd [[ colorscheme xoria256-wook ]]
+end
+
+if noplugin then
+  return
 end
 
 -- Source some individual rc files on startup, manually in sequence.

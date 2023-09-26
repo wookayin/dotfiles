@@ -2676,6 +2676,8 @@ EOF
 endfunction
 
 function! s:check_wilder_rplugins() abort
+  if !exists(':UpdateRemotePlugins') | return | endif  " noplugin?
+
   " Note that rplugin functions are defined only after its first invocation,
   " so we first force loading it even before wilder initialization is complete.
   doautocmd FuncUndefined _wilder_init
