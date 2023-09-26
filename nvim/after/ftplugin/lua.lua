@@ -6,8 +6,15 @@ setlocal.sts = 2
 setlocal.sw = 2
 
 
--- <F5> or :Build => source (execute) the lua file
-if vim.fn.filereadable('Makefile') == 0 then
+-- [[ <F5> or :Build ]]
+
+-- Unit testing (neotest-plenary)
+if vim.endswith(vim.fn.bufname('%') or '', '_spec.lua') then
+  vim.api.nvim_buf_create_user_command(0, "Build", "echom ':Test' | Test", {})
+  vim.api.nvim_buf_create_user_command(0, "Output", "TestOutput", {})
+
+-- source (execute) the lua file
+elseif vim.fn.filereadable('Makefile') == 0 then
   local exec_keys = function(keys)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), 'n', false)
   end
