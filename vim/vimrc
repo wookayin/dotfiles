@@ -752,9 +752,9 @@ command! -nargs=0   CD   :call CD_to(expand('%:p:h'))
 function! DetermineProjectRoot(...) abort
   let l:arg = a:0 >= 1 ? a:000[0]: '%'
   " If the current file is under a git repository, that's it!
-  let l:git_dir = s:get_git_dir(l:arg)
+  let l:git_dir = s:get_git_workdir(l:arg)
   if !empty(l:git_dir)
-    return resolve(l:git_dir . "/..")
+    return l:git_dir
   endif
 
   " Not a git repository. Use heuristic and domain knowledge as much as you can
@@ -2082,16 +2082,12 @@ function! s:fzf_gfiles_helpmsg(args)
 endfunction
 " }}}
 
-function! s:get_git_dir(path)
+function! s:get_git_workdir(path)
   let curr = fnamemodify(expand(a:path), ':p')
   if empty(curr)   " empty buffer, etc.: fall back to current dir
     let curr = getcwd()
   endif
-  try
-    return FugitiveExtractGitDir(curr)
-  catch /E117/  " Unknown function: maybe incompatible fugitive
-    return fugitive#extract_git_dir(curr)
-  endtry
+  return FugitiveWorkTree(FugitiveExtractGitDir(curr))
 endfunction
 
 " Command :F (FzfSmart)
@@ -2131,10 +2127,10 @@ function! FzfSmart(path) abort
 
   " (2) If the given path (or CWD) is in a git repo,
   " invoke :GFiles (plus untracked files)
-  let l:git_dir = s:get_git_dir(!empty(l:path) ? l:path : '%')
-  if ! empty(l:git_dir)
+  let l:git_workdir = s:get_git_workdir(!empty(l:path) ? l:path : '%')
+  if ! empty(l:git_workdir)
     let l:old_cwd = getcwd()
-    execute ':tcd ' . l:git_dir . '/..'
+    execute ':tcd ' . l:git_workdir
     echon ':GFiles (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
     GFiles -c -o --exclude-standard
     execute ':tcd ' . l:old_cwd
