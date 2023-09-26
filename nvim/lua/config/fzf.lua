@@ -12,8 +12,10 @@ end
 
 function M.setup()
   local defaults = require('fzf-lua.defaults').defaults
+  local FZF_VERSION = require('fzf-lua.utils').fzf_version({})
 
-  require('fzf-lua').setup {
+  -- fzf-lua.setup(opts)
+  local opts = {
     keymap = {
       -- 'builtin' means keymap for the neovim's terminal buffer (tmap <buffer>)
       builtin = extend(defaults.keymap.builtin) {
@@ -25,6 +27,10 @@ function M.setup()
       fzf = extend(defaults.keymap.fzf) {
         ["ctrl-/"] = "toggle-preview",
       },
+    },
+    fzf_opts = { -- global fzf opts to apply by default
+      ["--info"] = FZF_VERSION >= 0.42 and "inline-right" or nil,
+      ["--scrollbar"] = '▌',  -- use slightly thicker scrollbar
     },
     winopts = {
       width = 0.90,
@@ -43,18 +49,21 @@ function M.setup()
         end
       end,
     },
-
-    -- Customize builtin finders
-    autocmds = {
-      winopts = { preview = { layout = "vertical", vertical = "down:33%" } },
-    },
-
-    -- insert-mode completion: turn on preview by default
-    complete_file = {
-      previewer = "default",
-      winopts = { preview = { hidden = "nohidden" } },
-    },
   }
+
+  -- Customize builtin finders
+  opts.autocmds = {
+    winopts = { preview = { layout = "vertical", vertical = "down:33%" } },
+  }
+
+  -- insert-mode completion: turn on preview by default
+  opts.complete_file = {
+    previewer = "default",
+    winopts = { preview = { hidden = "nohidden" } },
+  }
+
+  require('fzf-lua').setup(opts)
+
 
   ---[[ Highlights ]]
   ---https://github.com/ibhagwan/fzf-lua#highlights
@@ -219,6 +228,8 @@ function M.setup()
         ['--query'] = vim.fn.shellescape(init_query or ''),
         ['--layout'] = 'default', -- put prompt in the below
         ['--header'] = false, -- no header (nil means using the default header msg)
+        ['--margin'] = 0,
+        ["--info"] = "default",
       },
       -- TODO: fzf-lua persists this opts table somewhere globally, find out a bug
       winopts = {
