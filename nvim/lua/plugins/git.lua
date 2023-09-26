@@ -4,7 +4,7 @@ local Plug = require('utils.plug_utils').Plug
 
 return {
   Plug 'tpope/vim-fugitive' {
-    ft = 'fugitiveblame',
+    ft = { 'fugitiveblame', 'gitcommit', 'gitrebase' },
     event = {'CmdlineEnter'},   -- so many :G.. commands
     func = {'Fugitive*', 'fugitive#*'},
   };
