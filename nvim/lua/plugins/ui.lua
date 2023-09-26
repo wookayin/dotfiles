@@ -60,6 +60,7 @@ return {
   -- Explorer
   Plug 'nvim-neo-tree/neo-tree.nvim' {
     branch = 'main',
+    cond = (vim.o.verbose == 0), -- workaround neo-tree.nvim#1145
     event = (function()
       -- If any of the startup argument is a directory,
       -- we don't lazy-load neotree so it can hijack netrw.
