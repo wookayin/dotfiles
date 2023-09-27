@@ -103,18 +103,18 @@ function M.setup()
   -- with the (optional) argument set as the default fzf query.
   local bind_query = function(fzf_provider)
     return function(e)
-      fzf_provider({ query = empty_then_nil(e.args) })
+      fzf_provider({ query = empty_then_nil(vim.trim(e.args)) })
     end
   end
 
   -- Finder (fd, rg, grep, etc.)
   -- Note: fzf-lua grep uses rg internally
   command("Files", { nargs = "?", complete = "dir", desc = "FzfLua files" }, function(e)
-    fzf.files({ cwd = empty_then_nil(e.args) })
+    fzf.files({ cwd = empty_then_nil(vim.trim(e.args)) })
   end)
   command("History", {}, "FzfLua oldfiles"):alias("H")
   command("Grep", { nargs = "?", bang = true, desc = "FzfLua grep" }, function(e)
-    local args = e.args:gsub('\n', '')
+    local args = vim.trim(e.args:gsub('\n', ''))
     if not e.bang then
       fzf.grep({ search = args })
     else
@@ -123,7 +123,7 @@ function M.setup()
   end)
   command_alias("Rg", "Grep")
   command("LiveGrep", { nargs = "?", desc = "FzfLua live_grep" }, function(e)
-    fzf.live_grep({ search = e.args })
+    fzf.live_grep({ search = vim.trim(e.args) })
   end)
   if vim.fn.executable("rg") == 0 then
     local msg = "rg (ripgrep) not found. Try `dotfiles install rg`."
