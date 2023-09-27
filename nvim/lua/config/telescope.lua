@@ -57,25 +57,33 @@ local function define_commands()
 
   -- :te and :Te are shortcuts to telescope
   vim.fn.CommandAlias("te", "Telescope")
+  vim.fn.CommandAlias("Te", "Telescope")
 
   -- Searching commands w/ telescope (plus, accepts arguments)
-  command("Buffers", { alias="B", nargs='?', complete='buffer', desc = 'List all buffers with telescope.' }, function(e)
-    require("telescope.builtin").buffers({ default_text = e.args })
+  -- NOTE: see $DOTVIM/lua/config/fzf.lua -- we prefer fzf-lua to telescope for many of the finders
+  command("Maps", { nargs='?', complete='mapping' }, function(e)
+    require("telescope.builtin").keymaps({
+      default_text = vim.trim(e.args),
+    })
   end)
-  nmap('<leader>B', '<Cmd>Buffers<CR>')
+  command("Commands", { nargs='?', complete='command' }, function(e)
+    require("telescope.builtin").commands({
+      default_text = vim.trim(e.args),
+    })
+  end)
+
   command("Highlights", { nargs='?', complete='highlight' }, function(e)
     require("telescope.builtin").highlights({
-      default_text = e.args,
+      default_text = vim.trim(e.args),
       sorter = require("telescope.sorters").fuzzy_with_index_bias(),  -- better sorting
     })
   end)
   vim.fn.CommandAlias("Hi", "Highlights")
-  command("Help", { nargs='?', complete='help' }, function(e)
-    require("telescope.builtin").help_tags({ default_text = e.args })
-  end)
-  vim.fn.CommandAlias("He", "Help")
+
   command("LspSymbols", { nargs='?' }, function(e)
-    require("telescope.builtin").lsp_dynamic_workspace_symbols({ default_text = e.args })
+    require("telescope.builtin").lsp_dynamic_workspace_symbols({
+      default_text = vim.trim(e.args),
+    })
   end)
 
 end
