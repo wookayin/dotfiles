@@ -56,6 +56,18 @@ function M.setup()
     winopts = { preview = { layout = "vertical", vertical = "down:33%" } },
   }
 
+  opts.grep = {
+    keymap = {
+      fzf = {
+        -- ctrl-q: Send all the result shown in the fzf to quickfix
+        -- Note: since using the default action, it will instead jump to the result if #entries == 1
+        -- Note, this can be VERY slow if #entires is HUGE; to be improved
+        ["ctrl-q"] = "select-all+accept",
+      }
+    },
+    copen = "horizontal copen", -- see #712
+  }
+
   -- insert-mode completion: turn on preview by default
   opts.complete_file = {
     previewer = "default",
