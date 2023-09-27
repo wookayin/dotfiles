@@ -59,6 +59,17 @@ function plugged() {
     cd "$HOME/.vim/plugged/$1"
 }
 
+# Running lua tests for neovim in the command line
+function plenary-busted() {
+    if [ $# == 0 ]; then
+        plenary-busted . || return 1;
+    else
+        for f in "$@"; do
+            nvim --headless --clean -u ~/.dotfiles/nvim/init.testing.lua -c "PlenaryBustedDirectory $f" || return 1;
+        done
+    fi
+}
+
 # Tmux ========================================= {{{
 
 function tmux-wrapper() {

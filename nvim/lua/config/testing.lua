@@ -16,7 +16,9 @@ function M.setup_neotest()
         args = { "-vv", "-s" },
         runner = 'pytest',
       }),
-      require("neotest-plenary"),
+      require("neotest-plenary").setup {
+        min_init = vim.fn.expand("$DOTVIM/init.testing.lua"),
+      },
     },
     floating = { -- :help neotest.Config.floating
       max_width = 0.9,
