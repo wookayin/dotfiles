@@ -363,7 +363,7 @@ for target, item in sorted(tasks.items()):
     # if --force option is given, delete and override the previous symlink
     if os.path.lexists(target):
         is_broken_link = os.path.islink(target) and not os.path.exists(os.readlink(target))
-        msg = ""
+        err = ""
 
         if is_broken_link:  # safe to remove
             if os.path.islink(target):
@@ -373,16 +373,16 @@ for target, item in sorted(tasks.items()):
             if args.force:
                 os.unlink(target)
             else:
-                msg = GRAY("already exists, skipped")
+                log("{:60s} : {}".format(BLUE(target), err))
         elif fail_on_error:
-            msg = RED("already exists, please remove " + target + " manually.")
+            err = RED("already exists, please remove " + target + " manually.")
         else:
             if args.force:
-                msg = YELLOW("already exists but not a symbolic link; --force option ignored")
+                err = YELLOW("already exists but not a symbolic link; --force option ignored")
             else:
-                msg = YELLOW("exists, but not a symbolic link. Check by yourself!!")
-        if msg:
-            log("{:60s} : {}".format(BLUE(target), msg))
+                err = YELLOW("exists, but not a symbolic link. Check by yourself!!")
+        if err:
+            log("{:60s} : {}".format(BLUE(target), err))
             if fail_on_error:
                 sys.exit(1)
 
