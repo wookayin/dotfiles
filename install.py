@@ -115,6 +115,24 @@ Please remove your local folder/file $f and try again.\033[0m"
     done
 ''']
 
+post_actions += [  # fzf
+    r'''#!/bin/bash
+    # Install junegunn/fzf
+    FZF_REPO="https://github.com/junegunn/fzf.git"
+    if [[ ! -d "$HOME/.fzf" ]]; then
+        git clone "$FZF_REPO" "$HOME/.fzf"
+    fi
+    cd $HOME/.fzf
+
+    # Checkout the latest release (tag)
+    tag=$(git ls-remote --tags --exit-code --refs "$FZF_REPO" \
+          | sed -E 's/^[[:xdigit:]]+[[:space:]]+refs\/tags\/(.+)/\1/g' \
+          | sort -V | tail -n1)
+    git checkout "$tag"
+
+    ./install --all --no-update-rc
+''']
+
 post_actions += [  # video2gif
     '''#!/bin/bash
     # Download command line scripts
@@ -409,7 +427,7 @@ for action in post_actions:
 
     log("\n", cr=False)
     log_boxed("Executing: " + action_title, color_fn=CYAN)
-    ret = subprocess.call(['bash', '-c', action],
+    ret = subprocess.call(['bash', '-e', '-c', action],
                           preexec_fn=lambda: signal(SIGPIPE, SIG_DFL))
 
     if ret:

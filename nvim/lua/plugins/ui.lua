@@ -20,6 +20,16 @@ return {
   Plug 'junegunn/fzf' {
     name = 'fzf',
     dir = '~/.fzf',
+    enabled = (function()
+      if vim.fn.isdirectory(vim.fn.expand("$HOME/.fzf")) == 0 then
+        local msg = "~/.fzf not found. Please run `dotfiles update`"
+        vim.defer_fn(function()
+          vim.notify(msg, vim.log.levels.WARN, { title = "plugins.ui" })
+        end, 100) -- nvim-notify might be not ready yet
+        return false
+      end
+      return true
+    end)(),
     build = './install --all --no-update-rc',
     cmd = 'FZF', func = 'fzf#*',
   };
