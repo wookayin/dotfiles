@@ -391,7 +391,8 @@ for target, item in sorted(tasks.items()):
             if args.force:
                 os.unlink(target)
             else:
-                log("{:60s} : {}".format(BLUE(target), err))
+                msg = GRAY("already exists, skipped")
+                log("{:60s} : {}".format(BLUE(target), msg))
         elif fail_on_error:
             err = RED("already exists, please remove " + target + " manually.")
         else:
