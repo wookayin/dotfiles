@@ -10,7 +10,16 @@ local function extend(lhs)
   return function(rhs) return vim.tbl_deep_extend("force", lhs, rhs) end
 end
 
-function M.setup()
+local empty_then_nil = function(x) return x ~= "" and x or nil; end
+local command_alias = vim.fn.CommandAlias
+local command = function(name, opts, rhs)
+  vim.api.nvim_create_user_command(name, rhs, opts)
+  return {
+    alias = function(self, lhs, ...) command_alias(lhs, name, ...); return self; end
+  }
+end
+
+function M.setup_fzf()
   local defaults = require('fzf-lua.defaults').defaults
   local FZF_VERSION = require('fzf-lua.utils').fzf_version({})
 
@@ -88,17 +97,9 @@ function M.setup()
   end)
 
   ---[[ Commands ]]
-  local command_alias = vim.fn.CommandAlias
   command_alias("FL", "FzfLua")
 
-  local command = function(name, opts, rhs)
-    vim.api.nvim_create_user_command(name, rhs, opts)
-    return {
-      alias = function(self, lhs, ...) command_alias(lhs, name, ...); return self; end
-    }
-  end
   local fzf = require("fzf-lua")
-  local empty_then_nil = function(x) return x ~= "" and x or nil; end
   -- wrap a fzf-lua provider to a neovim user_command function
   -- with the (optional) argument set as the default fzf query.
   local bind_query = function(fzf_provider)
@@ -262,6 +263,145 @@ function M.setup()
 
   ---[[ Misc. ]]
   _G.fzf = require('fzf-lua')
+end
+
+
+function M.setup_custom()
+  -- Custom extensions using fzf-lua
+  local fzf = require("fzf-lua")
+  local defaults = require("fzf-lua.defaults").defaults
+  local echom_warning = function(msg)
+    vim.cmd.echohl "WarningMsg"
+    vim.cmd.echom ([["]] .. vim.fn.escape(msg, [["]]) .. [["]])
+    vim.cmd.echohl "NONE"
+  end
+
+  local winopts = { preview = { layout = "vertical", vertical = "down:33%" } }
+
+  -- RgDef: python, search class/function definitions
+  local RgDef = function(query, path)
+    local prefix = '^\\s*(def|class)'
+    local pattern = prefix .. ' \\w*' .. query .. '\\w*'
+    -- if the query itself starts with prefix patterns, let query itself be the regex pattern
+    -- \\v (\v) turns on the regex magic...
+    if vim.fn.match(query, '\\v' .. prefix .. '($|\\s+)') >= 0 then
+      require('utils.debug_utils').inspect({ ["000"] = 000 })
+      pattern = '^\\s*' .. query
+    end
+
+    fzf.grep({
+      no_esc = true, -- do not escape query, we will use raw regex
+      search = pattern,
+      query = query,
+      rg_opts = [[ --type "py" ]] .. defaults.grep.rg_opts,
+      prompt = "RgDef❯ ",
+      winopts = winopts,
+      cwd = path or ".",
+    })
+  end
+  command("RgDef", { nargs = "?", desc = "RgDef (ripgrep python defs)" }, function(e)
+    RgDef(vim.trim(e.args))
+  end)
+  do
+    vim.fn.CommandAlias('D', 'RgDef')
+    vim.fn.CommandAlias('Def', 'RgDef', { register_cmd = true })
+
+    -- def-this (current cursor or visual selection)
+    vim.cmd [[
+      nnoremap <leader>def  <Cmd>execute 'Def \b' . expand("<cword>")<CR>
+      xnoremap <leader>def  "gy:Def <C-R>g<CR>
+    ]]
+  end
+
+  local RgPath = function(path, query, rg_extra_args)
+    -- try to resolve path argument
+    path = (function(path)
+      path = path or ""
+      if path == "^" then path = vim.fn.DetermineProjectRoot("%") or "" end
+      if path == "" then path = "." end
+      return vim.fn.expand(path or ".") --[[ @as string ]]
+    end)(path)
+
+    if vim.fn.isdirectory(path) == 0 then
+      return echom_warning("RgPath: invalid directory: " .. path)
+    end
+
+    local provider = (query == "" and fzf.live_grep or fzf.grep)
+    provider({
+      cwd = vim.fn.expand(path),
+      search = query or "",
+      rg_opts = (rg_extra_args or "") .. " " .. defaults.grep.rg_opts,
+      winopts = winopts,
+    })
+  end
+
+  -- :RgPath <path> [query]
+  command("RgPath", { nargs = "+", complete = 'dir' }, function(e)
+    local args = vim.fn.split(vim.trim(e.args)) ---@type string[]
+    local query = table.concat({ table.unpack(args, 2) }, ' ')  -- args[2:]
+     -- TODO: handle consecutives whitespace (it was buggy in the pasttoo)
+    RgPath(args[1], query)
+  end)
+  -- :RgConfig [query] => search ~/.dotfiles, excluding vim plugins
+  -- by default excludes all vim plugins, but :RgConfig! includes all the plugged
+  command("RgConfig", { nargs = "*", bang = true, desc = "RgPath on ~/.dotfiles" }, function(e)
+    local extra_args = (not e.bang) and [[ -g "!plugged" ]] or nil
+    RgPath(vim.fn.expand("$HOME/.dotfiles"), vim.trim(e.args), extra_args)
+  end):alias("RC")
+
+  -- :RgPlug <nvim-plugin-name> [query]
+  local plugs_cache, complete_plugs = nil, function(...)
+    if not plugs_cache then
+      plugs_cache = require "config.plugins".list_plugs()
+      table.sort(plugs_cache)
+    end
+    return plugs_cache
+  end
+  command("RgPlug", { nargs = "+", complete = complete_plugs }, function(e)
+    local args = vim.fn.split(vim.trim(e.args)) ---@type string[]
+    local query = table.concat({ table.unpack(args, 2) }, ' ')  -- args[2:]
+    local plugin_name = args[1]
+    if plugin_name == "*" then
+      plugin_name = ""
+    end
+    RgPath(vim.fn.expand("$VIMPLUG") .. "/" .. plugin_name, query)
+  end):alias("Rgplug")
+
+  -- Python package search
+  local parse_py_spec = function(args)
+    local args = vim.fn.split(vim.trim(args)) ---@type string[]
+    local query = table.concat({ table.unpack(args, 2) }, ' ')  -- args[2:]
+    local package_name = args[1]
+    -- resolve package alias from the mapping
+    package_name = (vim.g.python_package_alias or {}).package_name or
+      (package_name == '*' and "" or package_name)
+    local package_path = vim.fn.PythonSitePackagesDir() .. "/" .. package_name
+    return { query = query, package_name = package_name, package_path = package_path }
+  end
+  -- :DefPackage, :DP <python-package> [query]
+  command("DefPackage", { nargs = "+", complete = vim.fn.CompletePythonSitePackages }, function(e)
+    local q = parse_py_spec(e.args)
+    if vim.fn.isdirectory(q.package_path) == 0 then
+      return echom_warning("Package not found: " .. q.package_name)
+    end
+    RgDef(q.query, q.package_path)
+  end):alias("DP"):alias("Dpy")
+
+  -- :RgPackage, :RP <python-package> [query]
+  command("RgPackage", { nargs = "+", complete = vim.fn.CompletePythonSitePackages }, function(e)
+    local q = parse_py_spec(e.args)
+    if vim.fn.isdirectory(q.package_path) == 0 then
+      return echom_warning("Package not found: " .. q.package_name)
+    end
+    local extra_args = [[ --type "py" ]]
+    RgPath(q.package_path, q.query, extra_args)
+  end):alias("RP"):alias("Rgpy")
+end
+
+
+function M.setup()
+  M.setup_fzf()
+  M.setup_custom()
 end
 
 -- Resourcing support

@@ -32,10 +32,6 @@ return {
     event = 'VeryLazy',
     config = require('config.fzf').setup,
   };
-  Plug 'wookayin/fzf-ripgrep.vim' {
-    cmd = { 'RgFzf', 'Rg', 'RgDefFzf' },
-    func = 'fzf#vim#ripgrep#*', lazy = true,
-  };
   Plug 'rking/ag.vim' { func = 'ag#*', lazy = true };
 
   -- Telescope (config/telescope.lua)
