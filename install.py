@@ -121,6 +121,8 @@ post_actions += [  # fzf
     FZF_REPO="https://github.com/junegunn/fzf.git"
     if [[ ! -d "$HOME/.fzf" ]]; then
         git clone "$FZF_REPO" "$HOME/.fzf"
+    else
+        cd $HOME/.fzf && git fetch --tags
     fi
     cd $HOME/.fzf
 
