@@ -48,6 +48,8 @@ function M.setup_fzf()
         vertical = "down:45%",
         horizontal = "right:50%",
         layout = "flex",
+        -- If &columns < flip_columns, use horizontal preview; otherwise, vertical preview
+        flip_columns = 160,
       },
       on_create = function()
         -- Some (global) terminal keymaps should be disabled for fzf-lua, see GH-871
@@ -72,6 +74,13 @@ function M.setup_fzf()
         -- Note: since using the default action, it will instead jump to the result if #entries == 1
         -- Note, this can be VERY slow if #entires is HUGE; to be improved
         ["ctrl-q"] = "select-all+accept",
+      }
+    },
+    winopts = {
+      preview = {
+        -- Even larger value; use horizontal preview unless the screen is really wide
+        -- (usually &columns ≈ 260 on a full-width 16:9 external monitor screen)
+        flip_columns = 200,
       }
     },
     copen = "horizontal copen", -- see #712
@@ -153,6 +162,7 @@ function M.setup_fzf()
     end
     local opts = { cwd = empty_then_nil(e.args) }
     if e.bang then  -- GFiles!: include untracked files as well
+      opts.prompt = "GitFiles!❯ "
       opts.cmd = "git ls-files --exclude-standard --cached --modified --others --deduplicate"
     end
     -- Note: Unlike junegunn's GitFiles, it no longer accepts CLI flag. Use Lua API instead
