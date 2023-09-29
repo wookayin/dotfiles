@@ -101,9 +101,10 @@ function antidote-reset() {
 # antidote: Use static loading (cache) for better performance
 # (see antidote#65 for more details)
 local -a bundles=()
+local _ANTIDOTE_SAVING=""
 
 function _antidote_compile_bundles() {
-  local _ANTIDOTE_SAVING="1"
+  _ANTIDOTE_SAVING="1"
   echo -e "\033[0;33mWriting antidote cache file into $ANTIDOTE_BUNDLE ...\033[0m"
 
   # TODO: Get rid of prezto, a legacy.
@@ -157,7 +158,8 @@ if [ ! $? -eq 0 ] ; then   # error, refresh the script and try again
 fi
 
 if [[ -n "$_ANTIDOTE_SAVING" ]]; then
-    fast-theme "XDG:wook"
+  # See fast-theme -i
+  fast-theme "$HOME/.dotfiles/config/f-sy-h/wook.ini"
 fi
 
 # }}} ===================
