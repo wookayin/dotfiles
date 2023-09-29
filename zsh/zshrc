@@ -168,7 +168,7 @@ fi
 # Manually source fzf-git.sh,
 # because sourcing it via plugin manager will make shell terminate
 if type antidote >/dev/null 2>&1; then
-  source $(__antidote_bundledir junegunn/fzf-git.sh)/fzf-git.sh
+  source $(antidote-path junegunn/fzf-git.sh)/fzf-git.sh
   bindkey '^g^o' fzf-git-hashes-widget
   bindkey '^go' fzf-git-hashes-widget
 
