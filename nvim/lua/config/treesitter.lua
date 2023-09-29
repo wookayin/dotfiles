@@ -66,8 +66,8 @@ function M.setup()
   }
 
   -- Folding support
-  vim.o.foldmethod = 'expr'
-  vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
+  vim.opt_global.foldmethod = 'expr'
+  vim.opt_global.foldexpr = 'nvim_treesitter#foldexpr()'
   M.setup_custom_queries()
 
   M.setup_keymap()
@@ -84,8 +84,12 @@ function M.setup_highlight(lang, bufnr)
   end
 
   if M.has_parser(lang, bufnr) then  -- excludes built-in parser
-    vim.treesitter.start(bufnr, lang)
-    return true
+    local ok, _ = xpcall(function()
+      vim.treesitter.start(bufnr, lang)
+    end, function(err)
+      M.try_recover_parser_errors(lang, err)
+    end)
+    return ok and true or false
   else
     -- Maybe start later when parsers become available
     M._reattach_after_install._deferred[bufnr] = lang
@@ -165,12 +169,21 @@ function M.ensure_parsers_installed(langs)
   end
 end
 
-local function try_recover_parser_errors(lang, err)
+local _recover_requested = false
+
+function M.try_recover_parser_errors(lang, err)
   -- This is a fatal, unrecoverable error where treesitter parsers must be re-installed.
   if err and err:match('invalid node type') then
   else
     return false  -- Do not handle any other general errors (e.g. parser does not exist)
   end
+
+  -- This can be called more than once; run recovery process only once
+  if _recover_requested then return false end
+  _recover_requested = true
+
+  -- Treesitter is broken, disable all folding otherwise nvim might hang forever
+  vim.opt_global.foldexpr = '0'
 
   vim.api.nvim_echo({{ err, 'Error' }}, true, {})
   vim.cmd [[
