@@ -163,6 +163,7 @@ ERROR: antidote not found. Double check the submodule exists, and you have a val
         fi
         antidote update
         antidote reset
+        source ~/.zshrc
     "
     ''' if not args.skip_zplug else \
         '# zsh plugins update (Skipped)'
@@ -226,6 +227,13 @@ post_actions += [  # vim-plug
      'update'  : 'PATH="$PATH:~/.local/bin"  nvim --headless +"Lazy! update"  +qall',
      'none'    : '# vim plugins: skipped',
      }['update' if not args.skip_vimplug else 'none']
+    + '\n' +
+    r'''#!/bin/bash
+    if [[ -n "~/.vim/plugged/*.cloning(#qN)" ]]; then
+        echo "Cleaning up plugin installation artifacts..."
+        rm -fv ~/.vim/plugged/*.cloning
+    fi
+    '''
 ]
 
 post_actions += [  # gitconfig.secret
