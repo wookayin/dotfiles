@@ -22,6 +22,15 @@ alias rm='nocorrect rm -iv'
 # sudo, but inherits $PATH from the current shell
 alias sudoenv='sudo env PATH=$PATH'
 
+alias path='printf "%s\n" $path'
+function fpath() {
+  if [ $# == 0 ]; then
+    printf "%s\n" $fpath
+  else  # fpath _something: find _something within all $fpath's
+    local f; for f in `fpath`; do find -L $f -maxdepth 1 -type f -name "$@" | xargs exa; done
+  fi
+}
+
 if (( $+commands[htop] )); then
     alias top='htop'
     alias topc='htop -s PERCENT_CPU'
