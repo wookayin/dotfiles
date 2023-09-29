@@ -1,5 +1,8 @@
 -- https://wezfurlong.org/wezterm/config/files.html
 
+-- Note: If you are using nightly, use the following command to upgrade
+-- $ brew upgrade --cask wezterm-nightly --no-quarantine --greedy-latest
+
 -- Pull in the wezterm API
 local wezterm = require 'wezterm'
 
@@ -36,7 +39,7 @@ function M.setup_fonts()
     'Apple Color Emoji'  -- Use macOS emoji, not Noto Color Emoji
   }
   config.cell_width = 0.85
-  config.line_height = 0.90
+  config.line_height = 0.85
   config.font_size = 18
   -- No ligatures
   config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
