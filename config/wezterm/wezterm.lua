@@ -33,6 +33,7 @@ function M.setup_fonts()
     'Hack Nerd Font Mono',
     'Monaco',
     'Apple SD Gothic Neo',  -- for Korean (한글) letters
+    'Apple Color Emoji'  -- Use macOS emoji, not Noto Color Emoji
   }
   config.cell_width = 0.85
   config.line_height = 0.90
