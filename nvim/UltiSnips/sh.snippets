@@ -1,0 +1,21 @@
+# Snippets for shell and bash sripts
+
+# Useful references:
+# https://github.com/dylanaraps/pure-bash-bible
+
+
+# Preambles
+snippet scriptpath
+SCRIPT=$(readlink -f \$0)
+SCRIPTPATH=\`dirname \$SCRIPT\`
+endsnippet
+
+# UI
+snippet confirm
+read -p "Continue (y/n)? " choice
+case "$choice" in
+    y|Y) echo "Yes!" ;;
+    n|N) echo "Aborted."; exit 1; ;;
+    *)   echo "Invalid input"; exit 1; ;;
+esac
+endsnippet
