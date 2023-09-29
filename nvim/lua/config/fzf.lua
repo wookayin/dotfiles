@@ -83,6 +83,10 @@ function M.setup_fzf()
         flip_columns = 200,
       }
     },
+    -- headers = {}, -- Do not use the default "interactive_header_txt" header, it's misleading
+    fzf_opts = {
+      ["--info"] = FZF_VERSION >= 0.42 and "inline-right" or nil,
+    },
     copen = "horizontal copen", -- see #712
   }
 
@@ -117,38 +121,58 @@ function M.setup_fzf()
     end
   end
 
-  -- Finder (fd, rg, grep, etc.)
-  -- Note: fzf-lua grep uses rg internally
+  -- Finder
   command("Files", { nargs = "?", complete = "dir", desc = "FzfLua files" }, function(e)
     fzf.files({ cwd = empty_then_nil(vim.trim(e.args)) })
   end)
   command("History", {}, "FzfLua oldfiles"):alias("H")
+
+  --[[ {grep,rg}-like commands ]]
+  -- :Grep      => grep with <search>, and then filter & query via fzf
+  --               e.g., :Grep def( => search string "def(" literally
+  -- :Grep!     => same as :Grep, but use "raw" regex (do not automatically escape)
+  --               e.g., :Grep \b(foo|bar)\b => search word either "foo" or "bar"
+  -- :LiveGrep  => grep with <as-you-type> (CTRL-G). Uses "regex mode"
+  -- fzf-lua grep uses rg internally
   command("Grep", { nargs = "?", bang = true, desc = "FzfLua grep" }, function(e)
     local args = vim.trim(e.args:gsub('\n', ''))
-    if not e.bang then
-      fzf.grep({ search = args })
-    else
-      fzf.live_grep({ search = args })
-    end
-  end)
-  command_alias("Rg", "Grep")
+    local should_escape = not e.bang  ---@type boolean
+    fzf.grep(vim.tbl_extend("error", {
+      prompt = ("Rg%s❯ "):format(e.bang and '!' or ''),
+      search = args,
+      no_esc = not should_escape,
+    }, ( -- see core.set_header()
+      e.bang and { headers = {}, fzf_opts = { ["--header"] = "foo" } } -- :Grep! (regex)
+      or {} -- :Grep, just the use default header
+    )))
+  end):alias("Rg")
   command("LiveGrep", { nargs = "?", desc = "FzfLua live_grep" }, function(e)
     fzf.live_grep({ search = vim.trim(e.args) })
-  end)
+  end):alias("RG")
+
   if vim.fn.executable("rg") == 0 then
     local msg = "rg (ripgrep) not found. Try `dotfiles install rg`."
     vim.notify(msg, vim.log.levels.WARN, { title = "config.fzf" })
   end
-  command_alias("RG", "LiveGrep")
+
   -- keymaps (grep): CTRL-g, <leader>rg
   vim.keymap.set('n', '<C-g>', '<cmd>LiveGrep<CR>')
   vim.keymap.set('n', '<leader>rg', function()
-    fzf.grep({ search = vim.fn.expand("<cword>") })
+    fzf.grep({
+      no_esc = true, -- use raw regex, and manual escaping
+      search = "\\b(" .. vim.fn.expand("<cword>") .. ")\\b",  --TODO:escape?
+    })
   end, { desc = ':Grep with <cword>' })
   vim.keymap.set('x', '<C-g>', '<leader>rg', { remap = true, silent = true,
     desc = ':Grep with visual selection' } )
-  vim.keymap.set('x', '<leader>rg', [["gy:Grep <C-R>g<CR>]], { silent = true,
-    desc = ':Grep with visual selection' } )
+  vim.keymap.set('x', '<leader>rg', function()
+    vim.cmd.norm [["gy]]  -- copy to the "g register
+    local selected_text = vim.fn.getreg("g")
+    fzf.grep({
+      no_esc = true,
+      search = "\\b(" .. selected_text .. ")\\b"  -- TODO:escape?
+    })
+  end, { silent = true, desc = ':Grep with visual selection' } )
 
 
   -- Git providers
