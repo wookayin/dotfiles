@@ -9,6 +9,8 @@ M.custom_consumers = {}
 -- :help neotest.config
 -- @see $VIMPLUG/neotest/lua/neotest/config/init.lua
 function M.setup_neotest()
+  local lua_print = _G.print
+
   require("neotest").setup {
     adapters = {
       require("neotest-python")({
@@ -44,6 +46,9 @@ function M.setup_neotest()
       attach_or_output = M.custom_consumers.attach_or_output(),
     }
   }
+
+  -- temporary workaround for neotest-plenary#12
+  _G.print = lua_print
 end
 
 -- Add command shortcuts and keymappings
