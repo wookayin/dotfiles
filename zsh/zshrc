@@ -83,7 +83,7 @@ export FZF_MARKS_JUMP='^g'
 # antidote: zsh plugin specifications.
 # antidote-managed plugins will be stored at $ANTIDOTE_HOME
 export ANTIDOTE_HOME="$HOME/.zsh/antidote-plugins"
-export ANTIDOTE_BUNDLE="$HOME/.zsh_plugins.zsh"
+export ANTIDOTE_BUNDLE="$HOME/.zsh/antidote.bundled.zsh"
 zstyle ':antidote:bundle' use-friendly-names on
 
 if [ ! -d "$ANTIDOTE_HOME" ]; then
