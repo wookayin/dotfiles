@@ -140,7 +140,8 @@ function _antidote_compile_bundles() {
     bundles+=('wookayin/anybar-zsh')
   fi
 
-  printf "%s\n" $bundles | antidote bundle >! "$ANTIDOTE_BUNDLE"
+  ( set -o pipefail;
+    printf "%s\n" $bundles | antidote bundle ) >! "$ANTIDOTE_BUNDLE"
 }
 
 # If $ANTIDOTE_BUNDLE is empty (blank) file, refresh the static cache
