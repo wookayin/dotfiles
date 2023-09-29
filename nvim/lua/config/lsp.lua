@@ -89,7 +89,8 @@ local on_attach = function(client, bufnr)
     end
     buf_command("InlayHintsToggle", function(_) inlay(nil) end,
       { nargs = 0, desc = "Toggle inlay hints."})
-    buf_command("ToggleInlayHints", "InlayHintsToggle")
+    buf_command("ToggleInlayHints", "InlayHintsToggle", {})
+    vim.fn.CommandAlias("ToggleInlayHints", "InlayHintsToggle")
   end
 
 end
