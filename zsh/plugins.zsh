@@ -16,16 +16,8 @@ function plugin() {
 # see ~/.zpreztorc for prezto config
 plugin 'sorin-ionescu/prezto'
 
-if is-at-least 5.4; then
-  # zsh theme: powerlevel10k + customization
-  # p10k's minimum zsh requirement is 5.1 but we require zsh 5.4+,
-  # because without the instant mode initialization is slower than pure.
-  plugin 'romkatv/powerlevel10k'
-else
-  # zsh theme: pure (forked ver). For OLD zsh.
-  plugin 'mafredri/zsh-async'
-  plugin 'wookayin/pure'
-fi
+# zsh theme: powerlevel10k + customization
+plugin 'romkatv/powerlevel10k'
 
 # zsh syntax: FSH (fast-syntax-highlighting)
 # theme file (XDG:wook) is at ~/.dotfiles/config/f-sy-h
