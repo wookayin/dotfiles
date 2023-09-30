@@ -99,7 +99,9 @@ else
 fi
 
 # PATH for local settings
-export PATH="~/.local/bin/:$PATH"
+if [[ ! "$PATH" == *~/.local/bin* ]]; then
+  export PATH="~/.local/bin:$PATH"
+fi
 
 # Additional Completion
 if [ -f /usr/local/etc/bash_completion ]; then source /usr/local/etc/bash_completion; fi

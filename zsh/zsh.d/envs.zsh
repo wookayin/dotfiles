@@ -60,29 +60,9 @@ if (( $+commands[nvim] )) && [[ -z "$GIT_EDITOR" ]] ; then
 fi
 
 #
-# Path Configurations.
+# Path Configurations: Removed, DON'T PUT HERE.
 #
-# Note: Configuring $PATH should be done preferably in ~/.zshenv,
-# in order that zsh plugins are also provisioned with exectuables from $PATH.
-# Entries listed here may not be visible from zsh plugins and source scripts.
-
-# Rust (cargo) {{{
-path=( $path $HOME/.cargo/bin )
-# }}}
-
-# GO {{{
-
-# $GOPATH is where go-installed libraries or command line utilities will be installed.
-# Especially, binaries will be located at $HOME/.go/bin, which should be added to $PATH.
-export GOPATH=$HOME/.go
-mkdir -p $GOPATH
-path=( $path $GOPATH/bin )
-
-# }}}
-
-# Bazel {{{
-if [ -f $HOME/.bazel/bin/bazel ]; then
-  export BAZEL_HOME="$HOME/.bazel"
-  path=( $path $BAZEL_HOME/bin )
-fi
-# }}}
+# Note: Configuring $PATH should be done preferably in:
+#   ~/.zshenv    (available even for non-login shells and scripts as well as interactive shells)
+#   ~/.zshrc     (available only for interactive (login or non-login) shells)
+#
