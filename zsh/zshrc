@@ -23,6 +23,8 @@ fi
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+# Even if .zshrc fails to load powerlevel10k, do not enter the configuration wizard; just show errors!
+export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
 # autoload built-in zsh utilities.
 autoload -Uz is-at-least
@@ -146,17 +148,17 @@ fi
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Manually source fzf-git.sh,
+# Manually source fzf-git.sh *after* fzf
 # because sourcing it via plugin manager will make shell terminate
 if type antidote >/dev/null 2>&1; then
-  source $(antidote-path junegunn/fzf-git.sh)/fzf-git.sh
+  source $(antidote-path "junegunn/fzf-git.sh")/fzf-git.sh
   bindkey '^g^o' fzf-git-hashes-widget
   bindkey '^go' fzf-git-hashes-widget
 
 else
   # old systems (e.g. Ubuntu 16.04) has low zsh version < 5.4
   # where antidote doesn't load. Fallback to zgen if possible
-  echo -e "\033[0;31mERROR: mantidote cannot load (your zsh is too old).\033[0m"
+  echo -e "\033[0;31mERROR: antidote cannot load (your zsh is too old).\033[0m"
   [[ -f ~/.zgen/init.zsh ]] && { echo "Falling back to zgen..."; source ~/.zgen/init.zsh } || return 0;
 fi
 
