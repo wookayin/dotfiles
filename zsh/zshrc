@@ -145,6 +145,14 @@ fi
 
 # }}} ===================
 
+# Fix inconsistent fpath order (workaround for antidote#157)
+# system-wide zsh site-functions (/usr/local/share/zsh/, /opt/homebrew/share/zsh, etc.)
+# should come AFTER local and antidote paths.
+# some zsh magic: https://stackoverflow.com/questions/3435355/remove-entry-from-array
+fpath_user=(${(@)fpath:#/(opt|usr)/*zsh*})   # remove all /opt, /usr path
+fpath_system=(${(@)fpath:|fpath_user})       # $fpath \setminus $fpath_system
+fpath=($fpath_user $fpath_system)
+
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
