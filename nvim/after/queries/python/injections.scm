@@ -11,3 +11,9 @@
  (#set! injection.language "bash")
  (#set! injection.include-children)
 )
+
+(((string_content) @injection.content)
+ (#lua-match? @injection.content "^[%s]*#!/usr/bin/env python[%d.]*\n")
+ (#set! injection.language "python")
+ (#set! injection.include-children)
+)
