@@ -72,9 +72,16 @@ endif
 " use path '~/.vim' even on non-unix machine
 set runtimepath+=~/.vim
 
-" add ~/.local/bin and ~/.dotfiles/bin to $PATH
-let $PATH .= ':' . expand('~/.local/bin')
-let $PATH .= ':' . expand('~/.dotfiles/bin')
+" Add ~/.local/bin and ~/.dotfiles/bin to $PATH even if haven't (e.g., using bash shell)
+" See ~/.zshenv for a proper $PATH configuration.
+function! s:ensure_PATH(dir) abort
+  let l:dir = expand(a:dir)
+  if match(":" . $PATH . ":", ":" . l:dir, ":") < 0
+    let $PATH = l:dir . ":" . $PATH
+  endif
+endfunction
+call s:ensure_PATH('~/.local/bin')
+call s:ensure_PATH('~/.dotfiles/bin')
 
 " load plugins with pathogen
 try

@@ -1,6 +1,21 @@
 # .zshrc
 # ======
+#
+# zshrc is sourced for "interactive" shells (either non-login or login)
 # vim: set sts=2 sw=2 ts=2
+
+#   ~/.zshenv -> ~/.zprofile -> [/etc/zshrc] -> ~/.zshrc -> ~/.zlogin
+#                                               ^^^^^^^^
+#
+# See [fighting with path_helper] https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2
+# See https://github.com/rbenv/rbenv/wiki/Unix-shell-initialization
+# See https://unix.stackexchange.com/questions/71253/what-should-shouldnt-go-in-zshenv-zshrc-zlogin-zprofile-zlogout
+# See https://medium.com/@rajsek/zsh-bash-startup-files-loading-order-bashrc-zshrc-etc-e30045652f2e
+
+# Note that we have unsetopt GLOBAL_RCS in ~/.zshenv
+if [ -f /etc/zshrc ]; then source /etc/zshrc; fi
+if [ -f /etc/zsh/zshrc ]; then source /etc/zsh/zshrc; fi
+
 
 # To profile zsh startup, use the following:
 # In ~/.zshrc,
@@ -154,6 +169,7 @@ fpath_system=(${(@)fpath:|fpath_user})       # $fpath \setminus $fpath_system
 fpath=($fpath_user $fpath_system)
 
 # fzf
+(( ! ${path[(I)$HOME/.fzf/bin]} )) && path=( $HOME/.fzf/bin $path )
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Manually source fzf-git.sh *after* fzf
@@ -233,3 +249,6 @@ fi
 if [ -f "$HOME/.zshrc.local" ]; then
     source "$HOME/.zshrc.local"
 fi
+
+
+# vim: set ts=2 sts=2 sw=2:
