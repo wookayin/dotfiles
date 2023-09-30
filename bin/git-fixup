@@ -16,14 +16,17 @@ function git-fixup() {
 
     if git diff --staged --quiet; then
         echo >&2 'No changes added to commit'; return 1;
-    elif [ -n "$target" ]; then
-        git commit --fixup "$target"
-    else
+    elif [ -n "$TMUX" ] && [ -z "$target" ]; then
         echo 'Choose which commit to fix up:';
         zsh -i --no-rcs -c '\
             source ~/.zsh/antidote-plugins/junegunn/fzf-git.sh/fzf-git.sh && \
             git commit --fixup $(_fzf_git_hashes) || exit 1; \
         ';
+    elif [ -n "$target" ]; then
+        git commit --fixup "$target"
+    else
+        >&2 echo "git fixup: arguments required (or run inside tmux)"
+        return 1;
     fi
 
     if [ -n "$opt_rebase" ]; then
