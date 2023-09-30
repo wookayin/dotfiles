@@ -182,6 +182,9 @@ fi
 #
 # Add custom config directory.
 #  (note that this line is executed before initialization of prezto.)
+# TODO: This is not the right place to configure "custom" $fpath,
+# as some linux systems zsh might be locally-installed on ~/.local/share (like a site config)
+#   but on other systems ~/.local may be treated as user-local config.
 #
 fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes ~/.zsh/functions ~/.local/share/zsh/site-functions $fpath)
 
