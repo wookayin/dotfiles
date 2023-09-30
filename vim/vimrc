@@ -2092,6 +2092,8 @@ endfunction
 
 " Command :F (FzfSmart)
 function! FzfSmart(path) abort
+  doautocmd CmdlineEnter  " for lazy-loaded plugins
+
   " If args are given (e.g. :F <args>), run :Files <args>
   let l:path = Trim(a:path)
   if !empty(l:path)
