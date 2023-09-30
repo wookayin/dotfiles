@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd('VimEnter', {
 })
 
 return {
-  Plug 'Sirver/ultisnips' {
+  Plug 'SirVer/ultisnips' {
     cond = has_py3,  -- no rplugin, but need to check python version
     event = { 'InsertEnter', 'CmdlineEnter' },
   };

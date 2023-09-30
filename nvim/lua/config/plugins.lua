@@ -61,7 +61,9 @@ end
 ---@param repo string path to the git repository
 require("lazy.manage.git").get_origin = function(repo)
   local origin = require("lazy.manage.git").get_config(repo)["remote.origin.url"]
-  return string.gsub(origin, 'git@github.com:', 'https://github.com/')
+  origin = string.gsub(origin, 'git@github.com:', 'https://github.com/')
+  origin = string.gsub(origin, 'https://git::@github.com/', 'https://github.com/')
+  return origin
 end
 
 -- Setup and load plugins. All plugins will be source HERE!
