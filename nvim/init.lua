@@ -26,6 +26,7 @@ vim.env.DOTVIM = vim.fn.expand('~/.config/nvim')
 -- This can be executed lazily after entering vim, to save startup time.
 vim.schedule(function() require 'config.pynvim' end)
 require 'config.fixfnkeys'
+require 'config.compat'
 
 -- VimR support
 -- @see https://github.com/qvacua/vimr/wiki#initvim
@@ -35,14 +36,6 @@ if vim.fn.has('gui_vimr') > 0 then
     set title
   ]]
 end
-
--- Workaround for neovim 0.9.0+: Suppress deprecation warning
--- Many third-party plugins need migration to the new treesitter API
-if vim.fn.has('nvim-0.9') > 0 then
-  vim.treesitter.query.get_node_text = vim.treesitter.get_node_text
-  vim.treesitter.query.get_query = vim.treesitter.query.get
-end
-
 
 -- Source plain vimrc for basic settings.
 -- This should precede plugin loading via lazy.nvim.

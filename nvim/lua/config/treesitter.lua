@@ -4,12 +4,6 @@
 
 local M = {}
 
--- Compatibility layer for neovim < 0.9.0 (see neovim#22761)
-if not vim.treesitter.query.set then
-  ---@diagnostic disable-next-line: deprecated
-  vim.treesitter.query.set = require("vim.treesitter.query").set_query
-end
-
 ---------------------------------------------------------------------------
 -- Entrypoint.
 ---------------------------------------------------------------------------
