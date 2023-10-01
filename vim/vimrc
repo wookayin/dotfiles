@@ -1232,16 +1232,6 @@ if &term =~ '256color'
   set t_ut=
 endif
 
-" 24-bit true color: neovim 0.1.5+ / vim 7.4.1799+
-" enable ONLY if TERM is set valid and it is NOT under mosh
-function! IsMosh()
-  let output = system('is_mosh -v')
-  if v:shell_error
-    return 0
-  endif
-  return !empty(l:output)
-endfunction
-
 " Use 24-bit color.
 if has('termguicolors')
   " Note: We will use GUI colors even if the current session is running under mosh.

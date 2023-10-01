@@ -58,7 +58,6 @@ tasks = {
     # Bins
     '~/.local/bin/dotfiles' : 'bin/dotfiles',
     '~/.local/bin/fasd' : 'zsh/fasd/fasd',
-    '~/.local/bin/is_mosh' : 'zsh/is_mosh/is_mosh',
     '~/.local/bin/fzf' : dict(src='~/.fzf/bin/fzf', force=True),
 
     # X
