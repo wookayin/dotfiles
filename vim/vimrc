@@ -1465,43 +1465,6 @@ function! s:init_eunuch() abort
 endfunction
 
 " ---------------------------------------------------------------- }}}
-" vim-emoji {{{
-
-" replace emoji in selected lines
-" (snippet brought from @junegunn/dotfiles)
-function! s:replace_emojis() range
-  for lnum in range(a:firstline, a:lastline)
-    let line = getline(lnum)
-    let subs = substitute(line,
-          \ ':\([^:]\+\):', '\=emoji#for(submatch(1), submatch(0))', 'g')
-    if line != subs
-      call setline(lnum, subs)
-    endif
-  endfor
-  redraw!
-endfunction
-
-command! -range EmojiReplace <line1>,<line2>call s:replace_emojis()
-xnoremap <leader>emoji :Emoji<CR>
-
-
-" :Emoji --- emoji search with fzf
-" insert-completion <c-x><c-e>   (fzf-complete-emoji)
-command! -nargs=* Emoji          call fzf#run(Fzf_emoji_opts(<q-args>))
-imap <expr> <silent> <C-x><C-e>  fzf#vim#complete(Fzf_emoji_opts(''))
-function! Fzf_emoji_opts(query)
-  let opts = {}
-  let opts.source = map(sort(emoji#list()), 'printf("%-10s \t %s", emoji#for(v:val), v:val)')
-  let opts.options = ['--delimiter', '\t', '--nth', '-1', '--no-multi']
-  if !empty(a:query)
-    let opts.options += ['--query', a:query]
-  endif
-  let opts.reducer = { lines -> split(lines[0])[0] }                 " for insert-complete mode
-  let opts.sink = { line -> execute('normal! a' . split(line)[0]) }  " for normal-command mode
-  return fzf#wrap(opts)
-endfunction
-
-" ---------------------------------------------------------------- }}}
 " vim-asterisk (enhanced *) {{{
 
 " Use z (stay) behavior as default
