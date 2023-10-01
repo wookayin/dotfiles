@@ -29,6 +29,7 @@ function M.setup_appearances()
     top = 8, bottom = 8,
   }
 end
+
 function M.setup_fonts()
   -- Fonts: https://wezfurlong.org/wezterm/config/fonts.html
   config.font = wezterm.font_with_fallback {
@@ -44,16 +45,28 @@ function M.setup_fonts()
   -- No ligatures
   config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
 end
+
 function M.setup_keys()
+  -- https://wezfurlong.org/wezterm/config/default-keys.html
+  -- To see default keymaps list: $ wezterm show-keys --lua
+  local act = wezterm.action
+  config.keys = {
+    -- Toggle fullscreen: not cmd-Enter, use cmd-Enter
+    { mods = 'ALT', key = 'Enter', action = act.DisableDefaultAssignment },
+    { mods = 'CMD', key = 'Enter', action = act.ToggleFullScreen },
+  }
+
   -- https://wezfurlong.org/wezterm/config/lua/config/use_ime.html
   -- See https://github.com/wez/wezterm/issues/4061
   -- When using macOS IME (true), successive key repeat will get stuck
   -- unless the ApplePressAndHoldEnabled option is turned off.
   -- When turning off `use_ime`, key repeat will work but CJK input will be broken.
   config.use_ime = true
+
   -- https://wezfurlong.org/wezterm/config/keyboard-concepts.html#dead-keys
   config.use_dead_keys = false
 end
+
 function M.setup_misc()
   config.scrollback_lines = 10000
 end
