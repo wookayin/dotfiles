@@ -90,6 +90,27 @@ function M.setup_fzf()
     copen = "horizontal copen", -- see #712
   }
 
+  do -- git format and actions customization
+    local history_cmd = [[ git log --color --pretty=format:'%C(yellow)%h%Creset %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' ]]
+    opts.git = {
+      commits = {
+        cmd = history_cmd,
+        actions = {
+          ["default"] = function(selected, ...)
+            local commit = (selected[1]):match("[^ ]+")
+            vim.cmd.GShow(commit)  -- use diffview.nvim: git show ...
+          end,
+        }
+      },
+      bcommits = {
+        cmd = history_cmd .. "<file>",
+        actions = {
+          ["default"] = require("fzf-lua.actions").git_buf_vsplit,
+        }
+      },
+    }
+  end
+
   -- insert-mode completion: turn on preview by default
   opts.complete_file = {
     previewer = "default",
