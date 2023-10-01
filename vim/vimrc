@@ -2296,23 +2296,6 @@ endfunction
 let s:sed_highlight_path_last_segment = 'sed -e "s#\(.*\)/\(.*\)#\1/$(tput setaf 3)\2$(tput sgr0)#"'
 
 
-" Leader key mappings for vim-fzf commands
-
-" Tags in the current buffer (see tagbar)
-nnoremap <leader>FT :BTags<CR>
-" Git commits
-nnoremap <leader>FG :Commits<CR>
-" History (recently opened files)
-nnoremap <leader>FH :History<CR>
-nnoremap <leader>H  :History<CR>
-" :GS -> Git status (open modified file, etc.)
-command! GStatus GFiles?
-" :H goes to :History
-command! H History
-
-" Marks
-nnoremap '' :Marks<CR>
-
 " ---------------------------------------------------------------- }}}
 " vim-floaterm {{{
 

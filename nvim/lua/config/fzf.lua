@@ -15,7 +15,13 @@ local command_alias = vim.fn.CommandAlias
 local command = function(name, opts, rhs)
   vim.api.nvim_create_user_command(name, rhs, opts)
   return {
-    alias = function(self, lhs, ...) command_alias(lhs, name, ...); return self; end
+    alias = function(self, lhs, ...) command_alias(lhs, name, ...); return self; end,
+    nmap = function(self, lhs)
+      if type(lhs) == 'string' then lhs = { lhs } end
+      for _, key in pairs(lhs) do
+        vim.keymap.set('n', key, '<cmd>' .. name .. '<CR>', {})
+      end
+    end,
   }
 end
 
@@ -147,6 +153,7 @@ function M.setup_fzf()
     fzf.files({ cwd = empty_then_nil(vim.trim(e.args)) })
   end)
   command("History", {}, "FzfLua oldfiles"):alias("H")
+    :nmap({"<leader>FH", "<leader>H"})
 
   --[[ {grep,rg}-like commands ]]
   -- :Grep      => grep with <search>, and then filter & query via fzf
@@ -197,7 +204,8 @@ function M.setup_fzf()
 
 
   -- Git providers
-  command("Commits", {}, "FzfLua git_commits")  -- for the CWD. TODO: Support file arg
+  command("Commits", {}, "FzfLua git_commits"  -- for the CWD. TODO: Support file arg
+    ):nmap("<leader>FG")
   command("BCommits", {}, "FzfLua git_bcommits")  -- for the buffer.
   command("GitStatus", { nargs = 0 }, "FzfLua git_status"
     ):alias("GStatus"):alias("GS")
@@ -224,8 +232,8 @@ function M.setup_fzf()
   command("Help", { nargs = "?", complete = "help" }, bind_query(fzf.help_tags)):alias("He")
   command("Lines", { nargs = "?" }, bind_query(fzf.lines))
   command("BLines", { nargs = "?" }, bind_query(fzf.blines))
-  command("BTags", { nargs= "?" }, bind_query(fzf.btags))
-  command("Marks", {}, "FzfLua marks")
+  command("BTags", { nargs= "?" }, bind_query(fzf.btags)):nmap("<leader>FT")
+  command("Marks", {}, "FzfLua marks"):nmap([['']])
   command("Jumps", {}, "FzfLua jumps")
   command("Filetypes", {}, "FzfLua filetypes")
   command("CommandHistory", {}, "FzfLua command_history"):alias("CH")
