@@ -326,6 +326,9 @@ function M.setup_fzf()
 
   ---[[ Misc. ]]
   _G.fzf = require('fzf-lua')
+
+  -- Shadow the original :FZF command, alias to FzfLua
+  command_alias("FZF", "FzfLua")
 end
 
 

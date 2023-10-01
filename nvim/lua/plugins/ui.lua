@@ -23,11 +23,6 @@ return {
     build = './install --all --no-update-rc',
     cmd = 'FZF', func = 'fzf#*',
   };
-  Plug 'junegunn/fzf.vim' {    -- deprecated in favor of fzf-lua
-    event = 'CmdlineEnter',
-    func = 'fzf#vim#*', lazy = true,
-    dependencies = { 'fzf' },
-  };
   Plug 'ibhagwan/fzf-lua' {
     event = 'VeryLazy',
     config = require('config.fzf').setup,
