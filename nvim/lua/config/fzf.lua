@@ -352,7 +352,6 @@ function M.setup_custom()
     -- if the query itself starts with prefix patterns, let query itself be the regex pattern
     -- \\v (\v) turns on the regex magic...
     if vim.fn.match(query, '\\v' .. prefix .. '($|\\s+)') >= 0 then
-      require('utils.debug_utils').inspect({ ["000"] = 000 })
       pattern = '^\\s*' .. query
     end
 
