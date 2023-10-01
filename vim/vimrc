@@ -1648,18 +1648,6 @@ EOF
 endfunction
 
 " ---------------------------------------------------------------- }}}
-" lualine.nvim (Airline replacement) {{{
-
-" See ~/.config/nvim/lua/config/statusline.lua
-
-if has('nvim-0.8')
-  " We will be using global statusline (laststatus=3) and winbar, configured lazily.
-  " To avoid vertical shifting and flickering which is quite noticeable,
-  " we can have a dummy winbar line until the config kicks in (see _G.winbarline)
-  lua vim.opt.winbar = " "
-endif
-
-" ---------------------------------------------------------------- }}}
 " Airline {{{
 " Note: for airline theme, see the 'appearance' section
 " (Neovim 0.5.0+) airline is deprecated in favor of lualine.nvim
