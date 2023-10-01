@@ -2825,18 +2825,14 @@ endfunction
 augroup FugitiveCustomizeCommands
   autocmd CmdlineEnter * ++once silent! delcommand GDelete
 
- " :G -> :GDiff + :Git,  or :Git <args>
+ " :G         => :GDiff
+ " :G <args>  => :Git <args>
   autocmd CmdlineEnter * ++once command! -nargs=?  -complete=customlist,fugitive#Complete  G    call s:G(<q-args>)
 augroup END
 
 function! s:G(arg) abort
   if empty(Trim(a:arg))
     GDiff
-    Git | resize 5 | set winfixheight
-    lua require "diffview.actions".focus_files()
-    if &filetype == 'DiffviewFiles'
-      norm gg
-    endif
   else
     exec 'Git ' . a:arg
   endif
