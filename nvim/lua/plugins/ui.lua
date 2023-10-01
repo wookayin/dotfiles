@@ -33,14 +33,9 @@ return {
     build = './install --all --no-update-rc',
     cmd = 'FZF', func = 'fzf#*',
   };
-  Plug 'junegunn/fzf.vim' {
-    event = 'CmdlineEnter',
-    func = 'fzf#vim#*', lazy = true,
-    dependencies = { 'fzf' },
-  };
-  Plug 'wookayin/fzf-ripgrep.vim' {
-    cmd = { 'RgFzf', 'Rg', 'RgDefFzf' },
-    func = 'fzf#vim#ripgrep#*', lazy = true,
+  Plug 'ibhagwan/fzf-lua' {
+    event = { 'VeryLazy', 'CmdlineEnter' },
+    config = require('config.fzf').setup,
   };
   Plug 'rking/ag.vim' { func = 'ag#*', lazy = true };
 

@@ -2056,27 +2056,17 @@ endif
 
 " fzf.vim options
 
+" neovim: fzf.vim is deprecated in favor of fzf-lua.
+" During migration, all fzf-vim commands will be prefixed with Fzf
+" e.g., History => FzfHistory
+let g:fzf_vim = {}
+if has('nvim')
+  let g:fzf_vim.command_prefix = 'Fzf'
+endif
+
 " :Buffers => Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
+let g:fzf_vim.buffers_jump = 1
 
-" Customize built-in commands of 'vim-fzf' (overriden by commands here) {{{
-" For full list, @see https://github.com/junegunn/fzf.vim/blob/master/plugin/fzf.vim#L42
-
-" :GFiles (with preview), :GFiles? (git diff + preview)
-" Note - GFiles only works with the cwd, cannot deal with paths outside the current git repo
-" Pressing '?' when FZF is shown would toggle preview
-command! -bang -nargs=? -complete=dir GFiles
-      \ call s:fzf_gfiles_helpmsg(<q-args>) | call fzf#vim#gitfiles(expand(<q-args>),
-      \ <q-args> != '?' ? (
-      \ <bang>0 ? fzf#vim#with_preview(s:fzf_gfiles_spec, 'up:90%')
-      \         : fzf#vim#with_preview(s:fzf_gfiles_spec, 'right:50%', 'CTRL-/')
-      \) : {}
-      \)
-let s:fzf_gfiles_spec = {'options': []}
-function! s:fzf_gfiles_helpmsg(args)
-  if a:args == '?' | return | endif
-  echohl Special | echon 'Press CTRL-/ for toggle preview.' | echohl NONE
-endfunction
 " }}}
 
 function! s:get_git_workdir(path)
@@ -2091,7 +2081,10 @@ endfunction
 function! FzfSmart(path) abort
   doautocmd CmdlineEnter  " for lazy-loaded plugins
 
-  " If args are given (e.g. :F <args>), run :Files <args>
+  " If neovim, try to load fzf-lua early because this can be executed much before
+  let l:fzf_lua = has('nvim') && luaeval('pcall(require, "fzf-lua")')
+
+  " If args are given (e.g. :F <args>), resolve it to a directory
   let l:path = Trim(a:path)
   if !empty(l:path)
     let l:path = expand(l:path)
@@ -2099,7 +2092,7 @@ function! FzfSmart(path) abort
       if filereadable(l:path)
         let l:path = fnamemodify(l:path, ":h")
       else  " does not exist, error
-        echohl WarningMsg | call Echom('Does not exist: ' . l:path) | echohl NONE | return 0
+        echohl WarningMsg | call Echom('Path does not exist: ' . l:path) | echohl NONE | return 0
       endif
     endif
   endif
@@ -2113,13 +2106,13 @@ function! FzfSmart(path) abort
     if exists('t:NERDTreeBufName') && bufname('%') == t:NERDTreeBufName
       wincmd w   " we need to move the focus outside nerdtree
     endif
-    call fzf#vim#files(l:target_path, fzf#vim#with_preview())
+    execute ':Files ' . l:target_path
     return 1
   endif
   if empty(l:path) && &filetype == 'neo-tree'
     let l:target_path = luaeval('require("config.neotree").get_path()')
     if !empty(l:target_path)
-      call fzf#vim#files(l:target_path, fzf#vim#with_preview())
+      execute ':Files ' . l:target_path
       return 1
     endif
   endif
@@ -2130,9 +2123,16 @@ function! FzfSmart(path) abort
   if ! empty(l:git_workdir)
     let l:old_cwd = getcwd()
     execute ':tcd ' . l:git_workdir
-    echon ':GFiles (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
-    GFiles -c -o --exclude-standard
-    execute ':tcd ' . l:old_cwd
+    try
+      echon ':GitFiles! (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
+      if l:fzf_lua  " see $DOTVIM/lua/config/fzf.lua
+        exec 'GitFiles! ' . l:path
+      else  " vanilla vim, using fzf.vim
+        exec 'GFiles --cached --others --modified --exclude-standard --deduplicate ' . l:path
+      endif
+    finally
+      execute ':tcd ' . l:old_cwd
+    endtry
     return 2
 
   " (3) not in git repo, invoke :Files <args> by fallback
@@ -2151,35 +2151,6 @@ call CommandAlias('Flua', expand("F $VIMRUNTIME/lua"), v:true)
 
 " Invoke F (FZF) Using Ctrl-P
 nmap <C-P> <cmd>F<CR>
-
-" insert mode completion using fzf  (:h fzf-vim-mappings)
-"   --> ~/.vim/plugged/fzf.vim/autoload/fzf/vim/complete.vim
-" (similar to vim's insert mode completions, :h ins-completion)
-imap <C-x><C-k>   <plug>(fzf-complete-word)
-imap <C-x><C-f>   <plug>(fzf-complete-path)
-imap <C-x><C-l>   <plug>(fzf-complete-line-allfiles)
-"imap <C-x><C-e>   (fzf-complete-emoji, vim-emoji)
-
-" More advanced combinations on insert-mode line completion (CTRL-X CTRL-L)
-imap <C-x><C-l><c-l>   <plug>(fzf-complete-line-allfiles)
-imap <C-x><C-l><c-b>   <plug>(fzf-complete-line-buffers)
-imap <C-x><C-l><c-.>   <plug>(fzf-complete-line-allfiles)
-imap <C-x><C-l><c-i>   <plug>(fzf-complete-line-import)
-imap        <plug>(fzf-complete-line-buffers)    <plug>(fzf-complete-line)
-imap <expr> <plug>(fzf-complete-line-allfiles)   fzf#vim#complete(Fzf_completeline_rg('', ''))
-imap <expr> <plug>(fzf-complete-line-import)     fzf#vim#complete(Fzf_completeline_rg('import', 'py'))
-
-function! Fzf_completeline_rg(pattern, rg_filetype)
-  " TODO detect git directory for the current file and use it as search path
-  let l:pattern = empty(a:pattern) ? '""' : shellescape('\b' . a:pattern. '\b')
-  let l:filetype = empty(a:rg_filetype) ? ' ' : printf('-t %s ', shellescape(a:rg_filetype))
-
-  return fzf#wrap({
-        \ 'source': 'rg --column --line-number --no-heading --color=always ' . l:filetype . ' ' . l:pattern,
-        \ 'options': ['--delimiter', ':', '--ansi', '--nth', '3..', '--no-multi'],
-        \ 'reducer': { lines -> trim(join(split(lines[0], ':')[3:], ':')) },
-        \ })
-endfunction
 
 
 " custom commands using fzf
@@ -2224,138 +2195,9 @@ for s:color_name in keys(s:ansi)
         \ "endfunction"
 endfor
 " }}}
-" Misc utility functions for fzf {{{
-function! s:rg_star_to_cword(args) abort
-  if a:args == '*'   " * is designated to word under cursor
-    return '\b' . expand("<cword>") . '\b'   " \b for word boundaries
-  else
-    return a:args
-  endif
-endfunction
-
-" }}}
-
-" fzf-ripgrep.vim
-" [@migrated] :Rg, :RgFzf are defined in ~/.vim/plugged/fzf-ripgrep.vim/plugin/fzf_ripgrep.vim
-"
-" :RgFzf, :RF, :RGF -- Ripgrep + fzf (grep then fuzzy-filter)
-command! -nargs=*     RGF     :RgFzf <args>
-call CommandAlias('RF', 'RgFzf')
-
-" :Rg, :Grep -- Ripgrep + fzf (but refreshs ripgrep result upon updating query)
-command! -nargs=*     Grep    :Rg <args>
-nnoremap <C-g>       :Grep<CR>
-
-" rg-this (current word or visual selection)
-nnoremap <leader>rg   :<c-u>RgF*<CR>
-xnoremap <leader>rg   "gy:RgF <C-R>g<CR>
-
-" :Def, :RgDef -- Easily find definition/declaration (requires ripgrep)
-" e.g. :Def class, :Def def, :Def myfunc, :Def class MyClass
-command! -bang -nargs=* Def     :RgDef <args>
-call CommandAlias('D', 'Def')
-
-" def-this (current cursor or visual selection)
-nnoremap <leader>def  :<C-U>Def*<CR>
-xnoremap <leader>def  "gy:Def <C-R>g<CR>
-
-" :RgPath (perform :Rg on a specfic path)
-" Usage: RgPath[!] /path/to/search query-string
-"  <bang> tells ripgrep to not ignore files (--no-ignore)
-command! -bang -nargs=+ -complete=dir  RgPath     call s:rgpath(<q-args>, <bang>0 ? "--no-ignore" : "")
-function! s:rgpath(qargs, rg_additional_arg) abort
-  let l:args = split(a:qargs)
-  let l:query = join(l:args[1:])
-  if empty(l:args)   " corner case: empty query
-    echom "Argument required" | return
-  endif
-  " Expand path, e.g., %:p:h => parent directory, ^ => root of the project (if applicable)
-  let l:path = Trim(l:args[0])
-  if l:path == "^"
-    let l:path = DetermineProjectRoot("%")
-    if empty(l:path) | let l:path = "." | endif
-  endif
-  let l:path = expand(l:path)
-  if !isdirectory(l:path)
-    echohl WarningMsg | echom "Directory does not exists: " . l:path | echohl None
-    return
-  endif
-  let l:opts = {
-        \ 'fullscreen': 1,
-        \ 'path': expand(l:path),
-        \ 'rg_additional_arg': a:rg_additional_arg,
-        \ }
-  call fzf#vim#ripgrep#rg_fzf(l:query, l:opts)
-endfunction
-
-" :RgConfig, :RC => search ~/.dotfiles, excluding vim plugins
-command! -bang -nargs=* RgConfig  call s:rgpath('~/.dotfiles ' . <q-args>, <bang>1 ? "-g '!plugged'" : '')
-call CommandAlias('RC', 'RgConfig')
-
-" :RgPlug [plugin-name] [query] => search vim plugins (~/.vim/plugged)
-command! -bang -nargs=* -complete=customlist,CompletePlugs
-      \ RgPlug call s:rgfzf_plug(<q-args>, <bang>1)
-function! s:rgfzf_plug(qargs, bang) abort
-  " qargs: [plugin-name] [query words...]
-  let l:args = split(a:qargs)
-  let l:query = join(l:args[1:])
-  if empty(l:args)   " corner case: empty query
-    echom "Argument required" | return
-  endif
-  let l:args[0] = Trim(l:args[0])
-  if l:args[0] == '*'   " search all packages.
-    let l:args[0] = ''
-  elseif index(s:list_plugs(), l:args[0]) == -1
-    echom printf("Unknown plug: %s", l:args[0]) | return
-  endif
-  call fzf#vim#ripgrep#rg_fzf(l:query, {'fullscreen': a:bang,
-        \ 'path': $VIMPLUG . "/" . l:args[0],
-        \ 'rg_additional_arg': '-u'} )
-endfunction
-
-function! CompletePlugs(...)
-  let l:prefix = get(a:, 1, '')
-  let l:cmdline = get(a:, 2, '')
-  let l:cmdwords = len(split(l:cmdline, ' '))
-  if l:cmdwords >= 3 || (l:cmdwords == 2 && l:cmdline =~ ' $')
-    return []  " from the second argument, no completion
-  endif
-  let filter_expr = '!empty(v:val)'
-  if !empty(l:prefix)
-    let filter_expr .= printf(' && v:val =~# "^%s"', escape(l:prefix, "'\""))
-  endif
-  return filter(sort(s:list_plugs()), filter_expr)
-endfunction
 
 
-" :DefPackage, :DP (perform :Def on the python package directory)
-command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
-      \ DefPackage call s:rgfzf_pypackage('fzf#vim#ripgrep#rgdef_fzf', <q-args>, <bang>1)
-call CommandAlias('DP', 'DefPackage')
-
-" :RgPackage, :RP (Perform :RgFzf on the python package directory)
-" TODO: too many lines (millions) on empty query; we should avoid it?
-command! -bang -nargs=* -complete=customlist,CompletePythonSitePackages
-      \ RgPackage call s:rgfzf_pypackage('fzf#vim#ripgrep#rg_fzf', <q-args>, <bang>1)
-call CommandAlias('RP', 'RgPackage')
-
-function! s:rgfzf_pypackage(fzfrg_func, qargs, bang) abort
-  " TODO: If sitepackage dir is missing, resolve from python import path?
-  let l:args = split(a:qargs)
-  let l:query = join(l:args[1:])
-  if empty(l:args)   " corner case: empty query
-    let l:args = ['']
-  elseif l:args[0] == '*'   " search all packages.
-    let l:args[0] = ''
-  endif
-  " package aliases (pd -> pandas, np -> numpy, etc.)
-  let l:args[0] = get(get(g:, 'python_package_alias', {}), l:args[0], l:args[0])
-
-  return call(a:fzfrg_func, [l:query, {'fullscreen': a:bang,
-        \ 'path': printf('%s/%s', PythonSitePackagesDir(), Trim(l:args[0]))
-        \ } ])
-endfunction
-
+" Python helpers
 let g:python_package_alias = {
       \ 'np': 'numpy', 'pd': 'pandas', 'mpl': 'matplotlib', 'plt': 'matplotlib', 'sns': 'seaborn',
       \ 'tf': 'tensorflow', 'tfa': 'tensorflow_addon', 'tfp': 'tensorflow_probability',
@@ -2448,23 +2290,6 @@ endfunction
 
 let s:sed_highlight_path_last_segment = 'sed -e "s#\(.*\)/\(.*\)#\1/$(tput setaf 3)\2$(tput sgr0)#"'
 
-
-" Leader key mappings for vim-fzf commands
-
-" Tags in the current buffer (see tagbar)
-nnoremap <leader>FT :BTags<CR>
-" Git commits
-nnoremap <leader>FG :Commits<CR>
-" History (recently opened files)
-nnoremap <leader>FH :History<CR>
-nnoremap <leader>H  :History<CR>
-" :GS -> Git status (open modified file, etc.)
-command! GStatus GFiles?
-" :H goes to :History
-command! H History
-
-" Marks
-nnoremap '' :Marks<CR>
 
 " ---------------------------------------------------------------- }}}
 " vim-floaterm {{{
