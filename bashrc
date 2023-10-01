@@ -48,6 +48,10 @@ alias mv='mv -iv'
 # screens
 alias scr='screen -rD'
 
+# inspect $PATH
+path() {
+  printf "%s\n" $(echo $PATH | tr ":" "\n")
+}
 
 ##################
 # 3. Color & PS1 #
