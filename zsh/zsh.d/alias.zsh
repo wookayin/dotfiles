@@ -21,10 +21,11 @@ alias rm='nocorrect rm -iv'
 # sudo, but inherits $PATH from the current shell
 alias sudoenv='sudo env PATH=$PATH'
 
-alias path='printf "%s\n" $path'
+alias echo-array='printf "%s\n"'
+alias path='echo-array $path'
 function fpath() {
   if [ $# == 0 ]; then
-    printf "%s\n" $fpath
+    echo-array $fpath
   else  # fpath _something: find _something within all $fpath's
     local f; for f in `fpath`; do find -L $f -maxdepth 1 -type f -name "$@" | xargs exa; done
   fi
