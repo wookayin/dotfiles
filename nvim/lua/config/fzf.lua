@@ -21,6 +21,7 @@ local command = function(name, opts, rhs)
       for _, key in pairs(lhs) do
         vim.keymap.set('n', key, '<cmd>' .. name .. '<CR>', {})
       end
+      return self
     end,
   }
 end
@@ -30,7 +31,7 @@ function M.setup_fzf()
   local FZF_VERSION = require('fzf-lua.utils').fzf_version({})
 
   -- fzf-lua.setup(opts)
-  local opts = {
+  local global_opts = {
     keymap = {
       -- 'builtin' means keymap for the neovim's terminal buffer (tmap <buffer>)
       builtin = extend(defaults.keymap.builtin) {
@@ -69,11 +70,11 @@ function M.setup_fzf()
   }
 
   -- Customize builtin finders
-  opts.autocmds = {
+  global_opts.autocmds = {
     winopts = { preview = { layout = "vertical", vertical = "down:33%" } },
   }
 
-  opts.grep = {
+  global_opts.grep = {
     keymap = {
       fzf = {
         -- ctrl-q: Send all the result shown in the fzf to quickfix
@@ -98,7 +99,7 @@ function M.setup_fzf()
 
   do -- git format and actions customization
     local history_cmd = [[ git log --color --pretty=format:'%C(yellow)%h%Creset %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' ]]
-    opts.git = {
+    global_opts.git = {
       commits = {
         cmd = history_cmd,
         actions = {
@@ -118,12 +119,12 @@ function M.setup_fzf()
   end
 
   -- insert-mode completion: turn on preview by default
-  opts.complete_file = {
+  global_opts.complete_file = {
     previewer = "default",
     winopts = { preview = { hidden = "nohidden" } },
   }
 
-  require('fzf-lua').setup(opts)
+  require('fzf-lua').setup(global_opts)
 
 
   ---[[ Highlights ]]
@@ -416,7 +417,8 @@ function M.setup_custom()
   end):alias("RC")
 
   -- :RgPlug <nvim-plugin-name> [query]
-  local plugs_cache, complete_plugs = nil, function(...)
+  local plugs_cache = nil
+  local complete_plugs = function(...)
     if not plugs_cache then
       plugs_cache = require "config.plugins".list_plugs()
       table.sort(plugs_cache)
@@ -434,10 +436,10 @@ function M.setup_custom()
   end):alias("Rgplug")
 
   -- Python package search
-  local parse_py_spec = function(args)
-    local args = vim.fn.split(vim.trim(args)) ---@type string[]
-    local query = table.concat({ table.unpack(args, 2) }, ' ')  -- args[2:]
-    local package_name = args[1]
+  local parse_py_spec = function(args) ---@param args string
+    local argv = vim.fn.split(vim.trim(args)) ---@type string[]
+    local query = table.concat({ table.unpack(argv, 2) }, ' ')  -- args[2:]
+    local package_name = argv[1]
     -- resolve package alias from the mapping
     package_name = (vim.g.python_package_alias or {}).package_name or
       (package_name == '*' and "" or package_name)
