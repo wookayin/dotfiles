@@ -24,7 +24,7 @@ return {
     cmd = 'FZF', func = 'fzf#*',
   };
   Plug 'ibhagwan/fzf-lua' {
-    event = 'VeryLazy',
+    event = { 'VeryLazy', 'CmdlineEnter' },
     config = require('config.fzf').setup,
   };
   Plug 'rking/ag.vim' { func = 'ag#*', lazy = true };
