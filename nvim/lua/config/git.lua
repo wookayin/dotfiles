@@ -15,6 +15,26 @@ function M.setup_fugitive()
   nmap "<leader>gc" (vim_cmd [[tab Git commit --verbose]]);
   nmap "<leader>gC" (vim_cmd [[tab Git commit --amend --verbose]]);
 
+
+  --[[ Utilities commands for git, using terminal windows ]]
+  local command_alias = function(lhs)
+    return function(rhs) vim.fn.CommandAlias(lhs, rhs) end
+  end
+
+  -- :GDiffTerm, :gd, :gdc
+  command_alias "gd"  "GDiffTerm"
+  command_alias "gdc" "GDiffTerm --cached"
+  vim.api.nvim_create_user_command("GDiffTerm", function(e)
+    local args = vim.fn.expandcmd(vim.trim(e.args))  -- supports '%'
+    local cmd = "git diff --color " .. args
+    if vim.fn.executable('delta') > 0 then cmd = cmd .. ' | delta ' end
+    -- Disable -F (exit on EOF) because we will autoclose the floaterm
+    vim.fn['floaterm#new'](0, cmd .. " | less -+F", vim.empty_dict(), {
+      name = 'git', autoclose = 1,
+      title = " " .. cmd .. " ",
+    })
+  end, { nargs = '*' })
+
 end
 
 function M.setup_gitsigns()
