@@ -228,6 +228,14 @@ function M.setup_fzf()
     -- Note: Unlike junegunn's GitFiles, it no longer accepts CLI flag. Use Lua API instead
     fzf.git_files(opts)
   end):alias("GFiles", { register_cmd = true }):alias("GF")
+  command("GitStashes", { nargs = "?" }, function(e)
+    local search = vim.trim(e.args or '')
+    fzf.git_stash {
+      search = search,
+      winopts = { preview = { vertical = "down:80%" } }
+    }
+  end, "FzfLua git_status"):alias("Stashes")
+
   command("Tags", { nargs = "?" }, bind_query(fzf.tags))
 
   -- neovim providers
