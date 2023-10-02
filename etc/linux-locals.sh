@@ -224,6 +224,19 @@ install_bazel() {
   echo ""
 }
 
+install_mambaforge() {
+  # Mambaforge.
+  # https://conda-forge.org/miniforge/
+  local URL="https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh"
+
+  local TMP_DIR="$DOTFILES_TMPDIR/mambaforge/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
+  wget -nc "$URL"
+
+  local MAMBAFORGE_PREFIX="$HOME/.mambaforge"
+  bash "Mambaforge-Linux-x86_64.sh" -b -p ${MAMBAFORGE_PREFIX}
+  $MAMBAFORGE_PREFIX/bin/python3 --version
+}
+
 install_miniforge() {
   # Miniforge3.
   # https://github.com/conda-forge/miniforge
