@@ -69,7 +69,7 @@ configure_general() {
 }
 
 ################################################################
-# Dock
+# Desktop & Dock
 ################################################################
 
 configure_dock() {
@@ -82,6 +82,14 @@ configure_dock() {
   #defaults write com.apple.dock magnification -int 1
   killall Dock
 }
+
+configure_desktop() {
+  # "Desktop & Dock" > "Click wallpaper to reveal desktop" = "Only in Stage Manager"
+  if has-sonoma; then
+    defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+  fi
+}
+
 
 ################################################################
 # Screen
@@ -135,6 +143,7 @@ configure_skim() {
 all() {
   configure_general
   configure_dock
+  configure_desktop
   configure_screen
   configure_finder
   configure_safari
