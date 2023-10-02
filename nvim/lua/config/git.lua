@@ -4,6 +4,19 @@
 
 local M = {}
 
+function M.setup_fugitive()
+  -- TODO: We still need to migrate a lot of configs from ~/.vimrc
+
+  local nmap = function(lhs)  -- nmap "lhs" "rhs", no opts, noremap
+    return function(rhs) vim.keymap.set('n', lhs, rhs) end
+  end
+  local vim_cmd = function(x) return '<Cmd>' .. x .. '<CR>' end
+
+  nmap "<leader>gc" (vim_cmd [[tab Git commit --verbose]]);
+  nmap "<leader>gC" (vim_cmd [[tab Git commit --amend --verbose]]);
+
+end
+
 function M.setup_gitsigns()
   -- :help gitsigns-usage
   -- :help gitsigns-config
@@ -113,6 +126,7 @@ end
 
 -- Resourcing support
 if RC and RC.should_resource() then
+  M.setup_fugitive()
   M.setup_diffview()
   M.setup_gitsigns()
 end

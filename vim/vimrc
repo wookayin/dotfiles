@@ -2835,8 +2835,6 @@ nnoremap <silent> <leader>gb :echo ':Git blame -w'<CR>:Git blame -w<CR>:call Fug
 function! FugitiveResizeGblame() abort
   if &ft == 'fugitiveblame' | vertical resize 10 | endif
 endfunction
-nnoremap <leader>gci :tab Git commit --verbose<CR>
-nnoremap <leader>gcA :Git commit --amend --verbose<CR>
 
 " on commit, type 'cA' to enter in amend mode
 au FileType gitcommit nnoremap <buffer> <silent>

@@ -7,6 +7,7 @@ return {
     ft = { 'fugitiveblame', 'gitcommit', 'gitrebase' },
     event = {'CmdlineEnter'},   -- so many :G.. commands
     func = {'Fugitive*', 'fugitive#*'},
+    config = require('config.git').setup_fugitive,
   };
   Plug 'junegunn/gv.vim' {
     cmd = 'GV',
