@@ -148,8 +148,8 @@ function _try_conda_base() {
     return 0;  # do nothing, CONDA_EXE is already found
   fi
 
-  if [ -d "$conda_base/bin" ]; then
-    prepend_path "$conda_base/bin"
+  if [ -d "$conda_base/condabin" ]; then
+    prepend_path "$conda_base/condabin"
     export CONDA_EXE="$conda_base/bin/conda"
     if [ ! -f "$CONDA_EXE" ]; then
       echo "Warning: $CONDA_EXE does not exist"
