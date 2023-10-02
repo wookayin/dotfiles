@@ -100,6 +100,11 @@ configure_finder() {
 ################################################################
 
 configure_safari() {
+  # Run only if version is less than 14.0 (Since Sonoma 14.0, this is not possible via CLI)
+  if (printf "14.0\n$(sw_vers -productVersion)" | sort -V -C); then
+    return;
+  fi
+
   # Safari: show the full URL in the address bar (note: this still hides the scheme)
   defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 }
