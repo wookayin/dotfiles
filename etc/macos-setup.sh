@@ -18,6 +18,10 @@ if [ -n "$1" ]; then
   while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 fi
 
+set -e
+
+ignore-error() { return 0; }
+
 ################################################################
 # General settings
 ################################################################
@@ -121,6 +125,7 @@ all() {
 
 if [ -n "$1" ]; then
   cmd="$1"; shift;
+  PS4="\033[1;33m>>>\033[0m "
   set -x
   $cmd "$@"
 else
