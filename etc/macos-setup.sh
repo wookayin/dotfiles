@@ -10,17 +10,31 @@ if [ `uname` != "Darwin" ]; then
   echo "Run on macOS !"; exit 1
 fi
 
-# Ask for the administrator password upfront (when args are giveN)
-if [ -n "$1" ]; then
-  sudo -v --prompt "Administrator privilege required. Please type your local password: "
-
-  # Keep-alive: update existing `sudo` time stamp until `.osx` has finished
-  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-fi
-
 set -e
 
+# Ask for the administrator password upfront (when args are given)
+require-sudo() {
+  if [ -n "$1" ]; then
+    sudo -v --prompt "Administrator privilege required. Please type your local password: "
+
+    # Keep-alive: update existing `sudo` time stamp until `.osx` has finished
+    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+  fi
+}
+
 ignore-error() { return 0; }
+warning() {
+  { set +x; } 2>/dev/null; echo -e "\033[1;33mWarning: $1\033[0m\n"; set -x;
+}
+warning-permission() {
+  { set +x; } 2>/dev/null; warning "Full disk access is needed. See: System Preferences > Privacy & Security > Full Disk Access."; set -x;
+}
+has-sonoma() {
+  # return code: 0[true] if macos version >= 14.0; 1[false] if version < 14.0
+  { set +x; } 2>/dev/null;
+  printf "14.0\n$(sw_vers -productVersion)" | sort -V -C
+  local ret=$?; set -x; return $ret;
+}
 
 ################################################################
 # General settings
@@ -32,6 +46,7 @@ _set_hostname() {
   if [[ -z "$hostname" ]]; then
     echo "Single argument required"
   fi
+  require-sudo
   sudo scutil --set ComputerName "$hostname"
   sudo scutil --set HostName "$hostname"
   sudo scutil --set LocalHostName "$hostname"
@@ -74,7 +89,7 @@ configure_dock() {
 
 configure_screen() {
   # Screen: enable HiDPI display resolution modes
-  sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
+  defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
 }
 
 ################################################################
@@ -100,13 +115,8 @@ configure_finder() {
 ################################################################
 
 configure_safari() {
-  # Run only if version is less than 14.0 (Since Sonoma 14.0, this is not possible via CLI)
-  if (printf "14.0\n$(sw_vers -productVersion)" | sort -V -C); then
-    return;
-  fi
-
   # Safari: show the full URL in the address bar (note: this still hides the scheme)
-  defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
+  defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true || warning-permission
 }
 
 
