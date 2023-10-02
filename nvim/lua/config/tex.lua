@@ -11,6 +11,9 @@ function M.init()
   -- Always prefer latex instead of plaintex, etc. (:h vimtex-tex-flavor)
   vim.g.tex_flavor = 'latex'
 
+  -- Do not open quickfix when there are warnings only but no errors
+  vim.g.vimtex_quickfix_open_on_warning = 0
+
   -- Use treesitter highlights for tex, see $DOTVIM/after/syntax/tex.vim
   vim.g.vimtex_syntax_enabled = 0
 
