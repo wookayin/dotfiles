@@ -77,7 +77,9 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 
 * Q: I see some weird icons like `⍰` in (neo)vim or in the [statusline](https://github.com/powerline/powerline#vim-statusline).
   * A: Use [Nerd fonts](https://github.com/ryanoasis/nerd-fonts) v3. If you haven't upgrade to Nerd fonts [**v3** or higher](https://github.com/ryanoasis/nerd-fonts/releases/tag/v3.0.0), upgrade to v3 due to the new (breaking) Material Design Icons codepoints.
-  * Mac users can do: `brew install font-*-nerd-font`. If you want to upgrade from v2, try `brew reinstall --cask $(brew list | grep nerd-font)`.
+  * Mac users can install via: `brew install --cask font-*-nerd-font`.
+    (Minimal fonts: `brew install --cask font-jetbrains-mono-nerd-font`)
+  * If you want to upgrade from v2, try `brew reinstall --cask $(brew list | grep nerd-font)`.
 
 * If neovim + treesitter emits an error like `query: invalid node type`, run `:TSUpdate` (and wait for installation is done).
   * See [nvim-treesitter#3092](https://github.com/nvim-treesitter/nvim-treesitter/issues/3092) for more details.
