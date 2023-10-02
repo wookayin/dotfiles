@@ -19,7 +19,7 @@ local project_root = vim.fn.fnamemodify(vim.fs.find(
 -- Quickly lookup all \section{...} and \subsection{...} definitions.
 -- A limitation: can't recognize commands inside comments or verbatim, etc.
 vim.api.nvim_buf_create_user_command(0, 'Sections', function(e)
-  local pattern = '^\\\\(sub)?section\\{'
+  local pattern = '^\\\\((sub)?section|chapter|paragraph)\\*?\\{'
 
   local rg_defaults = require('fzf-lua.defaults').defaults.grep.rg_opts
   require("fzf-lua").grep {
