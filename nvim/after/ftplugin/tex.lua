@@ -28,8 +28,9 @@ vim.api.nvim_buf_create_user_command(0, 'Sections', function(e)
     query = vim.trim(e.args or ''),
     headers = {},  -- the ctrl-g to "Regex Search" .. is misleading,
     prompt = 'TeX sections❯ ',
-    previewer = 'builtin',
     rg_opts = [[ --type "tex" ]] .. rg_defaults,
+    fzf_opts = { ['--delimiter'] = ':', ['--nth'] = '3..' },  -- filter by text
+    previewer = 'builtin',
     winopts = { preview = { layout = "vertical", vertical = "down:33%" } },
     cwd = project_root,  -- not the cwd
   }
