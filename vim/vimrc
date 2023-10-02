@@ -2830,7 +2830,6 @@ endfunction
 " fugitive key mappings
 nnoremap <leader>gd :Gvdiff<CR>
 nnoremap <leader>gD :GitThreeWayDiff<CR>
-nnoremap <leader>gs :Git<CR>
 nnoremap <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gb :echo ':Git blame -w'<CR>:Git blame -w<CR>:call FugitiveResizeGblame()<CR>
 function! FugitiveResizeGblame() abort

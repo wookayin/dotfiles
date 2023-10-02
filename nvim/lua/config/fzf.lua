@@ -208,8 +208,9 @@ function M.setup_fzf()
   command("Commits", {}, "FzfLua git_commits"  -- for the CWD. TODO: Support file arg
     ):nmap("<leader>FG")
   command("BCommits", {}, "FzfLua git_bcommits")  -- for the buffer.
-  command("GitStatus", { nargs = 0 }, "FzfLua git_status"
-    ):alias("GStatus"):alias("GS")
+  command("GitStatus", { nargs = 0 }, "FzfLua git_status")
+    :alias("GStatus"):alias("GS"):alias("gs")
+    :nmap("<leader>gs")
   command("GitFiles", { nargs = "?", bang = true, complete = "dir", desc = "FzfLua git_files" }, function(e)
     if e.args == "?" then  -- GFiles?
       return vim.cmd [[ GitStatus ]]
