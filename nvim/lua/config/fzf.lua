@@ -211,9 +211,14 @@ function M.setup_fzf()
   command("GitStatus", { nargs = 0 }, "FzfLua git_status")
     :alias("GStatus"):alias("GS"):alias("gs")
     :nmap("<leader>gs")
-  command("GitFiles", { nargs = "?", bang = true, complete = "dir", desc = "FzfLua git_files" }, function(e)
+  command("GitFiles", { nargs = "*", bang = true, complete = "dir", desc = "FzfLua git_files" }, function(e)
+    e.args = vim.trim(e.args or "")
     if e.args == "?" then  -- GFiles?
       return vim.cmd [[ GitStatus ]]
+    end
+    ---@diagnostic disable-next-line: param-type-mismatch
+    if #e.args > 0 and vim.loop.fs_stat(vim.fn.expand(e.args) or "") == nil then
+      return vim.notify("Not found: " .. e.args, vim.log.levels.WARN, { title = "config.fzf" })
     end
     local opts = { cwd = empty_then_nil(e.args) }
     if e.bang then  -- GFiles!: include untracked files as well
