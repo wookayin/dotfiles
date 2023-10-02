@@ -77,7 +77,7 @@ function M._setup_compiler()
   autocmd('VimtexEventCompileSuccess', function()
     M._vimtex_compiler_jobs.status = 'success'
     vim.defer_fn(function() M._vimtex_compiler_jobs.status = '' end, 1000)
-    vim.cmd [[ VimtexView ]]   -- open the texshop previewer
+    vim.fn['vimtex#view#view']()
     update_sign_from_qf()
   end)
   autocmd('VimtexEventCompileFailed', function()
