@@ -48,6 +48,9 @@ configure_general() {
 
   # Always show scrollbars (`WhenScrolling`, `Automatic` and `Always`)
   defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+
+  # Do not use OSX credential store for git
+  git config --system --unset credential.helper || ignore-error;
 }
 
 ################################################################
