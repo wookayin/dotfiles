@@ -159,6 +159,8 @@ function _try_conda_base() {
   return 1;
 }
 
+_try_conda_base "$HOME/.mambaforge" || \
+_try_conda_base "$HOME/mambaforge" || \
 _try_conda_base "$HOME/.miniforge3" || \
 _try_conda_base "$HOME/miniforge3"  || \
 _try_conda_base "$HOME/.miniconda3" || \
