@@ -215,8 +215,7 @@ post_actions += [  # install some essential packages (linux)
 
 post_actions += [  # neovim
     '''#!/bin/bash
-    # validate neovim package installation on python2/3 and automatically install if missing
-    bash "etc/install-neovim-py.sh"
+    bash "etc/install-neovim.sh"
 ''']
 
 post_actions += [  # vim-plug
