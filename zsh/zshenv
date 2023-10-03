@@ -128,18 +128,6 @@ prepend_path "$HOME/.dotfiles/bin"
 # Let ~/.local/bin take the most, biggest precedence
 prepend_path "$HOME/.local/bin"
 
-# Cleanup some conda environment variables to avoid messing up in tmux, etc.
-# (these environment variables might be copied and inherited unwantedly)
-if [[ -n "$CONDA_PREFIX" ]]; then
-  # remove all $PATH entry for the current conda env
-  path=(${(@)path:#${CONDA_PREFIX}*})
-fi
-unset CONDA_EXE
-unset CONDA_PREFIX
-unset CONDA_DEFAULT_ENV
-unset CONDA_PYTHON_EXE
-unset CONDA_SHLVL
-
 # conda (miniforge3, miniconda3)
 function _try_conda_base() {
   local conda_base="$1"

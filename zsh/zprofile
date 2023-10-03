@@ -1,14 +1,14 @@
 # ~/.zprofile
 #
-# Start-up script executed if an "interactive login shell"
-#
-# Note: not executed when doing `exec zsh`; it's a non-login shell
+# Start-up script executed if an "login shell"
+# Note: not executed when doing `exec zsh`; it's a non-login shell (unless `exec zsh -l`)
 #
 # Execution order:
 #   ~/.zshenv -> [/etc/zprofile] -> ~/.zprofile -> ~/.zshrc -> ~/.zlogin
-#                 (*)                ^^^^^^^^^^^
+#                 (*)               ^^^^^^^^^^^
 #
-# WARNING: on macOS, /etc/zprofile messes up $PATH.
+# (*) WARNING: on macOS, /etc/zprofile messes up $PATH.
+# This should have been disabled by disabling /etc/zprofile (see ~/.zshenv).
 # See [fighting with path_helper] https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2#order-is-key-and-everything-
 
 
@@ -19,8 +19,18 @@ umask 022
 ulimit -n 10240
 
 
-# (*) WARNING: on macOS, /etc/zprofile messes up $PATH.
-# This should have been disabled by disabling /etc/zprofile (see ~/.zshenv).
-# See [fighting with path_helper] https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2
+# Cleanup some conda environment variables "on a login shell"
+# to avoid $CONDA_* env variables and $PATH messed up in tmux, etc.
+# (Somehow, tmux overrides $CONDA_DEFAULT_ENV unwantedly)
+# Note: for "a login shell".  non-login subshells would not be affected.
+if [[ -n "$CONDA_PREFIX" ]]; then
+  # remove all $PATH entry for the current conda env
+  # (except for $CONDA_EXE and condabin/)
+  path=(${(@)path:#${CONDA_PREFIX}/bin*})
+fi
+unset CONDA_PREFIX
+unset CONDA_DEFAULT_ENV
+unset CONDA_PYTHON_EXE
+unset CONDA_SHLVL
 
 # vim: set ft=zsh ts=2 sts=2 sw=2:
