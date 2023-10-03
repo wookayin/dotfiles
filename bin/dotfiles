@@ -75,18 +75,24 @@ def update(fast=False,
 
     # TODO: check if current branch is master
     action = '''
+        set -e
         set -x
+        ret=0
         cd ~/.dotfiles
         git fetch origin
         git stash push -m "DOTFILES_UPDATE"
-        git merge --ff-only && python install.py {install_args}
+        git merge --ff-only && \
+            python install.py %s || { ret=$?; }
         git stash list | grep "DOTFILES_UPDATE" && git stash pop --index -q
-    '''.format(install_args=install_args)
-    subprocess.call(['bash', '-c', action])
+        exit $ret;
+    ''' % install_args
 
+    ret = subprocess.call(['bash', '-c', action])
     git_new_head = _git_head()
 
-    if git_old_head == git_new_head:
+    if ret != 0:
+        print(RED('[*] installer has failed. Check the log.'))
+    elif git_old_head == git_new_head:
         print(YELLOW('[*] dotfiles is up-to-date ({}).'.format(git_new_head)))
     else:
         print(GREEN('[*] Update complete!'))
