@@ -149,8 +149,9 @@ fi
 # Load the static script for loading zsh plugins.
 source $ANTIDOTE_BUNDLE
 if [ ! $? -eq 0 ] ; then   # error, refresh the script and try again
-    _antidote_compile_bundles
-    source $ANTIDOTE_BUNDLE
+  echo -e "$fg[yellow]Sourcing ${ANTIDOTE_BUNDLE} has failed. Trying to reset zsh plugins ...$rest_color"
+  _antidote_compile_bundles
+  source $ANTIDOTE_BUNDLE
 fi
 
 if [[ -n "$_ANTIDOTE_SAVING" ]]; then
