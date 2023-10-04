@@ -240,26 +240,30 @@ end
 
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+-- @see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
 
--- (lsp_name: string) => function(client, init_result), see :help vim.lsp.start_client()
+-- (lsp_name: string) => function(client, init_result),
+-- @see :help vim.lsp.start_client()
 local on_init = {}
 M.on_init = on_init
 
-lsp_setup_opts['pyright'] = {
-  settings = {
+lsp_setup_opts['pyright'] = function()
+  return {
     -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
-    python = {
-      analysis = {
-        typeCheckingMode = "basic",
-      }
+    settings = {
+      python = {
+        analysis = {
+          typeCheckingMode = "basic",
+        }
+      },
     },
-  },
-}
+  }
+end
 
-lsp_setup_opts['ruff_lsp'] = {
-  init_options = {
+lsp_setup_opts['ruff_lsp'] = function()
+  local init_options = {
     -- https://github.com/charliermarsh/ruff-lsp#settings
     settings = {
       fixAll = true,
@@ -275,8 +279,9 @@ lsp_setup_opts['ruff_lsp'] = {
         "E731", -- lambda-assignment
       }, ',') },
     },
-  }
-}
+  };
+  return { init_options = init_options }
+end
 on_init['ruff_lsp'] = function(client, _)
   -- Disable hover in favor of Pyright
   if client.server_capabilities then
@@ -284,8 +289,8 @@ on_init['ruff_lsp'] = function(client, _)
   end
 end
 
-lsp_setup_opts['lua_ls'] = {
-  settings = {
+lsp_setup_opts['lua_ls'] = function()
+  local settings = {
     -- See https://github.com/LuaLS/lua-language-server/blob/master/doc/en-us/config.md
     -- See $MASON/packages/lua-language-server/libexec/locale/en-us/setting.lua
     -- See $MASON/packages/lua-language-server/libexec/script/config/template.lua
@@ -329,8 +334,9 @@ lsp_setup_opts['lua_ls'] = {
         end)(),
       },
     },
-  },
-}
+  };
+  return { settings = settings }
+end
 on_init['lua_ls'] = function(client, _)
   -- Note that server_capabilities config shouldn't be done in on_attach
   -- due to delayed execution (see neovim/nvim-lspconfig#2542)
@@ -363,7 +369,7 @@ lsp_setup_opts['yamlls'] = {
 
 -- Call lspconfig[...].setup for all installed LSP servers with common opts
 local function setup_lsp(lsp_name)
-  local default_opts = {
+  local common_opts = {
     on_init = on_init[lsp_name],
     on_attach = on_attach,
     capabilities = M.lsp_default_capabilities(),
@@ -384,8 +390,13 @@ local function setup_lsp(lsp_name)
     }
   end
 
-  -- Customize the options passed to the server
-  local opts = vim.tbl_extend("force", default_opts, M.lsp_setup_opts[lsp_name] or {})
+  local opts = M.lsp_setup_opts[lsp_name] or {}
+  if type(opts) == 'function' then
+    opts = opts()
+  end
+
+  -- Merge with lang-specific options
+  opts = vim.tbl_extend("force", {}, common_opts, opts)
   require('lspconfig')[lsp_name].setup(opts)
 end
 
