@@ -256,7 +256,9 @@ lsp_setup_opts['pyright'] = function()
       python = {
         analysis = {
           typeCheckingMode = "basic",
-        }
+        },
+        -- Always use the current python in accordance with $PATH (the current conda/virtualenv).
+        pythonPath = vim.fn.exepath("python3"),
       },
     },
   }
