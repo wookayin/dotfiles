@@ -603,25 +603,28 @@ nnoremap ]l :lnext<CR>
 " Make and Build {{{
 " ------------------
 " We use <F5> and <Ctrl-F5> to quickly build and execute the code.
-" <C-F5> :Build        => Build and run the program.
-" <F5>   :Debug        => Build and run, in a debug mode (with DAP in the future) if available.
+" <F5>   :Build        => Build and run the program.
+" <C-F5> :Build        => Build and run the program. (same as <F5> for compatibility)
+" <M-F5> :Debug        => Build and run the program in a debug mode (with DAP in the future) if available.
 
 " To specialize project-wise, filetype-wise, or buffer-wise behaviors,
 " the Build, Debug, and Output commands be overriden.
 " However, we should NOT directly remap <F5> and <Ctrl-F5>.
 
-" For now, <F5> runs :Debug -> :Build -> :Make.
-nmap <F5>    <cmd>silent w<CR><cmd>Debug<CR>
-nmap <C-F5>  <cmd>silent w<CR><cmd>Build<CR>
+" By default, <F5> runs :Build -> :Make. Ftplugins may define :Build and :Debug.
+nmap <F5>    <cmd>silent w<CR><cmd>Build<CR>
+nmap <C-F5>  <F5>
+nmap <M-F5>  <cmd>silent w<CR><cmd>Debug<CR>
 imap <F5>    <ESC><F5>a
 imap <C-F5>  <ESC><C-F5>a
 
+
 " Alternative to <F5> (shortcut)
-map <leader>m <F5>
+nnoremap <leader>m <F5>
 
 " Build commands default to Make
 command! -nargs=* -bar Build    Make
-command! -nargs=* -bar Debug    Build
+command! -nargs=* -bar Debug    echohl WarningMsg | echon ":Debug not defined for this filetype. Try :Build instead." | echohl NONE
 
 " :Make
 " runs a &makeprg job asynchronously in the background.
