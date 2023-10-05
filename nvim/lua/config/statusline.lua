@@ -3,9 +3,9 @@
 local M = {}
 
 -- From nvim-lualine/lualine.nvim/wiki/Component-snippets
---- @param trunc_width number trunctates component when screen width is less then trunc_width
---- @param trunc_len number truncates component to trunc_len number of chars
---- @param hide_width number hides component when window width is smaller then hide_width
+--- @param trunc_width number|nil trunctates component when screen width is less then trunc_width
+--- @param trunc_len number|nil truncates component to trunc_len number of chars
+--- @param hide_width number|nil hides component when window width is smaller then hide_width
 --- @param trunc_right boolean whether to truncate at right (resulting in prefix) or left (resulting in suffix).
 --- return function that can format the component accordingly
 local function truncate(trunc_width, trunc_len, hide_width, trunc_right)
@@ -85,13 +85,13 @@ local custom_components = {
   end,
   -- context (https://github.com/SmiteshP/nvim-navic)
   lsp_context = function()
-    if pcall(require, "nvim-navic") then
+    local txt = vim.F.npcall(function()
       local navic = require("nvim-navic")
       if navic.is_available() then
-        return navic.get_location() or ''
+        return navic.get_location()
       end
-    end
-    return ''
+    end) or ''
+    return txt
   end
 }
 _G.lualine_components = custom_components
@@ -120,7 +120,7 @@ function M.setup_lualine()
       lualine_c = {
         custom_components.asyncrun_status,
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
-        { custom_components.lsp_context },
+        { custom_components.lsp_context, fmt = truncate(180, 40, 100, true) },
       },
       lualine_x = {
         --{ custom_components.lsp_status, fmt = truncate(120, 20, 60, false) },
@@ -130,7 +130,7 @@ function M.setup_lualine()
       },
       lualine_y = { -- excludes 'progress'
         { 'diff', cond = using_global_statusline },
-        'diagnostics',
+        { 'diagnostics', cond = min_statusline_width(110) },
       },
       lualine_z = {
         { 'location', cond = min_statusline_width(90) },
