@@ -65,6 +65,12 @@ function M.setup_gitsigns()
       indent_heuristic = true,
       -- Use line matching algorithm (neovim#14537)
       linematch = vim.fn.has('nvim-0.9.0') > 0 and 60 or nil,
+      -- Include whitespace-only changes in git hunks
+      -- regardless of &diffopt (gitsigns.nvim#696)
+      ignore_whitespace_change = false,
+      ignore_blank_lines = false,
+      ignore_whitespace = false,
+      ignore_whitespace_change_at_eol = false,
     },
     on_attach = function(bufnr)
       local function map(mode, lhs, rhs, opts)
