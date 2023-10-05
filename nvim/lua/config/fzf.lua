@@ -361,19 +361,36 @@ function M.setup_custom()
 
   -- RgDef: python, search class/function definitions
   local RgDef = function(query, path)
-    local prefix = '^\\s*(def|class)'
-    local pattern = prefix .. ' \\w*' .. query .. '\\w*'
-    -- if the query itself starts with prefix patterns, let query itself be the regex pattern
-    -- \\v (\v) turns on the regex magic...
-    if vim.fn.match(query, '\\v' .. prefix .. '($|\\s+)') >= 0 then
-      pattern = '^\\s*' .. query
-    end
+    local ft = vim.bo.filetype
+    if ft == "" then return vim.notify("Cannot detect filetype.", vim.log.levels.WARN) end
+    local rg_lang = ({
+      ['python'] = 'py',
+    })[ft] or ft
+
+    local patterns = {
+      ['python'] = (function()
+        -- if the query itself starts with prefix patterns, (e.g. "def foo" or "class bar")
+        -- let query itself be the regex pattern. (\v) turns on the regex magic for vimscript match()
+        if vim.fn.match(query, [[\v]] .. [[(def|class)]] .. '($|\\s+)') >= 0 then
+          return [[^\s*$query\w*]]
+        else
+          return [[^\s*(def|class) \w*$query\w*]]
+        end
+      end)(),
+      -- Note: this regex is not perfect, there might be some false negatives, but should be good enough...
+      ['lua']    = '(' .. [[^\s*function (\w|\.|:)*$query(\w|\.|:)*]] .. '|'   -- function ...query..()
+                       .. [[^.*\.\w*$query\w*\s*=\sfunction]] ..               -- M...query = function()
+                   ')',
+      _default   = [[\w*$query\w*]],
+    }
+    local pattern = patterns[ft] or patterns._default
+    pattern = pattern:gsub('%$(%w+)', { query = query })
 
     fzf.grep({
       no_esc = true, -- do not escape query, we will use raw regex
       search = pattern,
       query = query,
-      rg_opts = [[ --type "py" ]] .. defaults.grep.rg_opts,
+      rg_opts = ([[ --type "%s" ]]):format(rg_lang) .. defaults.grep.rg_opts,
       prompt = "RgDef❯ ",
       winopts = winopts,
       cwd = path or ".",
@@ -388,7 +405,7 @@ function M.setup_custom()
 
     -- def-this (current cursor or visual selection)
     vim.cmd [[
-      nnoremap <leader>def  <Cmd>execute 'Def \b' . expand("<cword>")<CR>
+      nnoremap <leader>def  <Cmd>execute 'Def ' . expand("<cword>")<CR>
       xnoremap <leader>def  "gy:Def <C-R>g<CR>
     ]]
   end
