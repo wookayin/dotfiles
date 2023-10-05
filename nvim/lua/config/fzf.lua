@@ -429,6 +429,15 @@ function M.setup_custom()
     RgPath(vim.fn.expand("$HOME/.dotfiles"), vim.trim(e.args), extra_args)
   end):alias("RC")
 
+  -- :RgRuntime [query] => search $VIMRUNTIME
+  command("RgRuntime", { nargs = "*", desc = "RgPath on $VIMRUNTIME" }, function(e)
+    RgPath(vim.fn.expand("$VIMRUNTIME"), vim.trim(e.args))
+  end):alias("RR"):alias("RgRUNTIME", { register_cmd = true })
+  -- :RgLua [query] => search $VIMRUNTIME/query
+  command("RgLua", { nargs = "*", desc = "RgPath on $VIMRUNTIME/lua" }, function(e)
+    RgPath(vim.fn.expand("$VIMRUNTIME/lua"), vim.trim(e.args))
+  end):alias("rglua")
+
   -- :RgPlug <nvim-plugin-name> [query]
   local plugs_cache = nil
   local complete_plugs = function(...)
