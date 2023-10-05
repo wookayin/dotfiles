@@ -814,6 +814,18 @@ M.setup_cmp = function()
 
   -- Highlights
   require('utils.rc_utils').RegisterHighlights(cmp_helper.apply_highlight)
+
+  do  -- set pumheight: limit popup menu height
+    function _reset_pumheight()
+      vim.o.pumheight = math.max(20, math.floor(vim.o.lines * 0.5))
+    end
+    vim.api.nvim_create_autocmd('VimResized', {
+      pattern = '*',
+      group = vim.api.nvim_create_augroup('lsp_cmp_on_resized_pumheight', { clear = true }),
+      callback = function() _reset_pumheight() end,
+    })
+    _reset_pumheight()
+  end
 end
 
 -- Custom sorting/ranking for completion items.
