@@ -117,18 +117,34 @@ _G.vimtex_jobs = M._vimtex_compiler_jobs
 -- for :Vimtexview, move Skim's position to where the cursor currently points to.
 function M._setup_viewer()
   if vim.fn.has('mac') > 0 then
-    local has_texshop = (
-      vim.fn.isdirectory('/Applications/TeX/TeXShop.app') > 0 or
-      vim.fn.isdirectory('/Applications/TeXShop.app') > 0
-    )
-    if vim.fn.executable('texshop') > 0 and has_texshop then
-      -- ~/.dotfiles/bin/texshop
-      vim.g.vimtex_view_general_viewer = 'texshop'
-    else
-      -- Skim.app
-      vim.g.vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-      vim.g.vimtex_view_general_options = '-r -g @line @pdf @tex'
+    local has_texshop = function()
+      return vim.fn.executable('texshop') > 0 and (
+        vim.fn.isdirectory('/Applications/TeX/TeXShop.app') > 0 or
+        vim.fn.isdirectory('/Applications/TeXShop.app') > 0)
     end
+    local use_texshop = function()
+      -- TexShop: ~/.dotfiles/bin/texshop
+      vim.g.vimtex_view_method = 'general'
+      vim.g.vimtex_view_general_viewer = 'texshop'
+    end
+
+    local has_skim = function()
+      return vim.fn.isdirectory('/Applications/Skim.app') > 0
+    end
+    local use_skim = function()
+      -- Skim.app (with TexSync)
+      -- Note: to use inverse search (Shift+Cmd+Click) from Skim, see :help VimtexInverseSearch
+      --   nvim --headless -c "VimtexInverseSearch %line '%file'"
+      vim.g.vimtex_view_method = 'skim'
+      vim.g.vimtex_view_skim_sync = 1  -- Forward search after successful build
+      vim.g.vimtex_view_skim_reading_bar = 1 -- Highlight the current line
+      vim.g.vimtex_view_skim_activate = 0  -- Do not steal the focus
+    end
+
+    -- Use Skim as a preferred latex viewer.
+    -- Tip for Skim: Use "Single Page" display mode to avoid flickering
+    local _ = has_skim() and use_skim() or
+              has_texshop() and use_skim()
   end
 end
 
