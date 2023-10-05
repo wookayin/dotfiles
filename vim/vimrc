@@ -624,7 +624,7 @@ command! -nargs=* -bar Build    Make
 command! -nargs=* -bar Debug    Build
 
 " :Make
-" The default behavior is to run :Neomake, which runs a &makeprg job silently in the background.
+" runs a &makeprg job asynchronously in the background.
 "
 " Note that filetype plugins or individual buffers may override the command :Make
 " For instance, ~/.vim/after/ftplugin/python.vim  ~/.vim/after/ftplugin/cpp.vim
@@ -1820,95 +1820,7 @@ function! AsyncrunQuickfixCtrlC() abort
   endif
 endfunction
 
-
-" ---------------------------------------------------------------- }}}
-" Neomake (deprecated) {{{
-
-" so that ':Neomake clean' invokes 'make clean'
-let g:neomake_clean_maker = { 'exe': 'make', 'args': ['clean'] }
-let g:neomake_job_status = {}
-
-command! NeomakeNotificationStart    call s:NeomakeNotificationSet(1)
-command! NeomakeNotificationStop     call s:NeomakeNotificationSet(0)
-let g:neomake_job_notification = 0       " notify when success?
-function! s:NeomakeNotificationSet(value) abort
-  let g:neomake_job_notification = a:value
-  call VimNotify((a:value ? "Enabled" : "Disabled") . " notification of successful jobs.",
-        \ "info", {'title': 'Neomake'})
-endfunction
-
-function! HighlightsNeomake() abort
-  hi NeomakeErrorSign    gui=bold guifg=#e6645f ctermfg=167
-  hi NeomakeWarningSign  gui=bold guifg=#b1b14d ctermfg=143
-  hi NeomakeInfoSign     gui=bold guifg=#3e6e9e ctermfg=75
-  hi NeomakeMessageSign  gui=bold guifg=LightGreen ctermfg=75
-endfunction
-call RegisterHighlights('HighlightsNeomake')
-
-" General hook/callback on starting and finishing jobs {
-function! s:OnNeomakeJobStart()
-  " what will we do?
-  let l:context = g:neomake_hook_context
-  let g:neomake_job_status[l:context.jobinfo.make_id] = l:context.jobinfo
-endfunction
-
-function! s:OnNeomakeJobFinished()
-  let l:context = g:neomake_hook_context
-  let l:job = l:context.jobinfo
-  let l:exit_code = l:job['exit_code']
-
-  " Remove the job from the statusline after 2 seconds
-  if !exists('*timer_start')
-    silent! unlet g:neomake_job_status[l:context.jobinfo.make_id]
-  else
-    call timer_start(2000, { -> execute(printf(
-          \"silent! unlet g:neomake_job_status[%d]", l:context.jobinfo.make_id)) })
-  endif
-
-  let l:bufnr = l:context.jobinfo.bufnr
-  let l:job_title = printf('Neomake: %s', bufname(l:bufnr))
-
-  " If there is any failed job (non-zero exit code), notify it.
-  let l:failure_message = ''
-  if l:exit_code != 0
-    let l:failure_message = printf('%s%s ', l:failure_message, l:job['as_string']())
-  endif
-  if !empty(l:failure_message)  " fail
-    call VimNotify('Job Failed: ' . l:failure_message, 'warn', {'title': l:job_title})
-    copen | wincmd p   " copen, but not move to the quickfix window
-    if !s:is_copen()
-      let b:neomake_auto_copen = 1
-    endif
-  else  " job success
-    if g:neomake_job_notification > 0
-      call VimNotify('Job Finished, Success.', 'info',
-            \ {'title': l:job_title, 'timeout': 1000})
-    endif
-    if get(b:, 'neomake_auto_copen', 0) == 1
-      " if quickfix list is opened automatically by neomake callback,
-      " we should automatically close it upon the success of neomake job.
-      silent cclose
-      let b:neomake_auto_copen = 0
-    endif
-  endif
-endfunction
-
-function! s:is_copen() abort
-  for winnr in range(1, winnr('$'))
-    if getwinvar(winnr, '&syntax') == 'qf'
-      return 1
-    endif
-  endfor
-  return 0
-endfunction
-
-augroup neomake_hooks_common
-  au!
-  autocmd User NeomakeJobInit     call s:OnNeomakeJobStart()
-  autocmd User NeomakeJobFinished call s:OnNeomakeJobFinished()
-augroup END
-
-" }
+" }}}
 
 
 " ---------------------------------------------------------------- }}}

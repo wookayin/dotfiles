@@ -60,7 +60,7 @@ local custom_components = {
     local ret, _ = vim.bo.fileformat:gsub("^unix$", "")
     return ret
   end,
-  -- asyncrun & neomake job status
+  -- asyncrun job status
   asyncrun_status = function()
     local status = table.concat(vim.tbl_values(vim.tbl_map(function(job)
       if job.status == 'running' then return '⏳' end
@@ -71,12 +71,6 @@ local custom_components = {
       return require('config.commands.AutoBuild').icon or ''
     end
     return status
-  end,
-  neomake_status = function()
-    return table.concat(vim.tbl_values(vim.tbl_map(function(job)
-      if job.exit_code == nil then return '⏳' end
-      return (job.exit_code == 0 and '✅' or '❌')
-    end, vim.g.neomake_job_status or {})))
   end,
   vimtex_status = function()
     return _G.vimtex_status ~= nil and _G.vimtex_status() or ''
@@ -121,7 +115,6 @@ function M.setup_lualine()
       },
       lualine_c = {
         custom_components.asyncrun_status,
-        custom_components.neomake_status,
         custom_components.vimtex_status,
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
         { custom_components.lsp_context },
