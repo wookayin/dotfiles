@@ -706,18 +706,18 @@ function! LocListToggle()
   let nr2 = winnr('$')
   if nr == nr2 | lclose | endif
 endfunction
-map  <silent> <leader>L :call LocListToggle()<CR>
+map  <silent> <leader>L <cmd>call LocListToggle()<CR>
 
 " [F4] Next Error [Shift+F4] Previous Error
 nnoremap <F4>   <cmd>cnext<CR>
 nnoremap <S-F4> <cmd>cprevious<CR>
 
 " [F2] save
-imap <F2> <ESC>:w<CR>
-map <F2> <ESC><ESC>:w<CR>
+inoremap <F2> <cmd>stopinsert<CR><cmd>w<CR>
+noremap  <F2> <cmd>w<CR>
 
-" save in the insert mode?
-inoremap <C-S> <ESC>:update<CR>a
+" save in the insert mode like in other editors
+inoremap <C-S> <cmd>update<CR><cmd>redraw<CR>
 
 " Sudo Save (:Wsudo command)
 command! Wsudo w !sudo tee % > /dev/null
@@ -726,7 +726,7 @@ command! Wsudo w !sudo tee % > /dev/null
 " Useful leader key combinations {{{
 
 " <leader><space> : turn off search highlight
-nmap <silent> <leader><space> :noh<CR>
+nmap <silent> <leader><space> <Cmd>noh<CR>
 
 
 " CD: switch to the directory of the current buffer (or project root), per-tab
@@ -846,17 +846,17 @@ noremap <leader>x "*x
 noremap <leader>p "*p
 
 " <leader>w : save
-nnoremap <leader>w :w!<CR>
+nnoremap <leader>w <Cmd>w!<CR>
 
 " <leader>q : quit/close window
-nnoremap <silent> <leader>q :q<CR>
+nnoremap <silent> <leader>q <Cmd>q<CR>
 
 " <leader>S : Strip trailing whitespaces
 command! -nargs=0 Strip call StripTrailingWhitespaces()
-nnoremap <leader>S :Strip<CR>
+nnoremap <leader>S <Cmd>Strip<CR>
 
 " <leader>df : diffthis
-nnoremap <leader>df :diffthis<CR>
+nnoremap <leader>df <Cmd>diffthis<CR>
 
 " Surround a word with quotes, single quotes, parens, brackets, braces, etc.
 "   requires and powered by the plugin surround.vim :-)
