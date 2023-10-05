@@ -48,6 +48,12 @@ function M.setup_compiler_commands()
   vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
     vim.fn['vimtex#compiler#compile']()
   end, { nargs = '?', desc = 'Build with Vimtex' })
+
+  -- <F6> Copen (quickfix)
+  -- <M-F6> VimtexCompileOutput (raw log)
+  -- <F7> VimtexView + forward-search
+  vim.keymap.set({'n', 'i'}, '<M-F6>', '<cmd>VimtexCompileOutput<CR>', { buffer = true })
+  vim.keymap.set({'n', 'i', 'v'}, '<F7>', '<Plug>(vimtex-view)', { remap = true, buffer = true })
 end
 
 -- Bind vimtex's compiler autocmd events, so it can play nicely with other plugins
