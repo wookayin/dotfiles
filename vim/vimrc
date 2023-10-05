@@ -2687,16 +2687,6 @@ let g:echodoc#enable_at_startup = 1
 let g:semshi#error_sign = 0
 
 " ---------------------------------------------------------------- }}}
-" LaTeX {{{
-
-" Moved to ~/.nvim/lua/config/vimtex.lua
-
-augroup VimtexMappings
-  autocmd!
-  autocmd FileType tex nnoremap <buffer> <leader>V :VimtexTocOpen<CR>
-augroup END
-
-" ---------------------------------------------------------------- }}}
 " fugitive {{{
 " See also: config/git.lua
 
