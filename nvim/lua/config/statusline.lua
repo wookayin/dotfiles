@@ -63,21 +63,25 @@ local custom_components = {
   -- asyncrun job status
   asyncrun_status = function()
     local status = table.concat(vim.tbl_values(vim.tbl_map(function(job)
-      if job.status == 'running' then return '⏳' end
-      return (job.status == 'success' and '✅' or '❌')
-    end, vim.g.asyncrun_job_status or {})))
+      return job and ({
+        running = '⏳',
+        success = '✅',
+        failed = '❌',
+      })[job.status] or ''
+    end, vim.tbl_extend('keep',
+      vim.g.asyncrun_job_status or {},
+      { ['vimtex'] = _G.vimtex_jobs },
+      {}
+    ))))
     -- Display whether :AutoBuild is enabled
     if status == '' and require('config.commands.AutoBuild').is_enabled() then
       return require('config.commands.AutoBuild').icon or ''
     end
     return status
   end,
-  vimtex_status = function()
-    return _G.vimtex_status ~= nil and _G.vimtex_status() or ''
-  end,
   -- LSP status, with some trim
   lsp_status = function()
-    return LspStatus()
+    return _G.LspStatus()
   end,
   -- context (https://github.com/SmiteshP/nvim-navic)
   lsp_context = function()
@@ -115,7 +119,6 @@ function M.setup_lualine()
       },
       lualine_c = {
         custom_components.asyncrun_status,
-        custom_components.vimtex_status,
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
         { custom_components.lsp_context },
       },
