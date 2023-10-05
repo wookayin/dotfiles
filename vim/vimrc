@@ -728,16 +728,6 @@ command! Wsudo w !sudo tee % > /dev/null
 " <leader><space> : turn off search highlight
 nmap <silent> <leader><space> :noh<CR>
 
-" Plugin ag.vim
-" <leader>ag (or rg): Ag (search file contents)
-nnoremap <leader>ag           :Ag! -i ""<Left>
-xnoremap <silent> <leader>ag  y:Ag <C-R>"<CR>
-
-if executable('rg')
-  " Use ripgrep instead :)
-  let g:ag_prg = 'rg --no-heading --vimgrep'
-endif
-
 
 " CD: switch to the directory of the current buffer (or project root), per-tab
 function! CD_to(dir)
