@@ -1,4 +1,5 @@
 -- Miscellaneous utility plugins (cmds, etc.)
+---@diagnostic disable: missing-fields
 
 local Plug = require('utils.plug_utils').Plug
 local PlugConfig = require('utils.plug_utils').PlugConfig
@@ -27,6 +28,10 @@ return {
   Plug 'tpope/vim-tbone' { cmd = 'Tmux' };
 
   -- Misc
+  Plug 'lewis6991/hover.nvim' {
+    config = require("config.utilities").setup_hover,
+    keys = { { "K", "<cmd>lua require('hover').hover()<CR>" } },
+  };
   Plug 'tpope/vim-commentary' { init = PlugConfig, event = 'VeryLazy' };
   Plug 'szw/vim-maximizer' { cmd = 'MaximizerToggle' };
   Plug 'tpope/vim-eunuch' { event = 'CmdlineEnter', init = function() vim.g.eunuch_no_maps = true; end };
