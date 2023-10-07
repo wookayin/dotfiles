@@ -1,4 +1,5 @@
 " additional and custom syntax for python codes
+" (NO LONGER USED; use treesitter highlighting for python)
 " currently, this customization dependes on 'python-mode' and 'vim-python-enhanced-syntax'
 
 " class definition: brighter blui-sh color
