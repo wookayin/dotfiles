@@ -387,8 +387,8 @@ nnoremap <leader>:  :
 
 nnoremap <Space> :
 
-inoremap <silent> <C-k> <ESC>:update<CR>
-nnoremap <silent> <leader>e   :<C-u>e<CR>zR
+inoremap <silent> <C-k>       <Cmd>stopinsert<CR><Cmd>update<CR>
+nnoremap          <leader>e   <Cmd>e<CR>zR
 
 nnoremap Q <Nop>
 nnoremap QQ ZQ
@@ -447,10 +447,10 @@ let g:tmux_navigator_no_mappings = 1
 let g:PlugConfig['vim-tmux-navigator'] = 's:init_tmux_navigator'
 function! s:init_tmux_navigator() abort
   if !empty($TMUX)
-    nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
-    nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
-    nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
-    nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
+    nnoremap <silent> <c-h> <Cmd>TmuxNavigateLeft<cr>
+    nnoremap <silent> <c-j> <Cmd>TmuxNavigateDown<cr>
+    nnoremap <silent> <c-k> <Cmd>TmuxNavigateUp<cr>
+    nnoremap <silent> <c-l> <Cmd>TmuxNavigateRight<cr>
   endif
 endfunction
 
@@ -471,7 +471,7 @@ endif
 
 
 " zoom and unzoom (like tmux) -- by 'vim-maximizer'
-nnoremap <C-w>z :MaximizerToggle<CR>
+nnoremap <C-w>z  <Cmd>MaximizerToggle<CR>
 let g:maximizer_set_default_mapping = 0         " do not map <F3>
 
 " well...?
@@ -554,29 +554,29 @@ nnoremap gf  gF
 nnoremap ]f  gF
 
 " Buffer navigations
-nnoremap [b  :bprevious<CR>
-nnoremap ]b  :bnext<CR>
+nnoremap [b  <Cmd>bprevious<CR>
+nnoremap ]b  <Cmd>bnext<CR>
 if has('nvim')
-  nnoremap <silent> [b <C-\><C-n>:bprevious<CR>
-  nnoremap <silent> ]b <C-\><C-n>:bnext<CR>
+  nnoremap <silent> [b <Cmd>bprevious<CR>
+  nnoremap <silent> ]b <Cmd>bnext<CR>
 endif
 
 " Tab navigations
-nnoremap <silent> [t  :tabprevious<CR>
-nnoremap <silent> ]t  :tabnext<CR>
+nnoremap <silent> [t  <Cmd>tabprevious<CR>
+nnoremap <silent> ]t  <Cmd>tabnext<CR>
 if has('nvim')
-  tnoremap <silent> [t <C-\><C-n>:tabprevious<CR>
-  tnoremap <silent> ]t <C-\><C-n>:tabnext<CR>
+  tnoremap <silent> [t <Cmd>tabprevious<CR>
+  tnoremap <silent> ]t <Cmd>tabnext<CR>
 endif
 
-nnoremap <C-t>        <cmd>tabnew<CR>
-nnoremap <leader>tt   <cmd>Tsplit<CR>
+nnoremap <C-t>        <Cmd>tabnew<CR>
+nnoremap <leader>tt   <Cmd>Tsplit<CR>
 
-nnoremap <silent>   <C-S-tab> :tabprevious<CR>
-nnoremap <silent>   <C-tab>   :tabnext<CR>
+nnoremap <silent>   <C-S-tab> <Cmd>tabprevious<CR>
+nnoremap <silent>   <C-tab>   <Cmd>tabnext<CR>
 if has('nvim')
-  tnoremap <silent> <C-S-tab> <C-\><C-n>:tabprevious<CR>
-  tnoremap <silent> <C-tab>   <C-\><C-n>:tabnext<CR>
+  tnoremap <silent> <C-S-tab> <Cmd>tabprevious<CR>
+  tnoremap <silent> <C-tab>   <Cmd>tabnext<CR>
 endif
 
 " Handy tab navigations: <Alt-num>
@@ -596,8 +596,8 @@ vnoremap < <gv
 vnoremap > >gv
 
 " Locations
-nnoremap [l :lprevious<CR>
-nnoremap ]l :lnext<CR>
+nnoremap [l  <Cmd>lprevious<CR>
+nnoremap ]l  <Cmd>lnext<CR>
 
 " ------------------
 " Make and Build {{{
@@ -675,9 +675,9 @@ command! -nargs=0 SourceThis   source % | call VimNotify("Sourced " . bufname('%
 " ---------------------------------------
 
 " <F6>   :Output       => Show the output or build status window (quickfix, terminal, etc.)
-map               <F6>   <cmd>Output<CR>
-imap              <F6>   :Copen
-nnoremap <silent> <C-Q>  :call QuickfixToggle()<CR>
+map               <F6>   <Cmd>Output<CR>
+imap              <F6>   <Cmd>Output<CR>
+nnoremap <silent> <C-Q>  <Cmd>call QuickfixToggle()<CR>
 
 " By default, :Output opens or closes the quickfix (copen) window
 " filetype plugin or individual buffers may override the command :Output (or :COpen)
@@ -1360,7 +1360,7 @@ function! ShowSyntaxGroup() abort
         \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 endfunction
 
-noremap <leader>syn :call ShowSyntaxGroup()<cr>
+noremap <leader>syn  <Cmd>call ShowSyntaxGroup()<cr>
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
