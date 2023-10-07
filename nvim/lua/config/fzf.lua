@@ -163,7 +163,14 @@ function M.setup_fzf()
   --               e.g., :Grep \b(foo|bar)\b => search word either "foo" or "bar"
   -- :LiveGrep  => grep with <as-you-type> (CTRL-G). Uses "regex mode"
   -- fzf-lua grep uses rg internally
-  command("Grep", { nargs = "+", bang = true, desc = "FzfLua grep" }, function(e)
+  command("Grep", { nargs = "*", bang = true, desc = "FzfLua grep" }, function(e)
+    if e.args == "" then  -- no args were given, prompt and ask
+      return vim.ui.input({ prompt = "Grep string ❯ ", relative = "editor" }, function(input)
+        if input == nil or input == "" then return end
+        vim.schedule_wrap(vim.cmd.Grep)(input)
+      end)
+    end
+
     local args = vim.trim(e.args:gsub('\n', ''))
     local should_escape = not e.bang  ---@type boolean
     fzf.grep(vim.tbl_extend("error", {
