@@ -25,5 +25,12 @@ return {
         mode_labels = 'all',
       }
     end,
+    config = function()
+      require("utils.rc_utils").RegisterHighlights(function()
+        vim.api.nvim_set_hl(0, 'XTNum',    { bg = 'black',   fg='white', })
+        vim.api.nvim_set_hl(0, 'XTNumSel', { bg = '#1f1f3d', fg='white', bold = true })
+        vim.api.nvim_set_hl(0, 'XTCorner', { link = 'Special' })
+      end)
+    end,
   };
 }

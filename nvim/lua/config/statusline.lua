@@ -159,7 +159,7 @@ function M.setup_winbar()
   local winbar_config = {
     sections = {
       lualine_w = {
-        { 'vim.fn.winnr()', color = { fg = 'white', bg = '#37b24d' } },
+        { 'vim.fn.winnr()', color = 'TabLineSel' },
         { 'filename', path = 1, color = { fg = '#c92a2a', bg = '#eeeeee', gui = 'bold' } },
         'diagnostics',
         { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
