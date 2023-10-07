@@ -54,7 +54,7 @@ function M.setup_neotree()
       },
     },
 
-    -- Layout (see #130)
+    -- Layout (see nvim-neo-tree/neo-tree.nvim#130)
     default_component_configs = {
       indent = {
         with_markers = true,

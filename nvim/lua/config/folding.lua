@@ -8,7 +8,7 @@ local ufo
 M.setup_ufo = function()
   ufo = require('ufo')
 
-  -- This is required by nvim-ufo (see #30, #57)
+  -- This is required by nvim-ufo (see kevinhwang91/nvim-ufo#30, kevinhwang91/nvim-ufo#57)
   -- otherwise folds will be unwantedly open/closed when nvim-ufo is in action
   vim.o.foldlevel = 99
   vim.o.foldlevelstart = 99
@@ -151,7 +151,7 @@ end
 
 M.enable_ufo_fold = function()
   vim.wo.foldenable = true
-  vim.wo.foldlevel = 99   -- sometimes get lost. Ensure to be 99 at all times (see #89)
+  vim.wo.foldlevel = 99   -- sometimes get lost. Ensure to be 99 at all times (see kevinhwang91/nvim-ufo#89)
   M.attach_ufo_if_necessary()  -- some buffers may not have been attached
   ufo.enableFold()   -- setlocal foldenable
 end

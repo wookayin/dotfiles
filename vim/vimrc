@@ -274,7 +274,7 @@ endif
 set visualbell
 
 " lazyredraw: no redrawing during macro execution
-" This should NOT be set during startup if < 0.9.1, see neovim#23534
+" This should NOT be set during startup if < 0.9.1, see neovim/neovim#23534
 if has('nvim')
   lua vim.defer_fn(function() vim.opt.lazyredraw = true; end, 0)
 else  " vanilla vim
@@ -304,7 +304,7 @@ try
   if has('patch-8.1.0360') || has('nvim')
     set diffopt+=internal,algorithm:patience
   endif
-  " Enhance diff result by line matching algorithm (neovim#14537)
+  " Enhance diff result by line matching algorithm (neovim/neovim#14537)
   if has('nvim-0.9.0')
     set diffopt+=linematch:60
   endif
@@ -544,7 +544,7 @@ if has('nvim')
   tmap <silent> <C-e> <C-\><C-n><C-e>
   tmap <silent> <C-y> <C-\><C-n><C-y>
 
-  " Ctrl-/ requires key remapping (neovim 0.8.0, see #18735)
+  " Ctrl-/ requires key remapping (neovim 0.8.0, see neovim/neovim#18735)
   tmap <c-/> <c-_>
 endif
 
@@ -1843,7 +1843,7 @@ call RegisterHighlights('HighlightsErrormarker')
 " If floating window is not available, use 33%-bottom layout
 let g:fzf_layout = { 'down' : '~33%' }
 
-" vim 8.2+: popup window (fzf.vim#821)
+" vim 8.2+: popup window (junegunn/fzf.vim#821)
 if !has('nvim') && has('patch-8.2.194')
   let g:fzf_layout = { 'window' : { 'width': 0.9, 'height': 0.6 } }
   call extend(g:fzf_layout['window'], { 'border': 'sharp', 'highlight': 'FZFFloatBorder' })
@@ -2560,10 +2560,10 @@ endfunction
 " ---------------------------------------------------------------- }}}
 " nvim-scrollview {{{
 
-" Make the scrollbar aware of foldings (see #11).
+" Make the scrollbar aware of foldings (see dstein64/nvim-scrollview#11).
 let g:scrollview_mode = 'virtual'
 
-" Do not use signs, it looks a bit messy without proper configs (see #85).
+" Do not use signs, it looks a bit messy without proper configs (see dstein64/nvim-scrollview#85).
 let g:scrollview_signs_on_startup = ['']
 
 " Disable scrollbar on some filetypes
@@ -2824,7 +2824,7 @@ endfunction
 " git-messenger {{{
 
 " map <C-O>/<C-I> to jumping to older and Older(recent) commits,
-" respectively (see git-messenger#3)
+" respectively (see rhysd/git-messenger.vim#3)
 augroup git_messenger_autocmd
   autocmd!
   autocmd FileType gitmessengerpopup nmap <buffer> <C-O> o

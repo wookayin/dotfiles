@@ -94,7 +94,7 @@ function M.setup_fzf()
     fzf_opts = {
       ["--info"] = FZF_VERSION >= 0.42 and "inline-right" or nil,
     },
-    copen = "horizontal copen", -- see #712
+    copen = "horizontal copen", -- see ibhagwan/fzf-lua#712
   }
 
   do -- git format and actions customization

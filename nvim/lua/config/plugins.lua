@@ -41,7 +41,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Disable lazy clean by monkey-patching. (see #762)
+-- Disable lazy clean by monkey-patching. (see folke/lazy.nvim#762)
 require("lazy.manage").clean = function(opts)
   print("[lazy.nvim] Clean operation is disabled. args = " .. ((opts.plugin or {}).dir or '') .. '\n')
   return require("lazy.manage").run({ pipeline = {} })

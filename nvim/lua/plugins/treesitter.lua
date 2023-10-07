@@ -13,7 +13,7 @@ if has('nvim-0.10') then
   treesitter_version = nil  -- Use the 'master' branch (0.x versions); not 'main' (1.x)
 elseif has('nvim-0.9.1') then
   -- for neovim 0.8 and 0.9, need to pin at v0.9.1 otherwise it will not work on master
-  -- Use the latest stable version, see #5234
+  -- Use the latest stable version, see nvim-treesitter/nvim-treesitter#5234
   treesitter_version = 'v0.9.1'
 end
 
