@@ -134,6 +134,10 @@ if exists('##TermOpen')
   augroup end
 endif
 
+if has('nvim')
+  set signcolumn=yes:1
+endif
+
 " search
 set ignorecase              " case-insensitive by default
 set smartcase               " case-sensitive if keyword contains both uppercase and lowercase
