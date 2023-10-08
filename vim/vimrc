@@ -130,7 +130,7 @@ endif
 if exists('##TermOpen')
   augroup TermSignColumn
     autocmd!
-    autocmd TermOpen           * set signcolumn=no
+    autocmd TermOpen           * setlocal signcolumn=no
   augroup end
 endif
 
