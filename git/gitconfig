@@ -1,11 +1,6 @@
 # vim: set ft=gitconfig noet:
 # @seealso https://www.kernel.org/pub/software/scm/git/docs/git-config.html
 
-[include]
-	# include external gitconfig file (requires git 1.7.10+)
-	# typically, user.name and user.email is configured.
-	path = ~/.gitconfig.secret
-
 [core]
 	excludesfile = ~/.gitignore
 	pager = "(diff-so-fancy 2>/dev/null || cat) | less --tabs=4 -RFX"
@@ -158,3 +153,8 @@
 	# Enable HTTP(S) auth credential caching
 	# for 60 seconds (requires git 1.7.9+)
 	helper = cache --timeout 60
+
+[include]
+	# include external gitconfig file (requires git 1.7.10+)
+	# typically, user.name and user.email is configured.
+	path = ~/.gitconfig.secret
