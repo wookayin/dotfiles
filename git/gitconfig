@@ -26,7 +26,7 @@
 [alias]
 	history = log --graph --decorate \
 		--pretty=format:'%C(yellow)%h%Creset  %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
-		--abbrev-commit --date=short --author-date-order
+		--abbrev-commit --date=short --date-order
 
 	partial-clone = clone --filter=blob:none
 
