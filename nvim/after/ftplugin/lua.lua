@@ -28,7 +28,7 @@ end
 
 -- Auto-reload hammerspoon config when applicable.
 -- ~/.hammerspoon/init.lua or ~/.dotfiles/hammerspoon/init.lua
-if vim.fn.has('mac') > 0 and string.match(vim.fn.expand("%:p"), "hammerspoon/init%.lua$") then
+if vim.fn.has('mac') > 0 and string.match(vim.fn.expand("%:p"), "/hammerspoon/.*%.lua$") then
   vim.api.nvim_create_autocmd('BufWritePost', {
     buffer = vim.fn.bufnr(),
     group = vim.api.nvim_create_augroup('HammerspoonAutoreload', { clear = false }),
