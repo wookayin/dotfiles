@@ -202,9 +202,11 @@ endtry
 set wildignore=*.swp,*.swo,*.class,*.pyc,__pycache__,
 
 " status line
-" Neovim(0.8+): lualine will override with laststatus=3,
+" Neovim(0.8+): lualine will override with laststatus=3
 " see ~/.config/nvim/lua/config/statusline.lua
-set laststatus=2            " show anytime (legacy vim behavior)
+if !has('nvim')
+  set laststatus=2            " show anytime (legacy vim behavior)
+endif
 
 set noshowmode              " don't display mode, e.g. '-- INSERT --'
 set showcmd
