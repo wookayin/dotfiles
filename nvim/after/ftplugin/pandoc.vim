@@ -36,7 +36,7 @@ nnoremap <leader>5 m`^i##### <esc>``6l
 
 " GFM markdown preview using grip
 " (pip install grip)
-command! -buffer   Grip Dispatch grip "%" 0.0.0.0
+command! -buffer   Grip AsyncRun grip "%" 0.0.0.0
 
 " vim-emoji
 if has_key(g:plugs, 'vim-emoji')
