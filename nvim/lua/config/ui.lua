@@ -41,7 +41,7 @@ function M.setup_notify()
       })[level] or 'Normal'
       vim.api.nvim_echo({{ msg, hlgroup }}, true, {})
     end
-    require("notify")(msg, level, opts, ...)
+    return require("notify")(msg, level, opts, ...)
   end
 end
 
