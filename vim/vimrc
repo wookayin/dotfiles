@@ -688,15 +688,10 @@ nnoremap <silent> <C-Q>  <Cmd>call QuickfixToggle()<CR>
 " By default, :Output opens or closes the quickfix (copen) window
 " filetype plugin or individual buffers may override the command :Output (or :COpen)
 command! -nargs=0 -bar  Output          QuickfixToggle
-command! -nargs=0 -bar  QuickfixToggle  call QuickfixToggle()
+if !has('nvim')
+  command! -nargs=0 -bar  Output        botright copen
+endif
 
-function! QuickfixToggle() abort
-  let nr = winnr('$')
-  :Copen
-  cbottom   " scroll the quickfix window to the last line
-  let nr2 = winnr('$')
-  if nr == nr2 | cclose | endif
-endfunction
 
 " <leader><F6>: copen in the vertical
 nnoremap <silent> <leader><F6>   <cmd>CopenVertical<CR>
@@ -1746,17 +1741,6 @@ function! AsyncMake(qarg) abort
 endfunction
 call CommandAlias('R', 'AsyncRun')
 
-" Copen. Do not steal the cursor.
-command! -bar -count=9 Copen   call s:quickfix_toggle(<count>)
-function! s:quickfix_toggle(count) abort
-  if has('nvim') && get(nvim_win_get_config(0), 'relative', '') != ''
-    " floating window: run the built-in copen because asyncrun is buggy
-    call timer_start(0, { -> execute(printf('copen %d', a:count)) })
-  else
-    " normal window: use quickfix_toggle()
-    call asyncrun#quickfix_toggle(a:count, v:true)
-  endif
-endfunction
 
 " Alias :Run => :AsyncRun
 call CommandAlias('Run', 'AsyncRun', v:true)
@@ -1790,8 +1774,8 @@ function! OnAsyncRunJobFinished() abort
     call VimNotify('Job Failed: ' . l:failure_message, 'warn', {'title': l:job_title})
 
     " Automatically show quickfix window if the job has failed.
-    " open the qf window at the bottom (regardless of overriden :Copen)
-    call asyncrun#quickfix_toggle(9, v:true) | cbottom
+    " open the qf window at the bottom and scroll all the way down
+    Copen | cbottom
   endif
 
   " Statusline integration
