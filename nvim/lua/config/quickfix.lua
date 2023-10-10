@@ -83,7 +83,11 @@ function M.open_quickfix(opts)
 
   local current_win = vim.api.nvim_get_current_win()
   vim.cmd(([[ %s %scopen %s ]]):format(opts.mods, opts.count, opts.height or ''))
-  vim.api.nvim_set_current_win(current_win)
+
+  -- Move back to the previous window, so that the cursor is not stolen by quickfix
+  if vim.api.nvim_win_is_valid(current_win) then
+    vim.api.nvim_set_current_win(current_win)
+  end
 end
 -- :Copen, :[modifier] [count]Copen [height]
 vim.api.nvim_create_user_command('Copen', function(e)
