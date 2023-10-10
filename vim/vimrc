@@ -501,6 +501,15 @@ endfunction
 " or close (the narrow one) when fold is open at the cursor.
 nnoremap <expr>  z<space>   foldclosed(line(".")) >= 0 ? "zO" : "zc"
 
+function! s:safe_expand(arg) abort
+  " When verbose is set, expand("<amatch>"), etc. will throw errors.
+  " See vim-patch:8.2.4740 (or neovim a9e6cf0e)
+  try
+    return expand(a:arg)
+  catch   " E495, E496, E497, E498, E1274, etc.
+    return ''
+  endtry
+endfunction
 
 " in terminal mode (neovim)
 if has('nvim')
@@ -513,7 +522,16 @@ if has('nvim')
   " Automatically enter insert mode when entering neovim terminal buffer
   augroup terminal_autoinsert
     autocmd!
-    autocmd WinEnter *  if &buftype == 'terminal' | startinsert | endif
+    " There is a bug (or just a strange behavior?) of neovim where buffer options
+    " (e.g. &buftype) gets updated late on WinEnter autocmds.
+    " When a new window is opened, the new buffer that will be opened in the
+    " new window will take effect *after* the WinEnter autocmd.
+    " The actual buffer would not yet have been loaded at the time when
+    " autocmd WinEnter events are being executed. As a result, the new window
+    " will enter the insert mode even if it's not having a terminal buffer.
+    " One known solution is to check if <amatch> is empty.
+    " Credit: https://vi.stackexchange.com/questions/15966/strange-behaviour-of-autocmd
+    autocmd WinEnter *  if !empty(s:safe_expand('<amatch>')) && (&buftype == 'terminal') | startinsert | endif
     autocmd TermOpen *  if nvim_buf_get_name(0) =~# '^term://' | startinsert | endif
 
     " mouse click puts into normal mode even in terminal; disable this
