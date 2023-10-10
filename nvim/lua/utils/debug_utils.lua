@@ -1,11 +1,11 @@
+-- vim(utils): Helper functions for debugging neovim & lua.
 local M = {}
 
--- Set log level to DEBUG when this module is used.
--- Defer execution because notify.setup {} might be called after init
-vim.schedule(function()
-  ---@diagnostic disable-next-line: missing-fields
-  require("notify").setup { level = 'DEBUG' }
-end)
+-- Use a separate nvim-notify instance with the log level "DEBUG"
+-- (other than global vim.notify instance)
+---@diagnostic disable: missing-fields
+local notify = require("notify").instance({ level = "DEBUG" })
+---@diagnostic enable: missing-fields
 
 -- Inspect a lua object and display through vim.notify and :Message.
 function M.inspect(obj, opts)
@@ -14,13 +14,13 @@ function M.inspect(obj, opts)
     title = vim.split(debug.traceback(), '\n')[3],
     timeout = 10000,
   })
-  vim.notify(repr, vim.log.levels.DEBUG, opts)
+  notify(repr, vim.log.levels.DEBUG, opts)
   return repr
 end
 
 function M.notify_traceback()
   -- Strip this stack frame itself
-  vim.notify(vim.trim(debug.traceback("", 2)),
+  notify(vim.trim(debug.traceback("", 2)),
     vim.log.levels.DEBUG, { title = 'DEBUG (traceback)' })
 end
 
