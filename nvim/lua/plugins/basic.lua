@@ -8,7 +8,15 @@ return {
 
   Plug 'tweekmonster/helpful.vim' {
     cmd = 'HelpfulVersion',
+    func = 'helpful#*',
+    init = function()
+      pcall(vim.fn.CommandAlias, "HV", "HelpfulVersion")
+    end,
+    config = function()
+      vim.keymap.set({'n', 'v'}, '<leader>hv', '<Cmd>echon ""<CR><Cmd>call helpful#cursor_word()<CR>')
+    end,
   };
+
   Plug 'dstein64/vim-startuptime' {
     cmd = 'StartupTime',
   };
