@@ -5,14 +5,6 @@
 " cpp-specific Keymaps
 " ====================
 
-" Show <Quickfix List> buffer at the right splitted vertically
-command! -count=60 -buffer Copen   call s:Copen(<count>)
-function! s:Copen(count) abort
-    cclose
-    exec printf('vertical %dcopen', a:count)
-    wincmd h
-endfunction
-
 " Automatic makeprg generation (regarding %:r.in, %r.ans)
 if !filereadable('Makefile')
     let b:sourcefile = expand("%")

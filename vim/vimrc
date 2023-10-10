@@ -692,16 +692,11 @@ if !has('nvim')
   command! -nargs=0 -bar  Output        botright copen
 endif
 
+" <leader><F6>: Copen no matter what  (note: <F6> might be overridden, e.g. neotest)
+nnoremap <silent> <leader><F6>   <cmd>Copen<CR>
 
-" <leader><F6>: copen in the vertical
-nnoremap <silent> <leader><F6>   <cmd>CopenVertical<CR>
-command! CopenVertical   call s:copen_vertical()
-function! s:copen_vertical() abort
-  cclose
-  vertical copen 80
-  cbottom
-  wincmd p
-endfunction
+" <Alt-F6>: Copen vertically
+nnoremap <silent> <M-F6>   <cmd>cclose<CR><cmd>vertical Copen 80<CR>
 
 " <leader>L: show/close location list window
 function! LocListToggle()
