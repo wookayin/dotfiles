@@ -1379,8 +1379,13 @@ noremap <leader>syn  <Cmd>call ShowSyntaxGroup()<cr>
 " 5. GUI Options {{{
 """""""""""""""""""""""""""""""""""""""""
 
-" gui settings
+" GUI settings
 if has('gui_running')
+  " GUI apps usually have a default CWD set to $HOME or '/'.
+  " Prevent scanning the entire home directory, move to DOTFILES.
+  if v:vim_did_enter == 0 && (getcwd() == expand('$HOME') || getcwd() == '/')
+    cd $HOME/.dotfiles
+  endif
 
   if has('unix')
     let s:uname = substitute(system('uname -s'), '\n', '', '')
