@@ -195,6 +195,14 @@ end
 function M.setup()
   M.setup_ufo()
   M.setup_folding_keymaps()
+
+  -- Workaround for neovim/neovim#20726: Ctrl-C on terminal can make neovim hang
+  vim.cmd [[
+    augroup terminal_disable_fold
+      autocmd!
+      autocmd TermOpen * setlocal foldmethod=manual
+    augroup END
+  ]]
 end
 
 -- Resourcing support
