@@ -116,6 +116,7 @@ endif
 set showtabline=2           " always show tab pannel
 
 set scrolloff=3
+set sidescrolloff=3
 
 if exists('##TermEnter')
   " Disable scrolloff in terminal buffers (to avoid flickering)
