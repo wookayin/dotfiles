@@ -118,19 +118,11 @@ set showtabline=2           " always show tab pannel
 set scrolloff=3
 set sidescrolloff=3
 
-if exists('##TermEnter')
-  " Disable scrolloff in terminal buffers (to avoid flickering)
-  " Note: scrolloff is a global option until neovim 0.5 (neovim/neovim#11915)
+if has('nvim')
   augroup TermScrollFix
     autocmd!
+    " Disable scrolloff in terminal buffers (to avoid flickering, see neovim/neovim#11915)
     autocmd TermOpen,TermEnter * setlocal scrolloff=0
-    autocmd TermLeave          * setlocal scrolloff=3        " workaround for nvim<0.5
-  augroup end
-endif
-
-if exists('##TermOpen')
-  augroup TermSignColumn
-    autocmd!
     autocmd TermOpen           * setlocal signcolumn=no
   augroup end
 endif
