@@ -27,24 +27,24 @@ endsnippet
 # ------------------
 
 # Lua Debugging
-snippet p
-print(vim.inspect(${1}))
+snippet p "vim.print(...) with automatic vim.inspect"
+vim.print(${1}) -- XXX DEBUG
 endsnippet
 snippet i  "vim.notify + vim.inspect for debugging"
-require('utils.debug_utils').inspect({ ["$1"] = ${1:obj}$0 })
+require("utils.debug_utils").inspect({ $1 }) -- XXX DEBUG
 endsnippet
 snippet inspect
 vim.inspect(${1})
 endsnippet
 snippet notify
-vim.notify('${1:message}', vim.log.levels.${3:INFO}, {title = '${2:Title}'})
+vim.notify(${1:"message"}, vim.log.levels.${3:INFO}, { title = "${2:Title}" })
 endsnippet
 snippet ptrace  "print traceback"
-print(debug.traceback())
+print(debug.traceback()) -- XXX DEBUG
 $0
 endsnippet
 snippet trace  "vim.notify + traceback"
-require('utils.debug_utils').notify_traceback()
+require("utils.debug_utils").notify_traceback() -- XXX DEBUG
 $0
 endsnippet
 snippet reload
