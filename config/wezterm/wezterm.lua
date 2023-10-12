@@ -40,7 +40,7 @@ function M.setup_fonts()
     'Apple Color Emoji'  -- Use macOS emoji, not Noto Color Emoji
   }
   config.cell_width = 0.85
-  config.line_height = 0.85
+  config.line_height = 0.89
   config.font_size = 18
   -- No ligatures
   config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
