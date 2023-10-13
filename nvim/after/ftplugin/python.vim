@@ -142,6 +142,8 @@ if s:is_test_file && s:pcall_require('neotest')
 
   nnoremap <buffer>    <leader>T   <cmd>NeotestSummary<CR>
 
+elseif filereadable('Makefile')
+
 elseif exists('g:loaded_floaterm')
   let s:ftname = 'makepython'
   function! MakeInTerminal() abort
