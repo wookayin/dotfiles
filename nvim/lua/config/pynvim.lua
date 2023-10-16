@@ -193,6 +193,7 @@ end
 vim.fn.py3eval("1")  -- TODO: Remove this workaround once pynvim 0.5 is out.
 
 if vim.fn.py3eval("1") ~= 1 then
+  -- python3 host has failed to load.
   python3_version_check()
 
   -- pynvim is missing, try installing it
@@ -201,17 +202,21 @@ if vim.fn.py3eval("1") ~= 1 then
     vim.notify(msg, vim.log.levels.ERROR)
   end))
 
-  do  -- Disable autocmds from already-generated rplugins manifest, which will emit annoying errors
-      -- see $VIMRUNTIME/autoload/remote/define.vim
-    vim.cmd [[
-      function! remote#define#AutocmdBootstrap(...)
-      endfunction
-      function! remote#define#FunctionBootstrap(...)
-      endfunction
-      function! remote#define#CommandBootstrap(...)
-      endfunction
-    ]]
-  end
+  -- Disable autocmds from already-generated rplugins manifest,
+  -- which will emit annoying errors on CmdlineEnter, VimLeave, etc.
+  vim.schedule(function()
+    xpcall(function()
+      local groups = vim.fn.split(vim.fn.execute('augroup'))
+      for _, augroup in ipairs(groups) do
+        if vim.startswith(augroup, "RPC_DEFINE_AUTOCMD_GROUP_") then
+          vim.cmd(([[ autocmd! %s ]]):format(augroup))
+        end
+      end
+    end, function(err)
+      local msg = err -- no need stacktrace here
+      vim.api.nvim_err_writeln(msg)
+    end)
+  end)
 
   -- Still need to disable python3 provider, it's already broken
   vim.g.loaded_python3_provider = 1  -- Disable has('python3')
