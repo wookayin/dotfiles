@@ -28,7 +28,8 @@ end
 
 function M.setup_fzf()
   local defaults = require('fzf-lua.defaults').defaults
-  local FZF_VERSION = require('fzf-lua.utils').fzf_version({})
+  local FZF_VERSION = require("fzf-lua.utils").fzf_version({}) or 0.0  ---@type float
+  local GIT_VERSION = require("fzf-lua.utils").git_version() or 0.0  ---@type float
 
   -- fzf-lua.setup(opts)
   local global_opts = {
@@ -230,7 +231,10 @@ function M.setup_fzf()
     local opts = { cwd = empty_then_nil(e.args) }
     if e.bang then  -- GFiles!: include untracked files as well
       opts.prompt = "GitFiles!❯ "
-      opts.cmd = "git ls-files --exclude-standard --cached --modified --others --deduplicate"
+      opts.cmd = "git ls-files --exclude-standard --cached --modified --others "
+      if GIT_VERSION >= 2.31 then
+        opts.cmd = opts.cmd .. "--deduplicate "
+      end
     end
     -- Note: Unlike junegunn's GitFiles, it no longer accepts CLI flag. Use Lua API instead
     fzf.git_files(opts)
