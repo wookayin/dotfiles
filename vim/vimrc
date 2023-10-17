@@ -1721,8 +1721,9 @@ let g:airline#extensions#neomake#enabled = 0
 " See ~/.dotfiles/nvim/lua/config/quickfix.lua
 
 " ---------------------------------------------------------------- }}}
-" asyncrun.vim {{{
+" asyncrun.vim (Deprecated in favor of asyncrun.nvim) {{{
 " see ~/.vim/after/syntax/qf.vim for color + highlights
+" see $DOTVIM/lua/config/build.lua
 
 " Note that asyncrun.vim allows only one job running at a time.
 " For multiple job dispatch, we may need more advanced plugins.
@@ -1756,24 +1757,32 @@ call CommandAlias('R', 'AsyncRun')
 " Alias :Run => :AsyncRun
 call CommandAlias('Run', 'AsyncRun', v:true)
 
-" asyncrun autocmd events: notification callback when job finishes
+" legacy asyncrun.vim autocmd events: notification callback when job finishes
 augroup AsyncRunEvents
   autocmd!
-  autocmd User AsyncRunStart  call OnAsyncRunJobStart()
-  autocmd User AsyncRunStop   call OnAsyncRunJobFinished()
+  autocmd User AsyncRunStart  call OnAsyncRunJobStart(v:null)
+  autocmd User AsyncRunStop   call OnAsyncRunJobFinished(v:null)
 augroup END
 
 let g:asyncrun_job_status = {}
-function! OnAsyncRunJobStart() abort
-  let l:jobid = 3000   " asyncrun supports only ONE concurrent job
+function! OnAsyncRunJobStart(job) abort
+  if !empty(a:job)
+    let l:cmdline = a:job.cmdline
+  else
+    let l:cmdline = g:asyncrun_info   " legacy asyncrun.vim
+  endif
+
+  let l:jobid = 3000   " asyncrun.vim supports only ONE concurrent job
   let g:asyncrun_job_status[l:jobid] = {
         \ 'status': 'running',
-        \ 'cmdline': g:asyncrun_info,
+        \ 'cmdline': l:cmdline,
         \ }
 endfunction
 
-function! OnAsyncRunJobFinished() abort
+function! OnAsyncRunJobFinished(job) abort
   let l:jobid = 3000   " asyncrun supports only ONE concurrent job
+  " a:job => nil for legacy asyncrun.vim, an object for the new asyncrun.nvim (currently not used)
+
   let l:job = get(g:asyncrun_job_status, l:jobid, {})
   if l:job == {} | return | endif
   let l:job['status'] = g:asyncrun_status
@@ -1807,7 +1816,8 @@ augroup AsyncRunQuickfixWindow
   autocmd FileType qf    noremap <silent> <nowait> <buffer> <C-C><C-C>   <cmd>call AsyncrunQuickfixCtrlC()<CR>
 augroup END
 function! AsyncrunQuickfixCtrlC() abort
-  if g:asyncrun_status == "running"
+  " legacy asyncrun.vim
+  if get(g:, "asyncrun_status") == "running"
     AsyncStop
   endif
 endfunction
