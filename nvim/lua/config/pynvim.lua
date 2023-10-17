@@ -61,15 +61,15 @@ if vim.g.python3_host_prog == "" or not vim.g.python3_host_prog then
 end
 
 -- Note: should not use py3eval here because python3 provider is slow, and may not work!
----@type fun(): table[]  returns a version tuple, e.g., { 3, 11, 5 }
+---@type fun(): nil|table[]  returns a version tuple, e.g., { 3, 11, 5 }; or nil if python3 failed
 local python3_version = setmetatable({ _version = nil }, { __call = function(self)
   if self._version then
     return self._version
   end
   local s = system(vim.g.python3_host_prog .. " -W ignore -c 'import sys; print(list(sys.version_info)[:3])' 2>/dev/null")
-  self._version = vim.F.npcall(vim.json.decode, s)
+  self._version = vim.F.npcall(vim.json.decode, s) or nil
   return self._version
-end}) --[[@as fun()]]
+end}) --[[@as function]]
 
 
 local function determine_pip_args()
@@ -84,7 +84,8 @@ local function determine_pip_args()
     end
   end
 
-  if python3_version()[2] >= 12 then  -- python 3.12
+  local py_version = python3_version()
+  if py_version and py_version[2] >= 12 then  -- python 3.12
     return pip_option .. [[ 'pynvim @ git+https://github.com/neovim/pynvim' ]]
   end
   return pip_option .. "pynvim"
@@ -93,6 +94,10 @@ end
 -- This works "synchronously", blocks until the pip command terminates
 ---@return boolean whether installation is successful
 local function autoinstall_pynvim()
+  if vim.fn.exepath(vim.g.python3_host_prog) == "" then
+    return false
+  end
+
   -- Ensure pynvim >= 0.4.0.
   local python3_neovim_version = system(assert(vim.g.python3_host_prog) ..
     " -W ignore -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null")
@@ -172,37 +177,47 @@ local function autoinstall_pynvim()
   end
 end
 
--- python version check
+-- python version check. returns true of everything is OK.
+---@return boolean
 local function python3_version_check()
-  local py_version = python3_version()  ---@type integer[]
-
-  if not py_version or (
-    py_version[1] < 3 or
-    py_version[1] == 3 and py_version[2] < 6  -- checks if version < 3.6
+  local py_version = python3_version()  ---@type integer[]|nil
+  if py_version and (
+    py_version[1] > 3 or
+    py_version[1] == 3 and py_version[2] >= 6  -- requires python 3.6+
   ) then
-    local msg = string.format("Your python3 version (%s) is too old; ",
-      table.concat(py_version or { "unknown" }, ".") )
-    warning(msg .. vim.g.python3_host_prog)
-    msg = msg .. '\n' .. "python 3.6+ is required. Most features are disabled."
-    msg = msg .. '\n\n' .. "g:python3_host_prog = " .. vim.g.python3_host_prog
+    return true
+  end
+
+  local msg
+  if py_version then
+    msg = string.format("Your python3 version (%s) is too old; ", table.concat(py_version, "."))
+  else
+    msg = ("python3 version cannot be detected.")
+  end
+  do
+    warning(msg .. " : " .. vim.g.python3_host_prog)
+    msg = msg .. '\n' .. "python 3.6+ is required. Most features are disabled.\n"
+    msg = msg .. '\n' .. "g:python3_host_prog = " .. vim.g.python3_host_prog
+    msg = msg .. '\n' .. "exepath = " .. vim.fn.exepath(vim.g.python3_host_prog)
     notify_later(msg)
   end
+  return false
 end
 
 -- Make a dummy call first, to workaround a bug neovim/neovim#14438 and neovim/pynvim#496
--- At this point the python3 provider will be loaded.
+-- At this point the python3 provider will be loaded. py3eval() may throw if python3 host cannot be loaded.
 -- NOTE: This takes some init time (~50ms), but is necessary otherwise other python plugins will fail
-vim.fn.py3eval("1")  -- TODO: Remove this workaround once pynvim 0.5 is out.
+pcall(vim.fn.py3eval, "1")  -- TODO: Remove this workaround once pynvim 0.5 is out.
 
-if vim.fn.py3eval("1") ~= 1 then
+if vim.F.npcall(vim.fn.py3eval, "1") ~= 1 then
   -- python3 host has failed to load.
-  python3_version_check()
+  local py_version = python3_version_check()
 
   -- pynvim is missing, try installing it
-  local success = vim.F.ok_or_nil(xpcall(autoinstall_pynvim, function(err)
+  xpcall(autoinstall_pynvim, function(err)
     local msg = debug.traceback(err, 1)
     vim.notify(msg, vim.log.levels.ERROR)
-  end))
+  end)
 
   -- Disable autocmds from already-generated rplugins manifest,
   -- which will emit annoying errors on CmdlineEnter, VimLeave, etc.
