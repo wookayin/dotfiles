@@ -50,8 +50,10 @@ local function notify_later(msg, level)
 end
 
 
--- Always python3 w.r.t. $PATH as the host python for neovim.
-vim.g.python3_host_prog = vim.fn.exepath("python3")
+-- Use python3 w.r.t. $PATH as the host python for neovim.
+if vim.g.python3_host_prog == "" or not vim.g.python3_host_prog then
+  vim.g.python3_host_prog = vim.fn.exepath("python3")
+end
 
 if vim.g.python3_host_prog == "" or not vim.g.python3_host_prog then
   warning "ERROR: You don't have python3 on your $PATH. Check $PATH or $SHELL. Most features are disabled."
