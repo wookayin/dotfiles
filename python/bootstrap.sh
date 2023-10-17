@@ -23,9 +23,12 @@ packages_basic=(
 )
 
 # Jupyter support
+# See also: https://github.com/jupyterlab-contrib
 packages_jupyter=(
-    'jupyterlab>=4.0' 'notebook>=7.0'
-    'jupyterlab-lsp>=5.0.0rc0'
+    'jupyterlab >= 4.0'
+    'notebook >= 7.0'
+    'jupyterlab-lsp >= 5.0.0'
+    'jupyterlab-vim >= 4.1'
     jupyterlab-widgets ipywidgets ipympl
     pretty-jupyter
 )
