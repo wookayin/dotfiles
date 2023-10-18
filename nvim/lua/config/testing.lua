@@ -105,6 +105,10 @@ function M.setup_commands_keymaps()
     callback = function()
       vim.wo.sidescrolloff = 0
 
+      if vim.bo.filetype == 'neotest-output' then
+        vim.cmd [[ norm G ]]  -- scroll to the bottom
+      end
+
       vim.cmd [[
         " Pressing <F6> again would move the floating window into normal splits
         nnoremap <buffer> <silent> <F6>    <cmd>lua require("config.testing")._move_neotest_floating_to_split()<CR>
