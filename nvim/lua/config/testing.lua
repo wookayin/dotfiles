@@ -103,7 +103,8 @@ function M.setup_commands_keymaps()
     pattern = { 'neotest-output', 'neotest-attach' },
     group = augroup,
     callback = function()
-      local H = {}
+      vim.wo.sidescrolloff = 0
+
       vim.cmd [[
         " Pressing <F6> again would move the floating window into normal splits
         nnoremap <buffer> <silent> <F6>    <cmd>lua require("config.testing")._move_neotest_floating_to_split()<CR>

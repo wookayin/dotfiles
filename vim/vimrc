@@ -121,8 +121,8 @@ set sidescrolloff=3
 if has('nvim')
   augroup TermScrollFix
     autocmd!
-    " Disable scrolloff in terminal buffers (to avoid flickering, see neovim/neovim#11915)
-    autocmd TermOpen,TermEnter * setlocal scrolloff=0
+    " Disable scrolloff in terminal buffers (see neovim/neovim#11915)
+    autocmd TermOpen,TermEnter * setlocal scrolloff=0 sidescrolloff=0
     autocmd TermOpen           * setlocal signcolumn=no
   augroup end
 endif
