@@ -1041,12 +1041,6 @@ if has('nvim')
   call CommandAlias('Lua', 'LuaREPL', v:true)
 endif
 
-" In the command mode, <CTRL-/> will toggle the command between `:lua` and `:lua=`
-cmap     <c-_> <c-/>
-cnoremap <expr> <c-/>
-      \ (getcmdtype() ==# ':' && getcmdline() =~# '^lua=') ? '<C-b><Del><Del><Del><Del>lua<C-e>' :
-      \ (getcmdtype() ==# ':' && getcmdline() =~# '^lua') ? '<C-b><Del><Del><Del>lua=<C-e>' :
-      \ ''
 
 " ----------------------------------------------------------------------------
 " <Leader>?/! : Google it / Feeling lucky

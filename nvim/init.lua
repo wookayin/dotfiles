@@ -86,6 +86,7 @@ end
 -- Note that many other config modules are called upon plugin loading.
 -- (see each plugin spec, e.g. 'plugins/ui' and 'config/ui')
 -- See nvim/lua/config/commands/init.lua
+_require 'config.keymap'
 _require 'config.commands'
 
 -- Source local-only lua configs (not git tracked)
