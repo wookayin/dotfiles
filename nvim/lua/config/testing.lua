@@ -9,8 +9,7 @@ M.custom_consumers = {}
 -- :help neotest.config
 -- @see $VIMPLUG/neotest/lua/neotest/config/init.lua
 function M.setup_neotest()
-  local lua_print = _G.print
-
+  ---@diagnostic disable-next-line: missing-fields
   require("neotest").setup {
     adapters = {
       require("neotest-python")({
@@ -25,6 +24,7 @@ function M.setup_neotest()
     floating = { -- :help neotest.Config.floating
       max_width = 0.9,
       max_height = 0.8,
+      border = "rounded",
       options = {},
     },
     icons = {
@@ -38,17 +38,16 @@ function M.setup_neotest()
       final_child_prefix = "└",
     },
     quickfix = {
+      enabled = true,
       -- do not automatically open quickfix because it can steal focus
       open = false,
     },
     -- custom consumers.
     consumers = {
+      ---@diagnostic disable-next-line: assign-type-mismatch
       attach_or_output = M.custom_consumers.attach_or_output(),
     }
   }
-
-  -- temporary workaround for neotest-plenary#12
-  _G.print = lua_print
 end
 
 -- Add command shortcuts and keymappings
