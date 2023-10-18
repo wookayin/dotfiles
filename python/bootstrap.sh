@@ -34,7 +34,7 @@ packages_jupyter=(
 )
 
 python -m pip install --upgrade pip
-python -m pip install --upgrade ${packages_basic[@]}
-python -m pip install --upgrade ${packages_jupyter[@]}
+python -m pip install --upgrade "${packages_basic[@]}"
+python -m pip install --upgrade "${packages_jupyter[@]}"
 
 exit 0;
