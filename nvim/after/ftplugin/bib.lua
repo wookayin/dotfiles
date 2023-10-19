@@ -11,4 +11,4 @@ require('config.treesitter').ensure_parsers_installed { 'bibtex' }
 -- Build path
 local path = require("utils.path_utils")
 vim.b.project_root = path.find_project_root({ 'Makefile', '.latexmkrc', '.git' }, { buf = 0 })
-vim.cmd.lcd(vim.b.project_root)
+if vim.b.project_root then vim.cmd.lcd(vim.b.project_root) end

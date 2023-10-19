@@ -4,7 +4,7 @@
 local M = {}
 
 function M.join(...)
-  return vim.fn.resolve(table.concat({...}, '/'))
+  return vim.fn.resolve(table.concat(vim.tbl_flatten {...}, '/'))
 end
 
 ---@param marker_patterns string[]
