@@ -12,12 +12,15 @@ M.font = {
   -- family = "SauceCodePro Nerd Font Mono",
   family = "JetBrainsMono Nerd Font Mono", linespace = -3,
   size = 16,
+  width = -2,  -- letter spacing: neovide/neovide#1227
 }
 
 function M.font.sync(self)
-  vim.o.guifont = string.format("%s:h%d%s",
+  vim.o.guifont = string.format(
+    "%s" .. ":h%s" .. ":w%s" .. "%s",
     M.font.family,
-    M.font.size,
+    M.font.size, -- :h (height)
+    M.font.width, -- :w (width)
     "")
   vim.o.linespace = self.linespace or 0
 end
