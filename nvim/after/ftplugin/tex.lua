@@ -8,14 +8,6 @@ require('config.treesitter').setup_highlight('latex')
 -- Configure :Build
 require('config.tex').setup_compiler_commands()
 
--- :V -- table of contents
-vim.keymap.set('n', '<leader>V', function()
-  vim.fn['vimtex#fzf#run']("ctli", {
-    window = "call FloatingFZF()",
-  })
-end, { buffer = true, desc = 'TeX: Table of Contents with fzf' })
-
-
 local project_root = vim.fn.fnamemodify(vim.fs.find(
   { 'Makefile', '.latexmkrc', '.git' }, {
     upward = true, stop = vim.loop.os_homedir(), limit = 1,
@@ -45,3 +37,10 @@ end, {
   nargs = '?',
   desc = 'Sections -- look up \\section{...} and \\subsection{...} definitions',
 })
+
+-- :V -- table of contents
+vim.keymap.set('n', '<leader>V', function()
+  vim.fn['vimtex#fzf#run']("ctli", {
+    window = "call FloatingFZF()",
+  })
+end, { buffer = true, desc = 'TeX: Table of Contents with fzf' })
