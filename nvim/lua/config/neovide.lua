@@ -46,6 +46,8 @@ vim.keymap.set({'i', 'c'}, '<Plug>(neovide-paste)', '<cmd>set paste<CR><C-r>+<cm
 vim.keymap.set(ALL_MODES, '<D-=>', function() M.font:adjust_size(1) end)
 vim.keymap.set(ALL_MODES, '<D-->', function() M.font:adjust_size(-1) end)
 vim.keymap.set(ALL_MODES, '<D-0>', function() M.font:set_size(16) end)
+-- Cmd + Tab
+vim.keymap.set({'n', 'i', 't'}, '<D-t>', '<Cmd>norm <c-t><CR>', { remap = true })
 
 
 -- Appearances
