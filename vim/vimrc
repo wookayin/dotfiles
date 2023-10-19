@@ -637,7 +637,7 @@ imap <C-F5>  <ESC><C-F5>a
 
 
 " Alternative to <F5> (shortcut)
-nnoremap <leader>m <F5>
+nmap <leader>m <F5>
 
 " Build commands default to Make
 command! -nargs=* -bar Build    Make
