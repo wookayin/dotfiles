@@ -355,6 +355,12 @@ function M.setup_fzf()
 
   -- Shadow the original :FZF command, alias to FzfLua
   command_alias("FZF", "FzfLua")
+
+  -- Workaround vimr bug (previewer crashes): qvacua/vimr#972
+  if vim.fn.has('gui_vimr') > 0 then
+    vim.env.FZF_LUA_NVIM_BIN = "nvim"
+  end
+
 end
 
 
