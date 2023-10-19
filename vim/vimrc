@@ -651,11 +651,11 @@ command! -nargs=* -bar Debug    echohl WarningMsg | echon ":Debug not defined fo
 "
 command! -nargs=* -complete=customlist,MakeCommandCompletion -bar Make
       \ call s:run_make("<bang>", <q-args>)
-function! s:run_make(bang, qargs)
+function! s:run_make(bang, qargs) abort
     " Asynchronous job dispatching in the background (output goes to quickfix)
     exec 'AsyncMake ' . a:qargs
     echohl Special
-    echom 'Make: ' . &makeprg
+    echom Truncate('Make: ' . &makeprg . (empty(a:qargs) ? "" : " ") . a:qargs, v:echospace)
     echohl NONE
 endfunction
 
@@ -945,6 +945,13 @@ function! Echo(msg) abort
 endfunction
 function! Echom(msg) abort
   echom a:msg
+  return a:msg
+endfunction
+
+function! Truncate(msg, length) abort
+  if len(a:msg) >= a:length - 3
+    return a:msg[:(a:length - 3)] . " ⋯"
+  endif
   return a:msg
 endfunction
 
