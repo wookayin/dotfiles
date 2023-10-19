@@ -1399,12 +1399,9 @@ if has('gui_running')
     " font setting for Ubuntu linux (GTK)
     set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
 
-  elseif has('unix') && s:uname ==? 'Darwin'
-    " font setting for Mac OS X (Darwin)
-    if !has('gui_vimr')
-      set guifont=Monaco\ for\ Powerline:h12
-      set guifontwide=Apple\ SD\ Gothic\ Neo\ UltraLight:h12
-    endif
+  elseif has('mac') && exists('g:neovide')
+    " neovide
+    source $DOTVIM/lua/config/neovide.lua
   endif
 
 endif
