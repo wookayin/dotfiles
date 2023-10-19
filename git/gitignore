@@ -30,6 +30,11 @@ Thumbs.db
 tags
 .vimspector.json
 
+# Build artifacts
+*.dSYM
+*.so
+*.dylib
+
 # Python, Virtualenv
 .venv*
 .mypy_cache
