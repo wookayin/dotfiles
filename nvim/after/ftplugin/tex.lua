@@ -8,11 +8,8 @@ require('config.treesitter').setup_highlight('latex')
 -- Configure :Build
 require('config.tex').setup_compiler_commands()
 
-local project_root = vim.fn.fnamemodify(vim.fs.find(
-  { 'Makefile', '.latexmkrc', '.git' }, {
-    upward = true, stop = vim.loop.os_homedir(), limit = 1,
-    path = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
-  })[1], ":h")  -- don't use :p, it addes trailing slashes when matched .git
+local path = require("utils.path_utils")
+vim.b.project_root = path.find_project_root({ 'Makefile', '.latexmkrc', '.git' }, { buf = 0 })
 
 -- FZF-based quickjump
 -- Quickly lookup all \section{...} and \subsection{...} definitions.
@@ -31,7 +28,7 @@ vim.api.nvim_buf_create_user_command(0, 'Sections', function(e)
     fzf_opts = { ['--delimiter'] = ':', ['--nth'] = '3..' },  -- filter by text
     previewer = 'builtin',
     winopts = { preview = { layout = "vertical", vertical = "down:33%" } },
-    cwd = project_root,  -- not the cwd
+    cwd = vim.b.project_root,  -- not the cwd
   }
 end, {
   nargs = '?',
