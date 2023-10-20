@@ -2102,15 +2102,18 @@ endfunction
 " -------------------------
 
 " :Z -- cd to recent working directories using fasd
-command! -nargs=* Z call fzf#run
-      \(fzf#wrap({
+command! -nargs=* Z call s:Z(<q-args>)
+function! s:Z(args) abort
+  call fzf#run(fzf#wrap({
       \ 'source':  printf('fasd -Rdl "%s"',
-      \                   escape(empty(<q-args>) ? '' : <q-args>, '"\')),
-      \ 'options': ['-1', '-0', '--no-sort', '--no-multi',
+      \                   escape(empty(a:args) ? '' : a:args, '"\'))
+      \           . ' | ' . s:sed_highlight_path_last_segment,
+      \ 'options': ['--ansi', '-1', '-0', '--no-sort', '--no-multi',
       \             '--prompt', 'Z> ',
       \             ] + s:fzf_preview_directory_if_applicable(),
       \ 'sink':    function('s:Z_sink'),
       \}))
+endfunction
 function! s:Z_sink(path) abort
   exec 'tcd ' . a:path
   Neotree
@@ -2131,7 +2134,7 @@ endif
 " :SitePackages -- quickly jump to the site-packages directory for the current python
 command! -nargs=* SitePackages call s:SitePackages(<q-args>)
 function! s:SitePackages(query) abort
-  let l:root = Trim(system('python -W ignore -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"'))
+  let l:root = Trim(system('python -W ignore -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())" 2>/dev/null'))
   call fzf#run(fzf#wrap({
       \ 'source':  ('find . -mindepth 1 -maxdepth 1 -type d ' .
       \             ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" | sort ' .
