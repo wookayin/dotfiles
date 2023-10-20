@@ -16,3 +16,10 @@ if vim.fn.has('nvim-0.9') > 0 then
   vim.treesitter.query.get_node_text = vim.treesitter.get_node_text
   vim.treesitter.query.get_query = vim.treesitter.query.get
 end
+
+-- for nvim < 0.9.0
+if vim.treesitter.language.get_lang == nil then
+  vim.treesitter.language.get_lang = function(ft)
+    return require("nvim-treesitter.parsers").ft_to_lang(ft)
+  end
+end
