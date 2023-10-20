@@ -2129,18 +2129,22 @@ if !empty(g:plugs)
 endif
 
 " :SitePackages -- quickly jump to the site-packages directory for the current python
-command! -nargs=* SitePackages call fzf#run
-      \(fzf#wrap({
-      \ 'source':  ('python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())" ' .
-      \             ' | xargs -I{} find {}/ -maxdepth 1 -type d ' .
+command! -nargs=* SitePackages call s:SitePackages(<q-args>)
+function! s:SitePackages(query) abort
+  let l:root = Trim(system('python -W ignore -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"'))
+  call fzf#run(fzf#wrap({
+      \ 'source':  ('find . -mindepth 1 -maxdepth 1 -type d ' .
       \             ' | grep -v "\(dist\|egg\)-info$" | grep -v "\.egg$" | sort ' .
       \             ' | ' . s:sed_highlight_path_last_segment
       \ ),
       \ 'options': ['--ansi', '--delimiter', '/', '--nth', '-1', '--no-multi', '--inline-info',
-      \             '--query', <q-args>, '--prompt', 'SitePackages> ',
-      \             ] + s:fzf_preview_directory_if_applicable(),
+      \             '--query', a:query, '--prompt', 'SitePackages> ',
+      \             ] + s:fzf_preview_directory_if_applicable() +
+      \             ['--header', l:root],
+      \ 'dir':     l:root,
       \ 'sink':    'Neotree'
       \}))
+endfunction
 
 function! s:fzf_preview_directory_if_applicable()
   let l:fzf_options = []
