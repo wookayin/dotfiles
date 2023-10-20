@@ -79,6 +79,13 @@ local custom_components = {
     end
     return status
   end,
+  -- neotree path
+  neotree_path = function()
+    if vim.bo.filetype == 'neo-tree' then
+      return require("config.neotree").get_path(0)
+    end
+    return ''
+  end,
   -- LSP status, with some trim
   lsp_status = function()
     return _G.LspStatus()
@@ -119,6 +126,7 @@ function M.setup_lualine()
       },
       lualine_c = {
         custom_components.asyncrun_status,
+        { custom_components.neotree_path, color = { fg = '#87afdf' } },
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
         { custom_components.lsp_context, fmt = truncate(180, 40, 100, true) },
       },
