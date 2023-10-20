@@ -2107,7 +2107,8 @@ command! -nargs=* Z call fzf#run
       \ 'source':  printf('fasd -Rdl "%s"',
       \                   escape(empty(<q-args>) ? '' : <q-args>, '"\')),
       \ 'options': ['-1', '-0', '--no-sort', '--no-multi',
-      \             '--prompt', 'Z> '],
+      \             '--prompt', 'Z> ',
+      \             ] + s:fzf_preview_directory_if_applicable(),
       \ 'sink':    function('s:Z_sink'),
       \}))
 function! s:Z_sink(path) abort
@@ -2146,10 +2147,10 @@ function! s:fzf_preview_directory_if_applicable()
   if &columns >= 100 && executable("tree")
     " enable directory preview if width is sufficient; max depth 2.
     let l:fzf_options += [
-          \ '--preview-window', 'right:25%',
-          \ '--preview', 'tree -I "node_modules|.git|*.pyc" -L 2 -x {}',
-          \ '--bind', '?:toggle-preview',
-          \ '--header', ':: Press "?" to toggle preview'
+          \ '--preview-window', 'right:30%',
+          \ '--preview', 'tree -C -I "node_modules|.git|*.pyc" -L 2 -x {}',
+          \ '--bind', '?:toggle-preview,ctrl-/:toggle-preview',
+          \ '--header', ':: Press "?" or "CTRL-/" to toggle preview'
           \ ]
   endif
   return l:fzf_options
