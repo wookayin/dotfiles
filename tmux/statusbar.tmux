@@ -39,10 +39,11 @@ main() {
 #[fg=#ffffff,bg=#303030,nobold,nounderscore,noitalics]\
 #";
 
+local session_name=$(tmux display-message -p '#S')
   # [right status] CPU Usage
-  tmux set -ga status-right "#($cwd/statusbar.tmux component-cpu)"
+  tmux set -ga status-right "#($cwd/statusbar.tmux component-cpu -S $session_name)"
   # [right status] Memory Usage
-  tmux set -ga status-right "#($cwd/statusbar.tmux component-ram)"
+  tmux set -ga status-right "#($cwd/statusbar.tmux component-ram -S $session_name)"
 
   # [window] number (#I), window flag (#F), window name (#W)
   #   - #F: e.g., Marked or Zoomed. If marked (i.e. #F contains 'M'), highlight it.
@@ -64,32 +65,37 @@ main() {
 ";
 }
 
-component-cpu() {
-  # see ~/.dotfiles/bin/cpu-usage
-  local cpu_percentage
+cpu-usage() {
   if [ `uname` == "Darwin" ]; then
-    # https://stackoverflow.com/questions/30855440/how-to-get-cpu-utilization-in-in-terminal-mac
     # Sum of user + sys CPU usage
-    cpu_percentage=$(\
-      top -l 2 -s 0 | grep -E "^CPU" | tail -1 | awk '{ printf "%.2f", $3 + $5 }')
+    # https://stackoverflow.com/questions/30855440/how-to-get-cpu-utilization-in-in-terminal-mac
+    # On MacOS: top is CPU-greedy in the first run,
+    # so we stream in a loop (so that component-cpu can print line-by-line)
+    top -l 60 -s 2 | grep --line-buffered -E "^CPU" | while read line; do
+        echo "$line" | awk '{ printf "%.2f\n", $3 + $5 }'
+    done
   else
     # https://unix.stackexchange.com/questions/69185/getting-cpu-usage-same-every-time/
-    cpu_percentage=$(\
-      cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | \
-      awk -v RS="" '{printf "%.2f", ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5) "%"}'
-    )
+    cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | \
+      awk -v RS="" '{printf "%.2f\n", ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5) "%"}'
   fi
-  if [ ! $? -eq 0 ]; then return; fi
+}
 
+component-cpu() {
+  # see ~/.dotfiles/bin/cpu-usage
   # https://coolors.co/gradient-palette/2c1d1d-aa2626?number=10
   local reds=("#2c1d1d" "#3a1e1e" "#481f1f" "#562020" "#642121"
               "#722222" "#802323" "#8e2424" "#9c2525" "#aa2626")
   local colors=(${reds[1]} ${reds[2]} ${reds[3]} ${reds[4]} ${reds[7]})  # not linear
-  local bgcolor="#${colors[$(echo "$cpu_percentage/20" | bc)]:-${colors[-1]}}"
-  local colorfmt="bg=$bgcolor,fg=white"
 
-  printf "#[bg=#1c1c1c,fg=$bgcolor,nobold,nounderscore,noitalics]"
-  printf "#[$colorfmt] 󰻠 %2.0f %% #[default]" $cpu_percentage
+  cpu-usage | while IFS= read -r cpu_percentage; do
+    local bgcolor="${colors[$(echo "$cpu_percentage/20" | bc)]:-${colors[-1]}}"
+    local colorfmt="bg=$bgcolor,fg=white"
+
+    printf "#[bg=#1c1c1c,fg=$bgcolor,nobold,nounderscore,noitalics]"
+    printf "#[$colorfmt] 󰻠 %2.0f %% #[default]" $cpu_percentage
+    echo ""
+  done
 }
 
 component-ram() {
