@@ -110,10 +110,11 @@ local function autoinstall_pynvim()
   vim.loop.sleep(100)
   vim.cmd [[ redraw! ]]
 
+  local python = vim.g.python3_host_prog
   vim.g.pynvim_install_command = table.concat({
-    vim.g.python3_host_prog .. " -m ensurepip ",
-    vim.g.python3_host_prog .. " -m pip install " .. determine_pip_args(),
-    vim.g.python3_host_prog .. [[ -c 'import pynvim; print("pynvim:", pynvim.__file__)' ]]
+    "(" .. python .. " -c 'import pip' || " .. python .. " -m ensurepip " .. ")",
+    python .. " -m pip install " .. determine_pip_args(),
+    python .. [[ -c 'import pynvim; print("pynvim:", pynvim.__file__)' ]]
   }, " && ")
 
   -- !shell execution cannot have a fine-grained control, so we use jobstart() or termopen()
