@@ -24,6 +24,11 @@ main() {
 #[fg=$TMUX_STATUS_BG,bg=#1c1c1c] #h \
 ";
 
+  # [right status]
+  # Set a limit on width to suppress an excessive message '... is not ready' until the first execution is done
+  tmux set -g status-right-length 40
+  tmux set-hook -g client-attached "set -g status-right-length 1; run-shell 'sleep 1.1'; set -g status-right-length 40;"
+
   # [right status] prefix, datetime, etc.
   tmux set -g status-right "\
 #[fg=#ffffff,bg=#005fd7]#{s/^(.+)$/ \\1 :#{s/root//:client_key_table}}\
