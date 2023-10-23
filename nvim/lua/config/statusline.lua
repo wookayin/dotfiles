@@ -128,7 +128,7 @@ function M.setup_lualine()
         custom_components.asyncrun_status,
         { custom_components.neotree_path, color = { fg = '#87afdf' } },
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
-        { custom_components.lsp_context, fmt = truncate(180, 40, 100, true) },
+        { custom_components.lsp_context, fmt = truncate(180, 60, 100, true) },
       },
       lualine_x = {
         --{ custom_components.lsp_status, fmt = truncate(120, 20, 60, false) },
@@ -138,10 +138,10 @@ function M.setup_lualine()
       },
       lualine_y = { -- excludes 'progress'
         { 'diff', cond = using_global_statusline },
-        { 'diagnostics', cond = min_statusline_width(110) },
+        { 'diagnostics', cond = min_statusline_width(130) },
       },
       lualine_z = {
-        { 'location', cond = min_statusline_width(90) },
+        { 'location', cond = min_statusline_width(190) },
       },
     },
     inactive_sections = {
