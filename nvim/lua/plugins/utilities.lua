@@ -27,6 +27,12 @@ return {
   Plug 'christoomey/vim-tmux-navigator' { init = PlugConfig, event = 'VeryLazy' };
   Plug 'tpope/vim-tbone' { cmd = 'Tmux' };
 
+  -- Clipboard
+  Plug 'ojroques/nvim-osc52' {
+    config = require("config.utilities").setup_osc52,
+    enabled = #(os.getenv('SSH_TTY') or "") > 0,  -- if inside SSH
+  };
+
   -- Misc
   Plug 'lewis6991/hover.nvim' {
     config = require("config.utilities").setup_hover,

@@ -20,8 +20,27 @@ function M.setup_hover()
     preview_window = false,
     title = true,
   }
-
 end
 
+function M.setup_osc52()
+  local _called_setup = false  -- for lazy-loading
+
+  -- Text yanked to the "+" register will be copied to the system clipboard
+  -- over the SSH session using the OSC52 sequence.
+  vim.api.nvim_create_autocmd("TextYankPost", {
+    callback = function()
+      if not _called_setup then
+        _called_setup = true
+        require("osc52").setup {
+          tmux_passthrough = true,
+        }
+      end
+
+      if vim.v.event.regname == "+" and vim.v.event.operator == "y" then
+        require("osc52").copy_register("+")
+      end
+    end
+  })
+end
 
 return M
