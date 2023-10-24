@@ -15,9 +15,7 @@ if !filereadable('Makefile')
     if filereadable(b:basename . ".in")  | let b:input_file = b:basename . ".in" | endif
     if filereadable(b:basename . ".ans") | let b:answer_file = b:basename . ".ans" | endif
 
-    let b:extraflag = ""
-    let s:gccver = system("g++ --version | grep '^g++' | sed 's/^.* //g'")
-    if s:gccver >= "4.9.0" | let b:extraflag = b:extraflag . " -fdiagnostics-color=never" | endif
+    let b:extraflag = "-fdiagnostics-color=never"  " GCC 4.9+
 
     let b:makeprg_compile = printf("g++ -g -Wall --std=c++11 -O2 %s -o %s %s",
                 \ shellescape(expand("%")), shellescape(b:basename), b:extraflag)
