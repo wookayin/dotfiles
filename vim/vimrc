@@ -850,9 +850,12 @@ endfunction
 command! -nargs=0 Plugins  exec ":Config plugins"
 
 " <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
-map <leader>y "*y
-noremap <leader>x "*x
-noremap <leader>p "*p
+" Note: on MacOS and windows, "* and "+ are the same (for the system clipboard)
+" Note: on X11 (Linux), The register "* is the primary, "+ is the secondary,
+"  but "+ is the one that works as the external clipboard without X11 or tmux
+map <leader>y "+y
+noremap <leader>x "+x
+noremap <leader>p "+p
 
 " <leader>w : save
 nnoremap <leader>w <Cmd>w!<CR>
