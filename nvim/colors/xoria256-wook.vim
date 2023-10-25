@@ -94,6 +94,7 @@ hi! @variable                guifg=NONE
 hi def link @none            Normal
 
 hi link @string.documentation          SpecialComment
+hi link @comment.special               SpecialComment
 
 hi! @text.strong                       gui=bold
 hi! @text.emphasis                     gui=italic
