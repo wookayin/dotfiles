@@ -17,7 +17,7 @@ if !filereadable('Makefile')
 
     let b:extraflag = "-fdiagnostics-color=never"  " GCC 4.9+
 
-    let b:makeprg_compile = printf("g++ -g -Wall --std=c++11 -O2 %s -o %s %s",
+    let b:makeprg_compile = printf("g++ -g -Wall --std=c++17 -O2 %s -o %s %s",
                 \ shellescape(expand("%")), shellescape(b:basename), b:extraflag)
     let b:makeprg_run     = printf("time ./%s", shellescape(b:basename))
     if !empty(b:input_file)  | let b:makeprg_run .= printf(" < %s", shellescape(b:input_file)) | endif
