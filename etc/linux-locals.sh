@@ -59,7 +59,10 @@ for asset in J[0]['assets']:
   wget -O "$tmpdir/$filename" "$download_url"
 
   echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
-  cd $tmpdir && tar -xvzf $filename
+  cd "$tmpdir"
+  if [ "$filename" == *.tar.gz ]; then
+    tar -xvzf "$filename"
+  fi
 
   echo -e "${COLOR_YELLOW}Copying ...${COLOR_NONE}"
 }
@@ -470,6 +473,16 @@ install_go() {
   echo ""
   echo -e "${COLOR_GREEN}Installed at $HOME/.go${COLOR_NONE}"
   $HOME/.go/bin/go version
+}
+
+install_jq() {
+  _template_github_latest "jq" "jqlang/jq" "jq-linux-amd64"
+  [[ $(pwd) =~ ^"$DOTFILES_TMPDIR/" ]]
+
+  cp -v "./jq-linux-amd64" "$PREFIX/bin/jq"
+  chmod +x "$PREFIX/bin/jq"
+  echo -e "\n\n${COLOR_WHITE}$(which jq)${COLOR_NONE}"
+  $PREFIX/bin/jq --version
 }
 
 install_duf() {
