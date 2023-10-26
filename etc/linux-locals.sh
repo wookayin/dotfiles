@@ -48,15 +48,17 @@ J = json.load(sys.stdin);
 for asset in J[0]['assets']:
   if fnmatch.fnmatch(asset['name'], '$filename'):
     print(asset['browser_download_url'])
+    sys.exit(0)
+sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n');sys.exit(1)
 ")
   echo -e "${COLOR_YELLOW}download_url = ${COLOR_NONE}$download_url"
-  test -n $download_url
+  test -n "$download_url"
   sleep 0.5
 
   local tmpdir="$DOTFILES_TMPDIR/$name"
   local filename="$(basename $download_url)"
   mkdir -p $tmpdir
-  wget -O "$tmpdir/$filename" "$download_url"
+  curl -SL "$download_url" -o "$tmpdir/$filename"
 
   echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
   cd "$tmpdir"
@@ -64,7 +66,7 @@ for asset in J[0]['assets']:
     tar -xvzf "$filename"
   fi
 
-  echo -e "${COLOR_YELLOW}Copying ...${COLOR_NONE}"
+  echo -e "${COLOR_YELLOW}Copying into $PREFIX ...${COLOR_NONE}"
 }
 
 #---------------------------------------------------------------------------------------------------
@@ -372,22 +374,16 @@ install_neovim() {
   $PREFIX/bin/nvim --version | head -n3
 }
 
-install_exa() {
-  # https://github.com/ogham/exa/releases
-  EXA_VERSION="0.10.1"
-  EXA_BINARY_SHA1SUM="7bbd4be0bf44a0302970e7596f5753a0f31e85ac"
-  EXA_DOWNLOAD_URL="https://github.com/ogham/exa/releases/download/v$EXA_VERSION/exa-linux-x86_64-v$EXA_VERSION.zip"
-  TMP_EXA_DIR="$DOTFILES_TMPDIR/exa/"
+install_eza() {
+  # https://github.com/eza-community/eza/releases
+  _template_github_latest "eza" "eza-community/eza" 'eza_x86_64-*linux-gnu*'
+  [[ $(pwd) =~ ^"$DOTFILES_TMPDIR/" ]]
 
-  wget -nc ${EXA_DOWNLOAD_URL} -P ${TMP_EXA_DIR} || exit 1;
-  cd ${TMP_EXA_DIR} && unzip -o "exa-linux-x86_64-v$EXA_VERSION.zip" || exit 1;
-  if [[ "$EXA_BINARY_SHA1SUM" != "$(sha1sum bin/exa | cut -d' ' -f1)" ]]; then
-      echo -e "${COLOR_RED}SHA1 checksum mismatch, aborting!${COLOR_NONE}"
-      exit 1;
-  fi
-  cp "bin/exa" "$PREFIX/bin/exa" || exit 1;
-  cp "completions/exa.zsh" "$PREFIX/share/zsh/site-functions/_exa" || exit 1;
-  echo "$(which exa) : $(exa --version)"
+  cp "./eza" "$PREFIX/bin/eza"
+  curl -L "https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza" > \
+    "$PREFIX/share/zsh/site-functions/_eza"
+  echo "$(which eza)"
+  eza --version
 }
 
 install_fd() {
