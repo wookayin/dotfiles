@@ -79,6 +79,7 @@ endif
 highlight!  LspInlayHint    guifg=#9e9e9e guibg=#232323 gui=italic
 
 " Minimal treesitter syntax support
+" see https://github.com/nvim-treesitter/nvim-treesitter/blob/master/CONTRIBUTING.md#highlights
 " The highlight mapping is not exhaustive; to see the list, try:
 " :filter /^@/ highlight   (or :Highlights @)
 
@@ -91,6 +92,7 @@ hi! @property                guifg=NONE
 hi! @punctuation.bracket     guifg=#afd700
 hi! @punctuation.delimiter   guifg=NONE
 hi! @variable                guifg=NONE
+hi! @variable.builtin        guifg=#d78787 ctermfg=174   " e.g. self, this
 hi def link @none            Normal
 
 hi link @string.documentation          SpecialComment
@@ -145,8 +147,8 @@ hi! link @preproc.python             SpecialComment
 hi! semshiAttribute      ctermfg=157     guifg=#afffaf
 
 " self: more distinctive color
-hi! pythonSelf           ctermfg=174     guifg=#d78787
-hi! semshiSelf           ctermfg=174     guifg=#d78787
+hi! link pythonSelf             @variable.builtin.python
+hi! link semshiSelf             @variable.builtin.python
 
 " functions, methods
 hi! link pythonFunction         @function.python
