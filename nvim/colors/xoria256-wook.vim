@@ -145,6 +145,10 @@ hi!     @lsp.type.function              guifg=NONE
 " }}}
 
 
+" Common for programming languages
+hi!      @type.qualifier              guifg=#3bc9db           " const, etc.
+hi!      @storageclass                guifg=#3bc9db           " static, extern, etc.
+
 " Comments (common lang injection)
 " e.g., TODO WIP NOTE XXX INFO DOCS PERF TEST HACK WARN WARNING FIX FIXME BUG ERROR
 hi! link @text.todo                Todo
@@ -171,6 +175,14 @@ hi! link @keyword.luadoc            SpecialComment
 hi! link @keyword.return.luadoc     SpecialComment
 hi! link @include.luadoc            SpecialComment
 hi! link @type.qualifier.luadoc     SpecialComment
+
+" C/C++
+hi!      @exception.cpp                           guifg=#ff5d62           " try, catch, ...
+hi!      @lsp.type.comment.cpp                    guifg=#778377
+hi! link @lsp.type.comment.c                      @lsp.type.comment.cpp
+hi!      @lsp.typemod.class.definition.cpp        guifg=#ffaf00 gui=bold
+"hi!      @punctuation.bracket.cpp     guifg=NONE
+
 
 " Python (semantic highlighting and more syntax groups) {{{
 " ---------------------------------------------------------
