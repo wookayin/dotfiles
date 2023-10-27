@@ -111,6 +111,40 @@ hi def link @text.environment.name     Function
 hi def link @text.environment.name     Keyword
 hi def link @text.warning              WarningMsg
 
+" LSP Semantic token support {{{
+" ------------------------------
+" https://microsoft.github.io/language-server-protocol/specification/#semanticTokenTypes
+hi link @lsp.type.type                  @type
+hi link @lsp.type.class                 @type
+hi link @lsp.type.struct                @type
+hi link @lsp.type.enum                  @type
+hi link @lsp.type.interface             @type
+hi link @lsp.type.typeAlias             @type
+hi link @lsp.type.macro                 @preproc
+hi link @lsp.type.builtinConstant       @constant.builtin
+hi link @lsp.type.enumMember            @constant
+hi link @lsp.type.operator              @operator
+hi link @lsp.type.string                @string
+hi link @lsp.type.namespace             @namespace
+hi link @lsp.type.parameter             @parameter
+hi link @lsp.type.decorator             @function
+hi link @lsp.type.comment               @comment
+hi link @lsp.type.lifetime              @storageclass
+
+hi!     @lsp.type.typeParameter         guifg=#fae000 gui=bold
+hi!     @lsp.type.generic               guifg=#fae000
+hi!     @lsp.type.property              guifg=#afffaf
+hi!     @lsp.type.variable              guifg=NONE
+hi!     @lsp.type.unresolvedReference   guifg=#ffff00 gui=underline
+
+" Do not use semantic token highlight; instead basic tressitter highlights
+" (e.g. we want to distinguish @function.call from @function)
+hi!     @lsp.type.method                guifg=NONE
+hi!     @lsp.type.function              guifg=NONE
+
+" }}}
+
+
 " Comments (common lang injection)
 " e.g., TODO WIP NOTE XXX INFO DOCS PERF TEST HACK WARN WARNING FIX FIXME BUG ERROR
 hi! link @text.todo                Todo
@@ -144,7 +178,7 @@ hi! link @type.qualifier.luadoc     SpecialComment
 hi! link @preproc.python             SpecialComment
 
 " attribute (self.xxx)
-hi! semshiAttribute      ctermfg=157     guifg=#afffaf
+hi! link semshiAttribute        @lsp.type.property.python
 
 " self: more distinctive color
 hi! link pythonSelf             @variable.builtin.python
