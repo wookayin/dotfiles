@@ -60,9 +60,9 @@ sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n');sys.
   mkdir -p $tmpdir
   curl -SL "$download_url" -o "$tmpdir/$filename"
 
-  echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
   cd "$tmpdir"
   if [ "$filename" == *.tar.gz ]; then
+    echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
     tar -xvzf "$filename"
   fi
 
@@ -186,12 +186,11 @@ install_node() {
 }
 
 install_tmux() {
-  # tmux: we can do static compile, or use tmux-appimage (include libevents/ncurses)
+  # tmux: use tmux-appimage to avoid all the libevents/ncurses hassles
   # see https://github.com/nelsonenzo/tmux-appimage
-  TMUX_VER="3.2a"
+  _template_github_latest "tmux" "nelsonenzo/tmux-appimage" "tmux.appimage"
 
-  TMUX_APPIMAGE_URL="https://github.com/nelsonenzo/tmux-appimage/releases/download/${TMUX_VER}/tmux.appimage"
-  wget -O $HOME/.local/bin/tmux $TMUX_APPIMAGE_URL
+  cp "./tmux.appimage" "$HOME/.local/bin/tmux"
   chmod +x $HOME/.local/bin/tmux
 
   ~/.local/bin/tmux -V
