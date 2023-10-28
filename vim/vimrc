@@ -324,6 +324,11 @@ endif
 " When opening http urls using netrw, follow 302 redirects
 let g:netrw_http_cmd = 'curl -L -o'
 
+" errorformat (for parsing compiler output into quickfix)
+" use "%t" (warning: ..., error: ...) so that errormarker.vim
+" can show diagnostics with proper level (e.g. show warnings as warning)
+let &errorformat="%f:%l:%c: %t%*[^:]:%m," . "%f:%l: %t%*[^:]:%m," . &errorformat
+
 " terminal mode (neovim)
 if has('nvim')
   au TermOpen * setlocal nonumber norelativenumber
