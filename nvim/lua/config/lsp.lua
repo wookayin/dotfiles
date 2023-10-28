@@ -497,9 +497,13 @@ function M._setup_diagnostic()
     -- No virtual text (distracting!), show popup window on hover.
     virtual_text = {
       severity = { min = vim.diagnostic.severity.WARN },
-      prefix = vim.fn.has('nvim-0.10') > 0 and function(diagnostic)  ---@param diagnostic Diagnostic
-        return (icons[diagnostic.severity] or "") .. " "
-      end,
+      prefix = vim.fn.has('nvim-0.10') > 0 and
+        function(diagnostic, i, total)  ---@param diagnostic Diagnostic
+          if total ~= nil and total > 4 and i > 4 then
+            return i == 4 + 1 and string.format("⋯ (total %s):", total) or ""
+          end
+          return (icons[diagnostic.severity] or "") .. " "
+        end,
     },
     underline = {
       severity = { min = vim.diagnostic.severity.INFO },
