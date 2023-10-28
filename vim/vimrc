@@ -579,8 +579,8 @@ nnoremap ]f  gF
 nnoremap [b  <Cmd>bprevious<CR>
 nnoremap ]b  <Cmd>bnext<CR>
 if has('nvim')
-  nnoremap <silent> [b <Cmd>bprevious<CR>
-  nnoremap <silent> ]b <Cmd>bnext<CR>
+  tnoremap <silent> [b <Cmd>bprevious<CR>
+  tnoremap <silent> ]b <Cmd>bnext<CR>
 endif
 
 " Tab navigations
