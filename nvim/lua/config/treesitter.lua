@@ -215,36 +215,6 @@ vim.schedule(function()
 end)
 
 
--- Make sure TS syntax tree is updated when needed by plugin (with some throttling)
--- even if the `highlight` module is not enabled.
--- See https://github.com/nvim-treesitter/nvim-treesitter/issues/2492
-function M.TreesitterParse(bufnr)
-  bufnr = bufnr or 0
-  if bufnr == 0 then bufnr = vim.api.nvim_get_current_buf() end
-
-  if not vim.bo[bufnr].filetype or vim.bo[bufnr].buftype ~= "" then
-    return false  -- only works for a normal file-type buffer
-  end
-
-  local ts_parsers = require("nvim-treesitter.parsers")
-  local lang = ts_parsers.ft_to_lang(vim.bo[bufnr].filetype)
-
-  local ok, parser = pcall(function()
-    return ts_parsers.get_parser(bufnr, lang)
-  end)
-  if not ok then
-    try_recover_parser_errors(lang, parser)
-    parser = nil
-  end
-
-  -- Update the treesitter parse tree for the current buffer.
-  if parser then
-    return parser:parse()
-  else
-    return false
-  end
-end
-
 ---------------------------------------------------------------------------
 -- Custom treesitter queries
 ---------------------------------------------------------------------------
