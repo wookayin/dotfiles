@@ -2016,6 +2016,7 @@ endfunction
 " :F is a shortcut for :GFiles or :FZF
 command! -complete=dir -nargs=* F        call FzfSmart(<q-args>)
 call CommandAlias('FC', 'F ~/.dotfiles/', v:true)
+call CommandAlias('FP', 'F ~/.dotfiles/vim/plugged/<C-R>=EatWhitespace()<CR>', v:true)
 call CommandAlias('FPlug', 'F ~/.dotfiles/vim/plugged/<C-R>=EatWhitespace()<CR>', v:true)
 call CommandAlias('Fplug', 'F ~/.dotfiles/vim/plugged/<C-R>=EatWhitespace()<CR>', v:false)
 call CommandAlias('Flua', expand("F $VIMRUNTIME/lua"), v:true)

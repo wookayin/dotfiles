@@ -466,7 +466,7 @@ function M.setup_custom()
   -- :RgRuntime [query] => search $VIMRUNTIME
   command("RgRuntime", { nargs = "*", desc = "RgPath on $VIMRUNTIME" }, function(e)
     RgPath(vim.fn.expand("$VIMRUNTIME"), vim.trim(e.args))
-  end):alias("RR"):alias("RgRUNTIME", { register_cmd = true })
+  end):alias("RR"):alias("rgrt"):alias("RgRUNTIME", { register_cmd = true })
   -- :RgLua [query] => search $VIMRUNTIME/query
   command("RgLua", { nargs = "*", desc = "RgPath on $VIMRUNTIME/lua" }, function(e)
     RgPath(vim.fn.expand("$VIMRUNTIME/lua"), vim.trim(e.args))
@@ -489,7 +489,7 @@ function M.setup_custom()
       plugin_name = ""
     end
     RgPath(vim.fn.expand("$VIMPLUG") .. "/" .. plugin_name, query)
-  end):alias("Rgplug")
+  end):alias("Rgplug"):alias("RP")
 
   -- Python package search
   local parse_py_spec = function(args) ---@param args string
@@ -511,7 +511,7 @@ function M.setup_custom()
     RgDef(q.query, q.package_path)
   end):alias("DP"):alias("Dpy")
 
-  -- :RgPackage, :RP <python-package> [query]
+  -- :RgPackage, :rgpy <python-package> [query]
   command("RgPackage", { nargs = "+", complete = vim.fn.CompletePythonSitePackages }, function(e)
     local q = parse_py_spec(e.args)
     if vim.fn.isdirectory(q.package_path) == 0 then
@@ -519,7 +519,7 @@ function M.setup_custom()
     end
     local extra_args = [[ --type "py" ]]
     RgPath(q.package_path, q.query, extra_args)
-  end):alias("RP"):alias("Rgpy")
+  end):alias("Rgpy"):alias("rgpy")
 end
 
 
