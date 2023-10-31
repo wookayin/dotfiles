@@ -50,7 +50,7 @@ return {
 
   -- Completion
   Plug 'hrsh7th/nvim-cmp' {
-    commit = '4c05626',
+    commit = '51260c0',  -- 2023-10-25
     event = 'InsertEnter',  -- or required by config/lsp.lua
     dependencies = {
       Plug 'hrsh7th/cmp-buffer';
