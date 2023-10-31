@@ -62,7 +62,6 @@ function M.setup()
   -- Folding support
   vim.opt.foldmethod = 'expr'
   vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
-  M.setup_custom_queries()
 
   M.setup_keymap()
 end
@@ -218,35 +217,14 @@ end)
 ---------------------------------------------------------------------------
 -- Custom treesitter queries
 ---------------------------------------------------------------------------
-
--- Language-specific Overrides of query files (see GH-1441, GH-1513) {{{
-local function readfile(path)
-  local f = io.open(path, 'r')
-  assert(f, "IO Failed : " .. path)
-  local content = f:read('*a')
-  f:close()
-  return content
-end
-function M.load_custom_query(lang, query_name)
-  -- See ~/.config/nvim/queries/
-  local return_all_matches = false
-  local query_path = string.format("queries/%s/%s.scm", lang, query_name)
-  local query_file = vim.api.nvim_get_runtime_file(query_path, return_all_matches)[1]
-
-  if not M.has_parser(lang) then
-    local msg = string.format("Warning: treesitter parser %s not found. Restart vim or run :TSUpdate?", lang)
-    vim.notify(msg, vim.log.levels.WARN, { title = "nvim/lua/config/treesitter.lua" })
-    return nil
-  end
-  local text = readfile(query_file)
-  vim.treesitter.query.set(lang, query_name, text)
-  return text
-end
-
-function M.setup_custom_queries()
-  -- python(fold): make import regions foldable.
-  M.load_custom_query("python", "folds")  -- $DOTVIM/queries/python/folds.scm
-end
+--- https://github.com/nvim-treesitter/nvim-treesitter#adding-queries
+--- "Dynamic" queries depending on project formatting style, etc. can be configured here.
+--- For static query files, see $DOTVIM/after/queries.
+---
+--- Note that the first query file in the runtimepath (usually user config) will be used,
+--- ignoring all other query files from plugins (nvim-treesitter) and VIMRUNTIME;
+--- unless `; extend` is used (see :h treesitter-query-modeline).
+--- If vim.treesitter.query.set() is used, all query files on runtimepath will be ignored.
 
 
 ---------------------------------------------------------------------------
