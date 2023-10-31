@@ -6,6 +6,7 @@ print(("Sourcing %s, now = %s"):format(debug.getinfo(1).source, os.date("%Y-%m-%
 
 -- Force-reload precompiled built-in modules with source to show better stacktrace,
 -- since stacktrace lines like (vim/shared.lua:0) are not quite informative
+-- See neovim CMakeLists.txt, search for CHAR_BLOB_GENERATOR
 local builtin_mods = { "F", "_editor", "_options", "filetype", "fs", "inspect", "keymap", "loader", "shared" }
 for _, mod in ipairs(builtin_mods) do
   package.preload["vim." .. mod] = nil
