@@ -144,7 +144,7 @@ function M._setup_viewer()
     -- Use Skim as a preferred latex viewer.
     -- Tip for Skim: Use "Single Page" display mode to avoid flickering
     local _ = has_skim() and use_skim() or
-              has_texshop() and use_skim()
+              has_texshop() and use_texshop()
   end
 end
 
