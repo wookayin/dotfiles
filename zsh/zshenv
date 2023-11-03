@@ -34,6 +34,12 @@ if [[ -o interactive ]]; then
   unset VIMRUNTIME
 fi
 
+# Workaround conda's bug where $HOST messed up to 'x86_64-conda-linux-gnu', etc.
+# https://github.com/conda/conda/issues/7031
+if [[ "$HOST" == *conda* ]]; then
+  export HOST=$(hostname)
+fi
+
 #
 # Language
 #
