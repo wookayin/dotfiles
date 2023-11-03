@@ -27,9 +27,19 @@ return {
       (require('nvim-treesitter.install').update { with_sync = true })()
     end,
     event = 'VeryLazy',  -- lazy, or on demand (vim.treesitter call) via ftplugin
+    init = function()
+      -- Ensure conda's custom compiler is never used (via $CC);
+      -- conda's gcc can make treesitter parsers and neovim crash
+      -- Note: this needs to be done in init, before importing nvim-treesitter
+      -- See nvim-treesitter/nvim-treesitter#5623
+      if vim.fn.executable("/usr/bin/gcc") > 0 then
+        vim.env.CC = "/usr/bin/gcc"
+        vim.env.GCC = "/usr/bin/gcc"
+      end
+    end,
     config = function()
       require('config.treesitter').setup()
-    end
+    end,
   };
 
   Plug 'nvim-treesitter/playground' {
