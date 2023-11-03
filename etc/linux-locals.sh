@@ -41,7 +41,7 @@ _template_github_latest() {
 
   echo -e "${COLOR_YELLOW}Installing $name from $repo ... ${COLOR_NONE}"
   local download_url=$(\
-    curl -L https://api.github.com/repos/${repo}/releases 2>/dev/null | \
+    curl -fL https://api.github.com/repos/${repo}/releases 2>/dev/null | \
     python -c "\
 import json, sys, fnmatch;
 J = json.load(sys.stdin);
@@ -58,7 +58,7 @@ sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n');sys.
   local tmpdir="$DOTFILES_TMPDIR/$name"
   local filename="$(basename $download_url)"
   mkdir -p $tmpdir
-  curl -SL "$download_url" -o "$tmpdir/$filename"
+  curl -fSL "$download_url" -o "$tmpdir/$filename"
 
   cd "$tmpdir"
   if [ "$filename" == *.tar.gz ]; then
@@ -75,7 +75,7 @@ install_git() {
   # installs a modern version of git locally.
 
   local GIT_LATEST_VERSION=$(\
-    curl -L https://api.github.com/repos/git/git/tags 2>/dev/null | \
+    curl -fL https://api.github.com/repos/git/git/tags 2>/dev/null | \
     python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
   )  # e.g. "v2.38.1"
   test  -n "$GIT_LATEST_VERSION"
@@ -200,7 +200,7 @@ install_bazel() {
 
   # install the 'latest' stable release (no pre-releases.)
   BAZEL_LATEST_VERSION=$(\
-    curl -L https://api.github.com/repos/bazelbuild/bazel/releases/latest 2>/dev/null | \
+    curl -fL https://api.github.com/repos/bazelbuild/bazel/releases/latest 2>/dev/null | \
     python -c 'import json, sys; print(json.load(sys.stdin)["name"])'\
   )
   test -n $BAZEL_LATEST_VERSION
@@ -286,7 +286,7 @@ install_vim() {
   # grab the lastest vim tarball and build it
   local TMP_VIM_DIR="$DOTFILES_TMPDIR/vim/"; mkdir -p $TMP_VIM_DIR
   local VIM_LATEST_VERSION=$(\
-    curl -L https://api.github.com/repos/vim/vim/tags 2>/dev/null | \
+    curl -fL https://api.github.com/repos/vim/vim/tags 2>/dev/null | \
     python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
   )
   test -n $VIM_LATEST_VERSION
@@ -321,7 +321,7 @@ install_neovim() {
 
   # Otherwise, use the latest stable version.
   local NEOVIM_LATEST_VERSION=$(\
-    curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
+    curl -fL https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
     python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
   )   # usually "stable"
   : "${NEOVIM_VERSION:=$NEOVIM_LATEST_VERSION}"
@@ -379,7 +379,7 @@ install_eza() {
   [[ $(pwd) =~ ^"$DOTFILES_TMPDIR/" ]]
 
   cp "./eza" "$PREFIX/bin/eza"
-  curl -L "https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza" > \
+  curl -fL "https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza" > \
     "$PREFIX/share/zsh/site-functions/_eza"
   echo "$(which eza)"
   eza --version
@@ -395,7 +395,7 @@ install_fd() {
   echo $FD_DOWNLOAD_URL
 
   cd $TMP_FD_DIR
-  curl -L $FD_DOWNLOAD_URL | tar -xvzf - --strip-components 1
+  curl -fL $FD_DOWNLOAD_URL | tar -xvzf - --strip-components 1
   cp "./fd" $PREFIX/bin
   mkdir -p $HOME/.local/share/zsh/site-functions
   cp "./autocomplete/_fd" $PREFIX/share/zsh/site-functions
@@ -407,7 +407,7 @@ install_fd() {
 install_ripgrep() {
   # install ripgrep
   RIPGREP_LATEST_VERSION=$(\
-      curl -L https://api.github.com/repos/BurntSushi/ripgrep/releases 2>/dev/null | \
+      curl -fL https://api.github.com/repos/BurntSushi/ripgrep/releases 2>/dev/null | \
       python -c 'import json, sys; J = json.load(sys.stdin); assert J[0]["assets"][0]["name"].startswith("ripgrep"); print(J[0]["name"])'\
   )
   test -n $RIPGREP_LATEST_VERSION
@@ -419,7 +419,7 @@ install_ripgrep() {
   echo $RIPGREP_DOWNLOAD_URL
 
   cd $TMP_RIPGREP_DIR
-  curl -L $RIPGREP_DOWNLOAD_URL | tar -xvzf - --strip-components 1
+  curl -fL $RIPGREP_DOWNLOAD_URL | tar -xvzf - --strip-components 1
   cp "./rg" $PREFIX/bin
 
   mkdir -p $HOME/.local/share/zsh/site-functions
@@ -434,7 +434,7 @@ install_xsv() {
 
   set -x
   mkdir -p $PREFIX/bin && cd $PREFIX/bin
-  curl -L "https://github.com/BurntSushi/xsv/releases/download/${XSV_VERSION}/xsv-${XSV_VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar zxf -
+  curl -fL "https://github.com/BurntSushi/xsv/releases/download/${XSV_VERSION}/xsv-${XSV_VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar zxf -
   $PREFIX/bin/xsv
 }
 
@@ -444,7 +444,7 @@ install_bat() {
 
   set -x
   mkdir -p $PREFIX/bin && cd $PREFIX/bin
-  curl -L "https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat-v${BAT_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
+  curl -fL "https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat-v${BAT_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
     | tar zxf - --strip-components 1 --wildcards --no-anchored 'bat*'     # bat, bat.1
 
   $PREFIX/bin/bat --version
