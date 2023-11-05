@@ -529,8 +529,12 @@ if has('nvim')
     " will enter the insert mode even if it's not having a terminal buffer.
     " One known solution is to check if <amatch> is empty.
     " Credit: https://vi.stackexchange.com/questions/15966/strange-behaviour-of-autocmd
-    autocmd WinEnter *  if !empty(s:safe_expand('<amatch>')) && (&buftype == 'terminal') | startinsert | endif
-    autocmd TermOpen *  if nvim_buf_get_name(0) =~# '^term://' | startinsert | endif
+    autocmd WinEnter,BufWinEnter *
+          \ if !empty(s:safe_expand('<amatch>')) && (&buftype == 'terminal')
+          \ | startinsert | endif
+    autocmd TermOpen *
+          \ if nvim_buf_get_name(0) =~# '^term://'
+          \ | startinsert | endif
 
     " mouse click puts into normal mode even in terminal; disable this
     autocmd TermOpen * tnoremap <buffer><silent> <LeftRelease> <Nop>
