@@ -44,6 +44,10 @@ local session_name=$(tmux display-message -p '#S')
   tmux set -ga status-right "#($cwd/statusbar.tmux component-cpu -S $session_name)"
   # [right status] Memory Usage
   tmux set -ga status-right "#($cwd/statusbar.tmux component-ram -S $session_name)"
+  # [right status] GPU Usage
+  if command -v gpustat &> /dev/null && command -v nvidia-smi &> /dev/null; then
+    tmux set -ga status-right "#($cwd/statusbar.tmux component-gpu -S $session_name)"
+  fi
 
   # [window] number (#I), window flag (#F), window name (#W)
   #   - #F: e.g., Marked or Zoomed. If marked (i.e. #F contains 'M'), highlight it.
@@ -96,6 +100,28 @@ component-cpu() {
     printf "#[$colorfmt] 󰻠 %2.0f %% #[default]" $cpu_percentage
     echo ""
   done
+}
+
+component-gpu() {
+  local gpu_utilization=$( \
+    python -c 'import gpustat; G = gpustat.new_query(); \
+      print("%.1f" % (sum(c.utilization for c in G) / len(G)))' \
+    || echo "error"
+  )  # average gpu utilization. range: 0~100
+  if   (( $(echo "$mem_percentage >= 90" | bc -l) )); then bgcolor='#40C057'; fgcolor='black';
+  elif (( $(echo "$mem_percentage >= 75" | bc -l) )); then bgcolor='#3EAE51'; fgcolor='black';
+  elif (( $(echo "$mem_percentage >= 50" | bc -l) )); then bgcolor='#398A44'; fgcolor='white';
+  elif (( $(echo "$mem_percentage >= 25" | bc -l) )); then bgcolor='#356537'; fgcolor='white';
+  else                                                     bgcolor='#30412A';fgcolor='white';
+  fi
+  local colorfmt="bg=$bgcolor,fg=$fgcolor"
+  if [ "$gpu_utilization" == "error" ]; then
+    echo "  ERR"
+    sleep 1; return 1;
+  else
+    printf "#[$colorfmt]  %2.0f %% #[default]" "$gpu_utilization"
+    sleep 1;
+  fi
 }
 
 component-ram() {
