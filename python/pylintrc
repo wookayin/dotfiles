@@ -46,6 +46,7 @@ disable=blacklisted-name,
         no-else-raise,
         no-else-return,
         forgotten-debug-statement,
+        use-dict-literal,
         fixme
 
 
