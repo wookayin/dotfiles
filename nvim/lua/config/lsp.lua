@@ -81,9 +81,12 @@ local on_attach = function(client, bufnr)
   -- inlay hints (experimental), need to turn it on manually
   if client.server_capabilities.inlayHintProvider and vim.fn.has('nvim-0.10') > 0 then
     local inlay = function(enable)
-      vim.lsp.inlay_hint(bufnr, enable)
+      if enable == 'toggle' then
+        enable = not vim.lsp.inlay_hint.is_enabled(bufnr)
+      end
+      vim.lsp.inlay_hint.enable(bufnr, enable)
     end
-    buf_command("InlayHintsToggle", function(_) inlay(nil) end,
+    buf_command("InlayHintsToggle", function(_) inlay('toggle') end,
       { nargs = 0, desc = "Toggle inlay hints."})
     buf_command("ToggleInlayHints", "InlayHintsToggle", {})
     vim.fn.CommandAlias("ToggleInlayHints", "InlayHintsToggle")
