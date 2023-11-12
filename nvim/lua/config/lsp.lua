@@ -996,7 +996,7 @@ end
 
 -- LspStatus(): status string for airline
 _G.LspStatus = function()
-  if #vim.lsp.get_active_clients({bufnr = 0}) > 0 then
+  if #vim.lsp.get_clients({bufnr = 0}) > 0 then
     return require('lsp-status').status()
   end
   return ''
@@ -1181,7 +1181,7 @@ function M.setup_null_ls()
     -- TODO: Enable only on the current project specified by PATH.
     local formatting_clients = vim.tbl_filter(function(client)
       return client.server_capabilities.documentFormattingProvider
-    end, vim.lsp.get_active_clients({bufnr = 0}))
+    end, vim.lsp.get_clients({bufnr = 0}))
     if vim.tbl_count(formatting_clients) > 0 then
       vim.lsp.buf.format({ timeout_ms = 2000 })
       return true
