@@ -6,6 +6,10 @@ local imap = function(...) vim.keymap.set('i', ...) end
 local cmap = function(...) vim.keymap.set('c', ...) end
 local xmap = function(...) vim.keymap.set('x', ...) end
 
+-- Insert mode: emacs-like navigation (Ctrl-A, Ctrl-E)
+imap('<c-a>', '<c-o>^', { silent = true })  -- beginning-of-line
+imap('<c-e>', '<c-o>$', { silent = true })  -- end-of-line
+
 
 -- In the command mode, <CTRL-/> will toggle the Ex command
 -- between `:lua` and `:lua=`, or between `:py` and `:py=`, etc.
