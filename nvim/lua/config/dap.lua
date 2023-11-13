@@ -215,6 +215,31 @@ M.setup_ui = function()
 end
 
 
+function M.start(opts)
+  -- Currently, there is no public API to override filetype (see mfussenegger/nvim-dap#1090)<
+  -- so we re-implement "select_config_and_run" and call dap.run() manually
+  local filetype = opts.filetype or vim.bo.filetype
+
+  local configurations = require('dap').configurations[filetype] or {}
+  if #configurations == 0 then
+    vim.notify(('No DAP configuration for filetype `%s`.'):format(filetype),
+      vim.log.levels.WARN, { title = 'config/dap' })
+    return
+  end
+  require('dap.ui').pick_if_many(
+    configurations,
+    ("Choose Configuration [%s]"):format(filetype),
+    function(configuration)
+      return configuration.name
+    end,
+    function(configuration)
+      if configuration then
+        require('dap').run(configuration, {})
+      end
+    end)
+end
+
+
 local function command(cmd, fn, opts)
   opts = vim.tbl_deep_extend('force', { bar = true }, opts or {})
   vim.api.nvim_create_user_command(cmd, fn, opts or {})
@@ -246,7 +271,10 @@ M.setup_cmds_and_keymaps = function()  -- Commands and Keymaps.
     end
   end, { desc = 'Start or continue DAP.' })
 
-  command('DebugStart', 'DapContinue')
+  command('DebugStart', function(e)
+    M.start { filetype = e.fargs[1] }
+  end, { nargs = '?', complete = function(...) return vim.tbl_keys(dap.configurations) end })
+
   command('DebugContinue', 'DapContinue')
 
   command('DebugTerminate', 'DapTerminate')
