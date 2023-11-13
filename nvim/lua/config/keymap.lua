@@ -10,6 +10,9 @@ local xmap = function(...) vim.keymap.set('x', ...) end
 imap('<c-a>', '<c-o>^', { silent = true })  -- beginning-of-line
 imap('<c-e>', '<c-o>$', { silent = true })  -- end-of-line
 
+imap('<c-b>', '<c-o>B', { silent = true })  -- words backward
+imap('<c-f>', '<c-o>W', { silent = true })  -- words forward
+
 
 -- In the command mode, <CTRL-/> will toggle the Ex command
 -- between `:lua` and `:lua=`, or between `:py` and `:py=`, etc.
