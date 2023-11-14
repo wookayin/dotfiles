@@ -577,6 +577,11 @@ install_mujoco() {
     (should include $MUJOCO_ROOT/bin).${COLOR_NONE}\n"
 }
 
+install_ollama() {
+  # https://github.com/jmorganca/ollama/releases
+  curl -fSL --show-error --progress-bar -o $HOME/.local/bin/ollama "https://ollama.ai/download/ollama-linux-amd64"
+  $HOME/.local/bin/ollama --version
+}
 
 # entrypoint script
 if [ `uname` != "Linux" ]; then
