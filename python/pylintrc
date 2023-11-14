@@ -28,6 +28,7 @@ extension-pkg-whitelist=numpy,torch
 # http://pylint-messages.wikidot.com/all-codes
 disable=blacklisted-name,
         invalid-name,
+        bad-indentation,
         too-few-public-methods,
         too-many-arguments,
         too-many-branches,
