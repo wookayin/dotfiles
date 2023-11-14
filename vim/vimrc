@@ -1351,7 +1351,9 @@ endfunction
 
 
 " Unset paste when leaving insert mode
-autocmd InsertLeave * silent! set nopaste
+if !has('nvim')
+  autocmd InsertLeave * silent! set nopaste
+endif
 
 " neovim 0.4.0+ : semi-transparent popup menu
 if has('nvim') && has('termguicolors') && (&termguicolors)
