@@ -284,9 +284,12 @@ lsp_setup_opts['ruff_lsp'] = function()
   return { init_options = init_options }
 end
 on_init['ruff_lsp'] = function(client, _)
-  -- Disable hover in favor of Pyright
   if client.server_capabilities then
+    -- Disable ruff hover in favor of Pyright
     client.server_capabilities.hoverProvider = false
+    -- Disable ruff formatting in favor of yapf (null-ls)
+    -- NOTE: ruff-lsp's formatting is a bit buggy, doesn't respect indent_size
+    client.server_capabilities.documentFormattingProvider = false
   end
 end
 
