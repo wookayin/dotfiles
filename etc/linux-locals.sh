@@ -453,21 +453,24 @@ install_bat() {
 install_go() {
   # install go lang into ~/.go
   # https://golang.org/dl/
-  if [[ -d $HOME/.go ]]; then
+  set -x
+  if [ -d "$HOME/.go" ]; then
     echo -e "${COLOR_RED}Error: $HOME/.go already exists.${COLOR_NONE}"
     exit 1;
   fi
+  mkdir -p "$HOME/.go"
 
-  GO_DOWNLOAD_URL="https://dl.google.com/go/go1.9.3.linux-amd64.tar.gz"
+  local GO_VERSION="1.21.4"
+  local GO_DOWNLOAD_URL="https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz"
   TMP_GO_DIR="$DOTFILES_TMPDIR/go/"
 
   wget -nc ${GO_DOWNLOAD_URL} -P ${TMP_GO_DIR} || exit 1;
-  cd ${TMP_GO_DIR} && tar -xvzf "go1.9.3.linux-amd64.tar.gz" || exit 1;
-  mv go $HOME/.go
+  cd ${TMP_GO_DIR} && tar -xvzf "go${GO_VERSION}.linux-amd64.tar.gz" || exit 1;
+  mv go/* "$HOME/.go/"
 
   echo ""
   echo -e "${COLOR_GREEN}Installed at $HOME/.go${COLOR_NONE}"
-  $HOME/.go/bin/go version
+  "$HOME/.go/bin/go" version
 }
 
 install_jq() {
