@@ -80,6 +80,7 @@ vim.api.nvim_create_user_command('Config',
   })
 
 vim.fn.CommandAlias('C', 'Config', 'register_cmd' and true)
-vim.fn.CommandAlias('Ftplugin', 'Config ftplugin/<C-R>=EatWhitespace()<CR>', 'register_cmd' and true)
+vim.fn.CommandAlias('Ftplugin', 'Config ftplugin/<C-R>=EatWhitespace()<CR>', { register_cmd = true })
+vim.fn.CommandAlias('ftplugin', 'Config ftplugin/<C-R>=EatWhitespace()<CR>', { register_cmd = false })
 
 return M
