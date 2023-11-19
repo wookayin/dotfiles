@@ -158,6 +158,8 @@ hi! @text.danger.comment           guibg=#e03131 guifg=white
 
 " Bash
 hi! link @preproc.bash             SpecialComment
+hi!      @command.bash             guifg=white
+hi! link @variable.bash            PreProc
 hi!      @parameter.bash           guifg=NONE
 
 " Markdown
