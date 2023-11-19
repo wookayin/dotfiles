@@ -8,6 +8,7 @@ set -e   # fail when any command fails
 set -o pipefail
 
 PREFIX="$HOME/.local"
+mkdir -p $PREFIX/share/zsh/site-functions
 
 DOTFILES_TMPDIR="/tmp/$USER/linux-locals"
 
@@ -226,12 +227,11 @@ install_bazel() {
   wget -O $TMP_BAZEL_DIR/bazel-installer.sh $BAZEL_URL
 
   # zsh completion
-  mkdir -p $HOME/.local/share/zsh/site-functions
-  wget -O $HOME/.local/share/zsh/site-functions/_bazel https://raw.githubusercontent.com/bazelbuild/bazel/master/scripts/zsh_completion/_bazel
+  wget -O $PREFIX/share/zsh/site-functions/_bazel https://raw.githubusercontent.com/bazelbuild/bazel/master/scripts/zsh_completion/_bazel
 
   # install bazel
   bash $TMP_BAZEL_DIR/bazel-installer.sh \
-      --bin=$HOME/.local/bin \
+      --bin=$PREFIX/bin \
       --base=$HOME/.bazel
 
   # print bazel version
@@ -403,7 +403,6 @@ install_fd() {
   cd $TMP_FD_DIR
   curl -fL $FD_DOWNLOAD_URL | tar -xvzf - --strip-components 1
   cp "./fd" $PREFIX/bin
-  mkdir -p $HOME/.local/share/zsh/site-functions
   cp "./autocomplete/_fd" $PREFIX/share/zsh/site-functions
 
   $PREFIX/bin/fd --version
@@ -414,8 +413,6 @@ install_ripgrep() {
   # https://github.com/BurntSushi/ripgrep/releases
   _template_github_latest "ripgrep" "BurntSushi/ripgrep" "ripgrep-*-x86_64-unknown-linux-musl.tar.gz"
   cp -v "./rg" $PREFIX/bin/
-
-  mkdir -p $HOME/.local/share/zsh/site-functions
   cp -v "./complete/_rg" $PREFIX/share/zsh/site-functions
 
   _which rg
