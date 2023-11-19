@@ -15,6 +15,7 @@ COLOR_NONE="\033[0m"
 COLOR_RED="\033[0;31m"
 COLOR_GREEN="\033[0;32m"
 COLOR_YELLOW="\033[0;33m"
+COLOR_CYAN="\033[0;36m"
 COLOR_WHITE="\033[1;37m"
 
 #---------------------------------------------------------------------------------------------------
@@ -31,6 +32,12 @@ _version_check() {
   [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
 }
 
+_which() {
+  which "$@" >/dev/null || { echo "$@ not found"; return 1; }
+  echo -e "\n${COLOR_CYAN}$(which "$@")${COLOR_NONE}"
+}
+
+# _template_github_latest <name> <namespace/repo> <file *pattern* to match>
 _template_github_latest() {
   local name="$1"
   local repo="$2"
@@ -41,15 +48,15 @@ _template_github_latest() {
 
   echo -e "${COLOR_YELLOW}Installing $name from $repo ... ${COLOR_NONE}"
   local download_url=$(\
-    curl -fL https://api.github.com/repos/${repo}/releases 2>/dev/null | \
-    python -c "\
+    curl -fsSL "https://api.github.com/repos/${repo}/releases" 2>/dev/null \
+    | python -c "\
 import json, sys, fnmatch;
 J = json.load(sys.stdin);
 for asset in J[0]['assets']:
   if fnmatch.fnmatch(asset['name'], '$filename'):
     print(asset['browser_download_url'])
     sys.exit(0)
-sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n');sys.exit(1)
+sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n'); sys.exit(1)
 ")
   echo -e "${COLOR_YELLOW}download_url = ${COLOR_NONE}$download_url"
   test -n "$download_url"
@@ -58,12 +65,16 @@ sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n');sys.
   local tmpdir="$DOTFILES_TMPDIR/$name"
   local filename="$(basename $download_url)"
   mkdir -p $tmpdir
-  curl -fSL "$download_url" -o "$tmpdir/$filename"
+  curl -fSL --progress-bar "$download_url" -o "$tmpdir/$filename"
 
   cd "$tmpdir"
   if [ "$filename" == *.tar.gz ]; then
     echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
     tar -xvzf "$filename"
+    local extracted_folder="${filename%.tar.gz}"
+    if [ -d "$extracted_folder" ]; then
+      cd "$extracted_folder"
+    fi
   fi
 
   echo -e "${COLOR_YELLOW}Copying into $PREFIX ...${COLOR_NONE}"
@@ -108,16 +119,10 @@ install_git() {
 
 install_gh() {
   # github CLI: https://github.com/cli/cli/releases
+  _template_github_latest "gh" "cli/cli" "gh_*_linux_amd64.tar.gz"
 
-  local version="2.20.2"
-  local url="https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz"
-
-  local tmpdir="$DOTFILES_TMPDIR/gh"; mkdir -p $tmpdir
-
-  wget -N -O $tmpdir/gh.tar.gz "$url"
-  tar -xvzf $tmpdir/gh.tar.gz -C $tmpdir --strip-components 1
-  mv $tmpdir/bin/gh $HOME/.local/bin/gh
-
+  cp -v ./bin/gh $HOME/.local/bin/gh
+  _which gh
   $HOME/.local/bin/gh --version
 }
 
@@ -175,13 +180,14 @@ install_node() {
   set -x
   curl -L "https://install-node.vercel.app/$NODE_VERSION" \
     | bash -s -- --prefix=$HOME/.local --verbose --yes
+  set +x
 
-  echo -e "\n$(which node) : $(node --version)"
+  _which node
   node --version
 
   # install some useful nodejs based utility (~/.local/lib/node_modules)
   $HOME/.local/bin/npm install -g yarn
-  which yarn && yarn --version
+  _which yarn && yarn --version
   $HOME/.local/bin/npm install -g http-server diff-so-fancy || true;
 }
 
@@ -190,7 +196,7 @@ install_tmux() {
   # see https://github.com/nelsonenzo/tmux-appimage
   _template_github_latest "tmux" "nelsonenzo/tmux-appimage" "tmux.appimage"
 
-  cp "./tmux.appimage" "$HOME/.local/bin/tmux"
+  cp -v "./tmux.appimage" "$HOME/.local/bin/tmux"
   chmod +x $HOME/.local/bin/tmux
 
   ~/.local/bin/tmux -V
@@ -277,7 +283,7 @@ install_vim() {
 
   # check python3-config
   local PYTHON3_CONFIGDIR=$(python3-config --configdir)
-  echo -e "${COLOR_YELLOW}$ python3-config --configdir =${COLOR_NONE} $PYTHON3_CONFIGDIR"
+  echo -e "${COLOR_YELLOW} python3-config --configdir =${COLOR_NONE} $PYTHON3_CONFIGDIR"
   if [[ "$PYTHON3_CONFIGDIR" =~ (conda|virtualenv|venv) ]]; then
     echo -e "${COLOR_RED}Error: python3-config reports a conda/virtual environment. Deactivate and try again."
     return 1;
@@ -376,9 +382,8 @@ install_neovim() {
 install_eza() {
   # https://github.com/eza-community/eza/releases
   _template_github_latest "eza" "eza-community/eza" 'eza_x86_64-*linux-gnu*'
-  [[ $(pwd) =~ ^"$DOTFILES_TMPDIR/" ]]
 
-  cp "./eza" "$PREFIX/bin/eza"
+  cp -v "./eza" "$PREFIX/bin/eza"
   curl -fL "https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza" > \
     "$PREFIX/share/zsh/site-functions/_eza"
   echo "$(which eza)"
@@ -479,7 +484,7 @@ install_jq() {
 
   cp -v "./jq-linux-amd64" "$PREFIX/bin/jq"
   chmod +x "$PREFIX/bin/jq"
-  echo -e "\n\n${COLOR_WHITE}$(which jq)${COLOR_NONE}"
+  _which jq
   $PREFIX/bin/jq --version
 }
 
@@ -490,7 +495,7 @@ install_duf() {
 
   cp -v "./duf" $PREFIX/bin
 
-  echo -e "\n\n${COLOR_WHITE}$(which duf)${COLOR_NONE}"
+  _which duf
   $PREFIX/bin/duf --version
 }
 
@@ -500,7 +505,7 @@ install_lazydocker() {
 
   cp -v "./lazydocker" $PREFIX/bin
 
-  echo -e "\n\n${COLOR_WHITE}$(which lazydocker)${COLOR_NONE}"
+  _which lazydocker
   $PREFIX/bin/lazydocker --version
 }
 
@@ -510,12 +515,11 @@ install_lazygit() {
 
   cp -v "./lazygit" $PREFIX/bin
 
-  echo -e "\n\n${COLOR_WHITE}$(which lazydocker)${COLOR_NONE}"
+  _which lazygit
   $PREFIX/bin/lazygit --version
 }
 
 install_rsync() {
-
   local URL="https://www.samba.org/ftp/rsync/src/rsync-3.2.4.tar.gz"
   local TMP_DIR="$DOTFILES_TMPDIR/rsync"; mkdir -p $TMP_DIR
 

@@ -151,9 +151,9 @@ def install_local(target, force, argv=[]):
         if ret != 0: # error
             return ret
 
-        print(GREEN("[*] Installation successful: {}\n".format(t)))
+        print(GREEN("\n[*] Installation successful: {}".format(t)))
 
-    print(GREEN("\n[*] Installation(s) successful. You may need to run ") + \
+    print(GREEN("\n\n[*] Installation(s) successful. You may need to run ") + \
           WHITE("`exec zsh`") + \
           GREEN(" to reflect changes in PATH."))
 
