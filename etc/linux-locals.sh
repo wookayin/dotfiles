@@ -51,7 +51,12 @@ _template_github_latest() {
     curl -fsSL "https://api.github.com/repos/${repo}/releases" 2>/dev/null \
     | python -c "\
 import json, sys, fnmatch;
-J = json.load(sys.stdin);
+I = sys.stdin.read()
+try:
+  J = json.loads(I)
+except:
+  sys.stderr.write(I)
+  raise
 for asset in J[0]['assets']:
   if fnmatch.fnmatch(asset['name'], '$filename'):
     print(asset['browser_download_url'])
@@ -64,11 +69,12 @@ sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n'); sys
 
   local tmpdir="$DOTFILES_TMPDIR/$name"
   local filename="$(basename $download_url)"
+  test -n "$filename"
   mkdir -p $tmpdir
   curl -fSL --progress-bar "$download_url" -o "$tmpdir/$filename"
 
   cd "$tmpdir"
-  if [ "$filename" == *.tar.gz ]; then
+  if [[ "$filename" == *.tar.gz ]]; then
     echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
     tar -xvzf "$filename"
     local extracted_folder="${filename%.tar.gz}"
@@ -129,8 +135,8 @@ install_gh() {
 install_ncurses() {
   # installs ncurses (shared libraries and headers) into local namespaces.
 
-  TMP_NCURSES_DIR="$DOTFILES_TMPDIR/ncurses/"; mkdir -p $TMP_NCURSES_DIR
-  NCURSES_DOWNLOAD_URL="https://invisible-mirror.net/archives/ncurses/ncurses-5.9.tar.gz";
+  local TMP_NCURSES_DIR="$DOTFILES_TMPDIR/ncurses/"; mkdir -p $TMP_NCURSES_DIR
+  local NCURSES_DOWNLOAD_URL="https://invisible-mirror.net/archives/ncurses/ncurses-5.9.tar.gz";
 
   wget -nc -O $TMP_NCURSES_DIR/ncurses-5.9.tar.gz $NCURSES_DOWNLOAD_URL
   tar -xvzf $TMP_NCURSES_DIR/ncurses-5.9.tar.gz -C $TMP_NCURSES_DIR --strip-components 1
@@ -144,12 +150,12 @@ install_ncurses() {
 }
 
 install_zsh() {
+  local ZSH_VER="5.8"
+  local TMP_ZSH_DIR="$DOTFILES_TMPDIR/zsh/"; mkdir -p "$TMP_ZSH_DIR"
+  local ZSH_SRC_URL = "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.xz/download"
 
-  ZSH_VER="5.8"
-  TMP_ZSH_DIR="$DOTFILES_TMPDIR/zsh/"; mkdir -p $TMP_ZSH_DIR
-
-  wget -nc -O $TMP_ZSH_DIR/zsh.tar.xz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.xz/download"
-  tar xvJf $TMP_ZSH_DIR/zsh.tar.xz -C $TMP_ZSH_DIR --strip-components 1
+  wget -nc -O $TMP_ZSH_DIR/zsh.tar.xz "$ZSH_SRC_URL"
+  tar xvJf "$TMP_ZSH_DIR/zsh.tar.xz" -C "$TMP_ZSH_DIR" --strip-components 1
   cd $TMP_ZSH_DIR
 
   if [[ -d "$PREFIX/include/ncurses" ]]; then
@@ -205,17 +211,17 @@ install_tmux() {
 install_bazel() {
 
   # install the 'latest' stable release (no pre-releases.)
-  BAZEL_LATEST_VERSION=$(\
+  local BAZEL_LATEST_VERSION=$(\
     curl -fL https://api.github.com/repos/bazelbuild/bazel/releases/latest 2>/dev/null | \
     python -c 'import json, sys; print(json.load(sys.stdin)["name"])'\
   )
   test -n $BAZEL_LATEST_VERSION
-  BAZEL_VER="${BAZEL_LATEST_VERSION}"
+  local BAZEL_VER="${BAZEL_LATEST_VERSION}"
   echo -e "${COLOR_YELLOW}Installing Bazel ${BAZEL_VER} ...${COLOR_NONE}"
 
-  BAZEL_URL="https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/bazel-${BAZEL_VER}-installer-linux-x86_64.sh"
+  local BAZEL_URL="https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/bazel-${BAZEL_VER}-installer-linux-x86_64.sh"
 
-  TMP_BAZEL_DIR="$DOTFILES_TMPDIR/bazel/"
+  local TMP_BAZEL_DIR="$DOTFILES_TMPDIR/bazel/"
   mkdir -p $TMP_BAZEL_DIR
   wget -O $TMP_BAZEL_DIR/bazel-installer.sh $BAZEL_URL
 
@@ -229,7 +235,7 @@ install_bazel() {
       --base=$HOME/.bazel
 
   # print bazel version
-  echo -e "\n\n${COLOR_YELLOW}Bazel at $(which bazel): ${COLOR_NONE}"
+  _which bazel
   bazel 2>/dev/null | grep release | xargs
   echo ""
 }
@@ -237,43 +243,38 @@ install_bazel() {
 install_mambaforge() {
   # Mambaforge.
   # https://conda-forge.org/miniforge/
-  local URL="https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh"
-
-  local TMP_DIR="$DOTFILES_TMPDIR/mambaforge/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
-  wget -nc "$URL"
+  _template_github_latest "mambaforge" "conda-forge/miniforge" "Mambaforge-Linux-x86_64.sh"
 
   local MAMBAFORGE_PREFIX="$HOME/.mambaforge"
-  bash "Mambaforge-Linux-x86_64.sh" -b -p ${MAMBAFORGE_PREFIX}
+  bash "Mambaforge-Linux-x86_64.sh" -b -p "${MAMBAFORGE_PREFIX}"
+  _which $MAMBAFORGE_PREFIX/bin/python3
   $MAMBAFORGE_PREFIX/bin/python3 --version
 }
 
 install_miniforge() {
   # Miniforge3.
   # https://github.com/conda-forge/miniforge
-  local URL="https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
-
-  local TMP_DIR="$DOTFILES_TMPDIR/miniforge/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
-  wget -nc "$URL"
+  _template_github_latest "mambaforge" "conda-forge/miniforge" "Miniforge3-Linux-x86_64.sh"
 
   local MINIFORGE_PREFIX="$HOME/.miniforge3"
   bash "Miniforge3-Linux-x86_64.sh" -b -p ${MINIFORGE_PREFIX}
+  _which $MINIFORGE_PREFIX/bin/python3
   $MINIFORGE_PREFIX/bin/python3 --version
 }
 
 install_miniconda() {
   # installs Miniconda3. (Deprecated: Use miniforge3)
   # https://conda.io/miniconda.html
-  MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+  local MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
 
-  TMP_DIR="$DOTFILES_TMPDIR/miniconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
+  local TMP_DIR="$DOTFILES_TMPDIR/miniconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
   wget -nc $MINICONDA_URL
 
-  MINICONDA_PREFIX="$HOME/.miniconda3/"
+  local MINICONDA_PREFIX="$HOME/.miniconda3/"
   bash "Miniconda3-latest-Linux-x86_64.sh" -b -p ${MINICONDA_PREFIX}
 
   # 3.9.5 as of Nov 2021
   $MINICONDA_PREFIX/bin/python --version
-  echo -e "${COLOR_GREEN}All set!${COLOR_NONE}"
 
   echo -e "${COLOR_YELLOW}Warning: miniconda is deprecated, consider using miniforge3.${COLOR_NONE}"
 }
@@ -410,48 +411,33 @@ install_fd() {
 }
 
 install_ripgrep() {
-  # install ripgrep
-  RIPGREP_LATEST_VERSION=$(\
-      curl -fL https://api.github.com/repos/BurntSushi/ripgrep/releases 2>/dev/null | \
-      python -c 'import json, sys; J = json.load(sys.stdin); assert J[0]["assets"][0]["name"].startswith("ripgrep"); print(J[0]["name"])'\
-  )
-  test -n $RIPGREP_LATEST_VERSION
-  echo -e "${COLOR_YELLOW}Installing ripgrep ${RIPGREP_LATEST_VERSION} ...${COLOR_NONE}"
-  RIPGREP_VERSION="${RIPGREP_LATEST_VERSION}"
-
-  TMP_RIPGREP_DIR="$DOTFILES_TMPDIR/ripgrep"; mkdir -p $TMP_RIPGREP_DIR
-  RIPGREP_DOWNLOAD_URL="https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/ripgrep-${RIPGREP_VERSION}-x86_64-unknown-linux-musl.tar.gz"
-  echo $RIPGREP_DOWNLOAD_URL
-
-  cd $TMP_RIPGREP_DIR
-  curl -fL $RIPGREP_DOWNLOAD_URL | tar -xvzf - --strip-components 1
-  cp "./rg" $PREFIX/bin
+  # https://github.com/BurntSushi/ripgrep/releases
+  _template_github_latest "ripgrep" "BurntSushi/ripgrep" "ripgrep-*-x86_64-unknown-linux-musl.tar.gz"
+  cp -v "./rg" $PREFIX/bin/
 
   mkdir -p $HOME/.local/share/zsh/site-functions
-  cp "./complete/_rg" $PREFIX/share/zsh/site-functions
+  cp -v "./complete/_rg" $PREFIX/share/zsh/site-functions
 
+  _which rg
   $PREFIX/bin/rg --version
-  echo "$(which rg) : $(rg --version)"
 }
 
 install_xsv() {
-  XSV_VERSION="0.13.0"
+  # https://github.com/BurntSushi/xsv/releases
+  _template_github_latest "xsv" "BurntSushi/xsv" "xsv-*-x86_64-unknown-linux-musl.tar.gz"
+  cp -v "./xsv" $PREFIX/bin/
 
-  set -x
-  mkdir -p $PREFIX/bin && cd $PREFIX/bin
-  curl -fL "https://github.com/BurntSushi/xsv/releases/download/${XSV_VERSION}/xsv-${XSV_VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar zxf -
-  $PREFIX/bin/xsv
+  _which xsv
+  $PREFIX/bin/xsv --version
 }
 
 install_bat() {
   # https://github.com/sharkdp/bat/releases
-  local BAT_VERSION="0.22.1"
+  _template_github_latest "bat" "sharkdp/bat" "bat-*-x86_64-unknown-linux-musl.tar.gz"
+  cp -v "./bat" $PREFIX/bin/
+  cp -v "./autocomplete/bat.zsh" $PREFIX/share/zsh/site-functions/_bat
 
-  set -x
-  mkdir -p $PREFIX/bin && cd $PREFIX/bin
-  curl -fL "https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat-v${BAT_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
-    | tar zxf - --strip-components 1 --wildcards --no-anchored 'bat*'     # bat, bat.1
-
+  _which bat
   $PREFIX/bin/bat --version
 }
 
@@ -479,8 +465,8 @@ install_go() {
 }
 
 install_jq() {
+  # https://github.com/jqlang/jq/releases
   _template_github_latest "jq" "jqlang/jq" "jq-linux-amd64"
-  [[ $(pwd) =~ ^"$DOTFILES_TMPDIR/" ]]
 
   cp -v "./jq-linux-amd64" "$PREFIX/bin/jq"
   chmod +x "$PREFIX/bin/jq"
@@ -491,8 +477,6 @@ install_jq() {
 install_duf() {
   # https://github.com/muesli/duf/releases
   _template_github_latest "duf" "muesli/duf" "duf_*_linux_x86_64.tar.gz"
-  [[ $(pwd) =~ ^"$DOTFILES_TMPDIR/" ]]
-
   cp -v "./duf" $PREFIX/bin
 
   _which duf
@@ -501,8 +485,6 @@ install_duf() {
 
 install_lazydocker() {
   _template_github_latest "lazydocker" "jesseduffield/lazydocker" "lazydocker_*_Linux_x86_64.tar.gz"
-  [[ $(pwd) =~ ^$DOTFILES_TMPDIR/ ]]
-
   cp -v "./lazydocker" $PREFIX/bin
 
   _which lazydocker
@@ -511,8 +493,6 @@ install_lazydocker() {
 
 install_lazygit() {
   _template_github_latest "lazygit" "jesseduffield/lazygit" "lazygit_*_Linux_x86_64.tar.gz"
-  [[ $(pwd) =~ ^$DOTFILES_TMPDIR/ ]]
-
   cp -v "./lazygit" $PREFIX/bin
 
   _which lazygit
