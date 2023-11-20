@@ -387,26 +387,18 @@ install_eza() {
   cp -v "./eza" "$PREFIX/bin/eza"
   curl -fL "https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza" > \
     "$PREFIX/share/zsh/site-functions/_eza"
-  echo "$(which eza)"
+  _which eza
   eza --version
 }
 
 install_fd() {
-  # install fd
   # https://github.com/sharkdp/fd/releases
-  local FD_VERSION="v8.5.3"
+  _template_github_latest "fd" "sharkdp/fd" "fd-*-x86_64-unknown-linux-musl.tar.gz"
+  cp -v "./fd" $PREFIX/bin
+  cp -v "./autocomplete/_fd" $PREFIX/share/zsh/site-functions
 
-  TMP_FD_DIR="$DOTFILES_TMPDIR/fd"; mkdir -p $TMP_FD_DIR
-  FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/${FD_VERSION}/fd-${FD_VERSION}-x86_64-unknown-linux-musl.tar.gz"
-  echo $FD_DOWNLOAD_URL
-
-  cd $TMP_FD_DIR
-  curl -fL $FD_DOWNLOAD_URL | tar -xvzf - --strip-components 1
-  cp "./fd" $PREFIX/bin
-  cp "./autocomplete/_fd" $PREFIX/share/zsh/site-functions
-
+  _which fd
   $PREFIX/bin/fd --version
-  echo "$(which fd) : $(fd --version)"
 }
 
 install_ripgrep() {
