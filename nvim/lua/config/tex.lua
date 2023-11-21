@@ -42,7 +42,7 @@ end
 
 -- Register :Build command for the current buffer, see ftplugin/{tex,bib}
 function M.setup_compiler_commands()
-  assert(vim.tbl_contains({'tex', 'bibtex'}, vim.bo.filetype))
+  assert(vim.tbl_contains({'tex', 'bib', 'bibtex'}, vim.bo.filetype))
 
   -- <F5> :Build (single shot compilation)
   vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
