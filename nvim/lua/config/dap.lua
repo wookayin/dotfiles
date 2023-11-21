@@ -500,6 +500,30 @@ M.DebugEvalCompletion = function(A, L, P)
   return ''
 end
 
+-- Customize REPL commands
+M.setup_repl_handlers = function()
+  local repl = require("dap.repl")
+  local utils = require("dap.utils")
+  local commands = {}
+
+  commands.eval_and_print = function(text)
+    local session = assert(require("dap").session())
+    session:evaluate(text, function(err, resp)
+      local message = nil
+      if err then message = utils.fmt_error(err)
+      else message = resp.result
+      end
+
+      if message then
+        repl.append(message, nil, { newline = false })
+      end
+    end)
+  end
+
+  repl.commands.custom_commands[".p"] = commands.eval_and_print
+  repl.commands.custom_commands["p"] = commands.eval_and_print
+end
+
 
 ------------------------------------------------------------------------------
 -- Adapters & Language Configs
@@ -617,6 +641,7 @@ M.setup = function()
   -- Extensions
   M.setup_virtualtext()
   M.setup_breakpoint_persistence()
+  M.setup_repl_handlers()
 
   -- Adapters
   M.setup_lua()
