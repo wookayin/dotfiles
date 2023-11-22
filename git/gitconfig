@@ -133,6 +133,10 @@
 	# Adopt the new default in Git 2.x
 	default = simple
 
+[pull]
+	# Always use rebase when git pull, do not create merge commits
+	rebase = true
+
 [fetch]
 	# Use parallel jobs for fetching submodules
 	parallel = 0
