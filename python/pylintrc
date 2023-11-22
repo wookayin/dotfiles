@@ -41,14 +41,16 @@ disable=blacklisted-name,
         useless-import-alias,
         consider-using-f-string,
         line-too-long,
-        #missing-class-docstring,
-        #missing-function-docstring,
         no-else-break,
         no-else-continue,
         no-else-raise,
         no-else-return,
         forgotten-debug-statement,
         use-dict-literal,
+        # individual projects should enable missing-*
+        missing-class-docstring,
+        missing-module-docstring,
+        missing-function-docstring,
         fixme
 
 
