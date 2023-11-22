@@ -33,6 +33,7 @@ end
 function M.setup_fonts()
   -- Fonts: https://wezfurlong.org/wezterm/config/fonts.html
   config.font = wezterm.font_with_fallback {
+    { family = 'JetBrainsMono NFM', weight = 'Light' },
     { family = 'JetBrainsMono Nerd Font Mono', weight = 'Light' },
     'Hack Nerd Font Mono',
     'Monaco',
