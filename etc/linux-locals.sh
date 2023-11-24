@@ -50,7 +50,7 @@ _template_github_latest() {
   echo -e "${COLOR_YELLOW}Installing $name from $repo ... ${COLOR_NONE}"
   local download_url=$(\
     curl -fsSL "https://api.github.com/repos/${repo}/releases" 2>/dev/null \
-    | python -c "\
+    | python3 -c "\
 import json, sys, fnmatch;
 I = sys.stdin.read()
 try:
@@ -94,7 +94,7 @@ install_git() {
 
   local GIT_LATEST_VERSION=$(\
     curl -fL https://api.github.com/repos/git/git/tags 2>/dev/null | \
-    python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+    python3 -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
   )  # e.g. "v2.38.1"
   test  -n "$GIT_LATEST_VERSION"
 
@@ -214,7 +214,7 @@ install_bazel() {
   # install the 'latest' stable release (no pre-releases.)
   local BAZEL_LATEST_VERSION=$(\
     curl -fL https://api.github.com/repos/bazelbuild/bazel/releases/latest 2>/dev/null | \
-    python -c 'import json, sys; print(json.load(sys.stdin)["name"])'\
+    python3 -c 'import json, sys; print(json.load(sys.stdin)["name"])'\
   )
   test -n $BAZEL_LATEST_VERSION
   local BAZEL_VER="${BAZEL_LATEST_VERSION}"
@@ -274,7 +274,7 @@ install_miniconda() {
   bash "Miniconda3-latest-Linux-x86_64.sh" -b -p ${MINICONDA_PREFIX}
 
   # 3.9.5 as of Nov 2021
-  $MINICONDA_PREFIX/bin/python --version
+  $MINICONDA_PREFIX/bin/python3 --version
 
   echo -e "${COLOR_YELLOW}Warning: miniconda is deprecated, consider using miniforge3.${COLOR_NONE}"
 }
@@ -294,7 +294,7 @@ install_vim() {
   local TMP_VIM_DIR="$DOTFILES_TMPDIR/vim/"; mkdir -p $TMP_VIM_DIR
   local VIM_LATEST_VERSION=$(\
     curl -fL https://api.github.com/repos/vim/vim/tags 2>/dev/null | \
-    python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+    python3 -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
   )
   test -n $VIM_LATEST_VERSION
   local VIM_LATEST_VERSION=${VIM_LATEST_VERSION/v/}    # (e.g) 8.0.1234
@@ -329,7 +329,7 @@ install_neovim() {
   # Otherwise, use the latest stable version.
   local NEOVIM_LATEST_VERSION=$(\
     curl -fL https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
-    python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
+    python3 -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
   )   # usually "stable"
   : "${NEOVIM_VERSION:=$NEOVIM_LATEST_VERSION}"
 
