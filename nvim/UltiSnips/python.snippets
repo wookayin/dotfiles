@@ -159,8 +159,11 @@ def main():
 if __name__ == '__main__':
 	main()
 endsnippet
-snippet PATH
+snippet path "script path (using os.path)"
 __PATH__ = os.path.abspath(os.path.dirname(__file__))
+endsnippet
+snippet PATH "script path (using pathlib)"
+__PATH__ = Path(__file__).resolve().parent
 endsnippet
 
 # Add a typecheck if-raise statement.
