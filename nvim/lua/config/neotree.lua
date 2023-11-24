@@ -115,6 +115,27 @@ function M.setup_neotree()
   vim.keymap.set('n', '<leader>E', '<Cmd>Neotree toggle left<CR>')
   vim.keymap.set('n', '<leader>N', '<Cmd>Neotree toggle float<CR>')
 
+  -- Keymaps (neotree buffer)
+  local augroup = vim.api.nvim_create_augroup('neotree-keymaps', { clear = true })
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'neo-tree',
+    group = augroup,
+    callback = function()
+      -- Ctrl-C: close the window if on a floating window
+      vim.keymap.set('n', '<C-c>', function()
+        local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
+        return is_float and '<Esc>' or '<C-c>'
+      end, { expr = true, remap = true, buffer = true })
+    end,
+  })
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'neo-tree-popup',
+    group = augroup,
+    callback = function()
+      vim.keymap.set('i', '<C-c>', '<Esc>', { remap = true, buffer = true })
+    end,
+  })
+
   _G.neotree = require('neo-tree')
 end
 
