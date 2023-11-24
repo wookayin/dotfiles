@@ -228,6 +228,12 @@ tempfile.mkdtemp(suffix=None)
 endsnippet
 
 # misc utilities
+snippet redirect_stdout "capture stdout (useful for testing)"
+with contextlib.redirect_stdout(io.StringIO()) as f:
+    ${1:pass}
+stdout = f.getvalue()
+$0
+endsnippet
 snippet strftime
 time.strftime(${1:'%Y%m%d-%H%M%S'})
 endsnippet
