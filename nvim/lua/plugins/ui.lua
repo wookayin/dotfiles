@@ -76,15 +76,6 @@ return {
     config = require('config.neotree').setup_neotree,
   };
 
-  Plug 'scrooloose/nerdtree' {
-    cmd = { 'NERDTree', 'NERDTreeToggle', 'NERDTreeTabsToggle' },
-    keys = '<Plug>NERDTreeTabsToggle',
-    dependencies = {
-      Plug 'jistr/vim-nerdtree-tabs';
-      Plug 'Xuyuanp/nerdtree-git-plugin';
-    },
-  };
-
   -- Navigation
   Plug 'vim-voom/VOoM' { cmd = { 'Voom', 'VoomToggle' } };
   Plug 'majutsushi/tagbar' { cmd = { 'Tagbar', 'TagbarOpen', 'TagbarToggle' } };

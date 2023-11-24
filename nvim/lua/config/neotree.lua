@@ -112,9 +112,8 @@ function M.setup_neotree()
   end)
 
   -- Keymaps
-  vim.cmd [[
-    nmap <leader>E  :Neotree toggle<CR>
-  ]]
+  vim.keymap.set('n', '<leader>E', '<Cmd>Neotree toggle left<CR>')
+  vim.keymap.set('n', '<leader>N', '<Cmd>Neotree toggle float<CR>')
 
   _G.neotree = require('neo-tree')
 end

@@ -2425,7 +2425,7 @@ let g:SuperTabNoCompleteAfter = ['^', '\s']
 
 
 " ---------------------------------------------------------------- }}}
-" NerdTree {{{
+" NerdTree (deprecated) {{{
 
 " change CWD when the NERDtree is first loaded to the directory initialized in
 " (e.g. change CWD to the directory hitted by CtrlPZ)
