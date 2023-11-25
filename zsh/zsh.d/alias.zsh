@@ -424,6 +424,16 @@ if (( $+commands[http-server] )); then
     alias http-server="http-server -c-1"
 fi
 
+# ffmpeg/ffprobe
+# Use -hide_banner, only if args are provided (if no args, show banner)
+if (( $+commands[ffmpeg] )); then
+  alias ffmpeg='(){ ffmpeg ${@:+-hide_banner} $@ ;}'
+fi
+if (( $+commands[ffprobe] )); then
+  alias ffprobe='(){ ffprobe ${@:+-hide_banner} $@ ;}'
+fi
+
+# df (duf, pydf)
 if (( $+commands[duf] )); then
     # dotfiles install duf
     alias df="duf"
