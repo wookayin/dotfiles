@@ -11,25 +11,33 @@ snippets_helper = px.__import__('snippets_helper')
 def toCamelCase(s):
     return ''.join(x for x in s.title() if x.isalnum())
 
-def collect_ale_lint_codes(linter_name: str):
-    if not int(vim.eval('get(g:, "ale_enabled", 0)')):
-        # works only if ALE is installed and enabled
-        return ''
+def current_lnum():
+    # Get the current line number (int), 1-indexed.
+    return vim.current.window.cursor[0]
 
-    # find all relevant linting (e.g. pylint) codes for the current line
-    # TODO: ALE does not expose an API for getting all loclist items for the current line
-    all_lints = vim.eval('get(ale#util#FindItemAtCursor(bufnr(""))[0], "loclist")')
-    current_line = vim.current.window.cursor[0]
-
+def collect_lsp_lint_codes(linter_name):
+    lnum = current_lnum()
     codes = set()
-    for lint in all_lints:
-        lnum = int(lint['lnum'])
-        if lnum == current_line:
-            if lint['linter_name'] == linter_name:
-                codes.add(lint['code'])
-        elif lnum > current_line:
-            # loclist is in an ascending order of line number
-            break
+
+    # Note that on dynamic buffer change (e.g. inserting new line),
+    # the diagnostics table will not have been updated yet and thus have some offset
+    diagnostics = vim.eval('luaeval("vim.diagnostic.get(0)")')
+
+    # Logic: find the first line >= current_lnum that has a diagnostic,
+    # and collet all the matching (by source) diagnostic codes.
+    target_lnum = None
+    for d in diagnostics:
+        if d['source'] != linter_name:
+            continue
+        l = int(d['lnum']) + 1   # vim.diagnostic uses 0-index; convert to 1-index.
+        if l >= lnum:
+            if target_lnum is None:
+                target_lnum = l
+            else:
+                # assuming loclist is in an ascending order of line number
+                break
+        if l == target_lnum:
+            codes.add(d['code'])
 
     return ",".join(codes)
 
@@ -109,9 +117,14 @@ endsnippet
 # Linting
 ################################################################################
 
-snippet "(#\s*)?pylint"  "'pylint: disable=...' marker" r
-# pylint: disable=${1:`!p snip.rv = collect_ale_lint_codes("pylint")`}
+snippet "^(\s*)pylint"  "'pylint: disable-next=...' marker" r
+`!p snip.rv = match.group(1)`# pylint: disable-next=${1:`!p snip.rv = collect_lsp_lint_codes("pylint")`}
 endsnippet
+priority -1
+snippet "(#\s*)?pylint"  "'pylint: disable=...' marker" r
+# pylint: disable=${1:`!p snip.rv = collect_lsp_lint_codes("pylint")`}
+endsnippet
+priority 0
 
 snippet "#\s*type"  "'type: ignore' marker (mypy, pyright)" r
 # type: ignore
