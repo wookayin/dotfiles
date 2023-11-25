@@ -552,7 +552,6 @@ if has('nvim')
   command! -nargs=* -count -complete=shellcmd Tvsplit      :exec <q-mods> .' '. (<count> ? <count> : '').'vsplit | :term ' . <q-args>
 
   " Mapping for <c-hjkl> in terminal mode
-  " <c-h> might not work: see https://github.com/neovim/neovim/issues/2048
   tmap <silent> <C-h> <C-\><C-n><cmd>wincmd h<CR>
   tmap <silent> <C-j> <C-\><C-n><cmd>wincmd j<CR>
   tmap <silent> <C-k> <C-\><C-n><cmd>wincmd k<CR>
@@ -561,10 +560,6 @@ if has('nvim')
   tmap <silent> <M-j> <C-\><C-n><cmd>wincmd j<CR>
   tmap <silent> <M-k> <C-\><C-n><cmd>wincmd k<CR>
   tmap <silent> <M-l> <C-\><C-n><cmd>wincmd l<CR>
-
-  " Ctrl-E, Ctrl-Y: Scroll window in terminal-normal mode
-  tmap <silent> <C-e> <C-\><C-n><C-e>
-  tmap <silent> <C-y> <C-\><C-n><C-y>
 
   " Ctrl-/ requires key remapping (neovim 0.8.0, see neovim/neovim#18735)
   tmap <c-/> <c-_>
