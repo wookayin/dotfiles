@@ -41,7 +41,7 @@ M.toggle_fstring = function()
   end
 
   ---@diagnostic disable-next-line: unused-local
-  local srow, scol, ecol, erow = ts_utils.get_vim_range({ node:range() })
+  local srow, scol, erow, ecol = ts_utils.get_vim_range({ node:range() })
   vim.fn.setcursorcharpos(srow, scol)
 
   local char = vim.api.nvim_get_current_line():sub(scol, scol)

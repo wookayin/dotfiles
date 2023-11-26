@@ -47,6 +47,7 @@ local vim_cmd = function(x) return '<Cmd>' .. vim.trim(x) .. '<CR>' end
 local bufmap = function(mode, lhs, rhs, opts)
   return vim.keymap.set(mode, lhs, rhs, vim.tbl_deep_extend("error", { buffer = true }, opts or {}))
 end
+local make_repeatable_keymap = require("utils.rc_utils").make_repeatable_keymap
 
 -- Toggle breakpoint (a non-DAP way)
 bufmap('n', '<leader>b', '<Plug>(python-toggle-breakpoint)', { remap = true })
@@ -56,13 +57,13 @@ end, { buffer = false })
 
 -- Toggle f-string
 local toggle_fstring = vim_cmd [[ lua require("lib.python").toggle_fstring() ]]
-bufmap('n', '<leader>tf', toggle_fstring)
+bufmap('n', '<leader>tf', make_repeatable_keymap('n', '<Plug>(toggle-fstring-n)', toggle_fstring), { remap = true })
 bufmap('i', '<C-f>', toggle_fstring)
 
 -- Toggle line comments (e.g., `type: ignore`, `yapf: ignore`)
 local function make_repeatable_toggle_keymap(comment)
   local auto_lhs = ("<Plug>(ToggleLineComment-%s)"):format(comment:gsub('%W', ''))
-  return require("utils.rc_utils").make_repeatable_keymap('n', auto_lhs, function()
+  return make_repeatable_keymap('n', auto_lhs, function()
     require("lib.python").toggle_line_comment(comment)
   end)
 end

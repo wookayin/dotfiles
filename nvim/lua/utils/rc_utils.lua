@@ -28,10 +28,17 @@ M.make_repeatable_keymap = function (mode, lhs, rhs)
   if not vim.startswith(lhs, "<Plug>") then
     error("`lhs` should start with `<Plug>`, given: " .. lhs)
   end
-  vim.keymap.set(mode, lhs, function()
-    rhs()
-    vim.fn['repeat#set'](vim.api.nvim_replace_termcodes(lhs, true, true, true))
-  end, { buffer = false })
+  if type(rhs) == 'string' then
+    vim.keymap.set(mode, lhs, function()
+      vim.fn['repeat#set'](vim.api.nvim_replace_termcodes(lhs, true, true, true))
+      return rhs
+    end, { buffer = false, expr = true })
+  else
+    vim.keymap.set(mode, lhs, function()
+      rhs()
+      vim.fn['repeat#set'](vim.api.nvim_replace_termcodes(lhs, true, true, true))
+    end, { buffer = false })
+  end
   return lhs
 end
 
