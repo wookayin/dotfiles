@@ -2,25 +2,18 @@
 " (see also python.lua)
 
 if !filereadable('Makefile')
-  if bufname('%') =~ '_test.py$' || expand('%:t') =~ '^test_.*\.py'
-    let &l:makeprg='pytest "%" -s'
-    let b:makeprg_pytest = 1
-  else
     let &l:makeprg='python "%"'
-    let b:makeprg_pytest = 0
-  endif
 endif
-
-if !exists('g:plugs')
-    " Probably not using the full vimrc/init.vim setup
-    finish
-endif
-
 
 setlocal expandtab
 setlocal ts=4
 setlocal sw=4
 setlocal sts=4
+
+if !exists('g:plugs') && !exists('g:lazy_did_setup')
+    " Probably not using plugins, disable ftplugins
+    finish
+endif
 
 if exists('*timer_start')
   function! AutoTabsizePython(...) abort
@@ -40,9 +33,6 @@ endif
 
 setlocal cc=80
 setlocal tw=100
-
-" braceless.vim
-silent! BracelessEnable +indent +highlight
 
 " For python, exclude 'longest' from completeopt in order
 " to prevent underscore prefix auto-completion (e.g. self.__)
@@ -112,26 +102,6 @@ if exists(':ImportSymbol')   " plugin vim-autoimport
 endif
 
 
-let b:gps_available = exists('*luaeval') && luaeval(
-            \ 'pcall(require, "nvim-gps") and require"nvim-gps".is_available()'
-            \ )
-
-function! s:test_suite_on_cursor() abort
-  " Automatically extract the current test method or class (suite)
-  if has_key(b:, 'lsp_current_function')
-    return b:lsp_current_function
-  elseif b:gps_available  " nvim-gps
-    " TODO: This relies on dirty parsing. see nvim-gps#68
-    let loc = split(luaeval('require"nvim-gps".get_location()'))
-    for i in range(len(loc) - 1, 0, -1)
-      if loc[i] =~# '^test' || loc[i] =~# '^Test'
-        return loc[i]
-      endif
-    endfor
-    return ''   " not found
-  else | return '' | endif
-endfunction
-
 " <F5> to run &makeprg on a floaterm window (experimental)
 " pytest or execute the script itself, as per &makeprg
 let s:is_test_file = (expand('%:t:r') =~# "_test$" || expand('%:t:r') =~# '^test_')
@@ -150,12 +120,6 @@ elseif exists('g:loaded_floaterm')
     let l:bufnr = floaterm#terminal#get_bufnr(s:ftname)
     let l:CTRL_U = nr2char(21)
     let l:cmd = ExpandCmd(&makeprg)
-    if get(b:, 'makeprg_pytest', 0)
-      let l:pytest_pattern = s:test_suite_on_cursor()
-      if !empty(l:pytest_pattern)
-        let l:cmd = printf('pytest -s %s -k %s', expand('%:.'), shellescape(l:pytest_pattern))
-      endif
-    endif
     if l:bufnr == -1
       " floaterm#new(bang, cmd, winopts, jobopts)
       " floaterm API is fucking capricious and not sensible :(
