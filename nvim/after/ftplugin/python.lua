@@ -41,34 +41,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 ------------------------------------------------------------------------------
--- Keymaps
+-- Keymaps (see $DOTVIM/lua/lib/python.lua)
 ------------------------------------------------------------------------------
 local vim_cmd = function(x) return '<Cmd>' .. vim.trim(x) .. '<CR>' end
 local bufmap = function(mode, lhs, rhs, opts)
   return vim.keymap.set(mode, lhs, rhs, vim.tbl_deep_extend("error", { buffer = true }, opts or {}))
 end
 
--- Toggle breakpoint
-vim.keymap.set('n', '<leader>b', '<Plug>(python-toggle-breakpoint)', { buffer = true, remap = true })
+-- Toggle breakpoint (a non-DAP way)
+bufmap('n', '<leader>b', '<Plug>(python-toggle-breakpoint)', { remap = true })
 vim.keymap.set('n', '<Plug>(python-toggle-breakpoint)', function()
-  local pattern = "breakpoint()"  -- Use python >= 3.7.
-  local line = vim.fn.getline(".") --[[@as string]]
-  line = vim.trim(line)
-  local lnum = vim.fn.line(".")  ---@cast lnum integer
-
-  if vim.startswith(line, pattern) then
-    vim.cmd.normal("dd")  -- delete the line
-  else
-    local indents = string.rep(" ", vim.fn.indent(vim.fn.prevnonblank(lnum)) or 0)
-    vim.fn.append(lnum - 1, indents .. pattern)
-    vim.cmd.normal("k")
-  end
-  -- save file without any events
-  if vim.bo.modifiable and vim.bo.modified then
-    vim.cmd [[ silent! noautocmd write ]]
-  end
-end, { buffer = true })
-
+  require("lib.python").toggle_breakpoint()
+end, { buffer = false })
 
 -- Toggle f-string
 local toggle_fstring = vim_cmd [[ lua require("lib.python").toggle_fstring() ]]
