@@ -1,6 +1,10 @@
 -- python.lua: python ftplugin
 -- (see also python.vim)
 
+-- Use treesitter highlight for python
+-- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
+require("config.treesitter").setup_highlight('python')
+
 -- LSP: turn on auto formatting by default for a 'project'
 -- condition: when one have .style.yapf file in a git repository.
 -- Executed only once for the current vim session.
@@ -8,7 +12,9 @@
 local function maybe_enable_autoformat(args)
   -- Only on null-ls has been attached
   local client = vim.lsp.get_client_by_id(args.data.client_id)
-  if client.name ~= 'null-ls' then
+  if not client then
+    return
+  elseif client.name ~= 'null-ls' then
     return
   end
 
@@ -28,17 +34,11 @@ local function maybe_enable_autoformat(args)
   end)
 end
 
-if vim.fn.exists('##LspAttach') > 0 then
-  vim.api.nvim_create_autocmd('LspAttach', {
-    once = true,
-    buffer = vim.fn.bufnr(),
-    callback = maybe_enable_autoformat,
-  })
-end
-
--- Use treesitter highlight for python
--- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
-require("config.treesitter").setup_highlight('python')
+vim.api.nvim_create_autocmd('LspAttach', {
+  once = true,
+  buffer = vim.fn.bufnr(),
+  callback = maybe_enable_autoformat,
+})
 
 ------------------------------------------------------------------------------
 -- Keymaps
