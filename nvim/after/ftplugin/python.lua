@@ -58,3 +58,13 @@ end, { buffer = false })
 local toggle_fstring = vim_cmd [[ lua require("lib.python").toggle_fstring() ]]
 bufmap('n', '<leader>tf', toggle_fstring)
 bufmap('i', '<C-f>', toggle_fstring)
+
+-- Toggle line comments (e.g., `type: ignore`, `yapf: ignore`)
+local function make_repeatable_toggle_keymap(comment)
+  local auto_lhs = ("<Plug>(ToggleLineComment-%s)"):format(comment:gsub('%W', ''))
+  return require("utils.rc_utils").make_repeatable_keymap('n', auto_lhs, function()
+    require("lib.python").toggle_line_comment(comment)
+  end)
+end
+bufmap('n', '<leader>ti', make_repeatable_toggle_keymap("type: ignore"), { remap = true })
+bufmap('n', '<leader>ty', make_repeatable_toggle_keymap("yapf: ignore"), { remap = true })

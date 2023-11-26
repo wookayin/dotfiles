@@ -67,29 +67,6 @@ if 1  " TODO: HasPlug('vim-surround')
   vmap <buffer>  <leader>repr  Sfrepr<CR>
 endif
 
-" comment annotations
-function! ToggleLineComment(str)
-  let l:comment = '# ' . a:str
-  let l:line = getline('.')
-  if l:line =~ (l:comment) . '$'
-    " Already exists at the end: strip the comment
-    call setline('.', TrimRight(l:line[:-(len(l:comment) + 1)]))
-  else
-    " or append it if there wasn't
-    call setline('.', l:line . '  ' . l:comment)
-  end
-endfunction
-
-function! s:define_toggle_mapping(name, comment) abort
-  execute 'nmap <Plug>' . a:name . ' ' .
-        \ ':<C-u>call ToggleLineComment("' . a:comment . '")<CR><bar>' .
-        \ ':<c-u>silent! call repeat#set("\<Plug>' . a:name . '")<CR>'
-endfunction
-call s:define_toggle_mapping("ToggleLineComment_type_ignore", "type: ignore")
-nmap <buffer> <leader>ti <Plug>ToggleLineComment_type_ignore
-call s:define_toggle_mapping("ToggleLineComment_yapf_disable", "yapf: disable")
-nmap <buffer> <leader>ty <Plug>ToggleLineComment_yapf_disable
-
 
 
 " Experimental

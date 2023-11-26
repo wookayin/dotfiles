@@ -63,4 +63,19 @@ M.toggle_fstring = function()
   vim.api.nvim_win_set_cursor(winnr, cursor)
 end
 
+M.toggle_line_comment = function(text)
+  local comment = '# ' .. text
+  local line = vim.fn.getline('.') --[[ @as string ]]
+  local newline  ---@type string
+
+  if vim.endswith(line, comment) then
+    -- Already exists at the end: strip the comment
+    newline = string.match(line:sub(1, #line - #comment), "(.-)%s*$")
+  else
+    newline = line .. '  ' .. comment
+  end
+  ---@diagnostic disable-next-line: param-type-mismatch
+  vim.fn.setline('.', newline)
+end
+
 return M
