@@ -43,8 +43,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
 ------------------------------------------------------------------------------
 -- Keymaps
 ------------------------------------------------------------------------------
+local vim_cmd = function(x) return '<Cmd>' .. vim.trim(x) .. '<CR>' end
+local bufmap = function(mode, lhs, rhs, opts)
+  return vim.keymap.set(mode, lhs, rhs, vim.tbl_deep_extend("error", { buffer = true }, opts or {}))
+end
 
--- Breakpoint toggle
+-- Toggle breakpoint
 vim.keymap.set('n', '<leader>b', '<Plug>(python-toggle-breakpoint)', { buffer = true, remap = true })
 vim.keymap.set('n', '<Plug>(python-toggle-breakpoint)', function()
   local pattern = "breakpoint()"  -- Use python >= 3.7.
@@ -64,3 +68,9 @@ vim.keymap.set('n', '<Plug>(python-toggle-breakpoint)', function()
     vim.cmd [[ silent! noautocmd write ]]
   end
 end, { buffer = true })
+
+
+-- Toggle f-string
+local toggle_fstring = vim_cmd [[ lua require("lib.python").toggle_fstring() ]]
+bufmap('n', '<leader>tf', toggle_fstring)
+bufmap('i', '<C-f>', toggle_fstring)
