@@ -48,13 +48,13 @@ M.toggle_fstring = function()
   local is_fstring = (char == "f")
 
   if is_fstring then
-    vim.cmd("normal x")
+    vim.cmd [[normal "_x]]
     -- if cursor is in the same line as text change
     if srow == cursor[1] then
       cursor[2] = cursor[2] - 1 -- negative offset to cursor
     end
   else
-    vim.cmd("normal if")
+    vim.cmd [[noautocmd normal if]]
     -- if cursor is in the same line as text change
     if srow == cursor[1] then
       cursor[2] = cursor[2] + 1 -- positive offset to cursor
