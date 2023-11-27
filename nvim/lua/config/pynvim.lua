@@ -21,18 +21,11 @@ local function system(command)
   return output
 end
 
--- Utility: echomsg with optional highlight.
 local function echom(msg, hlgroup)
-  -- TODO: neovim does not retain highlight unlike :echom does, see neovim#13812
-  -- vim.api.nvim_echo({{ msg, hlgroup }}, true, {})
-  hlgroup = hlgroup or 'Normal'
-  msg = vim.fn.escape(msg, '"')
-  local cmd = [[echohl $hlgroup | echomsg "$msg" | echohl None]]
-  cmd = cmd:gsub('%$(%w+)', { msg = msg, hlgroup = hlgroup })
-  vim.cmd(cmd)
+  vim.api.nvim_echo({{ msg, hlgroup }}, true, {})
 end
 local function warning(msg)
-  return echom(msg, 'WarningMsg')
+  echom(msg, 'WarningMsg')
 end
 local function notify_later(msg, level)
   level = level or vim.log.levels.WARN

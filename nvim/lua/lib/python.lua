@@ -36,7 +36,7 @@ M.toggle_fstring = function()
     node = node:parent()
   end
   if node == nil then
-    vim.cmd.echon [["f-string: not in a string node."]]
+    vim.api.nvim_echo({{ "f-string: not in a string node.", "WarningMsg" }}, false, {})
     return
   end
 
