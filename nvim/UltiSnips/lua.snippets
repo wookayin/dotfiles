@@ -124,6 +124,9 @@ endsnippet
 snippet extend "merge two tables A and B (B takes precedence)"
 vim.tbl_deep_extend("force", ${1:...})$0
 endsnippet
+snippet format.gsub
+("$1"):gsub('%$(%w+)', { $2 })
+endsnippet
 
 snippet is_float "is the window a floating window?"
 vim.api.nvim_win_get_config(${1:winnr}).relative ~= ""$0
