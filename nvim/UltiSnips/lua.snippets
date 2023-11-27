@@ -127,6 +127,12 @@ endsnippet
 snippet format.gsub
 ("$1"):gsub('%$(%w+)', { $2 })
 endsnippet
+snippet echo "nvim_echo() call (like echon)"
+vim.api.nvim_echo({{ ${1:"message"}, ${2:"WarningMsg"} }}, false, {})
+endsnippet
+snippet echom "nvim_echo() call (like echom)"
+vim.api.nvim_echo({{ ${1:"message"}, ${2:"WarningMsg"} }}, true, {})
+endsnippet
 
 snippet is_float "is the window a floating window?"
 vim.api.nvim_win_get_config(${1:winnr}).relative ~= ""$0
