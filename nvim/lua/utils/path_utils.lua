@@ -34,4 +34,32 @@ function M.find_project_root(marker_patterns, opts)
   return marker and vim.fn.fnamemodify(marker, ":h") or nil
 end
 
+---Convert a file path to a Lua module name.
+---@return string|nil
+function M.path_to_lua_package(filePath)
+  local function resolve(p)
+    return vim.loop.fs_realpath(vim.fn.expand(p) --[[@as string]])
+  end
+
+  filePath = resolve(filePath:gsub("\\", "/"))
+  if not filePath then
+    return nil  -- unknown file?
+  end
+  local basePaths = {
+    -- TODO: Respect the package serach path of actual package loaders.
+    resolve("$HOME/.config/nvim") .. "/lua/",
+    resolve("$VIMPLUG") .. "/.-/lua/",
+  }
+  for _, basePath in pairs(basePaths) do
+    if filePath:find(basePath) then
+      basePath = filePath:match(basePath)
+      if basePath then
+        local moduleName = filePath:gsub(basePath, ""):gsub("/", "."):gsub("%.lua$", ""):gsub("%.init$", "")
+        return moduleName
+      end
+    end
+  end
+  return nil
+end
+
 return M
