@@ -14,6 +14,25 @@ end
 augroup_RegisterHighlights = vim.api.nvim_create_augroup('Colorscheme_RegisterHighlightsLua', { clear = true })
 
 
+---A shorthand to nvim_replace_termcodes() to use with nvim_feedkeys().
+---Typically used as:
+---  local t = require("utils.rc_utils").replace_termcodes
+---  vim.api.nvim_feedkeys(t "<cmd>echom 'hi'<CR>", 'n', false)
+---@param key_sequence string
+M.replace_termcodes = function(key_sequence)
+  do_lt = true  -- also translate `<lt>` => `<`
+  special = true  -- replace |keycodes|, e.g. <CR>, <Esc>, <Nop>, <F1>, <C-...>
+  return vim.api.nvim_replace_termcodes(key_sequence, true, do_lt, special)
+end
+
+---A shorthand to nvim_feedkeys(), where keycodes are yet to be replaced.
+---@param key_sequence string
+---@param mode string? mode flags (m n t i x), see :help feedkeys(). By default, 'n' (no remap).
+M.exec_keys = function(key_sequence, mode)
+  local t = M.replace_termcodes
+  vim.api.nvim_feedkeys(t(key_sequence), mode or 'n', false)
+end
+
 ---Register a global internal keymap that wraps `rhs` to be repeatable.
 ---@param mode string|table keymap mode, see vim.keymap.set()
 ---@param lhs string lhs of the internal keymap to be created, should be in the form `<Plug>(...)`
@@ -64,4 +83,5 @@ M.bufdo = function(fn)
   end, M.list_bufs())
 end
 
+_G.rc_utils = M
 return M

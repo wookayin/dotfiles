@@ -29,13 +29,10 @@ elseif lua_package then
 
 -- source (execute) the lua file as a script
 else
-  local exec_keys = function(keys)
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), 'n', false)
-  end
   vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
     vim.cmd [[ update ]]
     -- don't use vim.cmd, to clear lua stacktrace (see RC.should_resource)
-    exec_keys '<Esc>:source %<CR>'
+    require("utils.rc_utils").exec_keys '<Esc>:source %<CR>'
     vim.notify("Sourced lua script: " .. vim.fn.bufname(), vim.log.levels.INFO, { title = 'ftplugin/lua' })
   end, { desc = 'Build: source as a lua script.', nargs = 0 })
 end
