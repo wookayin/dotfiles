@@ -743,23 +743,33 @@ command! Wsudo w !sudo tee % > /dev/null
 nmap <silent> <leader><space> <Cmd>noh<CR>
 
 
-" CD: switch to the directory of the current buffer (or project root), per-tab
-function! CD_to(dir)
+" CD: switch to the directory of the current buffer (or project root),
+" per-tab (cmd = 'tcd'), per-window (cmd = 'lcd'), or globally (cmd = 'cd')
+command! -nargs=0   CD   call CD_to(expand('%:p:h'), 'lcd')
+function! CD_to(dir, cmd) abort
   if empty(a:dir) || a:dir == -1
     return
   endif
   " Use per-tab CWD.see :help :tcd, :lcd, etc.
-  execute 'silent tcd ' . a:dir
-  echohl Directory | echom getcwd() | echohl None
+  if index(['cd', 'tcd', 'lcd'], a:cmd) < 0 | echoerr "Invalid cmd: " . a:cmd | return | end
+  execute printf('silent %s %s', a:cmd, a:dir)
+  if has('nvim-0.8')
+    call luaeval('vim.api.nvim_echo({
+          \   { "[" .. _A[1] .. "] ", "Special" },
+          \   { _A[2], "Directory" }
+          \ }, true, {})
+          \', [{'cd': 'global', 'tcd': 'tab', 'lcd': 'window'}[a:cmd], a:dir])
+  else
+    echohl Directory | echom printf('%s: %s', a:cmd, getcwd()) | echohl None
+  endif
 
   " if NERDTree is open, chdir NERDTree as well
+  " Note: neotree haves automatic 2-way cwd binding
   if exists('g:NERDTree') && g:NERDTree.IsOpen()
     :NERDTreeCWD | wincmd w
   endif
 endfunction
-command! -nargs=0   CD   :call CD_to(expand('%:p:h'))
 
-" CDRoot: switch to the project root directory of the current buffer
 function! DetermineProjectRoot(...) abort
   let l:arg = a:0 >= 1 ? a:000[0]: '%'
   " If the current file is under a git repository, that's it!
@@ -776,16 +786,21 @@ function! DetermineProjectRoot(...) abort
     return ''
   endif
 endfunction
-function! s:CDRoot() abort
+
+" CDRoot: switch to the project root directory of the current buffer
+command! -nargs=?   CDRoot  :call s:CDRoot(<f-args>)
+nmap <silent> <leader>cd     <cmd>CDRoot<CR>
+nmap <silent> <leader>lcd    <cmd>CDRoot lcd<CR>
+function! s:CDRoot(...) abort
+  let l:cd_cmd = a:0 >= 1 ? a:000[0] : 'tcd'
+
   let l:project_root = DetermineProjectRoot()
   if empty(l:project_root)
     echohl WarningMsg | echom 'Cannot determine project root directory. (Want :CD?)' | echohl None
   else
-    return CD_to(l:project_root)
+    return CD_to(l:project_root, l:cd_cmd)
   endif
 endfunction
-command! -nargs=0   CDRoot  :call s:CDRoot()
-nmap <silent> <leader>cd    <cmd>CDRoot<CR>
 
 
 " <leader>R : screen sucks, redraw everything
