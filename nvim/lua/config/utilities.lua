@@ -28,6 +28,7 @@ function M.setup_osc52()
   -- Text yanked to the "+" register will be copied to the system clipboard
   -- over the SSH session using the OSC52 sequence.
   vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup('osc52', { clear = true }),
     callback = function()
       if not _called_setup then
         _called_setup = true
