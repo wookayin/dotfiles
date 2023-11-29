@@ -113,7 +113,7 @@ function M.setup_neotree()
 
   -- Keymaps
   vim.keymap.set('n', '<leader>E', '<Cmd>Neotree toggle left<CR>')
-  vim.keymap.set('n', '<leader>N', '<Cmd>Neotree toggle float<CR>')
+  vim.keymap.set('n', '<leader>N', '<Cmd>Neotree float reveal_force_cwd<CR>')
 
   -- Keymaps (neotree buffer)
   local augroup = vim.api.nvim_create_augroup('neotree-keymaps', { clear = true })
