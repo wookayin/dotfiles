@@ -1,6 +1,13 @@
 # lua.snippets
 # Common luascript usage for neovim config and plugin development
 
+global !p
+import px
+
+snippets_helper = px.__import__('snippets_helper')
+on_ts_node = snippets_helper.on_ts_node
+endglobal
+
 # General Lua
 # -----------
 
@@ -118,6 +125,9 @@ snippet noremap
 vim.keymap.set('n', '${1:<Key>}', function()
 	${2:-- or a key sequence str instead of function}
 end, {desc = '$3'})
+endsnippet
+snippet , "<leader> key" "on_ts_node('string_content')" ei
+<leader>
 endsnippet
 
 # Idioms

@@ -1,13 +1,15 @@
 """px.snippets_helper"""
 
 # See $DOTVIM/UltiSnips/python.snippets
+# pyright: reportGeneralTypeIssues=false
+
 
 import vim  # type: ignore
 try:
     import typing
     if typing.TYPE_CHECKING:
-        import pynvim
-        vim = pynvim.Nvim(...)  # type: ignore
+        import pynvim  # type: ignore
+        vim = pynvim.Nvim(...)  # type: ignore  # noqa
 except ImportError:
     pass
 
@@ -35,4 +37,17 @@ def snip_expand(snip, jump_pos=1, jump_forward=False):
         vim.eval(r'feedkeys("\<C-R>=UltiSnips#JumpForwards()\<CR>")')
 
 
-__all__ = ('snip_expand', )
+def on_ts_node(type_name: str) -> bool:
+    """Returns true if the innermost treesitter node on the current cursor
+    has the given type."""
+
+    return int(vim.funcs.luaeval(
+        'require("utils.ts_utils").get_node_at_cursor():type() == "{}"'\
+        .format(type_name))
+    ) > 0
+
+
+__all__ = (
+    'snip_expand',
+    'on_ts_node',
+)
