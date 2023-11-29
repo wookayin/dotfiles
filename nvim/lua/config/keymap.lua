@@ -26,8 +26,12 @@ cmap('<c-/>', function()
     for _, rule in ipairs {  -- note: order (prefix) matters!
       { 'lua=', 'lua' },
       { 'lua', 'lua=' },
+      { 'python3=', 'python3' },
+      { 'python3', 'python3=' },
       { 'python=', 'python' },
       { 'python', 'python=' },
+      { 'py3=', 'py3' },
+      { 'py3', 'py3=' },
       { 'py=', 'py' },
       { 'py', 'py=' },
     } do
