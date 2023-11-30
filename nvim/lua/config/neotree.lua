@@ -13,12 +13,11 @@ function M.setup_neotree()
           ["r"] = "refresh",
           ["R"] = "rename",
           ["I"] = "toggle_hidden",
+          ["/"] = "fuzzy_finder",
           -- Do not reserve default vim keybindings (I want zt, zz, etc.)
           ["z"] = "none",
           ["H"] = "none",
           ["l"] = "none",  -- make h,l navigation work
-          -- neo-tree's search does not work well, so I don't use it
-          ["/"] = "none",
         },
       },
 
@@ -134,8 +133,6 @@ function M.setup_neotree()
         local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
         return is_float and '<Esc>' or '<C-c>'
       end, { expr = true, remap = true, buffer = true })
-      -- '/': Invoke fuzzy filter ('#')
-      vim.keymap.set('n', '/', '#', { remap = true, buffer = true })
     end,
   })
   vim.api.nvim_create_autocmd('FileType', {
