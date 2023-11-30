@@ -54,6 +54,14 @@ function M.setup_neotree()
       },
     },
 
+    git_status = {
+      window = {
+        mappings = {
+          ["gg"] = false,
+        },
+      }
+    },
+
     -- Layout (see nvim-neo-tree/neo-tree.nvim#130)
     default_component_configs = {
       indent = {
@@ -65,10 +73,10 @@ function M.setup_neotree()
       },
       icon = {
         default = "󰈙",  -- nf-md-file_document
-        folder_closed = "󰉋", -- nf-md-folder
+        folder_closed = "󰉋",  -- nf-md-folder
         folder_open = "󰝰",  -- nf-md-folder-open
         folder_empty = "󰉖",  -- nf-md-folder_outline
-        folder_empty_open = "󰉖", -- nf-md-folder_outline
+        folder_empty_open = "󰉖",  -- nf-md-folder_outline
       },
       git_status = {
         symbols = {
