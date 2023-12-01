@@ -555,8 +555,10 @@ install_mujoco() {
 
 install_ollama() {
   # https://github.com/jmorganca/ollama/releases
-  curl -fSL --show-error --progress-bar -o $HOME/.local/bin/ollama "https://ollama.ai/download/ollama-linux-amd64"
-  $HOME/.local/bin/ollama --version
+  curl -fSL --show-error --progress-bar -o "$HOME/.local/bin/ollama" "https://ollama.ai/download/ollama-linux-amd64"
+  chmod +x "$HOME/.local/bin/ollama"
+  _which ollama
+  ollama --version
 }
 
 # entrypoint script
