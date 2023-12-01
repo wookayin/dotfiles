@@ -1139,13 +1139,6 @@ function M.setup_null_ls()
     debug = false,
   })
 
-  if vim.lsp.buf.format == nil then
-    -- For neovim < 0.8.0, use the legacy formatting_sync API as fallback
-    vim.lsp.buf.format = function(opts)
-      return vim.lsp.buf.formatting_sync(opts, opts.timeout_ms)
-    end
-  end
-
   -- Commands for LSP formatting. :Format
   -- FormattingOptions: @see https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#formattingOptions
   vim.cmd [[
