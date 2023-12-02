@@ -50,4 +50,5 @@ return {
     build = 'make install',
     cmd = { 'Dash', 'DashWord' },
   };
+  Plug 'darfink/vim-plist' { enabled = vim.fn.has('mac') > 0 };
 }
