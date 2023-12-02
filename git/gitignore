@@ -42,7 +42,8 @@ __pycache__
 *.py[cod]
 .condaenv
 
-# Etc
+# Node
+node_modules/
 npm-debug.log
 
 # Log files
