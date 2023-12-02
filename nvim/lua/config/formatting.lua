@@ -21,6 +21,13 @@ function M.setup_conform()
     return { "stylua" }
   end
   cf.python = function()
+    -- Make sure cwd is always the project root to the file, so that
+    -- the right config file (pyproject.toml, .style.yapf, etc.) is picked up
+    local py_root = require("conform.util").root_file({
+      "setup.py", "pyproject.toml", ".style.yapf", ".git",
+    })
+    formatter_opts["yapf"] = { cwd = py_root }
+    formatter_opts["isort"] = { cwd = py_root }
     return { "isort", "yapf" }
   end
   cf.sh = function()
