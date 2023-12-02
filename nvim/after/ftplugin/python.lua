@@ -61,11 +61,12 @@ bufmap('n', '<leader>tf', make_repeatable_keymap('n', '<Plug>(toggle-fstring-n)'
 bufmap('i', '<C-f>', toggle_fstring)
 
 -- Toggle line comments (e.g., `type: ignore`, `yapf: ignore`)
-local function make_repeatable_toggle_keymap(comment)
+local function make_repeatable_toggle_comment_keymap(comment)
   local auto_lhs = ("<Plug>(ToggleLineComment-%s)"):format(comment:gsub('%W', ''))
   return make_repeatable_keymap('n', auto_lhs, function()
     require("lib.python").toggle_line_comment(comment)
   end)
 end
-bufmap('n', '<leader>ti', make_repeatable_toggle_keymap("type: ignore"), { remap = true })
-bufmap('n', '<leader>ty', make_repeatable_toggle_keymap("yapf: ignore"), { remap = true })
+bufmap('n', '<leader>ti', make_repeatable_toggle_comment_keymap("type: ignore"), { remap = true })
+bufmap('n', '<leader>ty', make_repeatable_toggle_comment_keymap("yapf: ignore"), { remap = true })
+
