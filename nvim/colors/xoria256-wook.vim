@@ -93,7 +93,9 @@ hi! @punctuation.bracket     guifg=#afd700
 hi! @punctuation.delimiter   guifg=NONE
 hi! @variable                guifg=NONE
 hi! @variable.builtin        guifg=#d78787 ctermfg=174   " e.g. self, this
-hi def link @none            Normal
+
+hi! @string.injection         guifg=#ffffff guibg=#1c1313
+hi! link @none                Normal
 
 hi link @string.documentation          SpecialComment
 hi link @comment.special               SpecialComment
@@ -163,7 +165,7 @@ hi! link @variable.bash            PreProc
 hi!      @parameter.bash           guifg=NONE
 
 " Markdown
-hi!      @text.literal.block.markdown        guibg=#3a3a3a                  " ```codeblock```
+hi!      @text.literal.block.markdown        guibg=#3a3a3a                  " ```codeblock``` (injection)
 hi! link @text.literal.markdown_inline       Constant
 hi!      @text.reference.markdown_inline     guifg=#228be6 gui=underline    " link
 
