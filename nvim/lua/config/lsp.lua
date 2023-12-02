@@ -1056,7 +1056,7 @@ function M.setup_trouble()
 end
 
 ----------------------------------------
--- Formatting, Linting, and Code actions
+-- Linting, and Code actions
 ----------------------------------------
 function M.setup_null_ls()
   local null_ls = require("null-ls")
@@ -1082,21 +1082,6 @@ function M.setup_null_ls()
   -- @see $VIMPLUG/null-ls.nvim/doc/BUILTINS.md
   -- @see $VIMPLUG/null-ls.nvim/lua/null-ls/builtins/
   local sources = {}
-  do -- [[ formatting ]]
-    vim.list_extend(sources, {
-      -- python
-      require('null-ls.builtins.formatting.yapf').with {
-        condition = cond_if_executable('yapf'),
-      },
-      require('null-ls.builtins.formatting.isort').with {
-        condition = cond_if_executable('isort'),
-      },
-      -- javascript, css, html, etc.
-      require('null-ls.builtins.formatting.prettier').with {
-        condition = cond_if_executable('prettier'),
-      },
-    })
-  end
   do -- [[ diagnostics (linting) ]]
     -- python: pylint, flake8
     vim.list_extend(sources, {
@@ -1107,13 +1092,6 @@ function M.setup_null_ls()
             return executable('pylint') and
               utils.root_has_file({ "pylintrc", ".pylintrc", "setup.cfg", "pyproject.toml" })
           end,
-      },
-    })
-    -- rust: rustfmt
-    vim.list_extend(sources, {
-      require('null-ls.builtins.formatting.rustfmt').with {
-        condition = cond_if_executable('rustfmt'),
-        extra_args = { "--edition=2018" },
       },
     })
   end

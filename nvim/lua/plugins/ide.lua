@@ -64,6 +64,12 @@ return {
     config = require('config.lsp').setup_cmp,
   };
 
+  -- Formatting
+  Plug 'stevearc/conform.nvim' {
+    version = '>=4.0',
+    config = require('config.formatting').setup_conform,
+  };
+
   -- Python
   Plug 'wookayin/semshi' {
     ft = 'python',
