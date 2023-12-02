@@ -47,6 +47,7 @@ function M.setup_conform()
   end
 
   M._setup_command()
+  M._setup_formatexpr()
 end
 
 
@@ -125,6 +126,29 @@ function M.create_buf_command(name, formatters)
     range = true,
     desc = "format the current buffer using conform, formatters = " .. vim.inspect(formatters),
   })
+end
+
+
+function M._setup_formatexpr()
+  -- formatexpr (must be buffer-local for specfic filetypes).
+  -- so that `gq` can work (see stevearc/conform.nvim#55)
+  -- and automatic formatting during the insert mode can happen
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = vim.tbl_keys(require("conform").formatters_by_ft),
+    group = vim.api.nvim_create_augroup('conform_formatexpr', { clear = true }),
+    callback = function()
+      vim.opt_local.formatexpr = "v:lua.conform_formatexpr()"
+    end,
+  })
+  _G.conform_formatexpr = function()
+    local allow_internal = vim.tbl_contains({ "i", "R", "ic", "ix" }, vim.fn.mode())
+    local ret = require("conform").formatexpr({ lsp_fallback = true })
+    if allow_internal then
+      return ret -- insert mode (e.g. exceeding textwidth), allow fallback to the built-in
+    else
+      return 0 -- never fallback to the built-in formatexpr (see stevearc/conform.nvim#55)
+    end
+  end
 end
 
 
