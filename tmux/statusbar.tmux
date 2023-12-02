@@ -8,6 +8,8 @@ set -o pipefail
 cwd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 main() {
+  tmux set-hook -g client-resized "run-shell '~/.tmux/statusbar.tmux'"
+
   # Left status: background color w.r.t per-host prompt color
   if [[ -z "$PROMPT_HOST_COLOR" ]]; then
       TMUX_STATUS_BG="#0087af"   # default
@@ -26,8 +28,13 @@ main() {
 
   # [right status]
   # Set a limit on width to suppress an excessive message '... is not ready' until the first execution is done
-  tmux set -g status-right-length 40
-  tmux set-hook -g client-attached "set -g status-right-length 1; run-shell 'sleep 1.1'; set -g status-right-length 40;"
+  local STATUS_RIGHT_LENGTH=40
+  if [ $(tmux display-message -p '#{client_width}') -lt 100 ]; then
+    STATUS_RIGHT_LENGTH=4
+  fi
+
+  tmux set -g status-right-length $STATUS_RIGHT_LENGTH
+  tmux set-hook -g client-attached "set -g status-right-length 1; run-shell 'sleep 1.1'; set -g status-right-length $STATUS_RIGHT_LENGTH;"
 
   # [right status] prefix, datetime, etc.
   tmux set -g status-right "\
@@ -39,7 +46,8 @@ main() {
 #[fg=#ffffff,bg=#303030,nobold,nounderscore,noitalics]\
 #";
 
-local session_name=$(tmux display-message -p '#S')
+  local session_name=$(tmux display-message -p '#S')
+
   # [right status] CPU Usage
   tmux set -ga status-right "#($cwd/statusbar.tmux component-cpu -S $session_name)"
   # [right status] Memory Usage
