@@ -80,7 +80,6 @@ return {
     end,
     build = UpdateRemotePlugins,
   };
-  Plug 'stsewd/isort.nvim' { cond = has_py3, ft = 'python', build = UpdateRemotePlugins };
   Plug 'wookayin/vim-autoimport' { cond = has_py3, ft = 'python' };
 
   -- Other languages

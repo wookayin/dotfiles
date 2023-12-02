@@ -6,6 +6,8 @@ setlocal.ts = 2
 setlocal.sts = 2
 setlocal.sw = 2
 
+-- Formatting
+require("config.formatting").create_buf_command("Stylua", "stylua")
 
 -- [[ <F5> or :Build ]]
 local is_test = vim.endswith(vim.fn.bufname('%') or '', '_spec.lua')

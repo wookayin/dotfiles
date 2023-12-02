@@ -54,6 +54,15 @@ local make_range = function(args)
   end
   return range
 end
+local error_format_command = function(lsp_fallback, range, filetype)
+  local msg = string.format(
+    "No %s formatters are available %s filetype `%s`.\n" ..
+    "Try %s to see more information.",
+    lsp_fallback and "conform or LSP" or "conform",
+    range and "for range formatting on" or "for", filetype,
+    lsp_fallback and "`:ConformInfo` or `:LspInfo`" or "`:ConformInfo`")
+  vim.notify(msg, vim.log.levels.WARN, { title = "config.formatting" })
+end
 
 -- Define :Format and :ConformFormat commands.
 function M._setup_command()
@@ -66,13 +75,7 @@ function M._setup_command()
       formatters = #args.fargs > 0 and args.fargs or nil,
     })
     if not ret then
-      local msg = string.format(
-        "No %s formatters are available %s filetype `%s`.\n" ..
-        "Try %s to see more information.",
-        lsp_fallback and "conform or LSP" or "conform",
-        range and "for range formatting on" or "for", vim.bo.filetype,
-        lsp_fallback and "`:ConformInfo` or `:LspInfo`" or "`:ConformInfo`")
-      vim.notify(msg, vim.log.levels.WARN, { title = "config.formatting" })
+      error_format_command(lsp_fallback, range, vim.bo.filetype)
     end
   end
 
@@ -92,6 +95,28 @@ function M._setup_command()
     function(args) return Format(args, false) end, {
     nargs = "*", range = true, complete = complete,
     desc = "format the current buffer using conform only (no LSP fallback).",
+  })
+end
+
+--- Can be used in ftplugins to create buffer commands for formatting
+---@param name string command name
+---@param formatters string|string[] the names of formatters to use.
+function M.create_buf_command(name, formatters)
+  formatters = vim.tbl_flatten { formatters }
+  vim.api.nvim_buf_create_user_command(0, name, function(args)
+    local range = make_range(args)
+    local ret = require("conform").format {
+      bufnr = 0,
+      lsp_fallback = false,
+      range = range,
+      formatters = formatters,
+    }
+    if not ret then
+      error_format_command(false, range, vim.bo.filetype)
+    end
+  end, {
+    range = true,
+    desc = "format the current buffer using conform, formatters = " .. vim.inspect(formatters),
   })
 end
 

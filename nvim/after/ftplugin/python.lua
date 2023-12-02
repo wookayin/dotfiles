@@ -5,6 +5,9 @@
 -- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
 require("config.treesitter").setup_highlight('python')
 
+-- Formatting
+require("config.formatting").create_buf_command("Isort", "isort")
+
 -- LSP: turn on auto formatting by default for a 'project'
 -- condition: when one have .style.yapf file in a git repository.
 -- Executed only once for the current vim session.
