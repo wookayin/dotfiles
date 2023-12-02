@@ -1121,7 +1121,6 @@ function M.setup_null_ls()
   -- FormattingOptions: @see https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#formattingOptions
   vim.cmd [[
     command! LspFormatSync        lua vim.lsp.buf.format({timeout_ms = 5000})
-    command! -range=0 Format      LspFormat
   ]]
 
   -- Automatic formatting
