@@ -48,8 +48,10 @@ _template_github_latest() {
   fi
 
   echo -e "${COLOR_YELLOW}Installing $name from $repo ... ${COLOR_NONE}"
+  local releases_url="https://api.github.com/repos/${repo}/releases"
+  echo -e "${COLOR_YELLOW}Reading: ${COLOR_NONE}$releases_url"
   local download_url=$(\
-    curl -fsSL "https://api.github.com/repos/${repo}/releases" 2>/dev/null \
+    curl -fsSL "$releases_url" 2>/dev/null \
     | python3 -c "\
 import json, sys, fnmatch;
 I = sys.stdin.read()
@@ -83,6 +85,7 @@ sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n'); sys
       cd "$extracted_folder"
     fi
   fi
+  echo -e "\n${COLOR_YELLOW}PWD = $(pwd)${COLOR_NONE}"
 
   echo -e "${COLOR_YELLOW}Copying into $PREFIX ...${COLOR_NONE}"
 }
@@ -378,6 +381,16 @@ install_neovim() {
   ln -sf "$NEOVIM_DEST/bin/nvim" "$PREFIX/bin/nvim"
 
   $PREFIX/bin/nvim --version | head -n3
+}
+
+install_delta() {
+  # https://github.com/dandavison/delta/releases
+  _template_github_latest "delta" "dandavison/delta" 'delta-*-x86_64-*-linux-musl.tar.gz'
+
+  cp -v "./delta" "$PREFIX/bin/delta"
+  chmod +x "$PREFIX/bin/delta"
+  _which delta
+  delta --version
 }
 
 install_eza() {
