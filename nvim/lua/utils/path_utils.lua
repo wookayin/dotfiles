@@ -62,4 +62,32 @@ function M.path_to_lua_package(filePath)
   return nil
 end
 
+---Tests if a file contains certain lua regex patterns.
+---@param filePath string
+---@param patterns string[]
+---@return boolean
+---@return nil|{ ['line']:integer, ['match']:string }
+function M.file_contains_pattern(filePath, patterns)
+  -- Open the file
+  local file = io.open(filePath, "r")
+  if not file then
+    error("Unable to open file: " .. filePath)
+  end
+
+  local l = 1
+  for line in file:lines() do
+    for _, pattern in ipairs(patterns) do
+      local match = line:match(pattern)
+      if match then
+        file:close()
+        return true, { line = l, match = match }
+      end
+    end
+    l = l + 1
+  end
+
+  file:close()
+  return false, nil
+end
+
 return M

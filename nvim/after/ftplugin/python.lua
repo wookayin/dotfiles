@@ -18,6 +18,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
       if vim.fn.filereadable(style_yapf) > 0 then
         return true, ("Detected %s"):format(style_yapf)
       end
+      local pyproject_toml = assert(project_root) .. '/pyproject.toml'
+      if vim.fn.filereadable(pyproject_toml) > 0 then
+        local ok, match = require("utils.path_utils").file_contains_pattern(pyproject_toml,
+            { "^%[tool%.yapf%]", "^%[tool%.isort%]"})
+        if ok and match then
+          return true, ("pyproject.toml:%s: %s"):format(match.line, match.match)
+        end
+      end
       return false
     end)
   end,
