@@ -1117,54 +1117,11 @@ function M.setup_null_ls()
     debug = false,
   })
 
-  -- Commands for LSP formatting. :Format
+  -- Commands for LSP formatting. :LspFormat
   -- FormattingOptions: @see https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#formattingOptions
   vim.cmd [[
     command! LspFormatSync        lua vim.lsp.buf.format({timeout_ms = 5000})
   ]]
-
-  -- Automatic formatting
-  -- see $DOTVIM/after/ftplugin/python.vim for filetype use
-  vim.cmd [[
-    augroup LspAutoFormatting
-    augroup END
-    command! -nargs=? LspAutoFormattingOn      lua _G.LspAutoFormattingStart(<q-args>)
-    command!          LspAutoFormattingOff     lua _G.LspAutoFormattingStop()
-  ]]
-  _G.LspAutoFormattingStart = function(misc)
-    vim.cmd [[
-    augroup LspAutoFormatting
-      autocmd!
-      autocmd BufWritePre *    :lua _G.LspAutoFormattingTrigger()
-    augroup END
-    ]]
-    local msg = "Lsp Auto-Formatting has been turned on."
-    if misc and misc ~= '' then
-      msg = msg .. string.format("\n(%s)", misc)
-    end
-    msg = msg .. "\n\n" .. "To disable auto-formatting, run :LspAutoFormattingOff"
-    vim.notify(msg, 'info', { title = "nvim/lua/config/lsp.lua", timeout = 1000 })
-  end
-  _G.LspAutoFormattingTrigger = function()
-    -- Disable on some files (e.g., site-packages or python built-ins)
-    -- Note that `-` is a special character in Lua regex
-    if vim.api.nvim_buf_get_name(0):match '/lib/python3.%d+/' then
-      return false
-    end
-    -- TODO: Enable only on the current project specified by PATH.
-    local formatting_clients = vim.tbl_filter(function(client)
-      return client.server_capabilities.documentFormattingProvider
-    end, vim.lsp.get_clients({bufnr = 0}))
-    if vim.tbl_count(formatting_clients) > 0 then
-      vim.lsp.buf.format({ timeout_ms = 2000 })
-      return true
-    end
-    return false
-  end
-  _G.LspAutoFormattingStop = function()
-    vim.cmd [[ autocmd! LspAutoFormatting ]]
-    vim.notify("Lsp Auto-Formatting has been turned off.", 'warn')
-  end
 end
 
 

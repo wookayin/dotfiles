@@ -6,6 +6,10 @@ function M.setup_conform()
   _G.conform = require("conform")
   require("conform").setup {
     formatters_by_ft = {}, -- see below
+    format_on_save = function(buf)
+      ---@return table format_args
+      return M._should_format_on_save(buf)
+    end,
   }
 
   -- Configure filetypes and formatters
@@ -152,8 +156,145 @@ function M._setup_formatexpr()
 end
 
 
-if RC and RC.should_resource() then
+--- Configure per-project (workspace) autoformatting.
+--- This can be turned on and off by `:AutoFormat` command or `enable_autoformat()`.
+--- Ftplugins can call `maybe_autostart_autoformatting()` to auto-start autoformatting
+--- for the project. See $DOTVIM/after/ftplugin/python.lua for an example.
+
+M._workspace_status = {}
+M._workspace_autostart_checked = {}
+
+local find_project_root = function(buf)
+  if vim.bo[buf].buftype ~= "" then  -- only for normal file buffer
+    return false
+  end
+
+  -- Determine project root. Relies on vim.b.project_root set in ftplugins
+  ---@diagnostic disable-next-line: redundant-return-value  Note: false positive of neodev
+  local path = vim.api.nvim_buf_call(buf, function() return vim.fn.expand("%:p") end)
+  local project_root = (
+    vim.b[buf].project_root or
+    require("utils.path_utils").find_project_root({ ".git" }, { path = path }))
+
+  project_root = project_root and vim.fn.resolve(project_root) or nil
+  return project_root
+end
+
+function M._should_format_on_save(buf)
+  local project_root = find_project_root(buf)
+  if not project_root then
+    return false  -- Do not autoformat if a project/workspace can't be detected
+  end
+  if not M._workspace_status[project_root] then
+    return false
+  end
+  -- some common blacklists
+  if project_root:match '/lib/python3.%d+/' then
+    return false
+  end
+  return { lsp_fallback = true }  -- Do autoformatting.
+end
+
+---@param buf buffer?
+---@param arg? 'on'|'off'|'toggle'|'status'|true|false
+---@param opts? table  {enable_reason: ...}
+function M.enable_autoformat(buf, arg, opts)
+  buf = buf or 0
+  if buf == 0 then buf = vim.api.nvim_get_current_buf() end
+  opts = opts or {}
+
+  local project_root = find_project_root(buf)
+  if not project_root then
+    local msg = ("Cannot autoformat for buffer %d, project root unknown or disabled."):format(buf)
+    vim.api.nvim_echo({{ msg, "WarningMsg" }}, true, {})
+    return
+  end
+
+  local function echo_status()
+    local is_enabled = M._workspace_status[project_root]
+    vim.api.nvim_echo({
+      { project_root, "Directory" },
+      { ": ", "Normal" },
+      { is_enabled and "AutoFormat enabled" or "AutoFormat disabled",
+        is_enabled and "MoreMsg" or "Normal" },
+    }, true, {})
+  end
+
+  if arg == nil or arg == 'on' or arg == 'enable' or arg == true then
+    M._workspace_status[project_root] = true
+  elseif arg == 'off' or arg == 'disable' or arg == false then
+    M._workspace_status[project_root] = false
+  elseif arg == 'toggle' then
+    M._workspace_status[project_root] = not M._workspace_status[project_root]
+  elseif arg == 'status' then -- TODO refactor as is_enabled
+    echo_status()
+  else
+    error("Invalid args: " .. arg)
+  end
+
+  if arg ~= 'status' then
+    local msg = ("%s auto-formatting for the project:\n%s"):format(
+      M._workspace_status[project_root] and "Enabled" or "Disabled", project_root)
+    local timeout = 1000
+    if opts.reason then
+      msg = msg .. '\n\n' .. opts.reason .. ''
+      timeout = 5000
+    end
+    vim.notify(msg, vim.log.levels.INFO, { title = ":AutoFormat", timeout = timeout })
+    echo_status()
+  end
+end
+
+function M.setup_autoformatting()
+  vim.api.nvim_create_user_command('AutoFormat', function(e)
+    if e.args == "" then e.args = 'toggle' end
+    M.enable_autoformat(0, e.args)
+  end, {
+    nargs = '?',
+    complete = function() return { 'on', 'off', 'toggle', 'status' } end,
+  })
+end
+
+--- Enable autoformatting if a condition is met (checked asynchronously).
+---@param buf buffer?
+---@param condition fun(project_root: string):boolean,string?
+function M.maybe_autostart_autoformatting(buf, condition)
+  -- turn on auto formatting ONLY ONCE per the same 'project' directory,
+  -- if the project is configured to use autoformatting (pyproject.toml, .style.yapf, etc.)
+  buf = buf or 0
+  if buf == 0 then
+    buf = vim.api.nvim_get_current_buf()
+  end
+
+  local project_root = find_project_root(buf)
+  if not project_root then
+    return false
+  end
+  if M._workspace_autostart_checked[project_root] then
+    return true
+  end
+  M._workspace_autostart_checked[project_root] = true
+
+  -- Check asynchronously because condition() often involves file I/O.
+  vim.schedule(function()
+    if not vim.api.nvim_buf_is_valid(buf) then
+      return  -- avoid race condition
+    end
+    local enable, reason = condition(project_root)
+    if enable then
+      M.enable_autoformat(buf, true, { reason = reason })
+    end
+  end)
+end
+
+
+function M.setup()
   M.setup_conform()
+  M.setup_autoformatting()
+end
+
+if RC and RC.should_resource() then
+  M.setup()
 end
 
 return M
