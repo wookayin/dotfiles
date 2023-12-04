@@ -33,8 +33,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+local bufcmd = function(...) return vim.api.nvim_buf_create_user_command(0, ...) end
+bufcmd('RuffFixAll', function(_)
+  vim.lsp.buf.code_action {
+    apply = true,
+    filter = function(action)
+      return action.title == "Ruff: Fix All"
+    end,
+  }
+end, { })
+
 ------------------------------------------------------------------------------
--- Keymaps (see $DOTVIM/lua/lib/python.lua)
+-- More Keymaps (see $DOTVIM/lua/lib/python.lua)
 ------------------------------------------------------------------------------
 local vim_cmd = function(x) return '<Cmd>' .. vim.trim(x) .. '<CR>' end
 local bufmap = function(mode, lhs, rhs, opts)
