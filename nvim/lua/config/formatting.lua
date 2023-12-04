@@ -16,15 +16,15 @@ function M.setup_conform()
   -- Do not configure if LSP provides a good formatting (e.g., rustfmt)
   local formatter_opts = require("conform").formatters
   local one_of = vim.tbl_flatten
-  local cf = {}
+  local cf = {}  ---@type table<string, conform.FiletypeFormatter>
 
-  cf.lua = function()
+  cf.lua = (function()
     formatter_opts["stylua"] = {
       prepend_args = { "--indent-type", "Spaces", "--indent-width", tostring(2) },
     }
     return { "stylua" }
-  end
-  cf.python = function()
+  end)()
+  cf.python = (function()
     -- Make sure cwd is always the project root to the file, so that
     -- the right config file (pyproject.toml, .style.yapf, etc.) is picked up
     local py_root = require("conform.util").root_file({
@@ -33,20 +33,19 @@ function M.setup_conform()
     formatter_opts["yapf"] = { cwd = py_root }
     formatter_opts["isort"] = { cwd = py_root }
     return { "isort", "yapf" }
-  end
-  cf.sh = function()
+  end)()
+  cf.sh = (function()
     formatter_opts["shfmt"] = {
       prepend_args = function(ctx) return { "--indent", tostring(vim.bo[ctx.buf].shiftwidth) } end,
     }
     return { "shfmt" }
-  end
+  end)()
   cf.bash = cf.sh
   cf.zsh = cf.sh
   cf.javascript = { one_of({ "prettierd", "prettier" }) }
   cf.typescript = { one_of({ "prettierd", "prettier" }) }
 
   for ft, v in pairs(cf) do
-    if type(v) == "function" then v = v() end
     require("conform").formatters_by_ft[ft] = v
   end
 
