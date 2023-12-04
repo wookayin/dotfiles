@@ -7,6 +7,8 @@ require("config.treesitter").setup_highlight('python')
 
 -- Formatting
 require("config.formatting").create_buf_command("Isort", "isort")
+require("config.formatting").create_buf_command("Yapf", "yapf")
+require("config.formatting").create_buf_command("Black", "black")
 
 local bufnr = vim.api.nvim_get_current_buf()
 vim.api.nvim_create_autocmd('LspAttach', {
