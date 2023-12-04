@@ -189,11 +189,13 @@ hi!      @text.reference.vimdoc      ctermfg=182 guifg=#228be6 gui=underline
 hi! link @text.literal.vimdoc        Constant
 hi!      @text.literal.block.vimdoc  guifg=white guibg=#252525 gui=italic
 
-" luadoc
-hi! link @keyword.luadoc            SpecialComment
-hi! link @keyword.return.luadoc     SpecialComment
-hi! link @include.luadoc            SpecialComment
-hi! link @type.qualifier.luadoc     SpecialComment
+" luadoc (see $VIMPLUG/nvim-treesitter/queries/luadoc/highlights.scm)
+hi! link @comment.luadoc            @comment.documentation
+hi!      @keyword.luadoc            guifg=#a488a6 gui=NONE
+hi! link @keyword.return.luadoc     @keyword.luadoc    " @return
+hi! link @keyword.coroutine.luadoc  @keyword.luadoc    " @async
+hi! link @include.luadoc            @keyword.luadoc    " @module, @package
+hi! link @type.qualifier.luadoc     @keyword.luadoc    " @public, @private, etc.
 
 " C/C++
 hi!      @exception.cpp                           guifg=#ff5d62           " try, catch, ...
