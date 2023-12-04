@@ -71,7 +71,11 @@ end
 --- Compared against `vim.treesitter.start()`, it adds some more "safe-guards";
 --- This works only if treesitter parser has been already installed *through* nvim-treesitter
 --- because the neovim core's built-in parser queries may not be compatible (see M.has_parser)
+--- @param lang string
+--- @param bufnr? buffer|nil
 function M.setup_highlight(lang, bufnr)
+  vim.validate { lang = { lang, 'string' }, bufnr = { bufnr, 'number', true } }
+
   if bufnr == 0 or bufnr == nil then
     bufnr = vim.api.nvim_get_current_buf()
   end
@@ -85,6 +89,7 @@ function M.setup_highlight(lang, bufnr)
     return ok and true or false
   else
     -- Maybe start later when parsers become available
+    vim.notify_once("Installing treesitter parser: " .. lang)
     M._reattach_after_install._deferred[bufnr] = lang
     return false
   end
@@ -108,7 +113,7 @@ M._reattach_after_install = {
 -- Treesitter Parsers (automatic installation and repair)
 ---------------------------------------------------------------------------
 
-  -- Note: parsers are installed at $VIMPLUG/nvim-treesitter/parser/
+-- Note: parsers are installed at $VIMPLUG/nvim-treesitter/parser/
 M.parsers_to_install = vim.tbl_flatten {
   false and { -- regular (not applied; using minimal)
     "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
