@@ -10,14 +10,27 @@ runtime colors/xoria256.vim
 
 let g:colors_name = "xoria256-wook"
 
-
+" Explicitly list and define highlights for default groups that are lacking in
+" the base colorscheme; make the colorscheme look as similar as with the legacy vim
+" colorscheme prior to the new default colorscheme in 0.10 (see neovim/neovim#26378)
+" Note: this list of compat fix might not be exhaustive.
+" (see $VIMRUNTIME/colors/vim.vim) {{{
+hi! link  String        Constant
+hi! link  Function      Identifier
+hi!       MoreMsg       ctermfg=DarkGreen  ctermbg=NONE gui=bold guifg=SeaGreen guibg=NONE
+hi!       Question      ctermfg=LightGreen ctermbg=NONE gui=bold guifg=Green    guibg=NONE
+hi!       WarningMsg    ctermfg=LightRed   ctermbg=NONE gui=NONE guifg=Red      guibg=NONE
+hi! link  WinSeparator  VertSplit
+hi! link  FloatBorder   WinSeparator
+hi! link  QuickFixLine  Search
+" }}}
 
 " override more customized colors
 highlight StatusLine    ctermfg=LightGreen
 highlight ColorColumn   ctermbg=52 guibg=#5f0000
 
 highlight LineNr        ctermfg=248 ctermbg=233   guifg=#a8a8a8 guibg=#121212
-highlight CursorLineNr  cterm=none gui=bold
+highlight CursorLineNr  cterm=none gui=bold guifg=Yellow
 highlight SignColumn    ctermfg=248 ctermbg=233   guifg=#a8a8a8 guibg=#121212
 highlight VertSplit     ctermfg=246 ctermbg=NONE  guifg=#6d747f guibg=NONE
 
@@ -35,7 +48,7 @@ hi link GitSignsDelete  GitGutterDelete
 highlight Normal        ctermfg=255 guifg=#ffffff  ctermbg=NONE guibg=NONE
 highlight EndOfBuffer   ctermfg=240 guifg=#585858  ctermbg=NONE guibg=NONE
 highlight Comment       ctermfg=035 guifg=#38B04A
-hi SpecialComment       ctermfg=250 guifg=#99a899  gui=italic   " docstring
+highlight SpecialComment ctermfg=250 guifg=#99a899  gui=italic   " docstring
 highlight Constant      ctermfg=204 guifg=#ff5f87
 highlight PreProc       ctermfg=219 guifg=#ffafff
 highlight SpecialKey    ctermfg=242 guifg=#666666
@@ -69,10 +82,11 @@ highlight CursorLine    cterm=none
 " better popup menu colors (instead of dark black)
 highlight Pmenu             ctermfg=black guifg=black ctermbg=yellow guibg=#ffec99
 highlight PmenuSel          ctermfg=red guifg=red ctermbg=white guibg=white gui=bold
+highlight PmenuThumb        ctermfg=243 ctermbg=15 guifg=#767676 guibg=white
 
 " neovim: Default background for floating windows (should be dark, not Pmenu)
 if hlexists('NormalFloat')
-  highlight NormalFloat     ctermbg=233 guibg=#121212
+  highlight NormalFloat     ctermbg=233 ctermbg=white guibg=#121212 guifg=white
 endif
 
 " LSP
