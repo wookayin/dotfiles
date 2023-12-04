@@ -177,6 +177,9 @@ fi
 
 export PAGER='less'
 
+# in neovim, try :echo stdpath("data")  or :echo $MASON
+export MASON="$HOME/.local/share/nvim/mason/"
+
 # Unset GIT_EDITOR (usually nvr) inside a neovim-floaterm session.
 # See ~/.vimrc: $GIT_EDITOR section for more details.
 if [[ -n "$FLOATERM" ]]; then
