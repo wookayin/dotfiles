@@ -1,0 +1,47 @@
+# pyproject.toml snippet
+
+snippet isort "configuration for isort formatter."
+[tool.isort]
+# https://pycqa.github.io/isort/docs/configuration/options.html
+profile = "google"
+single_line_exclusions = ['typing', 'typing_extensions']
+extra_standard_library = ['typing_extensions']
+known_third_party = []
+
+endsnippet
+snippet black "configuration for black formatter."
+[tool.black]
+# line-length = 80
+# https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-format
+target-version = ['py311']
+# include = '\.pyi?$'
+extend-exclude = '''
+/(
+    .git
+  | build
+)/
+'''
+
+endsnippet
+snippet yapf "configuration for yapf formatter."
+[tool.yapf]
+# see https://github.com/google/yapf#knobs
+based_on_style = "${1|yapf,google,pep8|}"
+indent_width = 4
+spaces_before_comment = 2
+
+[tool.yapfignore]
+ignore_patterns = [
+]
+
+endsnippet
+snippet pyright "configuration for pyright type checker."
+[tool.pyright]
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+
+typeCheckingMode = "standard"  # off, basic, standard, strict
+
+# Suppress "false positive" type errors to a warning level.
+reportPrivateImportUsage = "warning"
+
+endsnippet
