@@ -1056,7 +1056,7 @@ function M.setup_trouble()
 end
 
 ----------------------------------------
--- Formatting, Linting, and Code actions
+-- Linting, and Code actions
 ----------------------------------------
 function M.setup_null_ls()
   local null_ls = require("null-ls")
@@ -1082,21 +1082,6 @@ function M.setup_null_ls()
   -- @see $VIMPLUG/null-ls.nvim/doc/BUILTINS.md
   -- @see $VIMPLUG/null-ls.nvim/lua/null-ls/builtins/
   local sources = {}
-  do -- [[ formatting ]]
-    vim.list_extend(sources, {
-      -- python
-      require('null-ls.builtins.formatting.yapf').with {
-        condition = cond_if_executable('yapf'),
-      },
-      require('null-ls.builtins.formatting.isort').with {
-        condition = cond_if_executable('isort'),
-      },
-      -- javascript, css, html, etc.
-      require('null-ls.builtins.formatting.prettier').with {
-        condition = cond_if_executable('prettier'),
-      },
-    })
-  end
   do -- [[ diagnostics (linting) ]]
     -- python: pylint, flake8
     vim.list_extend(sources, {
@@ -1107,13 +1092,6 @@ function M.setup_null_ls()
             return executable('pylint') and
               utils.root_has_file({ "pylintrc", ".pylintrc", "setup.cfg", "pyproject.toml" })
           end,
-      },
-    })
-    -- rust: rustfmt
-    vim.list_extend(sources, {
-      require('null-ls.builtins.formatting.rustfmt').with {
-        condition = cond_if_executable('rustfmt'),
-        extra_args = { "--edition=2018" },
       },
     })
   end
@@ -1139,55 +1117,11 @@ function M.setup_null_ls()
     debug = false,
   })
 
-  -- Commands for LSP formatting. :Format
+  -- Commands for LSP formatting. :LspFormat
   -- FormattingOptions: @see https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#formattingOptions
   vim.cmd [[
     command! LspFormatSync        lua vim.lsp.buf.format({timeout_ms = 5000})
-    command! -range=0 Format      LspFormat
   ]]
-
-  -- Automatic formatting
-  -- see $DOTVIM/after/ftplugin/python.vim for filetype use
-  vim.cmd [[
-    augroup LspAutoFormatting
-    augroup END
-    command! -nargs=? LspAutoFormattingOn      lua _G.LspAutoFormattingStart(<q-args>)
-    command!          LspAutoFormattingOff     lua _G.LspAutoFormattingStop()
-  ]]
-  _G.LspAutoFormattingStart = function(misc)
-    vim.cmd [[
-    augroup LspAutoFormatting
-      autocmd!
-      autocmd BufWritePre *    :lua _G.LspAutoFormattingTrigger()
-    augroup END
-    ]]
-    local msg = "Lsp Auto-Formatting has been turned on."
-    if misc and misc ~= '' then
-      msg = msg .. string.format("\n(%s)", misc)
-    end
-    msg = msg .. "\n\n" .. "To disable auto-formatting, run :LspAutoFormattingOff"
-    vim.notify(msg, 'info', { title = "nvim/lua/config/lsp.lua", timeout = 1000 })
-  end
-  _G.LspAutoFormattingTrigger = function()
-    -- Disable on some files (e.g., site-packages or python built-ins)
-    -- Note that `-` is a special character in Lua regex
-    if vim.api.nvim_buf_get_name(0):match '/lib/python3.%d+/' then
-      return false
-    end
-    -- TODO: Enable only on the current project specified by PATH.
-    local formatting_clients = vim.tbl_filter(function(client)
-      return client.server_capabilities.documentFormattingProvider
-    end, vim.lsp.get_clients({bufnr = 0}))
-    if vim.tbl_count(formatting_clients) > 0 then
-      vim.lsp.buf.format({ timeout_ms = 2000 })
-      return true
-    end
-    return false
-  end
-  _G.LspAutoFormattingStop = function()
-    vim.cmd [[ autocmd! LspAutoFormatting ]]
-    vim.notify("Lsp Auto-Formatting has been turned off.", 'warn')
-  end
 end
 
 

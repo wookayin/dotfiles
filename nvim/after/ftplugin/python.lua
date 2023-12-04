@@ -5,39 +5,30 @@
 -- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
 require("config.treesitter").setup_highlight('python')
 
--- LSP: turn on auto formatting by default for a 'project'
--- condition: when one have .style.yapf file in a git repository.
--- Executed only once for the current vim session.
+-- Formatting
+require("config.formatting").create_buf_command("Isort", "isort")
 
-local function maybe_enable_autoformat(args)
-  -- Only on null-ls has been attached
-  local client = vim.lsp.get_client_by_id(args.data.client_id)
-  if not client then
-    return
-  elseif client.name ~= 'null-ls' then
-    return
-  end
-
-  if vim.g._python_autoformatting_detected then
-    return
-  end
-
-  vim.g._python_autoformatting_detected = 1  -- do not auto-turn on any more
-  vim.schedule(function()
-    local project_root = vim.fn.DetermineProjectRoot()
-    if project_root and project_root ~= "" then
-      local style_yapf = project_root .. '/.style.yapf'
-      if vim.fn.filereadable(style_yapf) > 0 then
-        vim.cmd['LspAutoFormattingOn'](style_yapf)
-      end
-    end
-  end)
-end
-
+local bufnr = vim.api.nvim_get_current_buf()
 vim.api.nvim_create_autocmd('LspAttach', {
   once = true,
-  buffer = vim.fn.bufnr(),
-  callback = maybe_enable_autoformat,
+  buffer = bufnr,
+  callback = function()
+    require("config.formatting").maybe_autostart_autoformatting(bufnr, function(project_root)
+      local style_yapf = assert(project_root) .. '/.style.yapf'
+      if vim.fn.filereadable(style_yapf) > 0 then
+        return true, ("Detected %s"):format(style_yapf)
+      end
+      local pyproject_toml = assert(project_root) .. '/pyproject.toml'
+      if vim.fn.filereadable(pyproject_toml) > 0 then
+        local ok, match = require("utils.path_utils").file_contains_pattern(pyproject_toml,
+            { "^%[tool%.yapf%]", "^%[tool%.isort%]"})
+        if ok and match then
+          return true, ("pyproject.toml:%s: %s"):format(match.line, match.match)
+        end
+      end
+      return false
+    end)
+  end,
 })
 
 ------------------------------------------------------------------------------

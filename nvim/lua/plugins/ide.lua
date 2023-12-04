@@ -64,6 +64,12 @@ return {
     config = require('config.lsp').setup_cmp,
   };
 
+  -- Formatting
+  Plug 'stevearc/conform.nvim' {
+    version = '>=4.0',
+    config = require('config.formatting').setup,
+  };
+
   -- Python
   Plug 'wookayin/semshi' {
     ft = 'python',
@@ -74,7 +80,6 @@ return {
     end,
     build = UpdateRemotePlugins,
   };
-  Plug 'stsewd/isort.nvim' { cond = has_py3, ft = 'python', build = UpdateRemotePlugins };
   Plug 'wookayin/vim-autoimport' { cond = has_py3, ft = 'python' };
 
   -- Other languages
