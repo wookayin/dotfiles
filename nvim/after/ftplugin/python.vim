@@ -15,14 +15,15 @@ if !exists('g:plugs') && !exists('g:lazy_did_setup')
     finish
 endif
 
-if exists('*timer_start')
+if has('nvim')
+  " TODO: Remove this config, should use .editorconfig
   function! AutoTabsizePython(...) abort
     let l:project_root = DetermineProjectRoot()
     let l:pylintrc_path = filereadable(".pylintrc") ? ".pylintrc" : l:project_root . '/.pylintrc'
     if !filereadable(l:pylintrc_path)
       return -1  " no pylintrc found
     endif
-    if !empty(systemlist("grep \"indent-string='  '\" " .. shellescape(l:pylintrc_path)))
+    if !empty(systemlist("grep \"^indent-string='  '\" " .. shellescape(l:pylintrc_path)))
       setlocal ts=2 sw=2 sts=2
       return 2  " Use tabsize 2
     endif
