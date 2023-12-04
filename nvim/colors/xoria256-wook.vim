@@ -112,6 +112,7 @@ hi! @string.injection         guifg=#ffffff guibg=#1c1313
 hi! link @none                Normal
 
 hi link @string.documentation          SpecialComment
+hi link @comment.documentation         SpecialComment
 hi link @comment.special               SpecialComment
 
 hi! @text.strong                       gui=bold
