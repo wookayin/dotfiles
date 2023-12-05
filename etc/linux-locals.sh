@@ -92,6 +92,24 @@ sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n'); sys
 
 #---------------------------------------------------------------------------------------------------
 
+install_cmake() {
+  local TMP_DIR="$DOTFILES_TMPDIR/cmake";
+  mkdir -p "$TMP_DIR" && cd "$TMP_DIR"
+
+  local CMAKE_VERSION="3.27.9"
+  test -d "cmake-${CMAKE_VERSION}" && {\
+    echo -e "${COLOR_RED}Error: $(pwd)/cmake-${CMAKE_VERSION} already exists.${COLOR_NONE}"; return 1; }
+
+  wget -N  "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz"
+  tar -xvzf "cmake-${CMAKE_VERSION}.tar.gz"
+  cd "cmake-${CMAKE_VERSION}"
+
+  ./configure --prefix="$PREFIX" --parallel=16
+  make -j16 && make install
+
+  "$PREFIX/bin/cmake" --version
+}
+
 install_git() {
   # installs a modern version of git locally.
 
