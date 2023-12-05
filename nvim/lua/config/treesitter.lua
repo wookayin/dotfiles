@@ -219,6 +219,40 @@ vim.schedule(function()
 end)
 
 
+--- Manually install by building parsers from a local, devel workspace.
+--- Need to first build parser.c manually ($ npm run build && npm run test)
+--- e.g. install_parsers_from_devel("luadoc", "~/workspace/dev/tree-sitter-luadoc")
+function M.install_parsers_from_devel(lang, dir)
+  vim.validate { lang = { lang, 'string' }, dir = { dir, 'string' } }
+  dir = vim.fn.expand(dir) --[[ @as string ]]
+
+  -- Glob src/*.c in the directory.
+  local cwd = vim.fn.getcwd()
+  assert(vim.fn.isdirectory(dir) > 0, "Invalid dir: " .. dir)
+  vim.fn.chdir(dir)
+  local ok, result = pcall(function()
+    return vim.tbl_filter(function(p)
+      return #p > 0
+    end, vim.split(vim.fn.glob('src/*.c'), '\n'))
+  end)
+  vim.fn.chdir(cwd)
+  if not ok then return error(result) end
+  local files = result  --[[ @as string[] ]]
+  assert(vim.tbl_count(files) > 0, "parser.c not found.")
+
+  -- Install treesitter parsers.
+  local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
+  parser_configs[lang].install_info = {
+    url = dir,
+    files = files,  -- e.g. { "src/parser.c", "src/scanner.c" },
+  }
+  vim.notify(string.format("Installing `%s` tree-sitter parser from source:\n\n%s",
+    lang, vim.inspect(parser_configs[lang].install_info)))
+  vim.cmd.TSInstall { args = { lang }, bang = true }
+end
+
+
+
 ---------------------------------------------------------------------------
 -- Custom treesitter queries
 ---------------------------------------------------------------------------
