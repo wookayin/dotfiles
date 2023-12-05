@@ -191,11 +191,16 @@ hi!      @text.literal.block.vimdoc  guifg=white guibg=#252525 gui=italic
 
 " luadoc (see $VIMPLUG/nvim-treesitter/queries/luadoc/highlights.scm)
 hi! link @comment.luadoc            @comment.documentation
+" - various annotations
 hi!      @keyword.luadoc            guifg=#a488a6 gui=NONE
 hi! link @keyword.return.luadoc     @keyword.luadoc    " @return
 hi! link @keyword.coroutine.luadoc  @keyword.luadoc    " @async
 hi! link @include.luadoc            @keyword.luadoc    " @module, @package
 hi! link @type.qualifier.luadoc     @keyword.luadoc    " @public, @private, etc.
+" - @field: see nvim-treesitter/nvim-treesitter#5762
+hi!      @field.lua                 guifg=NONE
+hi!      @field.luadoc              guifg=#a4ad2b
+
 
 " C/C++
 hi!      @exception.cpp                           guifg=#ff5d62           " try, catch, ...
