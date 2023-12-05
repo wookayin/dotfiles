@@ -110,9 +110,12 @@ function M._setup_lsp_keymap()
 end
 
 
--- List LSP servers that will be automatically installed upon entering filetype for the first time.
--- LSP servers will be installed locally via mason at: ~/.local/share/nvim/mason/packages/
--- (lspconfig_name => { filetypes } or true)
+--- @alias lspserver_name string
+--- @alias vim_filetype string
+
+--- List LSP servers that will be automatically installed upon entering filetype for the first time.
+--- LSP servers will be installed locally via mason at: ~/.local/share/nvim/mason/packages/
+--- @type table<lspserver_name, boolean|vim_filetype[]>
 local auto_lsp_servers = {
   -- @see $VIMPLUG/mason-lspconfig.nvim/lua/mason-lspconfig/mappings/filetype.lua
   ['pyright'] = true,
@@ -185,7 +188,8 @@ function M._ensure_mason_installed()
   local ft_handler = {}
   for ft, lsp_names in pairs(filetype_mappings) do
     lsp_names = vim.tbl_filter(function(lsp_name)
-      return auto_lsp_servers[lsp_name] == true or vim.tbl_contains(auto_lsp_servers[lsp_name] or {}, lsp_name)
+      ---@diagnostic disable-next-line: param-type-mismatch
+      return auto_lsp_servers[lsp_name] == true or vim.tbl_contains(auto_lsp_servers[lsp_name] or {}, ft)
     end, lsp_names)
 
     ft_handler[ft] = vim.schedule_wrap(function()
@@ -238,13 +242,14 @@ function M.lsp_default_capabilities()
 end
 
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
--- @see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
--- @see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
+-- see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+-- see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
+---@type table<lspserver_name, table | fun():table>
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
 
--- (lsp_name: string) => function(client, init_result),
--- @see :help vim.lsp.start_client()
+---@see lsp.ClientConfig :help vim.lsp.start_client()
+---@type table<lspserver_name, fun(client: lsp.Client, init_result: table)>
 local on_init = {}
 M.on_init = on_init
 
