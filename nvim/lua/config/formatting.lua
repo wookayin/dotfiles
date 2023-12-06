@@ -232,14 +232,14 @@ function M.enable_autoformat(buf, arg, opts)
   end
 
   if arg ~= 'status' then
-    local msg = ("%s auto-formatting for the project:\n%s"):format(
+    local msg = ("%s auto-formatting for the project:\n`%s`"):format(
       M._workspace_status[project_root] and "Enabled" or "Disabled", project_root)
     local timeout = 1000
     if opts.reason then
-      msg = msg .. '\n\n' .. opts.reason .. ''
+      msg = msg .. "\n\nreason:\n> `" .. opts.reason .. "`"
       timeout = 5000
     end
-    vim.notify(msg, vim.log.levels.INFO, { title = ":AutoFormat", timeout = timeout })
+    vim.notify(msg, vim.log.levels.INFO, { title = ":AutoFormat", timeout = timeout, markdown = true })
     echo_status()
   end
 end

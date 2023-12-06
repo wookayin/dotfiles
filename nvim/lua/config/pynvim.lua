@@ -32,12 +32,7 @@ local function notify_later(msg, level)
   vim.schedule(function()
     vim.notify(msg, level, {
       title = '~/.config/nvim/lua/config/pynvim.lua', timeout = 10000,
-      -- highlight the notification popup with markdown
-      on_open = vim.schedule_wrap(function(win)
-        local buf = vim.api.nvim_win_get_buf(win)
-        vim.wo[win].conceallevel = 2  -- do not show literally ```, etc.
-        pcall(vim.treesitter.start, buf, 'markdown')
-      end),
+      markdown = true,
     })
   end)
 end

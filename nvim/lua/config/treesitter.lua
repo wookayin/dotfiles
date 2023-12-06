@@ -191,8 +191,8 @@ function M.try_recover_parser_errors(lang, err)
   ]]
 
   -- Try to recover automatically, if nvim-treesitter is still importable.
-  local noti_opts = { print = true, timeout = 10000, title = 'config/treesitter' }
-  vim.notify("Fatal error on treesitter parsers (see :messages). " ..
+  local noti_opts = { print = true, timeout = 10000, title = 'config/treesitter', markdown = true }
+  vim.notify("Fatal error on treesitter parsers (see `:messages`). " ..
              "Trying to reinstall treesitter parsers...",
              vim.log.levels.WARN, noti_opts)
 
@@ -213,8 +213,8 @@ end
 -- may cause startup errors. Try to inform users with more informative message.
 vim.schedule(function()
   if not pcall(require, 'nvim-treesitter') then
-    vim.notify("nvim-treesitter is outdated. Please update the plugin (:Lazy update).",
-      vim.log.levels.ERROR, { title = 'config/treesitter.lua' })
+    vim.notify("nvim-treesitter is outdated. Please update the plugin (`:Lazy update`).",
+      vim.log.levels.ERROR, { title = 'config/treesitter.lua', markdown = true })
   end
 end)
 
