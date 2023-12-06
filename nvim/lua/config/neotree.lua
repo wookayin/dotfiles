@@ -13,7 +13,9 @@ function M.setup_neotree()
           ["r"] = "refresh",
           ["R"] = "rename",
           ["I"] = "toggle_hidden",
-          ["/"] = "fuzzy_finder",
+          ["z/"] = "fuzzy_finder",
+          ["g/"] = "fuzzy_finder",
+          ["/"] = "none",
           -- Do not reserve default vim keybindings (I want zt, zz, etc.)
           ["z"] = "none",
           ["H"] = "none",
