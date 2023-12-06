@@ -77,10 +77,10 @@ local function determine_pip_args()
     end
   end
 
-  local py_version = python3_version()
-  if py_version and py_version[2] >= 12 then  -- python 3.12
-    return pip_option .. [[ 'pynvim @ git+https://github.com/neovim/pynvim' ]]
-  end
+  -- local py_version = python3_version()
+  -- if needs_pynvim_nightly then
+  --  return pip_option .. [[ 'pynvim @ git+https://github.com/neovim/pynvim' ]]
+  -- end
   return pip_option .. "pynvim"
 end
 
