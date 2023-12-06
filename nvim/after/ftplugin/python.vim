@@ -10,6 +10,15 @@ setlocal ts=4
 setlocal sw=4
 setlocal sts=4
 
+setlocal colorcolumn=+1
+setlocal textwidth=79
+
+" disable automatic line wrap in normal text, in favor of formatters (yapf)
+setlocal formatoptions-=t
+" but auto-wrap comments after 79 characters
+setlocal formatoptions+=c
+
+
 if !exists('g:plugs') && !exists('g:lazy_did_setup')
     " Probably not using plugins, disable ftplugins
     finish
@@ -31,9 +40,6 @@ if has('nvim')
   endfunction
   call timer_start(0, function('AutoTabsizePython'))
 endif
-
-setlocal cc=80
-setlocal tw=100
 
 " For python, exclude 'longest' from completeopt in order
 " to prevent underscore prefix auto-completion (e.g. self.__)
