@@ -339,6 +339,11 @@ alias pytest-pudb='pytest -s --pudb'
 alias pytest-html='pytest --self-contained-html --html'
 alias green='green -vv'
 
+# py-spy: on macOS, root priviliege is needed
+if [[ "$(uname)" == "Darwin" ]]; then
+  alias py-spy='sudoenv py-spy'
+fi
+
 # some useful fzf-grepping functions for python
 function pip-list-fzf() {
   pip list "$@" | fzf --header-lines 2 --reverse --nth 1 --multi | awk '{print $1}'
