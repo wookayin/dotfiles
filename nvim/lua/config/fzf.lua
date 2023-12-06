@@ -35,6 +35,7 @@ function M.setup_fzf()
   local global_opts = {
     keymap = {
       -- 'builtin' means keymap for the neovim's terminal buffer (tmap <buffer>)
+      -- For custom tmap on the fzf terminal buffer, see `on_create` below
       builtin = extend(defaults.keymap.builtin) {
         ["<Esc>"] = "abort",
         ["<C-/>"] = "toggle-preview",
@@ -60,8 +61,11 @@ function M.setup_fzf()
         flip_columns = 160,
       },
       on_create = function()
-        -- Some (global) terminal keymaps should be disabled for fzf-lua, see GH-871
-        local keys_passthrough = { '<C-e>', '<C-y>' }
+        -- Some (global) terminal keymaps should be disabled for fzf-lua
+        local keys_passthrough = {
+          '<C-e>', '<C-y>',  -- ibhagwan/fzf-lua#871
+          '<C-j>', '<C-k>',  -- also pass-through CTRL-j/k, can be used as navigation key in fzf
+        }
         local bufnr = vim.api.nvim_get_current_buf()
         for _, key in ipairs(keys_passthrough) do
           vim.keymap.set('t', key, key, { buffer = bufnr, remap = false, silent = true, nowait = true })
