@@ -393,6 +393,20 @@ endsnippet
 
 
 ################################################################################
+# Profiling
+################################################################################
+
+snippet line_profiler
+from importlib import import_module  # isort: skip
+from line_profiler import LineProfiler  # isort: skip
+lp = LineProfiler()
+lp.add_module(import_module("$1"))
+lp.runcall(${2:main})
+lp.print_stats(stream=import_module('sys').stderr, output_unit=1e-3, \
+               stripzeros=True, sort=True, rich=True, summarize=True)
+endsnippet
+
+################################################################################
 # Ipython
 ################################################################################
 
