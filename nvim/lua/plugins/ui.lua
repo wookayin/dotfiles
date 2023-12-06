@@ -24,7 +24,7 @@ return {
       if vim.fn.isdirectory(vim.fn.expand("$HOME/.fzf")) == 0 then
         local msg = "~/.fzf not found. Please run `dotfiles update`"
         vim.defer_fn(function()
-          vim.notify(msg, vim.log.levels.WARN, { title = "plugins.ui" })
+          vim.notify(msg, vim.log.levels.WARN, { title = "plugins.ui", markdown = true })
         end, 100) -- nvim-notify might be not ready yet
         return false
       end
