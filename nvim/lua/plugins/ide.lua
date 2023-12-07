@@ -85,6 +85,7 @@ return {
   -- Other languages
   Plug 'editorconfig/editorconfig-vim';
   Plug 'sheerun/vim-polyglot' { version = 'v4.2.1' };
+  Plug 'vmchale/just-vim' { ft = 'just' };
   Plug 'tmux-plugins/vim-tmux' { ft = 'tmux' };
   Plug 'fladson/vim-kitty' { ft = 'kitty' };
   Plug 'vim-pandoc/vim-pandoc' { ft = { 'pandoc', 'markdown' }, init = PlugConfig };
