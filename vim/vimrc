@@ -2729,18 +2729,6 @@ let g:semshi#error_sign = 0
 
 let g:fugitive_legacy_commands = 0
 
-" Custom Fugitive Commands
-" GitThreeWayDiff: open a 3-way diff window among {HEAD, index, working copy}
-command! GitThreeWayDiff        call GitThreeWayDiff()
-function! GitThreeWayDiff() abort
-  diffoff!   " turn off diff for all windows
-  let current_win = win_getid()
-  aboveleft Gvdiff HEAD         " [left]   HEAD
-  call win_gotoid(current_win)
-  aboveleft Gvdiff              " [middle] stage/index
-  call win_gotoid(current_win)  " [right]  working copy
-endfunction
-
 " command aliases
 command! -nargs=* GCommit   call s:GCommit('<mods>', <q-args>)
 function! s:GCommit(mods, args) abort

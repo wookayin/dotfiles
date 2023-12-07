@@ -35,6 +35,8 @@ function M.setup_fugitive()
     })
   end, { nargs = '*' })
 
+  -- More git-related user commands
+  M._setup_git_commands()
 end
 
 function M.setup_gitsigns()
@@ -150,11 +152,30 @@ function M.setup_diffview()
   _G.diffview = require('diffview')
 end
 
+--- Create more custom git commands.
+function M._setup_git_commands()
+  --- :GitThreeWayDiff
+  --- { HEAD, stage/index, working copy } with diff between HEAD v.s. index
+  vim.api.nvim_create_user_command('GitThreeWayDiff', function()
+    vim.cmd [[ tabnew % ]]
+    -- turn off diff for all windows
+    vim.cmd [[ diffoff! ]]
+    local win = vim.api.nvim_get_current_win()
+    vim.cmd [[ aboveleft Gvdiff HEAD ]]  -- left: HEAD
+    vim.fn.win_gotoid(win)
+    vim.cmd [[ aboveleft Gvdiff ]]       -- middle: stage/index
+    vim.fn.win_gotoid(win)
+    vim.cmd [[ diffoff ]]                -- right: working copy (no diff)
+  end, {})
+end
+
 -- Resourcing support
 if RC and RC.should_resource() then
   M.setup_fugitive()
   M.setup_diffview()
   M.setup_gitsigns()
+
+  M._setup_git_commands()
 end
 
 (RC or {}).git = M
