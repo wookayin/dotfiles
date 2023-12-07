@@ -162,13 +162,15 @@ function M.setup_winbar()
   if not use_global_statusline then
     return false
   end
+  vim.api.nvim_set_hl(0, 'lualine_winbar_filename', { fg = '#c92a2a', bg = '#eeeeee', bold = true })
 
   -- Define winbar using lualine components (see lualine.config.apply_configuration)
   local winbar_config = {
     sections = {
       lualine_w = {
         { 'vim.fn.winnr()', color = 'TabLineSel' },
-        { 'filename', path = 1, color = { fg = '#c92a2a', bg = '#eeeeee', gui = 'bold' } },
+        { 'filename', path = 1, color = 'lualine_winbar_filename',
+          fmt = truncate(80, 20, nil, true) },
         'diagnostics',
         { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
         function() return ' ' end,
@@ -177,7 +179,8 @@ function M.setup_winbar()
     inactive_sections = {
       lualine_w = {
         { 'vim.fn.winnr()', color = { fg = '#eeeeee' } },
-        { 'filename', path = 1 },
+        { 'filename', path = 1,
+          fmt = truncate(80, 20, nil, true) },
         'diagnostics',
         { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
         function() return ' ' end,
