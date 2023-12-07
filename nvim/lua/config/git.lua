@@ -35,6 +35,15 @@ function M.setup_fugitive()
     })
   end, { nargs = '*' })
 
+  -- Force-reload fugitive buffer upon enter, because it does not reload upon external changes.
+  vim.api.nvim_create_autocmd('BufEnter', {
+    pattern = 'fugitive://*/.git//0/*',
+    group = vim.api.nvim_create_augroup('fugitive-index-reload', { clear = true }),
+    callback = function()
+      M.reload_fugitive_index()
+    end,
+  })
+
   -- More git-related user commands
   M._setup_git_commands()
 end
@@ -83,6 +92,7 @@ function M.setup_gitsigns()
       map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
       map('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
       -- Actions
+      -- TODO: Also call reload_fugitive_index() after gitsigns operations (even if it's not on the "diff mode")
       map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')
       map('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>')
       map('v', '<leader>hs', '<cmd>lua require"gitsigns".stage_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>')
@@ -167,6 +177,21 @@ function M._setup_git_commands()
     vim.fn.win_gotoid(win)
     vim.cmd [[ diffoff ]]                -- right: working copy (no diff)
   end, {})
+end
+
+--- Reload fugitive:// index buffer upon external edit including gitsigns.
+--- See tpope/vim-fugitive#1517
+function M.reload_fugitive_index()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    local bufname = vim.api.nvim_buf_get_name(buf)
+    local is_fugitive_index = vim.startswith(bufname, 'fugitive://') and string.find(bufname, '.git//0/')
+    if is_fugitive_index then
+      vim.api.nvim_buf_call(buf, function()
+        -- Reload the git index buffer
+        vim.cmd.doautocmd('BufReadCmd')
+      end)
+    end
+  end
 end
 
 -- Resourcing support
