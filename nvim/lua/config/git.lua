@@ -85,8 +85,8 @@ function M.setup_gitsigns()
     },
     on_attach = function(bufnr)
       local function map(mode, lhs, rhs, opts)
-        opts = vim.tbl_extend('force', {noremap = true, silent = true}, opts or {})
-        vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+        opts = vim.tbl_extend('force', { remap = false, silent = true, buffer = bufnr }, opts or {})
+        vim.keymap.set(mode, lhs, rhs, opts)
       end
       -- Navigation
       map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
@@ -95,8 +95,10 @@ function M.setup_gitsigns()
       -- TODO: Also call reload_fugitive_index() after gitsigns operations (even if it's not on the "diff mode")
       map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')
       map('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>')
-      map('v', '<leader>hs', '<cmd>lua require"gitsigns".stage_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>')
-      map('v', '<leader>hr', '<cmd>lua require"gitsigns".reset_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>')
+      map('v', '<leader>hs', function() require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
+          { desc = 'Stage hunks on the selected range' })
+      map('v', '<leader>hr', function() require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
+          { desc = 'Reset hunks on the selected range' })
       map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>')
       map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
       map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>')
@@ -111,8 +113,8 @@ function M.setup_gitsigns()
       map('x', 'ih', ':<C-U>Gitsigns select_hunk<CR>')
 
       -- Additional keymappings (actions) other than the suggested defaults
-      map('n', '<leader>ha', '<leader>hs', { noremap = false })
-      map('v', '<leader>ha', '<leader>hs', { noremap = false })
+      map('n', '<leader>ha', '<leader>hs', { remap = true, desc = "Stage this hunk" })
+      map('v', '<leader>ha', '<leader>hs', { remap = true, desc = "Stage hunks on the selected range" })
       map('n', '<leader>hh', '<cmd>Gitsigns toggle_linehl<CR>')
       map('n', '<leader>hw', '<cmd>Gitsigns toggle_word_diff<CR>')
     end
