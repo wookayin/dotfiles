@@ -175,10 +175,14 @@ function M._setup_git_commands()
   --- :GitThreeWayDiff
   --- { HEAD, stage/index, working copy } with diff between HEAD v.s. index
   vim.api.nvim_create_user_command('GitThreeWayDiff', function()
+    local cursor = vim.api.nvim_win_get_cursor(0)
+
     vim.cmd [[ tabnew % ]]
     -- turn off diff for all windows
     vim.cmd [[ diffoff! ]]
-    local win = vim.api.nvim_get_current_win()
+    local win = vim.api.nvim_get_current_win()  -- on a new tab
+    vim.api.nvim_win_set_cursor(win, cursor)  -- preserve the same cursor location
+
     vim.cmd [[ aboveleft Gvdiff HEAD ]]  -- left: HEAD
     vim.fn.win_gotoid(win)
     vim.cmd [[ aboveleft Gvdiff ]]       -- middle: stage/index
