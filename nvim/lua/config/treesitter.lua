@@ -5,7 +5,7 @@
 local M = {}
 
 ---------------------------------------------------------------------------
--- Entrypoint.
+--- Entrypoint.
 ---------------------------------------------------------------------------
 
 function M.setup()
@@ -110,7 +110,7 @@ M._reattach_after_install = {
 }
 
 ---------------------------------------------------------------------------
--- Treesitter Parsers (automatic installation and repair)
+--- Treesitter Parsers (automatic installation and repair)
 ---------------------------------------------------------------------------
 
 -- Note: parsers are installed at $VIMPLUG/nvim-treesitter/parser/
@@ -254,20 +254,20 @@ end
 
 
 ---------------------------------------------------------------------------
--- Custom treesitter queries
+--- Custom treesitter queries
 ---------------------------------------------------------------------------
---- https://github.com/nvim-treesitter/nvim-treesitter#adding-queries
---- "Dynamic" queries depending on project formatting style, etc. can be configured here.
---- For static query files, see $DOTVIM/after/queries.
----
---- Note that the first query file in the runtimepath (usually user config) will be used,
---- ignoring all other query files from plugins (nvim-treesitter) and VIMRUNTIME;
---- unless `; extend` is used (see :h treesitter-query-modeline).
---- If vim.treesitter.query.set() is used, all query files on runtimepath will be ignored.
+-- https://github.com/nvim-treesitter/nvim-treesitter#adding-queries
+-- "Dynamic" queries depending on project formatting style, etc. can be configured here.
+-- For static query files, see $DOTVIM/after/queries.
+--
+-- Note that the first query file in the runtimepath (usually user config) will be used,
+-- ignoring all other query files from plugins (nvim-treesitter) and VIMRUNTIME;
+-- unless `; extend` is used (see :h treesitter-query-modeline).
+-- If vim.treesitter.query.set() is used, all query files on runtimepath will be ignored.
 
 
 ---------------------------------------------------------------------------
--- Utilities
+--- Utilities
 ---------------------------------------------------------------------------
 
 function M.setup_keymap()
