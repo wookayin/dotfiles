@@ -53,15 +53,23 @@ function M.setup_gitsigns()
   -- :help gitsigns-config
 
   require('gitsigns').setup {
+    signcolumn = true,
     signs = {
       -- For highlights, see $DOTVIM/colors/xoria256-wook.vim
-      add          = {hl = 'GitSignsAdd'   , text = '┃', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
-      change       = {hl = 'GitSignsChange', text = '┃', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
-      delete       = {hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-      topdelete    = {hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
-      changedelete = {hl = 'GitSignsChange', text = '┃', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+      add          = { hl = 'GitSignsAdd'   , text = '┃', numhl = 'GitSignsAddNr'   , linehl = 'GitSignsAddLn' },
+      change       = { hl = 'GitSignsChange', text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
+      delete       = { hl = 'GitSignsDelete', text = '_', numhl = 'GitSignsDeleteNr', linehl = 'GitSignsDeleteLn' },
+      topdelete    = { hl = 'GitSignsDelete', text = '‾', numhl = 'GitSignsDeleteNr', linehl = 'GitSignsDeleteLn' },
+      changedelete = { hl = 'GitSignsChange', text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
     },
-    signcolumn = true,
+    _signs_staged_enable = true, -- experimental
+    _signs_staged = {
+      add          = { hl = 'GitSignsStagedAdd'   , text = '┋ ', numhl = 'GitSignsStagedAddNr'   , linehl = 'GitSignsStagedAddLn' },
+      change       = { hl = 'GitSignsStagedChange', text = '┋ ', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
+      delete       = { hl = 'GitSignsStagedDelete', text = '﹍', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
+      topdelete    = { hl = 'GitSignsStagedDelete', text = '﹉', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
+      changedelete = { hl = 'GitSignsStagedChange', text = '┋ ', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
+    },
     current_line_blame_opts = {
       delay = 150,
       virt_text_pos = 'right_align',
@@ -89,8 +97,8 @@ function M.setup_gitsigns()
         vim.keymap.set(mode, lhs, rhs, opts)
       end
       -- Navigation
-      map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
-      map('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
+      map('n', ']c', function() return vim.wo.diff and ']c' or '<Cmd>Gitsigns next_hunk<CR>' end, { expr = true })
+      map('n', '[c', function() return vim.wo.diff and '[c' or '<Cmd>Gitsigns prev_hunk<CR>' end, { expr = true })
       -- Actions
       -- TODO: Also call reload_fugitive_index() after gitsigns operations (even if it's not on the "diff mode")
       map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')

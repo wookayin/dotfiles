@@ -39,6 +39,9 @@ highlight VertSplit     ctermfg=246 ctermbg=NONE  guifg=#6d747f guibg=NONE
 highlight GitSignsAdd             guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=233
 highlight GitSignsChange          guifg=#bbbb00 guibg=#121212 ctermfg=3 ctermbg=233
 highlight GitSignsDelete          guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233
+highlight GitSignsStagedAdd       guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=233 gui=bold
+highlight GitSignsStagedChange    guifg=#bbbb00 guibg=#121212 ctermfg=3 ctermbg=233 gui=bold
+highlight GitSignsStagedDelete    guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233 gui=bold
 
 " some primitive colors customized on top of xoria256
 highlight Normal        ctermfg=255 guifg=#ffffff  ctermbg=NONE guibg=NONE
