@@ -2783,10 +2783,6 @@ augroup FugitiveAddon
   " [,gd] diffvsplit
   autocmd FileType fugitive    nmap     <buffer> <leader>gd  dv
 
-  " when git index is updated via hunk stage operation, reload fugitive buffers
-  if exists('*timer_start')  " 7.4.1578+
-    autocmd User GitGutterStage  call timer_start(0, function('ReloadFugitiveBlobs'))
-  endif
 augroup END
 
 function! ReloadFugitiveBlobs(...) abort
@@ -2834,21 +2830,6 @@ endfunction
 " Assumed fugitive is always available.
 
 " see ~/.config/nvim/lua/config/git.lua
-
-" ---------------------------------------------------------------- }}}
-" vim-gitgutter (legacy) {{{
-
-" For colors for gitgutter signs, see ~/.vim/colors/xoria256-wook.vim
-
-" Another alias for adding or staging hunk (similar as <leader>ga).
-" for other keys (e.g <leader>hu, <leader>hp), please see
-"  :help gitgutter-<Leader>
-
-let g:PlugConfig['vim-gitgutter'] = 's:init_gitgutter'
-function! s:init_gitgutter() abort
-  nmap <leader>ha  <Plug>(GitGutterStageHunk)
-  nmap <leader>hh  :GitGutterLineHighlightsToggle<CR>
-endfunction
 
 " ---------------------------------------------------------------- }}}
 " git-messenger {{{

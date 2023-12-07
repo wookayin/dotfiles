@@ -34,15 +34,11 @@ highlight CursorLineNr  cterm=none gui=bold guifg=Yellow
 highlight SignColumn    ctermfg=248 ctermbg=233   guifg=#a8a8a8 guibg=#121212
 highlight VertSplit     ctermfg=246 ctermbg=NONE  guifg=#6d747f guibg=NONE
 
-" gitgutter sign column (see afa4f2dd)
+" gitsigns sign column
 "  guibg=<X> and ctermbg=<Y> should match that of SignColumn
-highlight GitGutterAdd    guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=233
-highlight GitGutterChange guifg=#bbbb00 guibg=#121212 ctermfg=3 ctermbg=233
-highlight GitGutterDelete guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233
-
-hi link GitSignsAdd     GitGutterAdd
-hi link GitSignsChange  GitGutterChange
-hi link GitSignsDelete  GitGutterDelete
+highlight GitSignsAdd             guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=233
+highlight GitSignsChange          guifg=#bbbb00 guibg=#121212 ctermfg=3 ctermbg=233
+highlight GitSignsDelete          guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233
 
 " some primitive colors customized on top of xoria256
 highlight Normal        ctermfg=255 guifg=#ffffff  ctermbg=NONE guibg=NONE
