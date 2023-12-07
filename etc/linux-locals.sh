@@ -401,6 +401,16 @@ install_neovim() {
   $PREFIX/bin/nvim --version | head -n3
 }
 
+install_just() {
+  # https://github.com/casey/just/releases
+  _template_github_latest "just" "casey/just" 'just-*-x86_64-*-linux-musl.tar.gz'
+
+  cp -v just "$PREFIX/bin/just"
+  cp -v just.1 "$PREFIX/share/man/man1/"
+  _which just
+  just --version
+}
+
 install_delta() {
   # https://github.com/dandavison/delta/releases
   _template_github_latest "delta" "dandavison/delta" 'delta-*-x86_64-*-linux-musl.tar.gz'
