@@ -79,6 +79,41 @@ local custom_components = {
     end
     return status
   end,
+  -- git objects (fugitive, diffview) for human
+  gitobject_bufname = (function()
+    local hlgroup = function(name, val)
+      vim.schedule(function() vim.api.nvim_set_hl(0, name, val) end)
+      return '%#' .. name .. '#'
+    end
+    local git_icon = ' '
+    local hl = {
+      index = hlgroup('lualine_gitobject_index', { bg = '#117711', fg = 'white', bold = false }),
+      commit = hlgroup('lualine_gitobject_commit', { bg = '#4dabf7', fg = 'black', bold = true }),
+      undefined = hlgroup('lualine_gitobject_undefined', { bg = '#ff8787', fg = 'black', italic = false }),
+    }
+
+    return function()
+      -- Extract git commit hash or if it's index. Cache into b:git_info.
+      vim.b.git_sha = vim.b.git_sha or (function(bufname)
+        local sha
+        if vim.startswith(bufname, 'fugitive://') or vim.startswith(bufname, 'diffview://') then
+          sha = bufname:match([[.git%/%/?([0-9a-fA-F:]+)%/?]])
+        elseif vim.startswith(bufname, 'gitsigns://') then
+          sha = bufname:match([[.git%/:?([0-9a-fA-FH~]+):]]) -- .git/:0:<path>, .git/HEAD~:<path>
+        end
+        return sha
+      end)(vim.api.nvim_buf_get_name(0))
+
+      if vim.b.git_sha == '0' or vim.b.git_sha == ':0:' then
+        return hl.index .. git_icon .. 'index'
+      elseif type(vim.b.git_sha) == 'string' then
+        local revname = require("config.git").name_revision(vim.b.git_sha)
+        return (hl[revname] or hl.commit) .. git_icon .. vim.b.git_sha:sub(1, 8) ..
+          (revname and revname ~= "undefined" and string.format(' (%s)', revname) or '')
+      end
+      return ''
+    end
+  end)(),
   -- neotree path
   neotree_path = function()
     if vim.bo.filetype == 'neo-tree' then
@@ -169,6 +204,7 @@ function M.setup_winbar()
     sections = {
       lualine_w = {
         { 'vim.fn.winnr()', color = 'TabLineSel' },
+        { custom_components.gitobject_bufname },
         { 'filename', path = 1, color = 'lualine_winbar_filename',
           fmt = truncate(80, 20, nil, true) },
         'diagnostics',
@@ -179,6 +215,7 @@ function M.setup_winbar()
     inactive_sections = {
       lualine_w = {
         { 'vim.fn.winnr()', color = { fg = '#eeeeee' } },
+        { custom_components.gitobject_bufname },
         { 'filename', path = 1,
           fmt = truncate(80, 20, nil, true) },
         'diagnostics',

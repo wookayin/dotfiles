@@ -194,6 +194,56 @@ function M.reload_fugitive_index()
   end
 end
 
+--- Get a human-readable ref name (e.g. master, master~1, remotes/origin/HEAD) for a commit hash,
+--- from the output of `git name-rev`. Returns nil if the reference cannot be resolved,
+--- or "undefined" if no named reference is found (i.e. dangling or detached commit).
+--- This function may be called quite frequently (statusline), so needs to cache the result.
+---@type function(sha: string, git_path?: string)
+M.name_revision = (function()
+  local cache = {}
+  local function memoize(fn)
+    return function(sha, git_path)
+      local ret = (cache[git_path] or {})[sha]
+      if ret then return ret[1] end
+
+      ret = { fn(sha, git_path) }
+      if git_path == nil then
+        git_path = vim.fn.getcwd(0)
+      end
+      cache[git_path] = cache[git_path] or {}
+      cache[git_path][sha] = ret
+      return ret[1]
+    end
+  end
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'FugitiveChanged',
+    group = vim.api.nvim_create_augroup('fugitive-revision-cache', { clear = true }),
+    callback = function()
+      -- invalidate all the cache on git operations
+      for k, _ in pairs(cache) do cache[k] = nil end
+    end,
+  })
+
+  return memoize(function(sha, git_path)
+    local args = { "name-rev", sha, "--name-only" }
+    local ret
+
+    if git_path then
+      git_path = vim.fn.FugitiveExtractGitDir(vim.fn.expand(git_path))
+      ret = vim.fn.FugitiveExecute(args, git_path).stdout
+    else
+      ret = vim.fn.FugitiveExecute(args).stdout
+    end
+    ret = vim.trim(table.concat(ret, ''))
+    if #ret == 0 then
+      return nil
+    else
+      return ret
+    end
+  end)
+end)()
+
+
 -- Resourcing support
 if RC and RC.should_resource() then
   M.setup_fugitive()
