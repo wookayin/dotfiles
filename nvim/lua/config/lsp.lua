@@ -1,6 +1,6 @@
--------------
--- LSP config
--------------
+--------------
+--- LSP config
+--------------
 -- See 'plugins.ide' for the Plug specs
 
 local M = {}
@@ -20,12 +20,12 @@ local on_attach_lsp_signature = function(client, bufnr)
   })
 end
 
--- A callback executed when LSP engine attaches to a buffer.
----@type fun(client: lsp.Client, bufnr: number)
+--- A callback executed when LSP engine attaches to a buffer.
+---@type fun(client: lsp.Client, bufnr: buffer)
 local on_attach = function(client, bufnr)
 
   -- Always use signcolumn for the current buffer
-  if vim.bo.filetype == 'python' then
+  if vim.bo[bufnr].filetype == 'python' then
     vim.wo.signcolumn = 'yes:2'
   end
 
@@ -94,7 +94,7 @@ local on_attach = function(client, bufnr)
 
 end
 
--- Add global keymappings for LSP actions
+--- Add global keymappings for LSP actions
 function M._setup_lsp_keymap()
   vim.cmd [[
     " F3, F12: goto definition
@@ -134,8 +134,8 @@ local auto_lsp_servers = {
   ['lemminx'] = true,  -- xml
 }
 
--- Refresh or force-update mason-registry if needed (e.g. pkgs are missing)
--- and execute the callback asynchronously.
+--- Refresh or force-update mason-registry if needed (e.g. pkgs are missing)
+--- and execute the callback asynchronously.
 local function maybe_refresh_mason_registry_and_then(callback, opts)
   local mason_registry = require("mason-registry")
   local function _notify(msg, opts)
@@ -163,7 +163,7 @@ end
 
 function M._setup_mason()
   -- Mason: LSP Auto installer
-  -- https://github.com/williamboman/mason.nvim#default-configuration
+  ---@source $VIMPLUG/mason.nvim/lua/mason/settings.lua
   require("mason").setup {
     ui = {
       border = "rounded",
@@ -178,7 +178,7 @@ function M._setup_mason()
   maybe_refresh_mason_registry_and_then(M._ensure_mason_installed)
 end
 
--- Install auto_lsp_servers on demand (FileType)
+--- Install auto_lsp_servers on demand (FileType)
 function M._ensure_mason_installed()
   local augroup = vim.api.nvim_create_augroup('mason_autoinstall', { clear = true })
   local lspconfig_to_package = require("mason-lspconfig.mappings.server").lspconfig_to_package
@@ -224,8 +224,8 @@ function M._ensure_mason_installed()
   end, vim.api.nvim_list_bufs())
 end
 
----Create the default capabilities to use for LSP server configuration.
----@type fun(): lsp.ClientCapabilities
+--- Create the default capabilities to use for LSP server configuration.
+---@return lsp.ClientCapabilities
 function M.lsp_default_capabilities()
   -- Use default vim.lsp capabilities and apply some tweaks on capabilities.completion for nvim-cmp
   local capabilities = vim.tbl_deep_extend("force",
@@ -270,7 +270,8 @@ end
 
 lsp_setup_opts['ruff_lsp'] = function()
   local init_options = {
-    -- https://github.com/charliermarsh/ruff-lsp#settings
+    -- https://github.com/astral-sh/ruff-lsp#settings
+    -- https://github.com/astral-sh/ruff-lsp/blob/main/ruff_lsp/server.py
     settings = {
       fixAll = true,
       organizeImports = false,  -- let isort take care of organizeImports
@@ -376,7 +377,7 @@ lsp_setup_opts['yamlls'] = {
   }
 }
 
--- Call lspconfig[...].setup for all installed LSP servers with common opts
+--- Call lspconfig[...].setup for all installed LSP servers with common opts
 local function setup_lsp(lsp_name)
   local common_opts = {
     on_init = on_init[lsp_name],
@@ -467,9 +468,10 @@ function M._setup_lspconfig()
   ]]
 end
 
--------------------------
--- LSP Handlers (general)
--------------------------
+
+--------------------------
+--- LSP Handlers (general)
+--------------------------
 function M._setup_lsp_handlers()
   -- :help lsp-method
   -- :help lsp-handler
@@ -489,9 +491,9 @@ function M._setup_lsp_handlers()
 end
 
 
-------------------
--- LSP diagnostics
-------------------
+-------------------
+--- LSP diagnostics
+-------------------
 function M._setup_diagnostic()
   local icons = {
     [vim.diagnostic.severity.ERROR] = "✘",
@@ -501,9 +503,9 @@ function M._setup_diagnostic()
   }
 
   -- Customize how to show diagnostics:
-  -- @see https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
-  -- @see https://github.com/neovim/neovim/pull/16057 for new APIs
-  -- @see :help vim.diagnostic.config()
+  -- see https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
+  -- see https://github.com/neovim/neovim/pull/16057 for new APIs
+  -- see :help vim.diagnostic.config()
   vim.diagnostic.config {
     -- No virtual text (distracting!), show popup window on hover.
     virtual_text = {
@@ -609,7 +611,7 @@ function M._setup_diagnostic()
 end
 
 ---------------------------------
--- nvim-cmp: completion support
+--- nvim-cmp: completion support
 ---------------------------------
 -- https://github.com/hrsh7th/nvim-cmp#recommended-configuration
 -- $VIMPLUG/nvim-cmp/lua/cmp/config/default.lua
@@ -896,9 +898,9 @@ function cmp_helper.apply_highlight()
   ]]
 end
 
------------------------------
--- Configs for PeekDefinition
------------------------------
+------------------------------
+--- Configs for PeekDefinition
+------------------------------
 _G.PeekDefinition = function(lsp_request_method)
   local params = vim.lsp.util.make_position_params()
   local definition_callback = function(_, result, ctx, config)
@@ -979,9 +981,9 @@ function M._define_peek_definition()
 end
 
 
-------------
--- LSPstatus
-------------
+-------------
+--- LSPstatus
+-------------
 function M.setup_lsp_status()
   local lsp_status = require('lsp-status')
   lsp_status.config({
@@ -1049,9 +1051,9 @@ function M.setup_fidget()
   }
 end
 
----------------
--- trouble.nvim
----------------
+----------------
+--- trouble.nvim
+----------------
 function M.setup_trouble()
   require("trouble").setup {
     -- https://github.com/folke/trouble.nvim#setup
@@ -1061,7 +1063,7 @@ function M.setup_trouble()
 end
 
 ----------------------------------------
--- Linting, and Code actions
+--- Linting, and Code actions
 ----------------------------------------
 function M.setup_null_ls()
   local null_ls = require("null-ls")
