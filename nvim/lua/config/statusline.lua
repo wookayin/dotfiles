@@ -93,9 +93,9 @@ local custom_components = {
     }
 
     return function()
-      -- Extract git commit hash or if it's index. Cache into b:git_info.
+      -- Extract git commit hash, or determine if it's the git index. Cache into b:git_info.
       vim.b.git_sha = vim.b.git_sha or (function(bufname)
-        local sha
+        local sha ---@type string|nil
         if vim.startswith(bufname, 'fugitive://') or vim.startswith(bufname, 'diffview://') then
           sha = bufname:match([[.git%/%/?([0-9a-fA-F:]+)%/?]])
         elseif vim.startswith(bufname, 'gitsigns://') then
@@ -108,7 +108,7 @@ local custom_components = {
         return hl.index .. git_icon .. 'index'
       elseif type(vim.b.git_sha) == 'string' then
         local revname = require("config.git").name_revision(vim.b.git_sha)
-        return (hl[revname] or hl.commit) .. git_icon .. vim.b.git_sha:sub(1, 8) ..
+        return (hl[revname or ''] or hl.commit) .. git_icon .. vim.b.git_sha:sub(1, 8) ..
           (revname and revname ~= "undefined" and string.format(' (%s)', revname) or '')
       end
       return ''

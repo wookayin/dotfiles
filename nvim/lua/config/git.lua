@@ -198,7 +198,7 @@ end
 --- from the output of `git name-rev`. Returns nil if the reference cannot be resolved,
 --- or "undefined" if no named reference is found (i.e. dangling or detached commit).
 --- This function may be called quite frequently (statusline), so needs to cache the result.
----@type function(sha: string, git_path?: string)
+---@type function(sha: string, git_path?: string): string|nil
 M.name_revision = (function()
   local cache = {}
   local function memoize(fn)
