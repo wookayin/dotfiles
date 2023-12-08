@@ -66,7 +66,6 @@ local on_attach = function(client, bufnr)
     nbufmap('gd', vim_cmd 'lua vim.lsp.buf.definition()')
     nbufmap('gr', vim_cmd 'lua vim.lsp.buf.references()')
     nbufmap('gi', vim_cmd 'lua vim.lsp.buf.implementation()')
-    nbufmap('gt', vim_cmd 'lua vim.lsp.buf.type_definition()')
     nbufmap('gt', gt_action('lua vim.lsp.buf.type_definition()'))
   end
   nbufmap('gD', vim_cmd 'lua vim.lsp.buf.declaration()')
@@ -631,7 +630,7 @@ end
 -- $VIMPLUG/nvim-cmp/lua/cmp/config/default.lua
 
 local has_words_before = function()
-  if vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt' then
+  if vim.bo[0].buftype == 'prompt' then
     return false
   end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
