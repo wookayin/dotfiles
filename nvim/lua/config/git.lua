@@ -70,6 +70,9 @@ function M.setup_gitsigns()
       topdelete    = { hl = 'GitSignsStagedDelete', text = '﹉', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
       changedelete = { hl = 'GitSignsStagedChange', text = '┋ ', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
     },
+    -- LSP diagnostics sign priority is 10~13, gitsigns priority defaults to 6 but we set it to be higher than LSP.
+    -- Therefore, signcolumn of width 2 or higher is recommended to make sure at least one linting diagnostic sign is shown.
+    sign_priority = 20,
     current_line_blame_opts = {
       delay = 150,
       virt_text_pos = 'right_align',
