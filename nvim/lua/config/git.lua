@@ -92,6 +92,8 @@ function M.setup_gitsigns()
       ignore_whitespace_change_at_eol = false,
     },
     on_attach = function(bufnr)
+      vim.b[bufnr].gitsigns_attached = true
+
       local function map(mode, lhs, rhs, opts)
         opts = vim.tbl_extend('force', { remap = false, silent = true, buffer = bufnr }, opts or {})
         vim.keymap.set(mode, lhs, rhs, opts)
@@ -126,6 +128,17 @@ function M.setup_gitsigns()
     end
   }
   _G.gitsigns = require('gitsigns')
+
+  -- When entering the buffer (out of external git events), gitsigns should be refreshed
+  vim.api.nvim_create_autocmd('BufEnter', {
+    pattern = '*',
+    group = vim.api.nvim_create_augroup('gitsigns-refresh', { clear = true }),
+    callback = function()
+      if vim.b.gitsigns_attached then
+        require("gitsigns").refresh()
+      end
+    end,
+  })
 end
 
 function M.setup_diffview()
