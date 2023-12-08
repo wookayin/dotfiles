@@ -505,6 +505,10 @@ function M._setup_diagnostic()
   -- see https://github.com/neovim/neovim/pull/16057 for new APIs
   -- see :help vim.diagnostic.config()
   vim.diagnostic.config {
+    -- Prioritize high severity more (for sign priority and virtual text order, etc.)
+    -- diagnostic signs have a base priority of 10; Error = 13, Warn = 12, Info = 11, etc.
+    severity_sort = true,
+
     -- No virtual text (distracting!), show popup window on hover.
     virtual_text = {
       severity = { min = vim.diagnostic.severity.WARN },
