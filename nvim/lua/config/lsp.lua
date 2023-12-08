@@ -46,17 +46,28 @@ local on_attach = function(client, bufnr)
   local function vim_cmd(x) return '<Cmd>' .. x .. '<CR>' end
   local function buf_command(...) vim.api.nvim_buf_create_user_command(bufnr, ...) end
 
+  -- keymap for <count>gt (tabn) or gt (lsp)
+  local gt_action = function(lsp_cmd)
+    return function()
+      local count = vim.v.count
+      if count > 0 then vim.cmd(('tabn %d'):format(count))
+      else vim.cmd(lsp_cmd)
+      end
+    end
+  end
+
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   if pcall(require, 'telescope') then
     nbufmap('gr', vim_cmd 'Telescope lsp_references')
     nbufmap('gd', vim_cmd 'Telescope lsp_definitions')
     nbufmap('gi', vim_cmd 'Telescope lsp_implementations')
-    nbufmap('gt', vim_cmd 'Telescope lsp_type_definitions')
+    nbufmap('gt', gt_action('Telescope lsp_type_definitions'))
   else
     nbufmap('gd', vim_cmd 'lua vim.lsp.buf.definition()')
     nbufmap('gr', vim_cmd 'lua vim.lsp.buf.references()')
     nbufmap('gi', vim_cmd 'lua vim.lsp.buf.implementation()')
     nbufmap('gt', vim_cmd 'lua vim.lsp.buf.type_definition()')
+    nbufmap('gt', gt_action('lua vim.lsp.buf.type_definition()'))
   end
   nbufmap('gD', vim_cmd 'lua vim.lsp.buf.declaration()')
   nbufmap('[d', vim_cmd 'lua vim.diagnostic.goto_prev()')
