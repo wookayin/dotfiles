@@ -36,7 +36,10 @@ function M.setup_conform()
   end)()
   cf.sh = (function()
     formatter_opts["shfmt"] = {
-      prepend_args = function(ctx) return { "--indent", tostring(vim.bo[ctx.buf].shiftwidth) } end,
+      prepend_args = function(self, ctx)
+        if ctx == nil then ctx = self end -- compat for < v5.0
+        return { "--indent", tostring(vim.bo[ctx.buf].shiftwidth)
+      } end,
     }
     return { "shfmt" }
   end)()
