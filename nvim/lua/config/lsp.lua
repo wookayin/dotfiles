@@ -24,10 +24,8 @@ end
 ---@type fun(client: lsp.Client, bufnr: buffer)
 local on_attach = function(client, bufnr)
 
-  -- Always use signcolumn for the current buffer
-  if vim.bo[bufnr].filetype == 'python' then
-    vim.wo.signcolumn = 'yes:2'
-  end
+  -- LSP diagnostics + gitsigns
+  vim.wo.signcolumn = 'yes:2'
 
   -- Activate LSP signature on attach.
   on_attach_lsp_signature(client, bufnr)

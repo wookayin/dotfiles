@@ -127,6 +127,7 @@ if has('nvim')
   augroup end
 endif
 
+" Use signcolumn for diagnostics and gitsigns. See :Config git, :Config lsp
 if has('nvim')
   set signcolumn=yes:1
 endif
