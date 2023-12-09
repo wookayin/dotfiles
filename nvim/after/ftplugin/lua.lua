@@ -21,23 +21,26 @@ if is_test then
 -- do nothing, make :Build use :Make
 elseif vim.fn.filereadable('Makefile') == 1 then
 
--- reload lua package in package.loaded[...]
-elseif lua_package then
-  vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
-    vim.cmd [[ update ]]
-    _require(lua_package)
-    vim.notify("Reloaded lua package: " .. lua_package, vim.log.levels.INFO, { title = 'ftplugin/lua' })
-  end, { desc = ('Build: reload the lua module (%s)'):format(lua_package), nargs = 0 })
-
--- source (execute) the lua file as a script
 else
-  vim.api.nvim_buf_create_user_command(0, 'Build', function(opts)
-    vim.cmd [[ update ]]
-    -- don't use vim.cmd, to clear lua stacktrace (see RC.should_resource)
-    require("utils.rc_utils").exec_keys '<Esc>:source %<CR>'
-    vim.notify("Sourced lua script: " .. vim.fn.bufname(), vim.log.levels.INFO, { title = 'ftplugin/lua' })
-  end, { desc = 'Build: source as a lua script.', nargs = 0 })
+  -- either :source or _require(...)
+  vim.api.nvim_buf_create_user_command(0, 'Build', 'SourceThis', {})
 end
+
+--- :SourceThis executes the lua file as a script, or reload as a lua package in package.loaded[...]
+local function SourceThis()
+  if lua_package then
+    _require(lua_package)
+    vim.notify(string.format("Reloaded lua package: `%s`", lua_package),
+      vim.log.levels.INFO, { title = 'ftplugin/lua', markdown = true })
+  else
+    -- Note: don't use vim.cmd, to clear lua stacktrace (see RC.should_resource)
+    require("utils.rc_utils").exec_keys '<Esc>:source %<CR>'
+    vim.notify(string.format("Sourced lua script: `%s`", vim.fn.bufname()),
+      vim.log.levels.INFO, { title = 'ftplugin/lua', markdown = true })
+  end
+end
+vim.api.nvim_buf_create_user_command(0, 'SourceThis', SourceThis,
+  { desc = lua_package and 'Build: source as a lua script.' or 'Build: reload the lua module (%s)' })
 
 -- Auto-reload hammerspoon config when applicable.
 -- ~/.hammerspoon/init.lua or ~/.dotfiles/hammerspoon/init.lua
