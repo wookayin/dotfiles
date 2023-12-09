@@ -127,6 +127,9 @@ hi def link @text.environment.name     Function
 hi def link @text.environment.name     Keyword
 hi def link @text.warning              WarningMsg
 
+" Diagnostics
+hi!     DiagnosticUnnecessary           gui=underline guifg=#87d7ff
+
 " LSP Semantic token support {{{
 " ------------------------------
 " https://microsoft.github.io/language-server-protocol/specification/#semanticTokenTypes
