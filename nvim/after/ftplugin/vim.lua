@@ -31,7 +31,9 @@ vim.keymap.set('x', '<leader>so', function()
   end
   local lines = vim.api.nvim_buf_get_lines(0, line_start - 1, line_end, true)
   vim.schedule(function()
-    vim.notify(table.concat(lines, '\n'), vim.log.levels.INFO, { title = 'Sourced visual selection' })
+    vim.notify(table.concat(lines, '\n'), vim.log.levels.INFO, {
+      title = 'Sourced visual selection', lang = 'vim',
+    })
   end)
 
   -- source the visual selection range

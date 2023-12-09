@@ -37,6 +37,7 @@ function M.setup_notify()
   --- @field print? boolean If true, also do :echomsg (so that msg can be saved in :messages)
   --- @field echom? boolean Alias to print
   --- @field markdown? boolean If true, highlight the message window in markdown with treesitter.
+  --- @field lang? string If given, highlight the message window in the given lang with treesitter.
   ---
   --- vim.notify with additional extensions on opts
   --- @param opts config.ui.notify.Config?
@@ -51,15 +52,18 @@ function M.setup_notify()
     end
 
     if opts.markdown then
-      local markdown_on_open = vim.schedule_wrap(function(win)
+      opts.lang = 'markdown'
+    end
+    if opts.lang then
+      local treesitter_on_open = vim.schedule_wrap(function(win)
         local buf = vim.api.nvim_win_get_buf(win)
         vim.wo[win].conceallevel = 2  -- do not show literally ```, etc.
-        pcall(vim.treesitter.start, buf, 'markdown')
+        pcall(vim.treesitter.start, buf, opts.lang)
       end)
       opts.on_open = (function(on_open)
         return function(win)
           if on_open ~= nil then on_open(win) end
-          markdown_on_open(win)
+          treesitter_on_open(win)
         end
       end)(opts.on_open)
     end
