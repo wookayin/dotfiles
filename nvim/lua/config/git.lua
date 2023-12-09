@@ -51,8 +51,9 @@ end
 function M.setup_gitsigns()
   -- :help gitsigns-usage
   -- :help gitsigns-config
-
-  require('gitsigns').setup {
+  ---@type Gitsigns.Config
+  ---@diagnostic disable: missing-fields
+  local gitsigns_config = {
     signcolumn = true,
     signs = {
       -- For highlights, see $DOTVIM/colors/xoria256-wook.vim
@@ -73,6 +74,7 @@ function M.setup_gitsigns()
       changedelete = { hl = 'GitSignsStagedChange', text = '┋ ', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
     },
     sign_priority = 6,  -- Note: LSP diagnostics sign priority is 10~13
+    -- numhl = true,
     current_line_blame_opts = {
       delay = 150,
       virt_text_pos = 'right_align',
@@ -87,12 +89,14 @@ function M.setup_gitsigns()
       indent_heuristic = true,
       -- Use line matching algorithm (neovim#14537)
       linematch = vim.fn.has('nvim-0.9.0') > 0 and 60 or nil,
+      ---@diagnostic disable: assign-type-mismatch
       -- Include whitespace-only changes in git hunks
       -- regardless of &diffopt (gitsigns.nvim#696)
       ignore_whitespace_change = false,
       ignore_blank_lines = false,
       ignore_whitespace = false,
       ignore_whitespace_change_at_eol = false,
+      ---@diagnostic enable: assign-type-mismatch
     },
     on_attach = function(bufnr)
       vim.b[bufnr].gitsigns_attached = true
@@ -128,8 +132,11 @@ function M.setup_gitsigns()
       map('v', '<leader>ha', '<leader>hs', { remap = true, desc = "Stage hunks on the selected range" })
       map('n', '<leader>hh', '<cmd>Gitsigns toggle_linehl<CR>')
       map('n', '<leader>hw', '<cmd>Gitsigns toggle_word_diff<CR>')
-    end
+    end,
+    debug_mode = false,
   }
+  ---@diagnostic enable: missing-fields
+  require('gitsigns').setup(gitsigns_config)
   _G.gitsigns = require('gitsigns')
 
   -- When entering the buffer (out of external git events), gitsigns should be refreshed
