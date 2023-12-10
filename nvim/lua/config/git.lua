@@ -106,8 +106,10 @@ function M.setup_gitsigns()
         vim.keymap.set(mode, lhs, rhs, opts)
       end
       -- Navigation
-      map('n', ']c', function() return vim.wo.diff and ']c' or '<Cmd>Gitsigns next_hunk<CR>' end, { expr = true })
-      map('n', '[c', function() return vim.wo.diff and '[c' or '<Cmd>Gitsigns prev_hunk<CR>' end, { expr = true })
+      map('n', ']c', function() return vim.wo.diff and ']c' or '<Cmd>Gitsigns next_hunk<CR>' end,
+        { expr = true, desc = "goto next hunk (or next diff)" })
+      map('n', '[c', function() return vim.wo.diff and '[c' or '<Cmd>Gitsigns prev_hunk<CR>' end,
+        { expr = true, desc = "goto previous hunk (or previous diff)" })
       -- Actions
       -- TODO: Also call reload_fugitive_index() after gitsigns operations (even if it's not on the "diff mode")
       map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')
