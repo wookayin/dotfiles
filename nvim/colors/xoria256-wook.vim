@@ -46,6 +46,7 @@ highlight GitSignsStagedDelete    guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=
 " some primitive colors customized on top of xoria256
 highlight Normal        ctermfg=255 guifg=#ffffff  ctermbg=NONE guibg=NONE
 highlight EndOfBuffer   ctermfg=240 guifg=#585858  ctermbg=NONE guibg=NONE
+highlight Visual        ctermfg=NONE guifg=NONE   ctermbg=96  guibg=#875f87
 highlight Comment       ctermfg=035 guifg=#38B04A
 highlight SpecialComment ctermfg=250 guifg=#99a899  gui=italic   " docstring
 highlight Constant      ctermfg=204 guifg=#ff5f87
