@@ -57,11 +57,12 @@ function M.setup_gitsigns()
     signcolumn = true,
     signs = {
       -- For highlights, see $DOTVIM/colors/xoria256-wook.vim
-      add          = { hl = 'GitSignsAdd'   , text = '┃', numhl = 'GitSignsAddNr'   , linehl = 'GitSignsAddLn' },
-      change       = { hl = 'GitSignsChange', text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
-      delete       = { hl = 'GitSignsDelete', text = '_', numhl = 'GitSignsDeleteNr', linehl = 'GitSignsDeleteLn' },
-      topdelete    = { hl = 'GitSignsDelete', text = '‾', numhl = 'GitSignsDeleteNr', linehl = 'GitSignsDeleteLn' },
-      changedelete = { hl = 'GitSignsChange', text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
+      add          = { hl = 'GitSignsAdd'   ,    text = '┃', numhl = 'GitSignsAddNr'   , linehl = 'GitSignsAddLn' },
+      change       = { hl = 'GitSignsChange',    text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
+      topdelete    = { hl = 'GitSignsDelete',    text = '‾', numhl = 'GitSignsDeleteNr', linehl = 'GitSignsDeleteLn' },
+      delete       = { hl = 'GitSignsDelete',    text = '_', numhl = 'GitSignsDeleteNr', linehl = 'GitSignsDeleteLn' },
+      changedelete = { hl = 'GitSignsChange',    text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
+      untracked    = { hl = 'GitSignsUntracked', text = '┆', numhl = 'GitSignsUntracked', linehl = 'GitSignsUntrackedLn' },
     },
     -- TODO: This feature is unstable and buggy at the moment. Git signs are not updated
     -- and consistent with the actual git index, fails silently. Disable until the bug gets fixed
