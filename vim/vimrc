@@ -437,15 +437,15 @@ EOF
 endif
 
 " window navigation
-noremap <C-h> <C-w>h
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
-noremap <M-h> <C-w>h
-noremap <M-j> <C-w>j
-noremap <M-k> <C-w>k
-noremap <M-l> <C-w>l
+nnoremap <M-h> <C-w>h
+nnoremap <M-j> <C-w>j
+nnoremap <M-k> <C-w>k
+nnoremap <M-l> <C-w>l
 
 " window navigation: aware of tmux
 let g:tmux_navigator_no_mappings = 1
