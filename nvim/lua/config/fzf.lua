@@ -123,6 +123,23 @@ function M.setup_fzf()
     }
   end
 
+  global_opts.lsp = {
+    code_actions = {
+      previewer = "codeaction_native",
+      preview_pager = (
+        "delta --side-by-side --width=$FZF_PREVIEW_COLUMNS " ..
+        "--hunk-header-style='omit' --file-style='omit' "
+      ),
+      winopts = {
+        preview = {
+          layout = "vertical",
+          height = 0.8,
+          vertical = "up:75%",
+        },
+      }
+    }
+  }
+
   -- insert-mode completion: turn on preview by default
   global_opts.complete_file = {
     previewer = "default",

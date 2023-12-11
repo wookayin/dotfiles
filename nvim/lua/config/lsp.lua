@@ -40,9 +40,10 @@ local on_attach = function(client, bufnr)
 
   -- Keybindings
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
-  local nbufmap = function(lhs, rhs, opts)
-    return vim.keymap.set('n', lhs, rhs, vim.tbl_deep_extend("force", { remap = false, buffer = true }, opts or {}))
+  local bufmap = function(mode, lhs, rhs, opts)
+    return vim.keymap.set(mode, lhs, rhs, vim.tbl_deep_extend("force", { remap = false, buffer = true }, opts or {}))
   end
+  local nbufmap = function(lhs, rhs, opts) return bufmap('n', lhs, rhs, opts) end
   local function vim_cmd(x) return '<Cmd>' .. x .. '<CR>' end
   local function buf_command(...) vim.api.nvim_buf_create_user_command(bufnr, ...) end
 
@@ -77,7 +78,7 @@ local on_attach = function(client, bufnr)
   --nbufmap('<space>wr', vim_cmd 'lua vim.lsp.buf.remove_workspace_folder()')
   --nbufmap('<space>wl', vim_cmd 'lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))')
   nbufmap('<leader>rn', vim_cmd 'lua vim.lsp.buf.rename()')
-  nbufmap('<leader>ca', vim_cmd 'lua vim.lsp.buf.code_action()')
+  bufmap({'n', 'v'}, '<leader>ca', '<cmd>CodeActions<CR>')
   --nbufmap('<space>e', vim_cmd 'lua vim.lsp.diagnostic.show_line_diagnostics()')
   --nbufmap('<space>q', vim_cmd 'lua vim.lsp.diagnostic.set_loclist()')
   --nbufmap('<space>f', vim_cmd 'ua vim.lsp.buf.formatting()')
@@ -86,6 +87,18 @@ local on_attach = function(client, bufnr)
   buf_command("LspRename", function(opt)
     vim.lsp.buf.rename(opt.args ~= "" and opt.args or nil)
   end, { nargs = '?', desc = "Rename the current symbol at the cursor." })
+
+  buf_command("CodeActions", function(_)
+    if pcall(require, "fzf-lua.previewer.codeaction") then
+      if vim.fn.executable("delta") == 0 then
+        vim.notify_once("delta (git-delta) not found. Please install delta to enable preview.", vim.log.levels.WARN)
+      end
+      require("fzf-lua").lsp_code_actions()  -- see config/fzf.lua
+    else
+      return vim.lsp.buf.code_action()
+    end
+  end, { nargs = 0, desc = "Code Actions (fzf-lua with preview)." })
+  vim.fn.CommandAlias("CA", "CodeActions")
 
   -- inlay hints (experimental), need to turn it on manually
   if client.server_capabilities.inlayHintProvider and vim.fn.has('nvim-0.10') > 0 then
@@ -1030,9 +1043,6 @@ end
 function M._setup_lsp_commands()
   vim.cmd [[
     command! -nargs=0 LspDebug  :tab drop $HOME/.cache/nvim/lsp.log
-
-    command! -nargs=0 CodeActions   :lua vim.lsp.buf.code_action()
-    call CommandAlias("CA", "CodeActions")
   ]]
 end
 
