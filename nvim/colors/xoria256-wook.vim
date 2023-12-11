@@ -40,9 +40,9 @@ highlight GitSignsAdd             guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=
 highlight GitSignsChange          guifg=#bbbb00 guibg=#121212 ctermfg=3 ctermbg=233
 highlight GitSignsDelete          guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233
 hi! link  GitSignsUntracked       GitSignsAdd
-highlight GitSignsStagedAdd       guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=233 gui=bold
-highlight GitSignsStagedChange    guifg=#bbbb00 guibg=#121212 ctermfg=3 ctermbg=233 gui=bold
-highlight GitSignsStagedDelete    guifg=#ff2222 guibg=#121212 ctermfg=1 ctermbg=233 gui=bold
+highlight GitSignsStagedAdd       guifg=#336600 guibg=#121212 ctermfg=2 ctermbg=233 gui=bold
+highlight GitSignsStagedChange    guifg=#aa9900 guibg=#121212 ctermfg=3 ctermbg=233 gui=bold
+highlight GitSignsStagedDelete    guifg=#bb2222 guibg=#121212 ctermfg=1 ctermbg=233 gui=bold
 
 " some primitive colors customized on top of xoria256
 highlight Normal        ctermfg=255 guifg=#ffffff  ctermbg=NONE guibg=NONE

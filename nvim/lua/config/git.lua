@@ -64,15 +64,13 @@ function M.setup_gitsigns()
       changedelete = { hl = 'GitSignsChange',    text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
       untracked    = { hl = 'GitSignsUntracked', text = '┆', numhl = 'GitSignsUntracked', linehl = 'GitSignsUntrackedLn' },
     },
-    -- TODO: This feature is unstable and buggy at the moment. Git signs are not updated
-    -- and consistent with the actual git index, fails silently. Disable until the bug gets fixed
-    _signs_staged_enable = false, -- experimental
+    _signs_staged_enable = true, -- experimental
     _signs_staged = {
-      add          = { hl = 'GitSignsStagedAdd'   , text = '┋ ', numhl = 'GitSignsStagedAddNr'   , linehl = 'GitSignsStagedAddLn' },
-      change       = { hl = 'GitSignsStagedChange', text = '┋ ', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
-      delete       = { hl = 'GitSignsStagedDelete', text = '﹍', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
-      topdelete    = { hl = 'GitSignsStagedDelete', text = '﹉', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
-      changedelete = { hl = 'GitSignsStagedChange', text = '┋ ', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
+      add          = { hl = 'GitSignsStagedAdd'   , text = '▊', numhl = 'GitSignsStagedAddNr'   , linehl = 'GitSignsStagedAddLn' },
+      change       = { hl = 'GitSignsStagedChange', text = '▊', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
+      topdelete    = { hl = 'GitSignsStagedDelete', text = '🮂', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
+      delete       = { hl = 'GitSignsStagedDelete', text = '🬭', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
+      changedelete = { hl = 'GitSignsStagedChange', text = '▊', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
     },
     sign_priority = 6,  -- Note: LSP diagnostics sign priority is 10~13
     -- numhl = true,
