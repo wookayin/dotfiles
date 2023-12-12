@@ -24,9 +24,6 @@ end
 ---@type fun(client: lsp.Client, bufnr: buffer)
 local on_attach = function(client, bufnr)
 
-  -- LSP diagnostics + gitsigns
-  vim.wo.signcolumn = 'yes:2'
-
   -- Activate LSP signature on attach.
   on_attach_lsp_signature(client, bufnr)
 

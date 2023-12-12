@@ -88,6 +88,7 @@ end
 -- See nvim/lua/config/commands/init.lua
 _require 'config.keymap'
 _require 'config.commands'
+_require 'config.statuscolumn'
 
 -- Source local-only lua configs (not git tracked)
 if vim.fn.filereadable(vim.fn.expand('~/.config/nvim/lua/config/local.lua')) > 0 then
