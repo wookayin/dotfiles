@@ -83,13 +83,15 @@ function M.setup_highlight(lang, bufnr)
   if M.has_parser(lang, bufnr) then  -- excludes built-in parser
     local ok, _ = xpcall(function()
       vim.treesitter.start(bufnr, lang)
+      vim.treesitter.query.get(lang, 'highlights')
     end, function(err)
+      err = debug.traceback(err, 1)
       M.try_recover_parser_errors(lang, err)
     end)
     return ok and true or false
   else
     -- Maybe start later when parsers become available
-    vim.notify_once("Installing treesitter parser: " .. lang)
+    vim.notify_once("Treesitter parser does not exist for lang = " .. lang, vim.log.levels.WARN)
     M._reattach_after_install._deferred[bufnr] = lang
     return false
   end
@@ -171,7 +173,12 @@ local _recover_requested = false
 
 function M.try_recover_parser_errors(lang, err)
   -- This is a fatal, unrecoverable error where treesitter parsers must be re-installed.
-  if err and err:match('invalid node type') then
+  if err and (
+    -- see $NEOVIM/src/nvim/lua/treesitter.c query_err_to_string()
+    err:match('[Ii]nvalid node type') or
+    err:match('[Ii]nvalid field') or
+    err:match('[Ii]nvalid capture')
+  ) then
   else
     return false  -- Do not handle any other general errors (e.g. parser does not exist)
   end
@@ -183,7 +190,6 @@ function M.try_recover_parser_errors(lang, err)
   -- Treesitter is broken, disable all folding otherwise nvim might hang forever
   vim.opt_global.foldexpr = '0'
 
-  vim.api.nvim_echo({{ err, 'Error' }}, true, {})
   vim.cmd [[
     " workaround: disable TextChangedI autocmds that may cause treesitter errors
     silent! autocmd! cmp_nvim_ultisnips
@@ -192,16 +198,18 @@ function M.try_recover_parser_errors(lang, err)
 
   -- Try to recover automatically, if nvim-treesitter is still importable.
   local noti_opts = { print = true, timeout = 10000, title = 'config/treesitter', markdown = true }
-  vim.notify("Fatal error on treesitter parsers (see `:messages`). " ..
-             "Trying to reinstall treesitter parsers...",
-             vim.log.levels.WARN, noti_opts)
+  vim.notify(("Fatal error on treesitter parsers (see `:messages`), lang = `%s`. " ..
+              "Trying to reinstall treesitter parsers...\n\n"):format(lang) ..
+             err,
+             vim.log.levels.ERROR, noti_opts)
 
   -- Force-reinstall all treesitter parsers.
   vim.schedule(function()
     vim.defer_fn(function()
+      vim.api.nvim_echo({{ "Installing TS Parsers: " .. lang, "MoreMsg" }}, true, {})
       require('nvim-treesitter.install').commands.TSInstallSync["run!"](lang);
       require('nvim-treesitter.install').commands.TSUpdateSync.run();
-      vim.notify("Treesitter parsers have been re-installed. Please RESTART neovim.",
+      vim.notify(("Treesitter parser %s has been re-installed. Please RESTART neovim."):format(lang),
                  vim.log.levels.INFO, noti_opts)
     end, 1000)
   end)
