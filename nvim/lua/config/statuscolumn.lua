@@ -21,30 +21,28 @@ function M.statuscolumn()
   local is_file = vim.bo[buf].buftype == ""
   local show_signs = vim.wo[win].signcolumn ~= "no"
 
-  local components = { "", "", "" } -- left, middle, right
+  local components = { } ---@type table<string, string>
 
   if show_signs then
-    ---@type Sign?,Sign?,Sign?
-    local left, right, fold
+    ---@type Sign?, Sign?, Sign?
+    local sign, gitsign, fold
     for _, s in ipairs(M.get_signs(buf, vim.v.lnum)) do
-      if s.name and s.name:find("GitSign") then
-        right = s
+      if s.name and vim.startswith(s.name, "GitSign") then
+        gitsign = s
       else
-        left = s
+        sign = s
       end
     end
     if vim.v.virtnum ~= 0 then
-      left = nil
+      sign = nil
     end
     vim.api.nvim_win_call(win, function()
       if vim.fn.foldclosed(vim.v.lnum) >= 0 then
         fold = { text = vim.opt.fillchars:get().foldclose or "", texthl = "Folded" }
       end
     end)
-    -- Left: mark or non-git sign
-    components[1] = M.icon(M.get_mark(buf, vim.v.lnum) or left)
-    -- Right: fold icon or git sign (only if file)
-    components[3] = is_file and M.icon(fold or right) or ""
+    components.git_or_fold = is_file and M.icon(fold or gitsign, 1) or ""
+    components.mark_or_sign = M.icon(M.get_mark(buf, vim.v.lnum) or sign, 2)
   end
 
   -- Numbers in Neovim are weird
@@ -53,22 +51,28 @@ function M.statuscolumn()
   local is_relnum = vim.wo[win].relativenumber
   if (is_num or is_relnum) and vim.v.virtnum == 0 then
     if vim.v.relnum == 0 then
-      components[2] = is_num and "%l" or "%r" -- the current line
+      components.line_num = is_num and "%l" or "%r" -- the current line
     else
-      components[2] = is_relnum and "%r" or "%l" -- other lines
+      components.line_num = is_relnum and "%r" or "%l" -- other lines
     end
-    components[2] = "%=" .. components[2] .. " " -- right align
+    components.line_num = "%=" .. components.line_num -- right align
+    components.line_num = components.line_num .. " "
   end
 
-  return table.concat(components, "")
+  _G.components = components
+  return table.concat({
+    components.git_or_fold or "",
+    components.mark_or_sign or "",
+    components.line_num or "",
+  }, "")
 end
 
 
----@alias Sign {name:string, text:string, texthl:string, priority:number}
+---@alias Sign { name:string, text:string, texthl:string, priority:number }
 
 -- Returns a list of regular and extmark signs sorted by priority (low to high)
 ---@return Sign[]
----@param buf number
+---@param buf buffer
 ---@param lnum number
 function M.get_signs(buf, lnum)
   -- Get regular signs
@@ -96,11 +100,13 @@ function M.get_signs(buf, lnum)
     { details = true, type = "sign" }
   )
   for _, extmark in pairs(extmarks) do
+    -- extmark { extmark_id, row, col, detail }
+    local detail = extmark[4]
     signs[#signs + 1] = {
-      name = extmark[4].sign_hl_group or "",
-      text = extmark[4].sign_text,
-      texthl = extmark[4].sign_hl_group,
-      priority = extmark[4].priority,
+      name = detail.sign_hl_group or "",
+      text = detail.sign_text,
+      texthl = detail.sign_hl_group,
+      priority = detail.priority,
     }
   end
 
@@ -126,10 +132,10 @@ function M.get_mark(buf, lnum)
 end
 
 ---@param sign? Sign
----@param len? number
+---@param len number
 function M.icon(sign, len)
   sign = sign or {}
-  len = len or 2
+  assert(len, 'len must be given explicitly')
   local text = vim.fn.strcharpart(sign.text or "", 0, len) ---@type string
   text = text .. string.rep(" ", len - vim.fn.strchars(text))
   return sign.texthl and ("%#" .. sign.texthl .. "#" .. text .. "%*") or text
