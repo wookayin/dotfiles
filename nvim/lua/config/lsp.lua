@@ -530,6 +530,10 @@ function M._setup_diagnostic()
     -- diagnostic signs have a base priority of 10; Error = 13, Warn = 12, Info = 11, etc.
     severity_sort = true,
 
+    signs = {
+      text = icons,  -- neovim/neovim#26193 (0.10.0+)
+    },
+
     -- No virtual text (distracting!), show popup window on hover.
     virtual_text = {
       severity = { min = vim.diagnostic.severity.WARN },
@@ -598,7 +602,7 @@ function M._setup_diagnostic()
   ]]
 
   -- Redefine signs (:help diagnostic-signs) and highlights (:help diagnostic-highlights)
-  do
+  if vim.fn.has('nvim-0.10') == 0 then
     vim.fn.sign_define("DiagnosticSignError",  {text = icons[vim.diagnostic.severity.ERROR], texthl = "DiagnosticSignError"})
     vim.fn.sign_define("DiagnosticSignWarn",   {text = icons[vim.diagnostic.severity.WARN],  texthl = "DiagnosticSignWarn"})
     vim.fn.sign_define("DiagnosticSignInfo",   {text = icons[vim.diagnostic.severity.INFO],  texthl = "DiagnosticSignInfo"})
