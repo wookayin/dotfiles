@@ -13,6 +13,7 @@ endif
 
 " tex-specific settings
 setlocal colorcolumn=100
+setlocal textwidth=99
 
 " Do not use conceal for LaTeX (e.g. indentLine)
 setlocal conceallevel=0
