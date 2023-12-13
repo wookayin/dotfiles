@@ -20,6 +20,7 @@ function M.statuscolumn()
   local buf = vim.api.nvim_win_get_buf(win)
   local is_file = vim.bo[buf].buftype == ""
   local show_signs = vim.wo[win].signcolumn ~= "no"
+  local fold_enabled = vim.wo[win].foldenable
 
   local components = { } ---@type table<string, string>
 
@@ -27,9 +28,15 @@ function M.statuscolumn()
     ---@type Sign?, Sign?, Sign?
     local sign, gitsign, fold
     for _, s in ipairs(M.get_signs(buf, vim.v.lnum)) do
-      if s.name and vim.startswith(s.name, "GitSign") then
-        gitsign = s
+      if s.name and vim.startswith(s.name, "GitSigns") then
+        -- prefer non-staged signs (GitSigns*) over GitSignStaged*
+        if (s.name or ""):match("^GitSignsStaged") then
+          gitsign = gitsign or s
+        else
+          gitsign = s
+        end
       else
+        -- show only the sign with the highest priority
         sign = s
       end
     end
@@ -42,6 +49,8 @@ function M.statuscolumn()
       end
     end)
     components.git_or_fold = is_file and M.icon(fold or gitsign, 1) or ""
+    components.git = is_file and M.icon(gitsign, 1) or ""
+    components.fold = is_file and fold_enabled and (fold and M.icon(fold, 1) or "%C") or ""
     components.mark_or_sign = M.icon(M.get_mark(buf, vim.v.lnum) or sign, 2)
   end
 
@@ -61,6 +70,7 @@ function M.statuscolumn()
 
   _G.components = components
   return table.concat({
+    -- components.fold or "",
     components.git_or_fold or "",
     components.mark_or_sign or "",
     components.line_num or "",
