@@ -227,10 +227,17 @@ pcall(function()
   vim.fn.CommandAlias('LazyProfile', 'Lazy profile', register_cmd)
 end)
 
--- list_plugs: Get all the registered plugins (including non-loaded ones)
+--- list_plugs: Get all the registered plugins (including non-loaded ones)
 ---@return string[]
 function M.list_plugs()
   return vim.tbl_keys(require("lazy.core.config").plugins)
+end
+
+--- Get a LazyPlugin table by its name (exact).
+---@param name string
+---@return LazyPlugin|nil
+function M.get_plugin(name)
+  return require("lazy.core.config").plugins[name]
 end
 
 -- load: immediately load (lazy) plugins synchronously
@@ -239,4 +246,6 @@ function M.load(names)
   require("lazy.core.loader").load(names, {}, { force = true })
 end
 
+_G.lazy = require("lazy");
+(RC or {}).plugins = M;
 return M
