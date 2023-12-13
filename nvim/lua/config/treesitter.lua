@@ -82,7 +82,7 @@ function M.setup_highlight(lang, bufnr)
     bufnr = vim.api.nvim_get_current_buf()
   end
 
-  if M.has_parser(lang, bufnr) then  -- excludes built-in parser
+  if M.has_parser(lang) then  -- excludes built-in (bundled) parser
     local ok, _ = xpcall(function()
       vim.treesitter.start(bufnr, lang)
       vim.treesitter.query.get(lang, 'highlights')
@@ -93,7 +93,8 @@ function M.setup_highlight(lang, bufnr)
     return ok and true or false
   else
     -- Maybe start later when parsers become available
-    vim.notify_once("Treesitter parser does not exist for lang = " .. lang, vim.log.levels.WARN)
+    vim.notify_once("Treesitter parser does not exist for lang = " .. lang,
+      vim.log.levels.WARN, { title = "config.treesitter" })
     M._reattach_after_install._deferred[bufnr] = lang
     return false
   end

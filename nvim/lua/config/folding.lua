@@ -21,7 +21,7 @@ M.setup_ufo = function()
     provider_selector = function(bufnr, filetype)
       -- Use treesitter if available
       if pcall(require, 'nvim-treesitter.parsers') then
-        if require("nvim-treesitter.parsers").has_parser(filetype) then
+        if require("config.treesitter").has_parser(filetype) then
           return {'treesitter', 'indent'}
         end
       end
