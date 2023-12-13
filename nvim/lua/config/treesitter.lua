@@ -4,6 +4,8 @@
 
 local M = {}
 
+local has = function(feature) return vim.fn.has(feature) > 0 end
+
 ---------------------------------------------------------------------------
 --- Entrypoint.
 ---------------------------------------------------------------------------
@@ -42,7 +44,7 @@ function M.setup()
 
     -- Deprecated as of neovim 0.10+ in favor of :InspectTree, only used for neovim <= 0.9
     playground = {
-      enable = true,
+      enable = not has('nvim-0.10'),
       updatetime = 30,
       keybindings = {
         toggle_query_editor = 'o',
@@ -228,8 +230,10 @@ end)
 
 
 --- Manually install by building parsers from a local, devel workspace.
---- Need to first build parser.c manually ($ npm run build && npm run test)
---- e.g. install_parsers_from_devel("luadoc", "~/workspace/dev/tree-sitter-luadoc")
+--- Need to first build parser.c manually if there are local changes:
+---   $ npm install && node-gyp configure && npm run build && npm run test)
+--- e.g.
+---   :lua require("config.treesitter").install_parsers_from_devel("luadoc", "~/workspace/dev/tree-sitter-luadoc")
 function M.install_parsers_from_devel(lang, dir)
   vim.validate { lang = { lang, 'string' }, dir = { dir, 'string' } }
   dir = vim.fn.expand(dir) --[[ @as string ]]
