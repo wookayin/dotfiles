@@ -56,6 +56,7 @@ function M.setup_gitsigns()
   local gitsigns_config = {
     signcolumn = true,
     signs = {
+      -- █ ▉ ▊ ▋ ▌ ▍ ▎ ▏ ┃│┆
       -- For highlights, see $DOTVIM/colors/xoria256-wook.vim
       add          = { hl = 'GitSignsAdd'   ,    text = '┃', numhl = 'GitSignsAddNr'   , linehl = 'GitSignsAddLn' },
       change       = { hl = 'GitSignsChange',    text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
@@ -66,11 +67,11 @@ function M.setup_gitsigns()
     },
     _signs_staged_enable = true, -- experimental
     _signs_staged = {
-      add          = { hl = 'GitSignsStagedAdd'   , text = '▊', numhl = 'GitSignsStagedAddNr'   , linehl = 'GitSignsStagedAddLn' },
-      change       = { hl = 'GitSignsStagedChange', text = '▊', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
+      add          = { hl = 'GitSignsStagedAdd'   , text = '█', numhl = 'GitSignsStagedAddNr'   , linehl = 'GitSignsStagedAddLn' },
+      change       = { hl = 'GitSignsStagedChange', text = '█', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
       topdelete    = { hl = 'GitSignsStagedDelete', text = '🮂', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
       delete       = { hl = 'GitSignsStagedDelete', text = '🬭', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
-      changedelete = { hl = 'GitSignsStagedChange', text = '▊', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
+      changedelete = { hl = 'GitSignsStagedChange', text = '█', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
     },
     sign_priority = 6,  -- Note: LSP diagnostics sign priority is 10~13
     -- numhl = true,
