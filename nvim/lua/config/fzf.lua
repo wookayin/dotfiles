@@ -365,7 +365,7 @@ function M.setup_fzf()
           vim.opt_local.winhighlight:append("Normal:FzfLuaPmenu")
           -- Put the fzf-lua widget below near the command line, similar to wildmenu
           local height = vim.api.nvim_win_get_config(winid).height
-          vim.api.nvim_win_set_config(winid, { row = math.max(1, vim.o.lines - height), col = 0, relative = 'editor' })
+          vim.api.nvim_win_set_config(winid, { row = math.max(1, vim.o.lines - height - 1), col = 0, relative = 'editor' })
         end,
       },
     })
