@@ -48,13 +48,17 @@ if vim.fn.has('nvim-0.8') == 0 then
   vim.cmd [[
     echohl WarningMsg | echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.8.0+ or higher.' | echohl None
   ]]
+  vim.cmd [[ filetype plugin off ]]
+  vim.o.loadplugins = false
+  vim.o.swapfile = false
+  vim.o.shadafile = "NONE"
   return
 
-elseif vim.fn.has('nvim-0.9.1') == 0 and vim.fn.has('gui_vimr') == 0 then
+elseif vim.fn.has('nvim-0.9.1') == 0 then
   vim.defer_fn(function()
     local like_false = function(x) return x == nil or x == "0" or x == "" end
     if not like_false(vim.env.DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING) then return end
-    local msg = 'Please upgrade to latest neovim (0.9.1+).\n'
+    local msg = 'Please upgrade to latest neovim (0.9.4+).\n'
     msg = msg .. 'Support for neovim <= 0.8.x will be dropped soon.'
     msg = msg .. '\n\n' .. string.format('Try: $ %s install neovim', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
     msg = msg .. '\n\n' .. ('If you cannot upgrade yet but want to suppress this warning,\n'
