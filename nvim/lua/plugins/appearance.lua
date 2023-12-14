@@ -34,11 +34,22 @@ return {
       }
     end,
     config = function()
+      local highlight = function(...) vim.api.nvim_set_hl(0, ...) end
       require("utils.rc_utils").RegisterHighlights(function()
-        vim.api.nvim_set_hl(0, 'XTNum',    { bg = 'black',   fg='white', })
-        vim.api.nvim_set_hl(0, 'XTNumSel', { bg = '#1f1f3d', fg='white', bold = true })
-        vim.api.nvim_set_hl(0, 'XTCorner', { link = 'Special' })
-        vim.api.nvim_set_hl(0, 'XTSpecial', { link = 'XTExtra' })
+        -- background filler
+        highlight('XTFill',       { bg = '#21212e' })
+        -- selected (the current buffer)
+        highlight('XTNumSel',     { bg = '#1f2c3d', fg = 'white', bold = true })
+        highlight('XTSelect',     { bg = '#ffffff', fg = '#c92a2a', bold = true })
+        -- buffer: currently shown in other window
+        highlight('XTNum',        { bg = 'black',   fg = 'white', })
+        highlight('XTVisible',    { bg = '#cccccc', fg = '#a01a1a' })
+        -- buffer: loaded but hidden (including tabs)
+        highlight('XTHidden',     { bg = '#333333', fg = '#d9d9d9' })
+        highlight('XTHiddenMod',  { bg = '#333333', fg = '#af0000' })
+
+        highlight('XTCorner',     { link = 'Special' })
+        highlight('XTSpecial',    { link = 'XTExtra' })
       end)
 
       -- Show 'tabs' when #tabs >= 2; otherwise show buffers.
