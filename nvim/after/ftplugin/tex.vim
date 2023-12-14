@@ -25,12 +25,13 @@ setlocal spell
 " ------------
 
 " wrap current word or selection with textbf/textit (need surround.vim)
+" \uline -> \usepackage{ulem}
 nmap <buffer> <leader>b ysiw}i\textbf<ESC>
 nmap <buffer> <leader>i ysiw}i\textit<ESC>
-nmap <buffer> <leader>u ysiw}i\underline<ESC>
+nmap <buffer> <leader>u ysiw}i\uline<ESC>
 vmap <buffer> <leader>b S}i\textbf<ESC>
 vmap <buffer> <leader>i S}i\textit<ESC>
-vmap <buffer> <leader>u S}i\underline<ESC>
+vmap <buffer> <leader>u S}i\uline<ESC>
 
 " easy-align of align/tables {{
 " (with block)
