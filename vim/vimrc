@@ -1931,8 +1931,6 @@ endif
 " :Buffers => Jump to the existing window if possible
 let g:fzf_vim.buffers_jump = 1
 
-" }}}
-
 function! s:get_git_workdir(path)
   let curr = fnamemodify(expand(a:path), ':p')
   if empty(curr)   " empty buffer, etc.: fall back to current dir
@@ -2850,7 +2848,7 @@ let g:tagbar_show_visibility = 0
 
 " ---------------------------------------------------------------- }}}
 
-" Source all PlugConfig for 'enabled' plugins
+" Source all PlugConfig for 'enabled' plugins {{{
 let g:PlugConfig = map(g:PlugConfig, 'funcref(v:val)')
 function! s:source_PlugConfig() abort
   " for vim-plug
@@ -2860,6 +2858,7 @@ function! s:source_PlugConfig() abort
     endif
   endfor
 endfunction | call s:source_PlugConfig()
+" }}}
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
