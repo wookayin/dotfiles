@@ -18,11 +18,19 @@ return {
     event = 'UIEnter',  -- load the plugin before drawing UI to not flicker; it takes only 2-3 ms
     init = function()
       vim.g.xtabline_settings = {
-        -- Use 'tab' as the default xtabline mode
+        -- Use 'buffers' as the default xtabline mode, but show 'tabs' if #tabs >= 2
         -- since we use global statusline (laststatus = 3)
-        tabline_modes = { 'tabs', 'buffers', 'arglist' },
+        tabline_modes = { 'buffers', 'tabs', 'arglist' },
         -- always show the current xtabline mode
         mode_labels = 'all',
+        -- if true, show whether [W]indow or [T]ab local cwd is set
+        wd_type_indicator = false,
+
+        --[[ Buffers ]]
+        -- 1: buffer numbers, 2: buffer index (position).
+        buffer_format = 1,
+        -- Do not filter buffers in the list based on directory.
+        buffer_filtering = 0,
       }
     end,
     config = function()
@@ -30,7 +38,22 @@ return {
         vim.api.nvim_set_hl(0, 'XTNum',    { bg = 'black',   fg='white', })
         vim.api.nvim_set_hl(0, 'XTNumSel', { bg = '#1f1f3d', fg='white', bold = true })
         vim.api.nvim_set_hl(0, 'XTCorner', { link = 'Special' })
+        vim.api.nvim_set_hl(0, 'XTSpecial', { link = 'XTExtra' })
       end)
+
+      -- Show 'tabs' when #tabs >= 2; otherwise show buffers.
+      local change_xtabline_mode = function()
+        if vim.fn.tabpagenr('$') >= 2 then
+          vim.cmd.XTabMode { args = {'tabs'}, mods = { silent = true } }
+        else
+          vim.cmd.XTabMode { args = {'buffers'}, mods = { silent = true } }
+        end
+      end
+      change_xtabline_mode()
+      vim.api.nvim_create_autocmd({'TabNew', 'TabClosed'}, {
+        group = vim.api.nvim_create_augroup('xtabline-hybrid', { clear = true }),
+        callback = change_xtabline_mode,
+      })
     end,
   };
 }
