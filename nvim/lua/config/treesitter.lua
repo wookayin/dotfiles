@@ -271,12 +271,20 @@ end
 ---------------------------------------------------------------------------
 -- https://github.com/nvim-treesitter/nvim-treesitter#adding-queries
 -- "Dynamic" queries depending on project formatting style, etc. can be configured here.
--- For static query files, see $DOTVIM/after/queries.
 --
--- Note that the first query file in the runtimepath (usually user config) will be used,
--- ignoring all other query files from plugins (nvim-treesitter) and VIMRUNTIME;
--- unless `; extend` is used (see :h treesitter-query-modeline).
--- If vim.treesitter.query.set() is used, all query files on runtimepath will be ignored.
+-- For static query files, see:
+--    $DOTVIM/queries       => "overrides" query files.
+--    $DOTVIM/after/queries => "extends" nvim-treesitter's query files
+--      (should have the modeline ";; extends", otherwise will be ignored)
+--
+-- Note that ONLY the first query file in the &runtimepath will be used,
+-- ignoring all other query files from plugins (nvim-treesitter) and $VIMRUNTIME
+-- unless `;; extend` is used (see :h treesitter-query-modeline).
+--
+-- Usually runtimepath has an order of:
+--   user_config => plugins(nvim-treesitter) => $VIMRUNTIME => user_config/after => ...
+--
+-- If vim.treesitter.query.set() is used, ANY query files on runtimepath will be ignored.
 
 
 ---------------------------------------------------------------------------
