@@ -3,7 +3,6 @@
 
 local M = {}
 
-local ts_utils = require("nvim-treesitter.ts_utils")
 
 --[[ Implementations for $DOTVIM/after/ftplugin/python.lua ]]
 
@@ -30,7 +29,8 @@ M.toggle_fstring = function()
   -- Credit: https://www.reddit.com/r/neovim/comments/tge2ty/python_toggle_fstring_using_treesitter/
   local winnr = 0
   local cursor = vim.api.nvim_win_get_cursor(winnr)
-  local node = ts_utils.get_node_at_cursor()  ---@type TSNode?
+  ---@type TSNode?
+  local node = require("utils.ts_utils").get_node_at_cursor(winnr)
 
   while (node ~= nil) and (node:type() ~= "string") do
     node = node:parent()
@@ -41,7 +41,7 @@ M.toggle_fstring = function()
   end
 
   ---@diagnostic disable-next-line: unused-local
-  local srow, scol, erow, ecol = ts_utils.get_vim_range({ node:range() })
+  local srow, scol, erow, ecol = require("utils.ts_utils").get_vim_range({ node:range() })
   vim.fn.setcursorcharpos(srow, scol)
 
   local char = vim.api.nvim_get_current_line():sub(scol, scol)
