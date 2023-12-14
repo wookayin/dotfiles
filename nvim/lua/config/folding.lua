@@ -41,6 +41,18 @@ M.setup_ufo = function()
   }
 end
 
+M.before_ufo = function()
+  -- Need to disable zM, zR during init, because it will change foldlevel
+  -- if zM/zR executed before the keymap settings of nvim-ufo has been effective.
+  local ufo_not_ready = vim.schedule_wrap(function()
+    vim.notify("nvim-ufo is yet to be initialized, please try again later...",
+      vim.log.levels.WARN, { timeout = 500, title = "nvim-ufo" })
+  end)
+  vim.keymap.set('n', 'zM', ufo_not_ready, { silent = true })
+  vim.keymap.set('n', 'zR', ufo_not_ready, { silent = true })
+end
+
+
 -- (highlighted) preview of folded region. returns List[ Tuple[Message, Highlight] ]
 -- Preview, # of folded lines,
 -- Part of code brought from #38, credit goes to @ranjithshegde
