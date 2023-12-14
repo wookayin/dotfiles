@@ -602,7 +602,8 @@ function M._setup_diagnostic()
   ]]
 
   -- Redefine signs (:help diagnostic-signs) and highlights (:help diagnostic-highlights)
-  if vim.fn.has('nvim-0.10') == 0 then
+  -- see vim.diagnostic.config, but we still keep legacy signs because other plugins (neotree, etc.) still use them
+  do -- if vim.fn.has('nvim-0.10') == 0 then
     vim.fn.sign_define("DiagnosticSignError",  {text = icons[vim.diagnostic.severity.ERROR], texthl = "DiagnosticSignError"})
     vim.fn.sign_define("DiagnosticSignWarn",   {text = icons[vim.diagnostic.severity.WARN],  texthl = "DiagnosticSignWarn"})
     vim.fn.sign_define("DiagnosticSignInfo",   {text = icons[vim.diagnostic.severity.INFO],  texthl = "DiagnosticSignInfo"})
