@@ -65,6 +65,11 @@ return {
         group = vim.api.nvim_create_augroup('xtabline-hybrid', { clear = true }),
         callback = change_xtabline_mode,
       })
+
+      -- Keymaps and commands
+      vim.keymap.set('n', '<leader>bH', '<cmd>XTabMoveBufferPrev<CR>')
+      vim.keymap.set('n', '<leader>bL', '<cmd>XTabMoveBufferNext<CR>')
+      vim.fn.CommandAlias('bmove', 'XTabMoveBuffer')
     end,
   };
 }

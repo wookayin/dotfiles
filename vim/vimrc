@@ -578,6 +578,14 @@ if has('nvim')
   tnoremap <silent> ]b <Cmd>bnext<CR>
 endif
 
+" Managing buffers
+nnoremap <leader>b0   <Cmd>bfirst<CR>
+nnoremap <leader>b$   <Cmd>blast<CR>
+nnoremap <leader>bd   <Cmd>bdelete<CR>
+nnoremap <leader>Q    <Cmd>bdelete<CR>
+nnoremap <leader>bn   <Cmd>bnext<CR>
+nnoremap <leader>bp   <Cmd>bprev<CR>
+
 " Tab navigations
 nnoremap <silent> [t  <Cmd>tabprevious<CR>
 nnoremap <silent> ]t  <Cmd>tabnext<CR>
