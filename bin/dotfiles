@@ -74,7 +74,7 @@ def update(fast=False,
     install_args = ' '.join(install_args)
 
     # TODO: check if current branch is master
-    action = '''
+    action = '''#!/bin/bash
         set -e
         set -x
         ret=0
@@ -82,7 +82,7 @@ def update(fast=False,
         git fetch origin
         git stash push -m "DOTFILES_UPDATE"
         git merge --ff-only && \
-            python install.py %s || { ret=$?; }
+            python3 install.py %s || { ret=$?; }
         git stash list | grep "DOTFILES_UPDATE" && git stash pop --index -q
         exit $ret;
     ''' % install_args
