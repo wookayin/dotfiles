@@ -571,6 +571,7 @@ nnoremap <leader>b0   <Cmd>bfirst<CR>
 nnoremap <leader>b$   <Cmd>blast<CR>
 nnoremap <leader>bd   <Cmd>bdelete<CR>
 nnoremap <leader>Q    <Cmd>bdelete<CR>
+nnoremap <leader>bq   <Cmd>bdelete<CR>
 nnoremap <leader>bn   <Cmd>bnext<CR>
 nnoremap <leader>bp   <Cmd>bprev<CR>
 
