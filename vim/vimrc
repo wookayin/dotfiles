@@ -1821,9 +1821,6 @@ function! AsyncrunQuickfixCtrlC() abort
   endif
 endfunction
 
-" }}}
-
-
 " ---------------------------------------------------------------- }}}
 " errormarker.vim (quickfix to signs) {{{
 
