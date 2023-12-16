@@ -1,9 +1,10 @@
 ;; extends
 
-
-; Advanced & Experimental folding customization
-
-; Fold consecutive top-level import statements
+; 🚧 Fold a maximially consecutive top-level import statements.
+; NOTE: This query is a hack until a upstream bug is fixed: neovim/neovim#17060
+; where (node)+ quantifiers are not captured properly as a single group.
+;   see potential fix: neovim/neovim#17099 -> neovim/neovim#24738
+;   also relevant: tree-sitter/tree-sitter#2468
 (module
   . (comment)*
   . (expression_statement)?   ; an optional docstring at the very first top
