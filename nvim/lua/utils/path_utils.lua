@@ -48,13 +48,15 @@ function M.path_to_lua_package(filePath)
   local basePaths = {
     -- TODO: Respect the package serach path of actual package loaders.
     resolve("$HOME/.config/nvim") .. "/lua/",
-    resolve("$VIMPLUG") .. "/.-/lua/",
+    resolve("$VIMPLUG") .. "/[%w-]+/lua/",
   }
   for _, basePath in pairs(basePaths) do
     if filePath:find(basePath) then
       basePath = filePath:match(basePath)
       if basePath then
-        local moduleName = filePath:gsub(basePath, ""):gsub("/", "."):gsub("%.lua$", ""):gsub("%.init$", "")
+        local moduleName = filePath:gsub(
+          basePath:gsub("%-", "%%-"), ""  -- Note: escape `-` (a magic character)
+        ):gsub("/", "."):gsub("%.lua$", ""):gsub("%.init$", "")
         return moduleName
       end
     end
