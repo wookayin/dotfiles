@@ -16,12 +16,16 @@ if [[ `uname` == 'Darwin' ]]; then
 fi
 
 # history settings
-shopt -s histappend		# append, no overwrite
+shopt -s histappend  # append, no overwrite
 HISTSIZE=10000
 HISTFILESIZE=20000
 
 # ulimits
 ulimit -n 10240
+
+# Clear environment variables in nested session
+unset VIM
+unset VIMRUNTIME
 
 ##############
 # 2. Aliases #
