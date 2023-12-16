@@ -53,7 +53,7 @@ highlight SpecialComment ctermfg=250 guifg=#99a899  gui=italic   " docstring
 highlight Constant      ctermfg=204 guifg=#ff5f87
 highlight PreProc       ctermfg=219 guifg=#ffafff
 highlight SpecialKey    ctermfg=242 guifg=#666666
-highlight Folded        ctermbg=60  guibg=#404056
+highlight Folded        ctermbg=60  guibg=#292933
 
 highlight FoldColumn    ctermfg=236 guifg=#495057
 
