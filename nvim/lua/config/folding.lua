@@ -37,7 +37,10 @@ M.setup_ufo = function()
     -- see #26, #38, #74 (enables ctx.end_virt_text)
     enable_get_fold_virt_text = true,
 
-    fold_virt_text_handler = M.virtual_text_handler,
+    ---@type UfoFoldVirtTextHandler
+    fold_virt_text_handler = function(...)
+      return require("config.folding").virtual_text_handler(...)
+    end,
   }
 end
 
@@ -53,48 +56,61 @@ M.before_ufo = function()
 end
 
 
--- (highlighted) preview of folded region. returns List[ Tuple[Message, Highlight] ]
--- Preview, # of folded lines,
--- Part of code brought from #38, credit goes to @ranjithshegde
+--- (highlighted) preview of folded region.
+-- Preview, # of folded lines, etc.
+-- Part of code brought from kevinhwang91/nvim-ufo#38, credit goes to @ranjithshegde
+---@type UfoFoldVirtTextHandler
+---@return UfoExtmarkVirtTextChunk[]  return a list of virtual text chunks: { text, highlight }[].
 M.virtual_text_handler = function(virt_text, lnum, end_lnum, width, truncate, ctx)
 
   local counts = ("  (󰁂 %d lines)"):format(end_lnum - lnum + 1)
   local ellipsis = "⋯"
   local padding = ""
 
-  local bufnr = vim.api.nvim_get_current_buf()
-  local end_text = vim.api.nvim_buf_get_lines(bufnr, end_lnum - 1, end_lnum, false)[1]
+  ---@type string
+  local end_text = vim.api.nvim_buf_get_lines(ctx.bufnr, end_lnum - 1, end_lnum, false)[1]
+  ---@type UfoExtmarkVirtTextChunk[]
   local end_virt_text = ctx.get_fold_virt_text(end_lnum)
 
   -- Summarization of the folded text (optional)
-  local folding_summary = M.get_fold_summary(lnum, end_lnum, ctx)
-  if folding_summary and #folding_summary > 0 then
+  local folding_summary = M.get_fold_summary(virt_text, lnum, end_lnum, ctx)
+  if not folding_summary then
+  elseif type(folding_summary) == 'string' and #folding_summary > 0 then
     table.insert(virt_text, { "  " .. folding_summary, "MoreMsg" })
+  elseif type(folding_summary) == 'table' then
+    virt_text = folding_summary  -- replace the entire virt_text
+  else error("Unknown type")
   end
 
   -- Post-process end line: show only if it's a single word and token
-  -- e.g., { ... }  ( ... )  [{( ... )}]  function() .. end
+  -- e.g., { ⋯ }  ( ⋯ )  [{( ⋯ )}]  function() ⋯ end  foo("bar", { ⋯ })
   -- Trim leading whitespaces in end_virt_text
   if #end_virt_text >= 1 and vim.trim(end_virt_text[1][1]) == "" then
     table.remove(end_virt_text, 1)      -- e.g., {"   ", ")"} -> {")"}
   end
-  if #end_virt_text == 1 and #vim.split(vim.trim(end_text), " ") == 1 then
+
+  -- if the end line consists of a single 'word' (not single token)
+  -- this could be multiple tokens/chunks, e.g. `end)` `})`
+  if #vim.split(vim.trim(end_text), " ") == 1 then
     end_virt_text[1][1] = vim.trim(end_virt_text[1][1])  -- trim the first token, e.g., "   }" -> "}"
-    end_virt_text = { end_virt_text[1] }  -- show only the first token
   else
-    end_virt_text = {}
+    end_virt_text = { }
   end
 
-  -- Process virtual text, with some truncation
-  local sufWidth = (2 * vim.fn.strdisplaywidth(ellipsis)) + vim.fn.strdisplaywidth(counts)
+  -- Process virtual text, with some truncation at virt_text
+  local suffixWidth = (2 * vim.fn.strdisplaywidth(ellipsis)) + vim.fn.strdisplaywidth(counts)
   for _, v in ipairs(end_virt_text) do
-    sufWidth = sufWidth + vim.fn.strdisplaywidth(v[1])
+    suffixWidth = suffixWidth + vim.fn.strdisplaywidth(v[1])
+  end
+  if suffixWidth > 10 then
+    suffixWidth = 10
   end
 
-  local target_width = width - sufWidth
+  local target_width = width - suffixWidth
   local cur_width = 0
 
-  local result = {}  -- virtual text tokens to display.
+  -- the final virtual text tokens to display.
+  local result = {}
 
   for _, chunk in ipairs(virt_text) do
     local chunk_text = chunk[1]
@@ -118,8 +134,21 @@ M.virtual_text_handler = function(virt_text, lnum, end_lnum, width, truncate, ct
 
   table.insert(result, { "  " .. ellipsis .. "  ", "UfoFoldedEllipsis" })
 
-  for _, v in ipairs(end_virt_text) do
+  -- Also truncate end_virt_text to suffixWidth.
+  cur_width = 0
+  local j = #result
+  for i, v in ipairs(end_virt_text) do
     table.insert(result, v)
+    cur_width = cur_width + #v[1]
+    while cur_width > suffixWidth and j + 1 < #result do
+      cur_width = cur_width - #result[j + 1][1]
+      result[j + 1][1] = ""
+      j = j + 1
+    end
+  end
+  if cur_width > suffixWidth then
+   local text = result[#result[1]][1]
+    result[#result][1] = truncate(text, suffixWidth)
   end
 
   table.insert(result, { counts, "MoreMsg" })
@@ -128,11 +157,20 @@ M.virtual_text_handler = function(virt_text, lnum, end_lnum, width, truncate, ct
   return result
 end
 
--- 1-line summary of the folded region (coming before ellipsis).
--- Useful to have filetype-specific customizations here.
-M.get_fold_summary = function(lnum, end_lnum, ctx)
-  local filetype = vim.bo.filetype
-  local bufnr = vim.api.nvim_get_current_buf()
+--- Get a 1-line summary of the folded region (coming before ellipsis).
+--- Useful to have filetype-specific customizations for foldtext.
+---
+---@param virt_text UfoExtmarkVirtTextChunk[] the current virtual text in the folded line (lnum)
+---@param lnum      integer the start line number (1-indexed)
+---@param end_lnum  integer the end line number (1-indexed, inclusive)
+---@param ctx       UfoFoldVirtTextHandlerContext
+---@return string | UfoExtmarkVirtTextChunk[] | nil
+---   If returns string, this will be appended to the existing virt_text.
+---   If returns a table (UfoExtmarkVirtTextChunk[]), virt_text will be replaced.
+---   If nil, do not append any text in addition to virt_text.
+M.get_fold_summary = function(virt_text, lnum, end_lnum, ctx)
+  local bufnr = ctx.bufnr
+  local filetype = vim.bo[bufnr].filetype
 
   if filetype == 'bib' then
     -- bibtex: Parse title = ... entry
@@ -140,12 +178,16 @@ M.get_fold_summary = function(lnum, end_lnum, ctx)
       local line_string = vim.api.nvim_buf_get_lines(bufnr, l - 1, l, false)[1]
       local m = line_string:gmatch("title%s*=%s*{(.*)}")()
       if m then
-        return m
+        return m --[[@as string]]
       end
     end
+
+  elseif filetype == 'lua' and ctx.text:match('^%-+%s*$') then
+    -- Exclude '-------------------' in the first line, and read the next line
+    return ctx.get_fold_virt_text(lnum + 1)
   end
 
-  return ""
+  return nil  -- Unknown
 end
 
 -- Keymaps for nvim-ufo
