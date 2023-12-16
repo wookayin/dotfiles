@@ -95,15 +95,15 @@ vim.api.nvim_buf_create_user_command(bufnr, '${1:CommandName}', ${2:function(opt
 })
 endsnippet
 snippet augroup
-local ${1:GroupName} = vim.api.nvim_create_augroup('$1', { clear = true })
+vim.api.nvim_create_augroup('$1', { clear = true })
 endsnippet
 snippet autocmd
 vim.api.nvim_create_autocmd('${1:FileType}', {
 	pattern = '${2:*}',
 	group = ${3:augroup},
-	-- use either callback or command, not both
-	callback = ${4:function() end},
-	command = '${5:silent! lua ...}',
+	callback = function(args)
+		$0
+	end,
 })
 endsnippet
 snippet keymap
