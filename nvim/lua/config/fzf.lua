@@ -273,6 +273,7 @@ function M.setup_fzf()
   -- neovim providers
   -- (some commands are provided by telescope because it's often better with telescope)
   --    :Commands, :Maps, :Highlights
+  command("Tabs", {}, "FzfLua tabs")
   command("Buffers", { nargs = "?", complete = "buffer" }, bind_query(fzf.buffers)):alias("B")
   vim.keymap.set('n', '<leader>B', '<Cmd>Buffers<CR>')
   command("Colors", { nargs = "?", complete = "color" }, bind_query(fzf.colorschemes))
