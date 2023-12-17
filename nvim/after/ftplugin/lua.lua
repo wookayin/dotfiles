@@ -39,8 +39,10 @@ local function SourceThis()
       vim.log.levels.INFO, { title = 'ftplugin/lua', markdown = true })
   end
 end
-vim.api.nvim_buf_create_user_command(0, 'SourceThis', SourceThis,
-  { desc = lua_package and 'Build: source as a lua script.' or 'Build: reload the lua module (%s)' })
+vim.api.nvim_buf_create_user_command(0, 'SourceThis', SourceThis, {
+  bar = true,
+  desc = lua_package and 'Build: source as a lua script.' or 'Build: reload the lua module (%s)'
+})
 
 -- Auto-reload hammerspoon config when applicable.
 -- ~/.hammerspoon/init.lua or ~/.dotfiles/hammerspoon/init.lua
