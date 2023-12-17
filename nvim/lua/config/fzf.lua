@@ -130,6 +130,7 @@ function M.setup_fzf()
         "delta --side-by-side --width=$FZF_PREVIEW_COLUMNS " ..
         "--hunk-header-style='omit' --file-style='omit' "
       ),
+      async_or_timeout = 1000,
       winopts = {
         preview = {
           layout = "vertical",
