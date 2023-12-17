@@ -285,7 +285,7 @@ function M.setup_fzf()
   command("Jumps", {}, "FzfLua jumps")
   command("Filetypes", {}, "FzfLua filetypes")
   command("CommandHistory", {}, "FzfLua command_history"):alias("CH")
-  command("SearchHistory", {}, "FzfLua search_history"):alias("CH")
+  command("SearchHistory", {}, "FzfLua search_history"):alias("SH")
 
   -- [[ Insert-mode Keymaps ]]
   -- similar to i_CTRL-X (:help ins-completion)
