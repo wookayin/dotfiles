@@ -92,7 +92,9 @@ M.virtual_text_handler = function(virt_text, lnum, end_lnum, width, truncate, ct
   -- if the end line consists of a single 'word' (not single token)
   -- this could be multiple tokens/chunks, e.g. `end)` `})`
   if #vim.split(vim.trim(end_text), " ") == 1 then
-    end_virt_text[1][1] = vim.trim(end_virt_text[1][1])  -- trim the first token, e.g., "   }" -> "}"
+    if end_virt_text[1] ~= nil then
+      end_virt_text[1][1] = vim.trim(end_virt_text[1][1])  -- trim the first token, e.g., "   }" -> "}"
+    end
   else
     end_virt_text = { }
   end
