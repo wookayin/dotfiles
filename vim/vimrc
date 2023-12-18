@@ -2256,8 +2256,9 @@ if has('nvim')
   augroup END
 endif
 function! s:setup_wilder() abort
-  " If python3 host has failed to load, do not activate wilder.
+  " If python3 host has failed to load or wilder is disabled, do not activate wilder.
   if !luaeval('require("config.pynvim")()') | return | endif
+  if !luaeval('vim.F.npcall(require, "wilder") and true') | return | endif
 
   " only / and ? are enabled by default
   try
