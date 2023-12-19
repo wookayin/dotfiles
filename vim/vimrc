@@ -2251,7 +2251,6 @@ set wildcharm=<Tab>
 if has('nvim')
   augroup WilderLazyInit
     autocmd!
-    autocmd CmdlineEnter * ++once call s:check_wilder_rplugins()
     autocmd CmdlineEnter * ++once call s:setup_wilder()
   augroup END
 endif
@@ -2259,6 +2258,8 @@ function! s:setup_wilder() abort
   " If python3 host has failed to load or wilder is disabled, do not activate wilder.
   if !luaeval('require("config.pynvim")()') | return | endif
   if !luaeval('vim.F.npcall(require, "wilder") and true') | return | endif
+
+  call s:check_wilder_rplugins()
 
   " only / and ? are enabled by default
   try
