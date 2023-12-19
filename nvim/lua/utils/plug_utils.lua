@@ -61,7 +61,10 @@ M.UpdateRemotePlugins = function(lazy_plugin, opts)
 
       vim.cmd [[
         :UpdateRemotePlugins
-        :source $HOME/.local/share/nvim/rplugin.vim
+        try
+          :source $HOME/.local/share/nvim/rplugin.vim
+        catch  " ignore already-registered errors; on next startup it'll be fine.
+        endtry
         :unlet! g:_need_UpdateRemotePlugins
       ]]
     end
