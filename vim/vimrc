@@ -1442,21 +1442,6 @@ let g:startify_skiplist = [
     \ ]
 
 " ---------------------------------------------------------------- }}}
-" vim-eunuch {{{
-
-" remove all rm-like commands, which are too dangerous (even no confirm...)
-let g:PlugConfig['vim-eunuch'] = 's:init_eunuch'
-function! s:init_eunuch() abort
-  autocmd User LazyInit call s:remove_eunuch_commands()
-  function! s:remove_eunuch_commands()
-    if !exists('g:loaded_eunuch') | return | endif
-    if exists(':Remove') | delcommand Remove | endif
-    if exists(':Delete') | delcommand Delete | endif
-    if exists(':Unlink') | delcommand Unlink | endif
-  endfunction
-endfunction
-
-" ---------------------------------------------------------------- }}}
 " vim-asterisk (enhanced *) {{{
 
 " Use z (stay) behavior as default
