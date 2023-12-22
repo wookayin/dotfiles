@@ -11,10 +11,15 @@ endglobal
 # General Lua
 # -----------
 
-snippet fun
-function()
-	$1
-end
+snippet fn "function" w
+function($1)
+	$2
+end$0
+endsnippet
+snippet fun "function" w
+function($1)
+	$2
+end$0
 endsnippet
 snippet req
 require('$1')
