@@ -1516,39 +1516,6 @@ function! s:init_highlightedundo() abort
 endfunction
 
 " ---------------------------------------------------------------- }}}
-" which-key.nvim {{{
-
-" Make timeout delay slightly smaller (before popup appears), default is 1000ms
-set timeoutlen=500
-
-if has('nvim')
-  let g:PlugConfig['which-key.nvim'] = 's:init_which_key'
-  function! s:init_which_key() abort
-    autocmd User LazyInit call s:setup_which_key()
-  endfunction
-endif
-function! s:setup_which_key()
-lua << EOF
-  require("which-key").setup {
-    window = {
-      border = "single",
-      winblend = 10,
-    },
-    layout = {
-      height = { min = 4, max = 8 },
-    }
-  }
-EOF
-endfunction
-
-" appearances for which-key
-function! HighlightsWhichkey() abort
-  hi WhichKeyFloat  guibg=#1a2a3a
-endfunction
-call RegisterHighlights('HighlightsWhichkey')
-
-
-" ---------------------------------------------------------------- }}}
 " vim-commentary {{{
 
 let g:PlugConfig['vim-commentary'] = 's:init_commentary'

@@ -6,7 +6,14 @@ local PlugConfig = require('utils.plug_utils').PlugConfig
 return {
   -- Keymaps
   Plug 'junegunn/vim-peekaboo' { event = 'VeryLazy' };
-  Plug 'folke/which-key.nvim' { init = PlugConfig, event = 'VeryLazy' };
+  Plug 'folke/which-key.nvim' {
+    event = 'VeryLazy',
+    opts = {
+      window = { border = "single", winblend = 10 },
+      layout = { height = { min = 4, max = 8 } },
+    }
+    --hi WhichKeyFloat  guibg=#1a2a3a
+  };
 
   -- Actions and operators
   Plug 'Lokaltog/vim-easymotion' { keys = '<leader>f' };

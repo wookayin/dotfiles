@@ -1,5 +1,8 @@
 -- Keymaps (plugin-agnostic)
 
+-- Make timeout delay for key sequence, default is 1000ms
+vim.opt.timeoutlen = 500
+
 -- Note: noremap = true (remap = false) by default
 local nmap = function(...) vim.keymap.set('n', ...) end
 local imap = function(...) vim.keymap.set('i', ...) end
