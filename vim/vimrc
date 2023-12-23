@@ -2388,57 +2388,6 @@ if !exists(':Neotree')  " fallback to NERDTree for vanilla vim
 end
 
 " ---------------------------------------------------------------- }}}
-" nvim-tree.lua {{{
-" DEPRECATED: Use neo-tree.nvim instead.
-
-function! s:setup_nvimtree() abort
-  " Ignore some files
-  let g:nvim_tree_ignore = ['.git', '__node_modules__',
-        \ '__pycache__', '.pytest_cache', '.mypy_cache', '.cache',
-        \ ]
-  let g:nvim_tree_gitignore = 1
-  " Use trailing '/' for folders
-  let g:nvim_tree_add_trailing = 1
-  " Show indent markers (vertical segments)
-  let g:nvim_tree_indent_markers = 1
-  " Don't ask which window should be picked to open files.
-  let g:nvim_tree_disable_window_picker = 1
-
-lua << EOF
-  -- Config: https://github.com/kyazdani42/nvim-tree.lua#setup
-  if not pcall(require, 'nvim-tree') then return end
-  local tree_cb = require('nvim-tree.config').nvim_tree_callback
-  require('nvim-tree').setup {
-    -- Update the location cursor whenever entering a buffer
-    update_focused_file = {
-      enable = true,
-    },
-    -- Custom Keymappings
-    view = {
-      mappings = {
-        list = {
-          { key = "?",                            cb = tree_cb("toggle_help") },
-          { key = "r",                            cb = tree_cb("refresh") },
-        }
-      }
-    }
-  }
-EOF
-endfunction
-
-let g:PlugConfig['nvim-tree.lua'] = 's:init_nvim_tree'
-function! s:init_nvim_tree() abort
-  autocmd User LazyInit      call s:setup_nvimtree()
-  nmap <leader>E  :NvimTreeToggle<CR>
-
-  " On focus, refresh automatically
-  augroup NvimTreeCustomization
-    autocmd!
-    autocmd BufEnter NvimTree*   :NvimTreeRefresh
-  augroup end
-endfunction
-
-" ---------------------------------------------------------------- }}}
 " Voom {{{
 
 let g:voom_ft_modes = {'pandoc': 'markdown', 'tex': 'latex'}
@@ -2527,58 +2476,6 @@ let g:scrollview_signs_on_startup = ['']
 " Disable scrollbar on some filetypes
 " (to avoid which can cause floating-window related errors)
 let g:scrollview_excluded_filetypes = ['vim-plug', 'GV', 'git', 'neo-tree']
-
-" ---------------------------------------------------------------- }}}
-" pretty-fold {{{
-
-" Note: deprecated in favor of nvim-ufo
-" (see ~/.config/nvim/lua/config/folding.lua)
-
-let g:PlugConfig['pretty-fold.nvim'] = 's:init_pretty_fold'
-function! s:init_pretty_fold() abort
-  autocmd User LazyInit  call s:setup_prettyfold()
-endfunction
-function! s:setup_prettyfold() abort
-lua << EOF
-  -- Configuration
-  -- https://github.com/anuvyklack/pretty-fold.nvim#foldtext-configuration
-  local number_of_folded_lines = function()
-    return string.format('%3d lines', vim.v.foldend - vim.v.foldstart + 1)
-  end
-  local rep_fill_char = function(times)
-    return function(config) return config.fill_char:rep(times) end
-  end
-  require("pretty-fold").setup {
-    fill_char = '╶',
-    sections = {
-      left = {
-        'content',
-      },
-      right = {
-         ' ', 'number_of_folded_lines', ' ', rep_fill_char(3),
-      }
-    },
-    process_comment_signs = false,
-  }
-
-  -- Preview closed folds
-  -- https://github.com/anuvyklack/pretty-fold.nvim#preview
-  -- Note: help 'foldopen' to specify when fold will be opened upon actions
-  require('pretty-fold.preview').setup {
-    border = 'none',
-
-    -- Disable default keybindings (h/l) which are confusing. Use `zp` instead
-    key = false,
-    default_keybindings = false,
-  }
-
-  _G.PreviewFold = function()
-    require('pretty-fold.preview').show_preview()
-  end
-EOF
-  command! -nargs=0 PreviewFold :lua _G.PreviewFold()
-  nnoremap zp <cmd>PreviewFold<CR>
-endfunction
 
 " ---------------------------------------------------------------- }}}
 " UltiSnips {{{
