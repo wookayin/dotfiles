@@ -67,10 +67,14 @@ local on_attach = function(client, bufnr)
     nbufmap('gt', gt_action('lua vim.lsp.buf.type_definition()'))
   end
   nbufmap('gD', vim_cmd 'lua vim.lsp.buf.declaration()')
-  nbufmap('[d', vim_cmd 'lua vim.diagnostic.goto_prev()')
-  nbufmap(']d', vim_cmd 'lua vim.diagnostic.goto_next()')
-  nbufmap('[e', vim_cmd 'lua vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })')
-  nbufmap(']e', vim_cmd 'lua vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })')
+  nbufmap('[d', vim_cmd 'lua vim.diagnostic.goto_prev()',
+    { desc = 'goto previous diagnostic item' })
+  nbufmap(']d', vim_cmd 'lua vim.diagnostic.goto_next()',
+    { desc = 'goto next diagnostic item' })
+  nbufmap('[e', vim_cmd 'lua vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })',
+    { desc = 'goto previous error' })
+  nbufmap(']e', vim_cmd 'lua vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })',
+    { desc = 'goto next error' })
   --nbufmap('<space>wa', vim_cmd 'lua vim.lsp.buf.add_workspace_folder()')
   --nbufmap('<space>wr', vim_cmd 'lua vim.lsp.buf.remove_workspace_folder()')
   --nbufmap('<space>wl', vim_cmd 'lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))')
