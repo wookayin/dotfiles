@@ -16,19 +16,34 @@ vim.api.nvim_create_autocmd('LspAttach', {
   buffer = bufnr,
   callback = function()
     require("config.formatting").maybe_autostart_autoformatting(bufnr, function(project_root)
+      -- Autoformatting: detect yapf, isort independently.
+      local formatters = {} ---@type table<"yapf"|"isort",string> formatter -> reason
+
       local style_yapf = assert(project_root) .. '/.style.yapf'
       if vim.fn.filereadable(style_yapf) > 0 then
-        return true, ("Detected `%s`"):format(style_yapf)
+        formatters["yapf"] = ("Detected `%s`"):format(style_yapf)
       end
       local pyproject_toml = assert(project_root) .. '/pyproject.toml'
       if vim.fn.filereadable(pyproject_toml) > 0 then
-        local ok, match = require("utils.path_utils").file_contains_pattern(pyproject_toml,
-            { "^%[tool%.yapf%]", "^%[tool%.isort%]"})
-        if ok and match then
-          return true, ("`pyproject.toml:%s: %s`"):format(match.line, match.match)
+        -- TODO: avoid scanning the file twice.
+        local file_contains_pattern = require("utils.path_utils").file_contains_pattern
+        for formatter, pattern in pairs {
+          yapf = "^%[tool%.yapf%]",
+          isort = "^%[tool%.isort%]",
+        } do
+          _, match = file_contains_pattern(pyproject_toml, { pattern })
+          if match then
+            formatters[formatter] = ("`pyproject.toml:%s: %s`"):format(match.line, match.match)
+          end
         end
       end
-      return false
+
+      if vim.tbl_isempty(formatters) then
+        return false, nil
+      else
+        local reason = table.concat(vim.tbl_values(formatters), '\n')
+        return vim.tbl_keys(formatters), reason
+      end
     end)
   end,
 })

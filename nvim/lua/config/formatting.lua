@@ -163,6 +163,7 @@ end
 --- Ftplugins can call `maybe_autostart_autoformatting()` to auto-start autoformatting
 --- for the project. See $DOTVIM/after/ftplugin/python.lua for an example.
 
+---@type table<string, boolean|table> path -> whether to autoformat(boolean) or opts to conform.format()
 M._workspace_status = {}
 M._workspace_autostart_checked = {}
 
@@ -194,12 +195,16 @@ function M._should_format_on_save(buf)
   if project_root:match '/lib/python3.%d+/' then
     return false
   end
-  return { lsp_fallback = true }  -- Do autoformatting.
+
+  -- Do autoformatting.
+  -- should return arguments (table) to conform.format()
+  local format_opts = type(M._workspace_status[project_root]) == 'table' and M._workspace_status[project_root] or {} --[[@as table]]
+  return vim.tbl_deep_extend("keep", format_opts, { lsp_fallback = true })
 end
 
 ---@param buf buffer?
 ---@param arg? 'on'|'off'|'toggle'|'status'|true|false
----@param opts? table  {enable_reason: ...}
+---@param opts? { ['reason']: string?, ['format_opts']: table? }
 function M.enable_autoformat(buf, arg, opts)
   buf = buf or 0
   if buf == 0 then buf = vim.api.nvim_get_current_buf() end
@@ -213,7 +218,7 @@ function M.enable_autoformat(buf, arg, opts)
   end
 
   local function echo_status()
-    local is_enabled = M._workspace_status[project_root]
+    local is_enabled = M._workspace_status[project_root] and true or false
     vim.api.nvim_echo({
       { project_root, "Directory" },
       { ": ", "Normal" },
@@ -223,7 +228,7 @@ function M.enable_autoformat(buf, arg, opts)
   end
 
   if arg == nil or arg == 'on' or arg == 'enable' or arg == true then
-    M._workspace_status[project_root] = true
+    M._workspace_status[project_root] = opts.format_opts or true
   elseif arg == 'off' or arg == 'disable' or arg == false then
     M._workspace_status[project_root] = false
   elseif arg == 'toggle' then
@@ -242,6 +247,9 @@ function M.enable_autoformat(buf, arg, opts)
       msg = msg .. "\n\nreason:\n" .. opts.reason .. ""
       timeout = 5000
     end
+    if opts.format_opts then
+      msg = msg .. "\n\nformat options: " .. vim.inspect(opts.format_opts) .. ""
+    end
     vim.notify(msg, vim.log.levels.INFO, { title = ":AutoFormat", timeout = timeout, markdown = true })
     echo_status()
   end
@@ -259,7 +267,10 @@ end
 
 --- Enable autoformatting if a condition is met (checked asynchronously).
 ---@param buf buffer?
----@param condition fun(project_root: string):boolean,string?
+---@param condition fun(project_root: string):boolean|string[],string?
+---         Determine whether to autoformat. Returns:
+---         - enable: boolean, or list of formatters to run (implies enabled)
+---         - reason: any optional message for describing the reason to enable autoformatting
 function M.maybe_autostart_autoformatting(buf, condition)
   -- turn on auto formatting ONLY ONCE per the same 'project' directory,
   -- if the project is configured to use autoformatting (pyproject.toml, .style.yapf, etc.)
@@ -283,8 +294,13 @@ function M.maybe_autostart_autoformatting(buf, condition)
       return  -- avoid race condition
     end
     local enable, reason = condition(project_root)
-    if enable then
+    if enable == true then
       M.enable_autoformat(buf, true, { reason = reason })
+    elseif type(enable) == 'table' then
+      M.enable_autoformat(buf, true, {
+        reason = reason,
+        format_opts = { formatters = enable }
+      })
     end
   end)
 end
