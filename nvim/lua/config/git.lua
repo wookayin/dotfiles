@@ -119,6 +119,7 @@ function M.setup_gitsigns()
       map('v', '<leader>hr', function() require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
           { desc = 'Reset hunks on the selected range' })
       map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
+      map('n', '<leader>gU', '<cmd>Gitsigns reset_buffer_index<CR>')  -- Git unstage %
       map('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>')
       map('n', '<leader>hb', '<cmd>lua require"gitsigns".blame_line {full=true, ignore_whitespace=true}<CR>')
       map('n', '<leader>hm', '<leader>hb', { remap = true })
