@@ -50,6 +50,10 @@ function M.action(arg)
     ['ide'] = 'plugins/ide.lua',
   }
   local file = map[arg] or map[arg .. '.lua'] or map[arg .. '.vim'] or map[aliases[arg]]
+  if arg == 'ftplugin/' or arg == 'ftplugin' then
+    file = ('~/.config/nvim/after/ftplugin/%s%s'):format(vim.bo.filetype,
+      vim.bo.filetype ~= "" and ".lua" or "")
+  end
 
   if not file then
     return print("Invalid argument: " .. arg)
