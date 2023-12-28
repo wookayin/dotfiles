@@ -10,6 +10,11 @@ return {
   -- statusline
   Plug 'nvim-lualine/lualine.nvim' {
     event = 'UIEnter',  -- load the plugin earlier than VimEnter, before drawing the UI, to avoid flickering transition
+    init = function()
+      -- lualine initializes lazily; to hide unwanted text changes in the statusline,
+      -- draw an empty statusline with no text before the first draw of lualine
+      vim.o.statusline = ' '
+    end,
     config = require('config.statusline').setup,
   };
 
