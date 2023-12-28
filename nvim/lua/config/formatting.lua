@@ -163,7 +163,12 @@ end
 --- Ftplugins can call `maybe_autostart_autoformatting()` to auto-start autoformatting
 --- for the project. See $DOTVIM/after/ftplugin/python.lua for an example.
 
----@type table<string, boolean|table> path -> whether to autoformat(boolean) or opts to conform.format()
+---@class formatting.WorkspaceStatus
+---@field enabled boolean whether to autoformat in this workspace.
+---@field filetypes string[]|nil run format-on-save on these filetypes only.
+---@field format_opts table|nil options to conform.format()
+
+---@type table<string, formatting.WorkspaceStatus> path -> per-workspace autoformat status
 M._workspace_status = {}
 M._workspace_autostart_checked = {}
 
@@ -188,17 +193,25 @@ function M._should_format_on_save(buf)
   if not project_root then
     return false  -- Do not autoformat if a project/workspace can't be detected
   end
-  if not M._workspace_status[project_root] then
-    return false
-  end
+
   -- some common blacklists
   if project_root:match '/lib/python3.%d+/' then
     return false
   end
 
+  local workspace_status = M._workspace_status[project_root]
+  if not workspace_status or not workspace_status.enabled then
+    return false
+  end
+
+  if (workspace_status.filetypes ~= nil and
+      not vim.tbl_contains(workspace_status.filetypes, vim.bo[buf].filetype)) then
+    return false
+  end
+
   -- Do autoformatting.
   -- should return arguments (table) to conform.format()
-  local format_opts = type(M._workspace_status[project_root]) == 'table' and M._workspace_status[project_root] or {} --[[@as table]]
+  local format_opts = workspace_status.format_opts or {}
   return vim.tbl_deep_extend("keep", format_opts, { lsp_fallback = true })
 end
 
@@ -218,7 +231,7 @@ function M.enable_autoformat(buf, arg, opts)
   end
 
   local function echo_status()
-    local is_enabled = M._workspace_status[project_root] and true or false
+    local is_enabled = (M._workspace_status[project_root] or {}).enabled and true or false
     vim.api.nvim_echo({
       { project_root, "Directory" },
       { ": ", "Normal" },
@@ -227,12 +240,19 @@ function M.enable_autoformat(buf, arg, opts)
     }, true, {})
   end
 
+  -- Autoformat files with the "same filetype" only, in the same workspace
+  local filetype = vim.bo[buf].filetype
+
   if arg == nil or arg == 'on' or arg == 'enable' or arg == true then
-    M._workspace_status[project_root] = opts.format_opts or true
+    M._workspace_status[project_root] = {
+      enabled = true,
+      filetypes = { filetype }, -- TODO merge with existing filetypes?
+      format_opts = opts.format_opts,
+    }
   elseif arg == 'off' or arg == 'disable' or arg == false then
-    M._workspace_status[project_root] = false
+    (M._workspace_status[project_root] or {}).enabled = false
   elseif arg == 'toggle' then
-    M._workspace_status[project_root] = not M._workspace_status[project_root]
+    (M._workspace_status[project_root] or {}).enabled = not (M._workspace_status[project_root] or {}).enabled
   elseif arg == 'status' then -- TODO refactor as is_enabled
     echo_status()
   else
@@ -241,7 +261,7 @@ function M.enable_autoformat(buf, arg, opts)
 
   if arg ~= 'status' then
     local msg = ("%s auto-formatting for the project:\n`%s`"):format(
-      M._workspace_status[project_root] and "Enabled" or "Disabled", project_root)
+      (M._workspace_status[project_root] or {}).enabled and "Enabled" or "Disabled", project_root)
     local timeout = 1000
     if opts.reason then
       msg = msg .. "\n\nreason:\n" .. opts.reason .. ""
@@ -299,7 +319,7 @@ function M.maybe_autostart_autoformatting(buf, condition)
     elseif type(enable) == 'table' then
       M.enable_autoformat(buf, true, {
         reason = reason,
-        format_opts = { formatters = enable }
+        format_opts = { formatters = enable },
       })
     end
   end)
