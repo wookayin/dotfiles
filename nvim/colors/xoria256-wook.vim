@@ -57,8 +57,10 @@ highlight Folded        ctermbg=60  guibg=#292933
 
 highlight FoldColumn    ctermfg=236 guifg=#495057
 
-" Tabline
+" tabline, winbar
 highlight TabLineSel    guibg=#37b24d guifg=white  gui=bold
+highlight WinBar        guibg=#000000
+highlight WinBarNC      guibg=#000000
 
 " Diff
 " DiffAdd - inserted lines (dark green)
