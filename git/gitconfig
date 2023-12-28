@@ -120,6 +120,7 @@
 
 [format]
 	# based on 'fuller' format, but adds color customization
+	# https://git-scm.com/docs/pretty-formats
 	pretty = "\
 %C(bold)commit%C(reset)  %C(yellow)%H%C(auto)%d%n\
 %C(bold)parent%C(reset)  %C(#adb5bd)%P%C(auto)%n\
@@ -127,7 +128,8 @@
 %C(bold)AuthorDate:%C(reset) %C(green)%ai (%ar)%C(reset)%n\
 %C(bold)Commit:    %C(reset) %C(blue bold)%cn <%ce>%n\
 %C(bold)CommitDate:%C(reset) %C(green)%ci (%cr)%C(reset)%n\
-%w(0,0,4)%+B"
+%+B"
+#%w(0,0,4)%+B"
 
 [push]
 	# Adopt the new default in Git 2.x
