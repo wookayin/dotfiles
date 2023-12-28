@@ -6,6 +6,8 @@ setlocal.ts = 2
 setlocal.sts = 2
 setlocal.sw = 2
 
+setlocal.colorcolumn = { tostring(100) }
+
 -- Formatting
 require("config.formatting").create_buf_command("Stylua", "stylua")
 
