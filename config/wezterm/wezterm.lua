@@ -32,13 +32,14 @@ end
 
 function M.setup_fonts()
   -- Fonts: https://wezfurlong.org/wezterm/config/fonts.html
+  -- $ wezterm ls-fonts --text "(Unicode)" to test font fallback
   config.font = wezterm.font_with_fallback {
     { family = 'JetBrainsMono NFM', weight = 'Light' },
     { family = 'JetBrainsMono Nerd Font Mono', weight = 'Light' },
     'Hack Nerd Font Mono',
-    'Monaco',
     'Apple SD Gothic Neo',  -- for Korean (한글) letters
-    'Apple Color Emoji'  -- Use macOS emoji, not Noto Color Emoji
+    'Apple Color Emoji',  -- Use macOS emoji, not Noto Color Emoji
+    'Menlo',  -- Some unicodes as fallback
   }
   config.cell_width = 0.85
   config.line_height = 0.89
