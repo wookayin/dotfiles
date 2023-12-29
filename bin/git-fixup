@@ -16,7 +16,7 @@ function git-fixup() {
 
     if git diff --staged --quiet; then
         echo >&2 'No changes added to commit'; return 1;
-    elif [ -n "$TMUX" ] && [ -z "$target" ]; then
+    elif [ -z "$target" ]; then
         echo 'Choose which commit to fix up:';
         zsh -i --no-rcs -c '\
             source ~/.zsh/antidote-plugins/junegunn/fzf-git.sh/fzf-git.sh && \
