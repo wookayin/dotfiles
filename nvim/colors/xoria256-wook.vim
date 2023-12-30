@@ -205,6 +205,7 @@ hi! link @include.luadoc            @keyword.luadoc    " @module, @package
 hi! link @type.qualifier.luadoc     @keyword.luadoc    " @public, @private, etc.
 " - @field: see nvim-treesitter/nvim-treesitter#5762
 hi!      @field.lua                 guifg=NONE
+hi! link @field.lua.luadoc          @type.lua
 hi!      @field.luadoc              guifg=#a4ad2b
 
 
