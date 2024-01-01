@@ -34,6 +34,8 @@ function M.setup_fonts()
   -- Fonts: https://wezfurlong.org/wezterm/config/fonts.html
   -- $ wezterm ls-fonts --text "(Unicode)" to test font fallback
   config.font = wezterm.font_with_fallback {
+    -- Workaround nerd-fonts regression v3.1.1 (ryanoasis/nerd-fonts#1473)
+    { family = 'JetBrainsMono NFM Light' }, -- HACK
     { family = 'JetBrainsMono NFM', weight = 'Light' },
     { family = 'JetBrainsMono Nerd Font Mono', weight = 'Light' },
     'Hack Nerd Font Mono',
