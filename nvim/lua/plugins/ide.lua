@@ -70,6 +70,23 @@ return {
     config = require('config.formatting').setup,
   };
 
+  -- DAP
+  Plug 'mfussenegger/nvim-dap' {
+    event = 'VeryLazy',
+    cmd = { 'DebugStart', 'DebugContinue' };
+    dependencies = {
+      Plug 'rcarriga/nvim-dap-ui' { version = ">=3.0" };
+      Plug 'rcarriga/cmp-dap';
+      Plug 'theHamsta/nvim-dap-virtual-text';
+      Plug 'Weissle/persistent-breakpoints.nvim';
+      Plug 'mfussenegger/nvim-dap-python';
+      Plug 'jbyuki/one-small-step-for-vimkind';
+    },
+    config = function()
+      require('config.dap').setup()
+    end,
+  };
+
   -- Python
   Plug 'wookayin/semshi' {
     ft = 'python',

@@ -13,7 +13,14 @@ function M.setup_neotest()
   require("neotest").setup {
     adapters = {
       require("neotest-python")({
-        dap = { justMyCode = false },
+        -- see config/lua setup_python()
+        dap = {
+          justMyCode = false,
+          console = "integratedTerminal",
+          stopOnEntry = false,  -- which is the default(false)
+          subProcess = false,  -- see config/testing.lua
+          openUIOnEntry = false,
+        },
         args = { "-vv", "-s" },
         runner = 'pytest',
       }),
@@ -58,6 +65,7 @@ function M.setup_commands_keymaps()
     command! -nargs=0 NeotestRunFile  lua require("neotest").run.run(vim.fn.expand("%"))
     command! -nargs=0 Neotest         NeotestRun
     command! -nargs=0 Test            NeotestRun
+    command! -nargs=0 TestDebug       lua require("neotest").run.run({ strategy = "dap" })
 
     command! -nargs=0 NeotestStop             lua require("neotest").run.stop()
     command! -nargs=0 NeotestOutput           lua require("neotest").attach_or_output.open()
@@ -163,6 +171,14 @@ function M.custom_consumers.attach_or_output()
     async.run(function()
       local pos = neotest.run.get_tree_from_args(args)
       if pos and client:is_running(pos:data().id) then
+        local is_dap_active = pcall(require, "dap") and require("dap").session() ~= nil or false
+        if is_dap_active then
+          -- when a DAP session is running with neotest (strategy = dap),
+          -- strategy.attach will simply open dap-repl; we would want to show exceptions instead
+          -- because dap-terminal (console) will also be displayed
+          require("dapui").float_element("exception", { enter = false })
+          return
+        end
         neotest.run.attach()
       else
         neotest.output.open(args)
