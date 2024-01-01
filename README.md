@@ -88,10 +88,10 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 * If neovim cannot run due to `version 'GLIBC_2.29' not found` errors (on Ubuntu 18.04 or earlier),
   you should upgrade your Ubuntu distribution to 20.04+ in order to run nvim 0.8.x or higher.
   If you use [appimage](https://github.com/neovim/neovim/releases/tag/stable) binary of neovim,
-  this will work in Ubuntu 18.04; install neovim through `dotfiles install neovim` or `NEOVIM_VERSION=0.9.2 dotfiles install neovim`.
+  this will work in Ubuntu 18.04; install neovim through `dotfiles install neovim` or `NEOVIM_VERSION=0.9.4 dotfiles install neovim`.
 
 * If [**neovim**][neovim] emits any startup errors (e.g. `no module named neovim`):
-    * Use **latest neovim** (e.g., neovim 0.9.2).
+    * Use **latest neovim** (e.g., neovim 0.9.5).
       To install/upgrade neovim on your system, you can run `dotfiles install neovim` (linux) or `brew install neovim` (mac).
     * Try `:checkhealth`.
     * Try `:Lazy update`: some errors from vim plugin could be easily solved by updating plugins to date.
