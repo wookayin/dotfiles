@@ -26,31 +26,15 @@ if is_test then
   -- exception: neovim tests do not use plenary-busted but the original busted
   -- TODO: make this a part of neotest-plenary or as a separate neotest plugin.
   if vim.endswith(project_root or '', "/neovim") then
-    local term_win = -1 ---@type integer
-    local run_command = function(cmd)
-      local open_win = function()
-        vim.cmd.split { mods = { split = "botright" }, range = { 10 } }
-        local win = vim.api.nvim_get_current_win()
-        vim.cmd [[ wincmd p ]]
-        return win
-      end
-      term_win = vim.api.nvim_win_is_valid(term_win) and term_win or open_win()
-      vim.api.nvim_win_call(term_win, function()
-        vim.cmd.term { args = { cmd } }
-        vim.cmd.stopinsert()  -- work around a bug: startinsert autocmd done on a wrong window
-        vim.cmd [[ norm G ]]  -- put the cursor below so that it can auto-scroll
-      end)
-    end
+    local term = require("utils.term_utils").TermWin.getinstance("lua-neovim-test")
     vim.api.nvim_buf_create_user_command(0, 'Test', function(_)
       -- TODO: detect the current test method with treesitter and run that only
       local testname = filename:match("functionaltest") and "functionaltest" or "unittest"
       local cmd = ("TEST_FILE=%s make %s"):format(filename, testname)
-      run_command(cmd)
+      term:run(cmd)
     end, {})
     vim.api.nvim_buf_create_user_command(0, 'TestOutput', function()
-      if vim.api.nvim_win_is_valid(term_win) then
-        vim.api.nvim_set_current_win(term_win)
-      end
+      term:focus()
     end, {})
   end
 
