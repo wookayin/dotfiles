@@ -12,13 +12,47 @@ setlocal.colorcolumn = { tostring(100) }
 require("config.formatting").create_buf_command("Stylua", "stylua")
 
 -- [[ <F5> or :Build ]]
-local is_test = vim.endswith(vim.fn.bufname('%') or '', '_spec.lua')
-local lua_package = require("utils.path_utils").path_to_lua_package("%:p")
+local is_test = vim.endswith(vim.fn.bufname('%') or '', '_spec.lua') ---@type boolean
+local lua_package = require("utils.path_utils").path_to_lua_package("%:p") ---@type string?
 
 -- Unit testing (neotest-plenary)
 if is_test then
   vim.api.nvim_buf_create_user_command(0, "Build", "echon ':Test' | Test", {})
   vim.api.nvim_buf_create_user_command(0, "Output", "TestOutput", {})
+
+  local project_root = require("utils.path_utils").find_project_root({ ".git" }) ---@type string?
+  local filename = assert(vim.fn.bufname('%'))  -- e.g. test/functional/lua/api_spec.lua
+
+  -- exception: neovim tests do not use plenary-busted but the original busted
+  -- TODO: make this a part of neotest-plenary or as a separate neotest plugin.
+  if vim.endswith(project_root or '', "/neovim") then
+    local term_win = -1 ---@type integer
+    local run_command = function(cmd)
+      local open_win = function()
+        vim.cmd.split { mods = { split = "botright" }, range = { 10 } }
+        local win = vim.api.nvim_get_current_win()
+        vim.cmd [[ wincmd p ]]
+        return win
+      end
+      term_win = vim.api.nvim_win_is_valid(term_win) and term_win or open_win()
+      vim.api.nvim_win_call(term_win, function()
+        vim.cmd.term { args = { cmd } }
+        vim.cmd.stopinsert()  -- work around a bug: startinsert autocmd done on a wrong window
+        vim.cmd [[ norm G ]]  -- put the cursor below so that it can auto-scroll
+      end)
+    end
+    vim.api.nvim_buf_create_user_command(0, 'Test', function(_)
+      -- TODO: detect the current test method with treesitter and run that only
+      local testname = filename:match("functionaltest") and "functionaltest" or "unittest"
+      local cmd = ("TEST_FILE=%s make %s"):format(filename, testname)
+      run_command(cmd)
+    end, {})
+    vim.api.nvim_buf_create_user_command(0, 'TestOutput', function()
+      if vim.api.nvim_win_is_valid(term_win) then
+        vim.api.nvim_set_current_win(term_win)
+      end
+    end, {})
+  end
 
 -- do nothing, make :Build use :Make
 elseif vim.fn.filereadable('Makefile') == 1 then
