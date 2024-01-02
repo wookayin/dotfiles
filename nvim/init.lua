@@ -28,15 +28,6 @@ vim.schedule(function() require 'config.pynvim' end)
 require 'config.fixfnkeys'
 require 'config.compat'
 
--- VimR support
--- @see https://github.com/qvacua/vimr/wiki#initvim
-if vim.fn.has('gui_vimr') > 0 then
-  vim.cmd [[
-    set termguicolors
-    set title
-  ]]
-end
-
 -- Source plain vimrc for basic settings.
 -- This should precede plugin loading via lazy.nvim.
 vim.cmd [[
