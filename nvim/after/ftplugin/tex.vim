@@ -26,8 +26,10 @@ setlocal spell
 
 " wrap current word or selection with textbf/textit (need surround.vim)
 " \uline -> \usepackage{ulem}
-nmap <buffer> <leader>b ysiw}i\textbf<ESC>
-nmap <buffer> <leader>i ysiw}i\textit<ESC>
+nmap <buffer> <leader>b <leader>bf
+nmap <buffer> <leader>bf ysiw}i\textbf<ESC>
+nmap <buffer> <leader>i <leader>it
+nmap <buffer> <leader>it ysiw}i\textit<ESC>
 nmap <buffer> <leader>u ysiw}i\uline<ESC>
 vmap <buffer> <leader>b S}i\textbf<ESC>
 vmap <buffer> <leader>i S}i\textit<ESC>
