@@ -306,6 +306,7 @@ lsp_setup_opts['ruff_lsp'] = function()
         "E114", -- indentation-with-invalid-multiple-comment
         "E402", -- module-import-not-at-top-of-file
         "E501", -- line-too-long
+        "E702", -- multiple-statements-on-one-line-semicolon
         "E731", -- lambda-assignment
       }, ',') },
     },
