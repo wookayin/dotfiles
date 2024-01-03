@@ -10,6 +10,13 @@ setlocal.colorcolumn = { tostring(100) }
 
 -- Formatting
 require("config.formatting").create_buf_command("Stylua", "stylua")
+require("config.formatting").maybe_autostart_autoformatting(0, function(project_root)
+  local project_has_file = function(x) return vim.loop.fs_stat(project_root .. '/' .. x) ~= nil end
+  if project_has_file('.stylua.toml') then
+    return { "stylua" }, "`.stylua.toml` detected"
+  end
+  return false, nil
+end)
 
 -- [[ <F5> or :Build ]]
 local is_test = vim.endswith(vim.fn.bufname('%') or '', '_spec.lua') ---@type boolean
