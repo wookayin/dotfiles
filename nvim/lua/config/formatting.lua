@@ -20,7 +20,15 @@ function M.setup_conform()
 
   cf.lua = (function()
     formatter_opts["stylua"] = {
-      prepend_args = { "--indent-type", "Spaces", "--indent-width", tostring(2) },
+      prepend_args = {
+        "--indent-type", "Spaces",
+        "--indent-width", tostring(2),
+        "--respect-ignores", -- requires stylua 0.19+
+      },
+      -- Make sure cwd is always the project root so that .styluaignore is respected
+      cwd = require("conform.util").root_file {
+        ".styluaignore", ".stylua.toml", ".git",
+      },
     }
     return { "stylua" }
   end)()
