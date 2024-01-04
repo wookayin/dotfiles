@@ -288,6 +288,14 @@ function M.setup_fzf()
   command("CommandHistory", {}, "FzfLua command_history"):alias("CH")
   command("SearchHistory", {}, "FzfLua search_history"):alias("SH")
 
+  command("RuntimePath", { nargs = 0 }, function()
+    local rtp = vim.opt.runtimepath:get()
+    require("fzf-lua").fzf_exec(vim.tbl_map(M.utils.highlight_path_ansi, rtp), {
+      prompt = "&runtimepath ❯ ",
+      fzf_opts = { ["--ansi"] = "", ["--no-sort"] = "", },
+    })
+  end):alias("RTP")
+
   -- [[ Insert-mode Keymaps ]]
   -- similar to i_CTRL-X (:help ins-completion)
   vim.cmd [[
@@ -543,6 +551,28 @@ function M.setup_custom()
     local extra_args = [[ --type "py" ]]
     RgPath(q.package_path, q.query, extra_args)
   end):alias("Rgpy"):alias("rgpy")
+end
+
+
+--[[ Miscellaneous utilities ]]
+M.utils = {}
+
+function M.utils.highlight_path_ansi(path, opts)
+  opts = vim.tbl_deep_extend('keep', opts or {}, {
+    last_segment = true,
+  })
+
+  local last_second_slash = path:match("^.*/().+/")
+  if last_second_slash and opts.last_segment then
+    local before_last_segment = path:sub(1, last_second_slash - 1)
+    local last_segment = path:sub(last_second_slash)
+
+    local YELLOW = string.char(27) .. '[0;' .. tostring(33) .. 'm'
+    local RESET  = string.char(27) .. '[0m'
+    return before_last_segment .. YELLOW .. last_segment .. RESET
+  end
+
+  return path
 end
 
 
