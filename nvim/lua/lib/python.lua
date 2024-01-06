@@ -78,4 +78,80 @@ M.toggle_line_comment = function(text)
   vim.fn.setline('.', newline)
 end
 
+M.toggle_typing = function(name)
+  if vim.fn.has('nvim-0.9') == 0 then
+    return vim.api.nvim_err_writeln("toggle_typing: this feature requires neovim 0.9.0.")
+  end
+
+  local winnr = 0
+  local cursor = vim.api.nvim_win_get_cursor(winnr)  -- (row,col): (1,0)-indexed
+  local bufnr = vim.api.nvim_get_current_buf()
+
+  local function has_type(node, t) return node and node:type() == t end
+  local function get_text(node) return vim.treesitter.get_node_text(node, bufnr) end
+
+  ---@type TSNode?
+  local node = vim.treesitter.get_node()
+
+  -- Climb up and find the closest ancestor node whose children has a `type` node:
+  while (node ~= nil) and not vim.tbl_contains({
+    'assignment', 'typed_default_parameter', 'typed_parameter', 'function_definition',
+  }, node:type()) do
+    node = node:parent()
+  end
+  -- Find its direct children of type `type`
+  ---@type TSNode?
+  local type_node = node and vim.tbl_filter(function(n)
+    return n:type() == 'type'
+  end, node:named_children())[1] or nil
+  if not type_node then
+    vim.cmd.echon(([["toggle_typing[%s]: not in a type hint node."]]):format(name))
+    return
+  end
+  -- Check range
+
+  local unpack_generic = function(node)
+    -- Determine if `node` represents `Optional[...]` (w.r.t `name`), for example.
+    --  type: (type)
+    --    (generic_type)
+    --      (identifier)
+    --      (type_parameter)
+    --        (type) <-- returns this node `T` if given `Optional[T]`.
+    assert(node:type() == 'type')
+    node = node:named_child(0)
+    if has_type(node, 'generic_type') then
+      node = node:named_child(0)
+      if (has_type(node, 'identifier') and get_text(node) == name) then
+        ---@cast node TSNode
+        node = node:next_named_sibling() -- 0.9.0 only
+      end
+      if has_type(node, 'type_parameter') then
+        node = assert(node):named_child(0)
+        if has_type(node, 'type') then
+          return node
+        end
+      end
+    end
+    return nil
+  end
+
+  local T_node = unpack_generic(type_node)  ---@type TSNode?
+  local new_text  ---@type string
+  if T_node then
+    -- replace: e.g., Optional[T] => T
+    new_text = get_text(T_node, bufnr)
+  else
+    -- replace: e.g., T => Optional[T]
+    new_text = name .. "[" .. get_text(type_node, bufnr) .. "]"
+  end
+
+  -- treesitter range is 0-indexed and end-exclusive
+  -- nvim_buf_set_text() also uses 0-indexed and end-exclusive indexing
+  local srow, scol, erow, ecol = type_node:range()
+  vim.api.nvim_buf_set_text(0, srow, scol, erow, ecol, { new_text })
+
+  -- Restore cursor
+  vim.api.nvim_win_set_cursor(winnr, cursor)
+end
+
 return M

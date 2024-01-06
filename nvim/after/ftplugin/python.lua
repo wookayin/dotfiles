@@ -88,3 +88,11 @@ end
 bufmap('n', '<leader>ti', make_repeatable_toggle_comment_keymap("type: ignore"), { remap = true })
 bufmap('n', '<leader>ty', make_repeatable_toggle_comment_keymap("yapf: ignore"), { remap = true })
 
+-- Toggle Optional[...], Annotated[...] for typing
+bufmap('n', '<leader>O', '<leader>tO', { remap = true })
+bufmap('n', '<leader>tO', make_repeatable_keymap('n', '<Plug>(toggle-Optional)', function()
+  require("lib.python").toggle_typing("Optional")
+end), { remap = true })
+bufmap('n', '<leader>tA', make_repeatable_keymap('n', '<Plug>(toggle-Annotated)', function()
+  require("lib.python").toggle_typing("Annotated")
+end), { remap = true })
