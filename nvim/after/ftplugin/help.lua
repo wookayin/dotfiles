@@ -3,6 +3,10 @@ if vim.fn.has('nvim-0.9.0') > 0 then
   vim.treesitter.start()
 end
 
+-- buffer-local options (even if not opened via :help)
+vim.opt_local.colorcolumn = '79'
+vim.opt_local.list = false
+
 --- [[ Keymap ]]
 -- Make navigation and jump within help doc more easier
 local nbufmap = function(lhs, rhs) vim.keymap.set('n', lhs, rhs, { buffer = true, nowait = true }) end
