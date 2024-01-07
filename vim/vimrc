@@ -1278,9 +1278,11 @@ augroup NrHighlight
         \ | endif
 augroup END
 
-" vim syntax: embedded python (P) and lua (l) scripts
-" see $VIMRUNTIME/syntax/vim.vim
-let g:vimsyn_embed = 'lP'
+" vim syntax: embedded python (P) and lua (l) scripts; see $VIMRUNTIME/syntax/vim.vim
+" DO NOT EMBED LUA SYNTAX, ALWAYS BROKEN (neovim/neovim#20456) both in VIM and NVIM 0.8+
+" Note that we have completely moved to treesitter highlighting
+let g:vimsyn_embed = 'P'
+autocmd FileType vim hi! vimEmbedError   guifg=NONE guibg=NONE
 
 " filetype detections
 au BufRead,BufNewFile /etc/nginx/* if &ft == '' | setfiletype nginx | endif
