@@ -2,46 +2,50 @@
 -- Telescope
 ---------------
 
-local telescope = require("telescope")
+local M = {}
 
-if not pcall(require, 'telescope.actions.layout') then
-  vim.api.nvim_echo({
-      {"Warning: Telescope is outdated and disabled. Please update the plugin.", "WarningMsg"}
-    }, true, {})
-  vim.cmd [[ silent! delcommand! Telescope ]]
-  return false
-end
+function M.setup_telescope()
+  local telescope = require("telescope")
 
--- @see  :help telescope.setup
--- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
-telescope.setup {
-  defaults = {
-    winblend = 10,
-    layout_strategy = 'horizontal',
-    layout_config = {  -- :help telescope.layout
-      horizontal = { width = 0.9 },
-      mirror = false,
-      prompt_position = 'top',
-    },
-    sorting_strategy = 'ascending',  -- with prompt_position='top'
-    mappings = {
-      i = {
-        ["<C-u>"] = false,   -- Do not map <C-u>; CTRL-U should be backward-kill-line.
-        ["<C-d>"] = false,
-        ["<C-b>"] = require("telescope.actions").preview_scrolling_up,
-        ["<C-f>"] = require("telescope.actions").preview_scrolling_down,
-        ["<C-_>"] = require("telescope.actions.layout").toggle_preview,
+  if not pcall(require, 'telescope.actions.layout') then
+    vim.api.nvim_echo({
+        {"Warning: Telescope is outdated and disabled. Please update the plugin.", "WarningMsg"}
+      }, true, {})
+    vim.cmd [[ silent! delcommand! Telescope ]]
+    return false
+  end
+
+  -- @see  :help telescope.setup
+  -- @see  https://github.com/nvim-telescope/telescope.nvim#telescope-setup-structure
+  telescope.setup {
+    defaults = {
+      winblend = 10,
+      layout_strategy = 'horizontal',
+      layout_config = {  -- :help telescope.layout
+        horizontal = { width = 0.9 },
+        mirror = false,
+        prompt_position = 'top',
+      },
+      sorting_strategy = 'ascending',  -- with prompt_position='top'
+      mappings = {
+        i = {
+          ["<C-u>"] = false,   -- Do not map <C-u>; CTRL-U should be backward-kill-line.
+          ["<C-d>"] = false,
+          ["<C-b>"] = require("telescope.actions").preview_scrolling_up,
+          ["<C-f>"] = require("telescope.actions").preview_scrolling_down,
+          ["<C-_>"] = require("telescope.actions.layout").toggle_preview,
+        }
       }
     }
   }
-}
--- Highlights
-vim.cmd [[
-  hi TelescopePrompt guibg=#1a2a31
-]]
+  -- Highlights
+  vim.cmd [[
+    hi TelescopePrompt guibg=#1a2a31
+  ]]
+end
 
 -- Custom Telescope mappings and aliases
-local function define_commands()
+function M.define_commands()
   local command = function(name, opts, command)
     vim.validate {
       opts = { opts, 'table' },
@@ -87,13 +91,27 @@ local function define_commands()
   end)
 
 end
-define_commands()
 
--- Telescope extensions
--- These should be executed *AFTER* other plugins are loaded
-vim.defer_fn(function()
-  if pcall(require, "notify") then  -- nvim-notify
-    telescope.load_extension("notify")
-    vim.cmd [[ command! -nargs=0 Notifications  :Telescope notify ]]
+-- Telescope extensions: use require('config.telescope').on_ready
+local extensions = {}
+
+-- Register callbacks to set up other telescope extensions when telescope is ready
+-- (this is because other plugins might be loaded earlier than lazy-loaded telescope)
+function M.on_ready(callback)
+  extensions[#extensions+1] = callback
+end
+
+function M.setup()
+  M.setup_telescope()
+  M.define_commands()
+
+  for i, extension_cb in ipairs(extensions) do
+    xpcall(extension_cb, vim.api.nvim_err_writeln)
   end
-end, 0)
+  extensions = {}
+  M.on_ready = function(callback)
+    xpcall(callback, vim.api.nvim_err_writeln)
+  end
+end
+
+return M

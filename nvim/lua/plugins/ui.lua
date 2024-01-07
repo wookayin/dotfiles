@@ -45,8 +45,7 @@ return {
     name = vim.fn.has('nvim-0.9.0') > 0 and 'telescope.nvim' or 'telescope.nvim.legacy',
     event = 'CmdlineEnter',
     config = function()
-      -- as a script, not as a module yet
-      require 'config/telescope'
+      require('config.telescope').setup()
     end,
   };
 

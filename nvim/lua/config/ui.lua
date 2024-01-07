@@ -70,6 +70,11 @@ function M.setup_notify()
 
     return require("notify")(msg, level, opts)
   end
+
+  require("config.telescope").on_ready(function()
+    require("telescope").load_extension("notify")
+    vim.cmd [[ command! -nargs=0 Notifications  :Telescope notify ]]
+  end)
 end
 
 function M.setup_dressing()
