@@ -61,7 +61,7 @@ return {
       Plug 'tamago324/cmp-zsh';
       Plug 'petertriho/cmp-git';
     },
-    config = require('config.lsp').setup_cmp,
+    config = require('config.completion').setup_cmp,
   };
 
   -- Formatting
