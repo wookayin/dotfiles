@@ -261,8 +261,9 @@ if has('nvim')
   set shada=!,'10000,<100,s10,h
 endif
 
-" miscellanious
-set visualbell
+" shut up, vim
+set novisualbell
+set belloff=all
 
 " lazyredraw: no redrawing during macro execution
 " This should NOT be set during startup if < 0.9.1, see neovim/neovim#23534
