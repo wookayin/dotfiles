@@ -1340,12 +1340,6 @@ if has('nvim') && has('termguicolors') && (&termguicolors)
   silent! set pumblend=10
 endif
 
-" Use different popupmenu highlight color for nvim-lsp
-if get(g:, 'dotfiles_completion_backend') == '@lsp'
-  " oc-yellow-1
-  hi Pmenu guibg=#fff3bf
-endif
-
 " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 " neovim 0.9: vim.inspect_pos() or :Inspect
 function! ShowSyntaxGroup() abort
@@ -1428,21 +1422,6 @@ let g:polyglot_disabled += ['lua']
 
 " LSP preview conflicts with polyglot's syntax.
 let g:polyglot_disabled += ['markdown']
-
-" ---------------------------------------------------------------- }}}
-" vim-startify {{{
-
-let g:startify_bookmarks = [
-    \ '~/.vim/vimrc',
-    \ '~/.vim/plugins.vim',
-    \ ]
-
-let g:startify_skiplist = [
-    \ 'COMMIT_EDITMSG',
-    \ $VIMRUNTIME .'/doc',
-    \ 'plugged/.*/doc',
-    \ 'bundle/.*/doc',
-    \ ]
 
 " ---------------------------------------------------------------- }}}
 " vim-asterisk (enhanced *) {{{
@@ -2525,16 +2504,6 @@ function! s:init_pandoc() abort
   let g:pandoc#keyboard#use_default_mappings = 0
 
 endfunction
-
-" ---------------------------------------------------------------- }}}
-" vim-verdict {{{
-
-" cooperative mode required to make it work with LSP engines, YCM, etc.
-let g:Verdin#cooperativemode = 1
-
-" ---------------------------------------------------------------- }}}
-" echodoc.vim {{{
-let g:echodoc#enable_at_startup = 1
 
 " ---------------------------------------------------------------- }}}
 " semshi {{{
