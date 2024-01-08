@@ -41,8 +41,7 @@ return {
 
   -- Telescope (config/telescope.lua)
   Plug 'nvim-telescope/telescope.nvim' {
-    branch = vim.fn.has('nvim-0.9.0') > 0 and 'master' or '0.1.x', -- nvim 0.8.0 compat
-    name = vim.fn.has('nvim-0.9.0') > 0 and 'telescope.nvim' or 'telescope.nvim.legacy',
+    enabled = vim.fn.has('nvim-0.9.0') > 0,
     event = 'CmdlineEnter',
     config = function()
       require('config.telescope').setup()
