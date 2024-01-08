@@ -1,4 +1,5 @@
 -- Keymap related plugins (cmds, etc.)
+---@diagnostic disable: missing-fields
 
 local Plug = require('utils.plug_utils').Plug
 local PlugConfig = require('utils.plug_utils').PlugConfig
@@ -33,7 +34,10 @@ return {
     keys = { 'f', 'F', 't', 'T'}
   };
   Plug 't9md/vim-quickhl' {
-    keys = { '<leader>*', '<leader>8' },
+    keys = {
+      { '<leader>*', '<Plug>(quickhl-manual-this)', mode = { 'n', 'x' } },
+      { '<leader>8', '<Plug>(quickhl-manual-reset)', mode = { 'n', 'x' } },
+    },
   };
 
   -- Undo

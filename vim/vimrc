@@ -1475,14 +1475,6 @@ endif
 
 
 " ---------------------------------------------------------------- }}}
-" vim-quickhl {{{
-
-nmap <leader>* <Plug>(quickhl-manual-this)
-xmap <leader>* <Plug>(quickhl-manual-this)
-nmap <leader>8 <Plug>(quickhl-manual-reset)
-xmap <leader>8 <Plug>(quickhl-manual-reset)
-
-" ---------------------------------------------------------------- }}}
 " vim-highlightedundo {{{
 
 let g:PlugConfig['vim-highlightedundo'] = 's:init_highlightedundo'
