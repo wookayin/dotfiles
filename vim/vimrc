@@ -1439,25 +1439,6 @@ endfunction
 let g:asterisk#keeppos = 1
 
 " ---------------------------------------------------------------- }}}
-" incsearch {{{
-
-" incsearch.vim
-let g:PlugConfig['incsearch.vim'] = 's:init_incsearch'
-function! s:init_incsearch() abort
-  if !has('patch-8.0.1238')
-    map /  <Plug>(incsearch-forward)
-    map ?  <Plug>(incsearch-backward)
-  endif
-  " forward search, but does not move cursor during incsearch
-  map g/ <Plug>(incsearch-stay)
-endfunction
-
-" incsearch-fuzzy.vim
-map z/ <Plug>(incsearch-fuzzy-/)
-map z? <Plug>(incsearch-fuzzy-?)
-map zg/ <Plug>(incsearch-fuzzy-stay)
-
-" ---------------------------------------------------------------- }}}
 " highlightedyank (neovim) {{{
 
 let g:highlightedyank_highlight_duration = 300

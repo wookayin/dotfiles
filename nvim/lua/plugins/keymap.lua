@@ -24,12 +24,6 @@ return {
   Plug 'tpope/vim-surround' { event = 'VeryLazy' };
   Plug 'tpope/vim-repeat' { lazy = true, func = 'repeat#*' };
   Plug 'haya14busa/vim-asterisk' { init = PlugConfig, event = 'VeryLazy' };
-  Plug 'haya14busa/incsearch-fuzzy.vim' {
-    event = 'VeryLazy',
-    dependencies = {
-      Plug 'haya14busa/incsearch.vim' { init = PlugConfig, event = 'VeryLazy' };
-    },
-  };
   Plug 'unblevable/quick-scope' {
     keys = { 'f', 'F', 't', 'T'}
   };
