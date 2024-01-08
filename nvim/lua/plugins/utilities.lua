@@ -34,6 +34,11 @@ return {
     enabled = #(os.getenv('SSH_TTY') or "") > 0,  -- if inside SSH
   };
 
+  -- Colors
+  Plug 'NvChad/nvim-colorizer.lua' {
+    config = require("config.utilities").setup_colorizer,
+  };
+
   -- Misc
   Plug 'lewis6991/hover.nvim' {
     config = require("config.utilities").setup_hover,

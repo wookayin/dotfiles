@@ -90,7 +90,4 @@ return {
     end
   };
   Plug 'vim-scripts/errormarker.vim' { event = 'VeryLazy' };
-
-  -- Etc
-  Plug 'NvChad/nvim-colorizer.lua' { lazy = true };
 }

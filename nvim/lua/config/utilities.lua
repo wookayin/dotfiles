@@ -44,4 +44,32 @@ function M.setup_osc52()
   })
 end
 
+function M.setup_colorizer()
+  -- https://github.com/NvChad/nvim-colorizer.lua#customization
+  require('colorizer').setup {
+    user_default_options = {
+      RGB = true,
+      RRGGBB = true,
+      RRGGBBAA = true,
+      names = true,
+    },
+    filetypes = {
+      '*';
+      css = { css = true, tailwind = true };
+      scss = { css = true, tailwind = true };
+      sass = { css = true, sass = { enable = true, parsers = {"css"} } };
+      less = { css = true, tailwind = true };
+      html = { css = true, tailwind = true };
+      javascript = { css = true, tailwind = true };
+      -- Update color values even if buffer is not focused (for cmp menu, etc.)
+      cmp_docs = { always_update = true };
+      cmp_menu = { always_update = true };
+    },
+    buftypes = {
+      '*',
+      '!prompt';
+    }
+  }
+end
+
 return M
