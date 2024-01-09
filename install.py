@@ -69,6 +69,9 @@ tasks = {
     # kitty
     '~/.config/kitty': dict(src='config/kitty', fail_on_error=True),
 
+    # alacritty
+    '~/.config/alacritty': dict(src='config/alacritty'),
+
     # tmux
     '~/.tmux'      : 'tmux',
     '~/.tmux.conf' : 'tmux/tmux.conf',
