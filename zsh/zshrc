@@ -202,8 +202,8 @@ fi
 
 # iTerm integration (for OS X iTerm2)
 # @see https://iterm2.com/shell_integration.html
-if [[ "`uname`" == "Darwin" ]] && [[ -f ${HOME}/.iterm2_shell_integration.zsh ]]; then
-    source ${HOME}/.iterm2_shell_integration.zsh
+if [[ "`uname`" == "Darwin" ]] && [[ -z "$NVIM" ]] && [[ -f ${HOME}/.iterm2_shell_integration.zsh ]]; then
+  source ${HOME}/.iterm2_shell_integration.zsh
 fi
 
 if (( $+commands[iterm-tab-color] )); then
