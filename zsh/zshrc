@@ -191,9 +191,8 @@ fi
 # Source zsh script files after loading the zsh plugins.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
-# Terminal
-# Use xterm-256color (for tmux, too)
-if [[ $TERM != "xterm-kitty" ]]; then
+# Use xterm-256color as a fallback TERM
+if [[ $TERM != "xterm-kitty" ]] && [[ $TERM != "alacritty" ]] && [[ $TERM != "wezterm" ]] ; then
   export TERM="xterm-256color"
 fi
 
