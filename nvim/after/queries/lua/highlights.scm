@@ -1,4 +1,5 @@
 ;; extends
+; see also $DOTVIM/after/queries/lua/injections.scm
 
 ; Fix @vim injections having wrong (string) foregrounds
 ; thanks to u/Adk9p (https://www.reddit.com/r/neovim/comments/1059xht/)
@@ -12,9 +13,16 @@
     )
   )
 
-; exec_lua [[ ... ]] => see functional tests in neovim
+; functional tests in neovim
+; exec_lua [[ ... ]]
 ((function_call
-  name: (_) @_exec_lua
+  name: (_) @_exec_lua (#eq? @_exec_lua "exec_lua")
   arguments: (arguments (string content: _ @string.injection)))
-  (#eq? @_exec_lua "exec_lua")
-  )
+)
+; pcall(exec_lua, ...) pcall_err(exec_lua, ...)
+((function_call
+  name: (_) @_pcall (#any-of? @_pcall "pcall" "pcall_err")
+  arguments: (arguments
+               . (identifier) @_exec_lua (#eq? @_exec_lua "exec_lua")
+               . (string content: _ @string.injection)))
+)

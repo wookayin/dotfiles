@@ -14,11 +14,18 @@
   (#set! injection.language "vim")
   )
 
+; functional tests in neovim
 ; exec_lua [[ ... ]]
-; => see functional tests in neovim
 ((function_call
-  name: (_) @_exec_lua
+  name: (_) @_exec_lua (#eq? @_exec_lua "exec_lua")
   arguments: (arguments (string content: _ @injection.content)))
-  (#eq? @_exec_lua "exec_lua")
-  (#set! injection.language "lua")
-  )
+ (#set! injection.language "lua")
+)
+; pcall(exec_lua, ...) pcall_err(exec_lua, ...)
+((function_call
+  name: (_) @_pcall (#any-of? @_pcall "pcall" "pcall_err")
+  arguments: (arguments
+               . (identifier) @_exec_lua (#eq? @_exec_lua "exec_lua")
+               . (string content: _ @injection.content)))
+ (#set! injection.language "lua")
+)
