@@ -68,11 +68,10 @@ tasks = {
     # GTK
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
 
-    # kitty
+    # terminal emulators (kitty, alacritty, wezterm)
     '~/.config/kitty': dict(src='config/kitty', cond=not IS_SSH),
-
-    # alacritty
     '~/.config/alacritty': dict(src='config/alacritty', cond=not IS_SSH),
+    '~/.config/wezterm': dict(src='config/wezterm', cond=not IS_SSH),
 
     # tmux
     '~/.tmux'      : 'tmux',
