@@ -10,6 +10,7 @@ vim.api.nvim_buf_create_user_command(0, 'ExtendsOpen', function(opts)
   -- e.g. "queries/lua/highlights.scm"
   local rpath = path:match("nvim/after/(.-)$")
   if rpath then
+    assert(os.getenv('VIMPLUG'))
     local target = vim.fn.expand("$VIMPLUG/nvim-treesitter/" .. rpath)
     vim.cmd.edit { args = { target } }
   else
