@@ -14,6 +14,7 @@
 print(__doc__)  # print logo.
 
 
+import os
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--force', action="store_true", default=False,
@@ -26,6 +27,7 @@ parser.add_argument('--skip-zplug', action='store_true',
 args = parser.parse_args()
 
 ################# BEGIN OF FIXME #################
+IS_SSH = os.getenv('SSH_TTY', None) is not None
 
 # Task Definition
 # (path of target symlink) : (location of source file in the repository)
@@ -67,10 +69,10 @@ tasks = {
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
 
     # kitty
-    '~/.config/kitty': dict(src='config/kitty', fail_on_error=True),
+    '~/.config/kitty': dict(src='config/kitty', cond=not IS_SSH),
 
     # alacritty
-    '~/.config/alacritty': dict(src='config/alacritty'),
+    '~/.config/alacritty': dict(src='config/alacritty', cond=not IS_SSH),
 
     # tmux
     '~/.tmux'      : 'tmux',
@@ -368,6 +370,9 @@ for target, item in sorted(tasks.items()):
     source = item.get('src', None)
     force = item.get('force', False)
     fail_on_error = item.get('fail_on_error', False)
+
+    if not item.get('cond', True):
+        continue
 
     if source:
         source = os.path.join(current_dir, os.path.expanduser(source))
