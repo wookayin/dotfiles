@@ -36,7 +36,7 @@ if is_test then
     local term = require("utils.term_utils").TermWin.getinstance("lua-neovim-test")
     vim.api.nvim_buf_create_user_command(0, 'Test', function(_)
       -- TODO: detect the current test method with treesitter and run that only
-      local testname = filename:match("functionaltest") and "functionaltest" or "unittest"
+      local testname = filename:match("functional%/") and "functionaltest" or "unittest"
       local cmd = ("TEST_FILE=%s make %s"):format(filename, testname)
       term:run(cmd)
     end, {})
