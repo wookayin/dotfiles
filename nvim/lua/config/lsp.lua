@@ -377,7 +377,6 @@ on_init['lua_ls'] = function(client, _)
   -- due to delayed execution (see neovim/nvim-lspconfig#2542)
   if client.server_capabilities then
     client.server_capabilities.documentFormattingProvider = false
-    client.server_capabilities.semanticTokensProvider = false  -- turn off semantic tokens
   end
 end
 

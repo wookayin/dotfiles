@@ -137,6 +137,7 @@ hi!     DiagnosticUnnecessary           gui=underline guifg=#87d7ff
 " LSP Semantic token support {{{
 " ------------------------------
 " https://microsoft.github.io/language-server-protocol/specification/#semanticTokenTypes
+" :help lsp-semantic-highlight
 hi link @lsp.type.type                  @type
 hi link @lsp.type.class                 @type
 hi link @lsp.type.struct                @type
@@ -153,6 +154,8 @@ hi link @lsp.type.parameter             @parameter
 hi link @lsp.type.decorator             @function
 hi link @lsp.type.comment               @comment
 hi link @lsp.type.lifetime              @storageclass
+
+hi! link @lsp.mod.documentation         @comment.documentation
 
 hi!     @lsp.type.typeParameter         guifg=#fae000 gui=bold
 hi!     @lsp.type.generic               guifg=#fae000
@@ -190,10 +193,16 @@ hi!      @text.literal.block.markdown        guibg=#3a3a3a                  " ``
 hi! link @text.literal.markdown_inline       Constant
 hi!      @text.reference.markdown_inline     guifg=#228be6 gui=underline    " link
 
-" Help
+" Help (vimdoc)
 hi!      @text.reference.vimdoc      ctermfg=182 guifg=#228be6 gui=underline
 hi! link @text.literal.vimdoc        Constant
 hi!      @text.literal.block.vimdoc  guifg=white guibg=#252525 gui=italic
+
+" lua
+hi!      @lsp.mod.defaultLibrary.lua    guifg=#ffbf80
+hi!      @lsp.type.property.lua         guifg=NONE
+hi!      @lsp.type.comment.lua          guifg=NONE       " don't override luadoc
+hi!      @lsp.mod.documentation.lua     guifg=NONE       " don't override luaodc
 
 " luadoc (see $VIMPLUG/nvim-treesitter/queries/luadoc/highlights.scm)
 hi! link @comment.luadoc            @comment.documentation
