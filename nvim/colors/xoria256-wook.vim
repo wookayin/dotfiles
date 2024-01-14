@@ -131,6 +131,51 @@ hi def link @text.environment.name     Function
 hi def link @text.environment.name     Keyword
 hi def link @text.warning              WarningMsg
 
+" Compat for nvim-treesitter 1.0 highlight groups
+" https://github.com/nvim-treesitter/nvim-treesitter/issues/4799
+" https://github.com/nvim-treesitter/nvim-treesitter/pull/5895
+"       (new group)                 (previous group)
+
+" * tree-sitter "standard capture names"
+hi link @variable.parameter         @parameter
+hi link @variable.member            @field
+hi link @module                     @namespace
+hi link @number.float               @float
+hi link @string.special.symbol      @symbol
+hi link @string.regexp              @string.regex
+hi link @markup.strong              @text.strong
+hi link @markup.italic              @text.emphasis
+"                                   @text.underline (removed; see @string.special)
+hi link @markup.strikethrough       @text.strike
+hi link @markup.heading             @text.title
+hi link @markup.quote               @text.quote
+hi link @markup.link.url            @text.uri
+hi link @markup.math                @text.math
+hi link @markup.environment         @text.environment
+hi link @markup.environment.name    @text.environment.name
+hi link @markup.link                @text.reference
+hi link @markup.raw                 @text.literal
+hi link @markup.raw.block           @text.literal.block
+hi link @markup.link.label          @string.special
+hi link @markup.list                @punctuation.special
+
+" * Helix captures
+hi link @function.method            @method
+hi link @function.method.call       @method.call
+hi link @comment.todo               @text.todo
+hi link @comment.error              @text.danger
+hi link @comment.warning            @text.warning
+hi link @comment.hint               @text.note
+hi link @comment.info               @text.note
+hi link @comment.note               @text.note
+hi link @comment.ok                 @text.note
+hi link @diff.plus                  @text.diff.add
+hi link @diff.minus                 @text.diff.delete
+hi link @diff.delta                 @text.diff.change
+hi link @string.special.url         @text.uri
+hi link @keyword.directive          @preproc
+hi link @keyword.storage            @storageclass
+
 " Diagnostics
 hi!     DiagnosticUnnecessary           gui=underline guifg=#87d7ff
 
@@ -181,6 +226,9 @@ hi! link @text.todo                Todo
 hi! @text.note.comment             guibg=#b2f2bb guifg=black
 hi! @text.warning.comment          guibg=#ffa94d guifg=black
 hi! @text.danger.comment           guibg=#e03131 guifg=white
+hi! link @comment.error.comment    @text.danger.comment
+hi! link @comment.warning.comment  @text.warning.comment
+hi! link @comment.note.comment     @text.note.comment
 
 " Bash
 hi! link @preproc.bash             SpecialComment
@@ -189,14 +237,20 @@ hi! link @variable.bash            PreProc
 hi!      @parameter.bash           guifg=NONE
 
 " Markdown
-hi!      @text.literal.block.markdown        guibg=#3a3a3a                  " ```codeblock``` (injection)
-hi! link @text.literal.markdown_inline       Constant
+hi!      @markup.raw.block.markdown          guibg=#3a3a3a                  " ```codeblock``` (injection)
+hi! link @markup.raw.markdown_inline         Constant
+hi! link @text.literal.block.markdown        @markup.raw.block.markdown     " compat
+hi! link @text.literal.markdown_inline       @markup.raw.block.markdown     " compat
 hi!      @text.reference.markdown_inline     guifg=#228be6 gui=underline    " link
 
 " Help (vimdoc)
-hi!      @text.reference.vimdoc      ctermfg=182 guifg=#228be6 gui=underline
-hi! link @text.literal.vimdoc        Constant
-hi!      @text.literal.block.vimdoc  guifg=white guibg=#252525 gui=italic
+hi!      @markup.link.vimdoc         ctermfg=182 guifg=#228be6 gui=underline
+hi! link @markup.raw.vimdoc          Constant
+hi!      @markup.raw.block.vimdoc    guifg=white guibg=#252525 gui=italic
+
+hi! link @text.reference.vimdoc      @markup.link.vimdoc            " compat
+hi! link @text.literal.vimdoc        @markup.raw.vimdoc             " compat
+hi! link @text.literal.block.vimdoc  @markup.raw.block.vimdoc       " compat
 
 " lua
 hi!      @lsp.mod.defaultLibrary.lua    guifg=#ffbf80
@@ -251,5 +305,6 @@ hi! @method.test.python         guifg=#ffff30 gui=bold
 " }}}
 
 " Gitcommit
-hi link @text.title.gitcommit       PreProc
-hi!     @text.uri.gitcommit         guifg=#df6383 gui=NONE
+hi!      @string.special.url.gitcommit    guifg=#df6383 gui=NONE
+hi! link @text.uri.gitcommit              @string.special.url.gitcommit     " compat
+hi! link @text.title.gitcommit            PreProc
