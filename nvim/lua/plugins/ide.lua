@@ -113,6 +113,7 @@ return {
   Plug 'tfnico/vim-gradle' { ft = 'gradle' };
   Plug 'Tyilo/applescript.vim' { ft = 'applescript' };
   Plug 'rdolgushin/groovy.vim' { ft = 'groovy' };
+  Plug 'NoahTheDuke/vim-just' { ft = 'just' };
 
   -- Lua REPL
   Plug 'ii14/neorepl.nvim' { lazy = true };  -- :LuaREPL
