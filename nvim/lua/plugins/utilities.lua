@@ -7,6 +7,7 @@ local PlugConfig = require('utils.plug_utils').PlugConfig
 return {
   -- Folding
   Plug 'kevinhwang91/nvim-ufo' {
+    enabled = vim.fn.has('nvim-0.9') > 0,
     dependencies = {'kevinhwang91/promise-async'},
     event = 'VeryLazy',
     init = require('config.folding').before_ufo,
