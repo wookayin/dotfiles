@@ -34,6 +34,9 @@ highlight CursorLineNr  cterm=none gui=bold guifg=Yellow
 highlight SignColumn    ctermfg=248 ctermbg=233   guifg=#a8a8a8 guibg=#121212
 highlight VertSplit     ctermfg=246 ctermbg=NONE  guifg=#6d747f guibg=NONE
 
+" for showing tabs, etc. (set 'list') -- don't stand out
+highlight Whitespace    guifg=#333333 guibg=#121212
+
 " gitsigns sign column
 "  guibg=<X> and ctermbg=<Y> should match that of SignColumn
 highlight GitSignsAdd             guifg=#009900 guibg=#121212 ctermfg=2 ctermbg=233

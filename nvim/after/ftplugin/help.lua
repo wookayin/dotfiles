@@ -5,7 +5,6 @@ end
 
 -- buffer-local options (even if not opened via :help)
 vim.opt_local.colorcolumn = '79'
-vim.opt_local.list = false
 -- helptags can include characters like '-', '.', '(', ')'
 vim.opt_local.iskeyword:append({ '-', '.', '(', ')' })
 
