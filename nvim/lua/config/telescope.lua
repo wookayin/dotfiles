@@ -32,8 +32,13 @@ function M.setup_telescope()
         i = {
           ["<C-u>"] = false,   -- Do not map <C-u>; CTRL-U should be backward-kill-line.
           ["<C-d>"] = false,
-          ["<C-b>"] = require("telescope.actions").preview_scrolling_up,
-          ["<C-f>"] = require("telescope.actions").preview_scrolling_down,
+          -- Ctrl-f,b: scroll the result window (picker) like PageDn/PageUp
+          ["<C-f>"] = require("telescope.actions").results_scrolling_down,
+          ["<C-b>"] = require("telescope.actions").results_scrolling_up,
+          -- Ctrl-e,y: scroll the preview window
+          ["<C-e>"] = require("telescope.actions").preview_scrolling_down,
+          ["<C-y>"] = require("telescope.actions").preview_scrolling_up,
+          -- Ctrl-/: toggle preview
           ["<C-_>"] = require("telescope.actions.layout").toggle_preview,
         }
       }
