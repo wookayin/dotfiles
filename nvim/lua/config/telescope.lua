@@ -27,6 +27,7 @@ function M.setup_telescope()
         prompt_position = 'top',
       },
       sorting_strategy = 'ascending',  -- with prompt_position='top'
+      scroll_strategy = 'limit',  -- do not cycle!
       mappings = {
         i = {
           ["<C-u>"] = false,   -- Do not map <C-u>; CTRL-U should be backward-kill-line.
