@@ -45,17 +45,26 @@ if vim.fn.has('nvim-0.8') == 0 then
   vim.o.shadafile = "NONE"
   return
 
-elseif vim.fn.has('nvim-0.9.1') == 0 then
-  vim.defer_fn(function()
+elseif vim.fn.has('nvim-0.9.2') == 0 then
+  ---@type string  e.g. "NVIM v0.9.2"
+  ---@diagnostic disable-next-line: deprecated ; can be removed in nvim 0.9+
+  local nvim_version = vim.split(vim.api.nvim_command_output('version'), '\n', { trimempty = true })[1]
+  local show_warning = function()
     local like_false = function(x) return x == nil or x == "0" or x == "" end
     if not like_false(vim.env.DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING) then return end
-    local msg = 'Please upgrade to latest neovim (0.9.4+).\n'
+    local msg = 'Please upgrade to latest neovim (0.9.5+).\n'
     msg = msg .. 'Support for neovim <= 0.8.x will be dropped soon.'
     msg = msg .. '\n\n' .. string.format('Try: $ %s install neovim', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
     msg = msg .. '\n\n' .. ('If you cannot upgrade yet but want to suppress this warning,\n'
                             .. 'use `export DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING=1`.')
-    ---@diagnostic disable-next-line: param-type-mismatch
-    vim.notify(msg, 'error', { title = 'Deprecation Warning', timeout = 5000 })
+    vim.notify(msg, vim.log.levels.ERROR, { title = 'Deprecation Warning', timeout = 5000 })
+    vim.g.DOTFILES_DEPRECATION_CACHE = { version = nvim_version, timestamp = os.time() }
+  end
+  vim.defer_fn(function()
+    local cache = vim.g.DOTFILES_DEPRECATION_CACHE or {}
+    if cache.version ~= nvim_version or os.time() - cache.timestamp > 3600 then
+      show_warning()  -- show warning only once per hour.
+    end
   end, 100)
 end
 
