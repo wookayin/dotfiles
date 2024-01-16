@@ -29,3 +29,14 @@
                . (string content: _ @injection.content)))
  (#set! injection.language "lua")
 )
+
+; query injection: local query = [[ ... ]]
+((assignment_statement
+    (variable_list
+      name: (identifier) @_identifier)
+    (#eq? @_identifier "query")
+    (expression_list
+      value: (string content: (string_content) @injection.content))
+  )
+  (#set! injection.language "query")
+)

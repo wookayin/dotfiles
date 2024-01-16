@@ -26,3 +26,13 @@
                . (identifier) @_exec_lua (#eq? @_exec_lua "exec_lua")
                . (string content: _ @string.injection)))
 )
+
+; literal query in lua files: local query = [[ ... ]]
+((assignment_statement
+    (variable_list
+      name: (identifier) @_identifier)
+    (#eq? @_identifier "query")
+    (expression_list
+      value: (string content: (string_content) @string.injection @markup.italic))
+  )
+)
