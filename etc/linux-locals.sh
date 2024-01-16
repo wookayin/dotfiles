@@ -79,7 +79,7 @@ sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n'); sys
   cd "$tmpdir"
   if [[ "$filename" == *.tar.gz ]]; then
     echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
-    tar -xvzf "$filename"
+    tar -xvzf "$filename" $TAR_OPTIONS
     local extracted_folder="${filename%.tar.gz}"
     if [ -d "$extracted_folder" ]; then
       cd "$extracted_folder"
@@ -143,6 +143,14 @@ install_git() {
     echo -e "https:// git url will not work. Please install libcurl-dev and try again.${COLOR_NONE}"
     return 2;
   fi
+}
+
+install_git_cliff() {
+  # https://github.com/orhun/git-cliff/releases
+  TAR_OPTIONS="--strip-components 1"
+  _template_github_latest "git-cliff" "orhun/git-cliff" 'git-cliff-*-x86_64-*-linux-gnu.tar.gz'
+  cp -v git-cliff "$PREFIX/bin/"
+  cp -v man/git-cliff.1 "$PREFIX/share/man/man1/"
 }
 
 install_gh() {
