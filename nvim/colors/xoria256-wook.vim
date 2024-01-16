@@ -269,10 +269,11 @@ hi! link @keyword.return.luadoc     @keyword.luadoc    " @return
 hi! link @keyword.coroutine.luadoc  @keyword.luadoc    " @async
 hi! link @include.luadoc            @keyword.luadoc    " @module, @package
 hi! link @type.qualifier.luadoc     @keyword.luadoc    " @public, @private, etc.
-" - @field: see nvim-treesitter/nvim-treesitter#5762
+" - @field: see nvim-treesitter/nvim-treesitter#5762 and 5895
 hi!      @field.lua                 guifg=NONE
 hi! link @field.lua.luadoc          @type.lua
 hi!      @field.luadoc              guifg=#a4ad2b
+hi!      @variable.member.luadoc    guifg=#a4ad2b
 
 
 " C/C++
