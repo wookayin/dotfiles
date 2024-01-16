@@ -48,14 +48,15 @@ require("lazy.manage").clean = function(opts)
   return require("lazy.manage").run({ pipeline = {} })
 end
 require("lazy.manage.task.fs").clean.run = function(self)
+  ---@diagnostic disable-next-line: undefined-field
   local plugin_name = (self.plugin or {}).name or '(unknown)'
   print("[lazy.nvim] Clean operation is disabled. (lazy.manage.task.fs) plugin = " .. plugin_name .. '\n')
   local inform_user = function()
-    vim.notify(("[lazy.nvim] Please check and remove %s/%s.cloning manually.\n"):format(vim.env.VIMPLUG, plugin_name),
-        vim.log.levels.ERROR, { title = 'config/plugins.lua', timeout = 10000 })
+    local msg = ("[lazy.nvim] Please check and remove `%s/%s.cloning` manually.\n"):format(vim.env.VIMPLUG, plugin_name)
+    vim.notify(msg, vim.log.levels.ERROR, { title = 'config/plugins.lua', timeout = 10000, markdown = true })
   end
   vim.api.nvim_create_autocmd('VimEnter', { pattern = '*', callback = inform_user })
-  inform_user()
+  inform_user()  -- for headless execution
 end
 
 -- Monkey-patch: Normalize git origin, avoid unnecessary re-cloning on update
