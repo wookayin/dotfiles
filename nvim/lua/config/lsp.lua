@@ -114,6 +114,7 @@ local on_attach = function(client, bufnr)
       { nargs = 0, desc = "Toggle inlay hints."})
     buf_command("ToggleInlayHints", "InlayHintsToggle", {})
     vim.fn.CommandAlias("ToggleInlayHints", "InlayHintsToggle")
+    vim.keymap.set('n', '<leader>I', "<cmd>InlayHintsToggle<CR>", { buffer = true })
   end
 
 end
