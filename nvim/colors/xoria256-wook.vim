@@ -103,7 +103,7 @@ highlight!  LspInlayHint    guifg=#9e9e9e guibg=#232323 gui=italic
 " The highlight mapping is not exhaustive; to see the list, try:
 " :filter /^@/ highlight   (or :Highlights @)
 
-hi! @constant                guifg=#ffaf00 gui=bold
+hi! @constant                guifg=#ffaf00
 hi! @field                   guifg=NONE
 hi! @function                guifg=#ffaf00
 hi! @function.call           guifg=#d7ff5f
@@ -255,11 +255,20 @@ hi! link @text.reference.vimdoc      @markup.link.vimdoc            " compat
 hi! link @text.literal.vimdoc        @markup.raw.vimdoc             " compat
 hi! link @text.literal.block.vimdoc  @markup.raw.block.vimdoc       " compat
 
-" lua
+" Lua
 hi!      @lsp.mod.defaultLibrary.lua    guifg=#ffbf80
 hi!      @lsp.type.property.lua         guifg=NONE
 hi!      @lsp.type.comment.lua          guifg=NONE       " don't override luadoc
 hi!      @lsp.mod.documentation.lua     guifg=NONE       " don't override luaodc
+
+hi!      @lsp.mod.global.lua                        gui=bold guifg=#ffaf00
+hi!      @lsp.mod.declaration.lua                   gui=bold
+
+hi!      @lsp.typemod.class.declaration.lua         gui=bold guifg=#ffaf00
+hi!      @lsp.typemod.variable.declaration.lua      gui=bold guifg=#aeeeda
+hi!      @lsp.typemod.property.declaration.lua      gui=bold
+hi! link @lsp.typemod.function.declaration.lua      @function.lua
+hi!      @lsp.typemod.parameter.declaration.lua     gui=bold
 
 " luadoc (see $VIMPLUG/nvim-treesitter/queries/luadoc/highlights.scm)
 hi! link @comment.luadoc            @comment.documentation
