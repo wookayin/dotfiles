@@ -237,7 +237,8 @@ hi! link @comment.note.comment     @text.note.comment
 hi! link @preproc.bash             SpecialComment
 hi!      @command.bash             guifg=white
 hi! link @variable.bash            PreProc
-hi!      @parameter.bash           guifg=NONE
+hi!      @variable.parameter.bash  guifg=NONE
+hi! link @parameter.bash           @variable.parameter.bash            " compat
 
 " Markdown
 hi!      @markup.raw.block.markdown          guibg=#3a3a3a                  " ```codeblock``` (injection)
@@ -307,8 +308,9 @@ hi! link semshiSelf             @variable.builtin.python
 
 " functions, methods
 hi! link pythonFunction         @function.python
-hi! link pythonParam            @parameter.python
-hi! @parameter.python           guifg=#dfaf5f
+hi! link pythonParam            @variable.parameter.python
+hi! link @parameter.python      @variable.parameter.python       " compat
+hi! @variable.parameter.python  guifg=#dfaf5f
 hi! @function.python            guifg=#d7ff5f
 hi! @method.python              guifg=#d7ff5f
 
