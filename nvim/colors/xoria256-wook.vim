@@ -178,6 +178,12 @@ hi link @diff.delta                 @text.diff.change
 hi link @string.special.url         @text.uri
 hi link @keyword.directive          @preproc
 hi link @keyword.storage            @storageclass
+hi link @keyword.directive          @define
+hi link @keyword.conditional        @conditional
+hi link @keyword.debug              @debug
+hi link @keyword.exception          @exception
+hi link @keyword.import             @include
+hi link @keyword.repeat             @repeat
 
 " Diagnostics
 hi!     DiagnosticUnnecessary           gui=underline guifg=#87d7ff
@@ -277,17 +283,19 @@ hi! link @comment.luadoc            @comment.documentation
 hi!      @keyword.luadoc            guifg=#a488a6 gui=NONE
 hi! link @keyword.return.luadoc     @keyword.luadoc    " @return
 hi! link @keyword.coroutine.luadoc  @keyword.luadoc    " @async
-hi! link @include.luadoc            @keyword.luadoc    " @module, @package
+hi! link @keyword.import.luadoc     @keyword.luadoc    " @module, @package
+hi! link @include.luadoc            @keyword.import.luadoc    " compat
 hi! link @type.qualifier.luadoc     @keyword.luadoc    " @public, @private, etc.
 " - @field: see nvim-treesitter/nvim-treesitter#5762 and 5895
 hi!      @field.lua                 guifg=NONE
 hi! link @field.lua.luadoc          @type.lua
-hi!      @field.luadoc              guifg=#a4ad2b
+hi!      @field.luadoc              guifg=#a4ad2b      " compat
 hi!      @variable.member.luadoc    guifg=#a4ad2b
 
 
 " C/C++
-hi!      @exception.cpp                           guifg=#ff5d62           " try, catch, ...
+hi!      @keyword.exception.cpp                   guifg=#ff5d62           " try, catch, ...
+hi! link @exception.cpp                           @keyword.exception.cpp  " compat
 hi!      @lsp.type.comment.cpp                    guifg=#778377
 hi! link @lsp.type.comment.c                      @lsp.type.comment.cpp
 hi!      @lsp.typemod.class.definition.cpp        guifg=#ffaf00 gui=bold
