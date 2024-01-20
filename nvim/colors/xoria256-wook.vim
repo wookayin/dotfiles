@@ -291,6 +291,7 @@ hi!      @field.lua                 guifg=NONE
 hi! link @field.lua.luadoc          @type.lua
 hi!      @field.luadoc              guifg=#a4ad2b      " compat
 hi!      @variable.member.luadoc    guifg=#a4ad2b
+hi! link @operator.luadoc           @comment.documentation.lua   " operator inside type, e.g. foo|bar
 
 
 " C/C++
