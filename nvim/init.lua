@@ -35,9 +35,9 @@ vim.cmd [[
 ]]
 
 -- Check neovim version
-if vim.fn.has('nvim-0.8') == 0 then
+if vim.fn.has('nvim-0.9.2') == 0 then
   vim.cmd [[
-    echohl WarningMsg | echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.8.0+ or higher.' | echohl None
+    echohl WarningMsg | echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.9.2+ or higher.' | echohl None
   ]]
   vim.cmd [[ filetype plugin off ]]
   vim.o.loadplugins = false
