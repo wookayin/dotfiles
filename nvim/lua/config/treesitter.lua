@@ -292,13 +292,13 @@ end
 ---------------------------------------------------------------------------
 
 function M.setup_keymap()
+  -- see $VIMRUNTIME/lua/vim/_inspector.lua
+  vim.keymap.set('n', '<leader>tsh', '<cmd>Inspect<CR>')
+  vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>')
+
   -- treesitter-playground is deprecated in favor of vim.treesitter.* APIs.
   if vim.fn.has('nvim-0.10') > 0 then
     vim.fn.CommandAlias("TSPlaygroundToggle", "InspectTree", true)
-
-    -- see $VIMRUNTIME/lua/vim/_inspector.lua
-    vim.keymap.set('n', '<leader>tsh', '<cmd>Inspect<CR>')
-    vim.keymap.set('n', '<leader>i', '<cmd>Inspect<CR>')
 
   else  -- nvim < 0.10; fallback to treesitter-playground
     vim.cmd [[ command! InspectTree :TSPlaygroundToggle ]]
