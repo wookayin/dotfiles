@@ -58,6 +58,10 @@ highlight PreProc       ctermfg=219 guifg=#ffafff
 highlight SpecialKey    ctermfg=242 guifg=#666666
 highlight Folded        ctermbg=60  guibg=#292933
 
+" Fallback: neovim/neovim#26540
+hi def link Delimiter   Special
+hi def link Operator    Statement
+
 highlight FoldColumn    ctermfg=236 guifg=#495057
 
 " tabline, winbar
