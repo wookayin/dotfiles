@@ -4,11 +4,11 @@
 ; $(subcommand ...) <- do NOT highlight as string (red)
 (command) @command
 
-; In addition to @parameter highlight, we mark as @parameter.flag
-; for CLI "--options" or "--flag"
+; In addition to @variable.parameter highlight,
+; we mark as @variable.parameter.flag for CLI "--options" or "--flag"
 (command
   argument: [
-             (word) @parameter.flag
-             (concatenation (word) @parameter.flag)
+             (word) @variable.parameter.flag
+             (concatenation (word) @variable.parameter.flag)
              ]
-  (#lua-match? @parameter.flag "^%-%-?%w+"))
+  (#lua-match? @variable.parameter.flag "^%-%-?%w+"))

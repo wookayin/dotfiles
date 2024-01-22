@@ -76,8 +76,8 @@ highlight DiffChange    guibg=#471515 guifg=NONE
 highlight DiffText      guibg=#721b1b guifg=NONE
 
 " See: diffAdded, diffRemoved, diffChange, diffText, diffIndexLine
-hi! @text.diff.add      guifg=#40c057
-hi! @text.diff.delete   guifg=#f03e3e
+hi! @diff.plus          guifg=#40c057
+hi! @diff.minus         guifg=#f03e3e
 hi! @attribute.diff     guifg=#da77f2
 
 highlight SpellBad guifg=NONE ctermfg=NONE
@@ -98,20 +98,21 @@ endif
 " LSP
 highlight!  LspInlayHint    guifg=#9e9e9e guibg=#232323 gui=italic
 
-" Minimal treesitter syntax support
+" Treesitter syntax support
 " see https://github.com/nvim-treesitter/nvim-treesitter/blob/master/CONTRIBUTING.md#highlights
+" :help treesitter-highlight-groups
 " The highlight mapping is not exhaustive; to see the list, try:
 " :filter /^@/ highlight   (or :Highlights @)
 
 hi! @constant                guifg=#ffaf00
-hi! @field                   guifg=NONE
 hi! @function                guifg=#ffaf00
 hi! @function.call           guifg=#d7ff5f
-hi! @parameter               guifg=#5fafff
 hi! @property                guifg=NONE
 hi! @punctuation.bracket     guifg=#afd700
 hi! @punctuation.delimiter   guifg=NONE
 hi! @variable                guifg=NONE
+hi! @variable.member         guifg=NONE
+hi! @variable.parameter      guifg=#5fafff
 hi! @variable.builtin        guifg=#d78787 ctermfg=174   " e.g. self, this
 
 hi! @string.injection         guifg=#ffffff guibg=#1c1313
@@ -121,71 +122,16 @@ hi link @string.documentation          SpecialComment
 hi link @comment.documentation         SpecialComment
 hi link @comment.special               SpecialComment
 
-hi! @text.strong                       gui=bold
-hi! @text.emphasis                     gui=italic
-hi! @text.underline                    gui=underline
-hi! @text.strike                       gui=strikethrough
-hi! link @text.strike                  Title
-hi! @text.literal                      gui=italic
-hi! @text.uri                          gui=italic,underline
-hi def link @text.math                 Special
-hi def link @text.environment          PreProc
-hi def link @text.environment.name     Function
-hi def link @text.environment.name     Keyword
-hi def link @text.warning              WarningMsg
-
-" Compat for nvim-treesitter 1.0 highlight groups
-" https://github.com/nvim-treesitter/nvim-treesitter/issues/4799
-" https://github.com/nvim-treesitter/nvim-treesitter/pull/5895
-"       (new group)                 (previous group)
-
-" * tree-sitter "standard capture names"
-hi link @variable.parameter         @parameter
-hi link @variable.member            @field
-hi link @module                     @namespace
-hi link @number.float               @float
-hi link @string.special.symbol      @symbol
-hi link @string.regexp              @string.regex
-hi link @markup.strong              @text.strong
-hi link @markup.italic              @text.emphasis
-"                                   @text.underline (removed; see @string.special)
-hi link @markup.strikethrough       @text.strike
-hi link @markup.heading             @text.title
-hi link @markup.quote               @text.quote
-hi link @markup.link.url            @text.uri
-hi link @markup.math                @text.math
-hi link @markup.environment         @text.environment
-hi link @markup.environment.name    @text.environment.name
-hi link @markup.link                @text.reference
-hi link @markup.raw                 @text.literal
-hi link @markup.raw.block           @text.literal.block
-hi link @markup.link.label          @string.special
-hi link @markup.list                @punctuation.special
-
-" * Helix captures
-hi link @function.method            @method
-hi link @function.method.call       @method.call
-hi link @comment.todo               @text.todo
-hi link @comment.error              @text.danger
-hi link @comment.warning            @text.warning
-hi link @comment.hint               @text.note
-hi link @comment.info               @text.note
-hi link @comment.note               @text.note
-hi link @comment.ok                 @text.note
-hi link @diff.plus                  @text.diff.add
-hi link @diff.minus                 @text.diff.delete
-hi link @diff.delta                 @text.diff.change
-hi link @string.special.url         @text.uri
-
-" compat:   (previous group)         (new group)
-hi def link @preproc                 @keyword.directive
-hi def link @storageclass            @keyword.storage
-hi def link @define                  @keyword.directive
-hi def link @conditional             @keyword.conditional
-hi def link @debug                   @keyword.debug
-hi def link @exception               @keyword.exception
-hi def link @include                 @keyword.import
-hi def link @repeat                  @keyword.repeat
+hi! @markup.strong                     gui=bold
+hi! @markup.italic                     gui=italic
+hi! @markup.underline                  gui=underline
+hi! @markup.strikethrough              gui=strikethrough
+hi! @markup.raw                        gui=italic
+hi! @markup.link.url                   gui=italic,underline
+hi def link @markup.math               Special
+hi def link @markup.environment        PreProc
+hi def link @markup.environment.name   Function
+hi def link @markup.environment.name   Keyword
 
 " Diagnostics
 hi!     DiagnosticUnnecessary           gui=underline guifg=#87d7ff
@@ -205,8 +151,8 @@ hi link @lsp.type.builtinConstant       @constant.builtin
 hi link @lsp.type.enumMember            @constant
 hi link @lsp.type.operator              @operator
 hi link @lsp.type.string                @string
-hi link @lsp.type.namespace             @namespace
-hi link @lsp.type.parameter             @parameter
+hi link @lsp.type.namespace             @module
+hi link @lsp.type.parameter             @variable.parameter
 hi link @lsp.type.decorator             @function
 hi link @lsp.type.comment               @comment
 hi link @lsp.type.lifetime              @keyword.storageclass
@@ -235,36 +181,27 @@ hi!      @keyword.storageclass          guifg=#3bc9db           " static, extern
 
 " Comments (common lang injection)
 " e.g., TODO WIP NOTE XXX INFO DOCS PERF TEST HACK WARN WARNING FIX FIXME BUG ERROR
-hi! link @text.todo                Todo
-hi! @text.note.comment             guibg=#b2f2bb guifg=black
-hi! @text.warning.comment          guibg=#ffa94d guifg=black
-hi! @text.danger.comment           guibg=#e03131 guifg=white
-hi! link @comment.error.comment    @text.danger.comment
-hi! link @comment.warning.comment  @text.warning.comment
-hi! link @comment.note.comment     @text.note.comment
+hi! link @comment.todo               Todo
+hi! comment.note.comment             guibg=#b2f2bb guifg=black
+hi! @comment.warning.comment         guibg=#ffa94d guifg=black
+hi! @comment.error                   guibg=#e03131 guifg=white
 
 " Bash
 hi! link @keyword.directive.bash             SpecialComment
 hi!      @command.bash             guifg=white
 hi! link @variable.bash            PreProc
 hi!      @variable.parameter.bash  guifg=NONE
-hi! link @parameter.bash           @variable.parameter.bash            " compat
 
 " Markdown
 hi!      @markup.raw.block.markdown          guibg=#3a3a3a                  " ```codeblock``` (injection)
 hi! link @markup.raw.markdown_inline         Constant
-hi! link @text.literal.block.markdown        @markup.raw.block.markdown     " compat
-hi! link @text.literal.markdown_inline       @markup.raw.block.markdown     " compat
-hi!      @text.reference.markdown_inline     guifg=#228be6 gui=underline    " link
+hi!      @markup.link.markdown_inline     guifg=#228be6 gui=underline    " link
 
 " Help (vimdoc)
 hi!      @markup.link.vimdoc         ctermfg=182 guifg=#228be6 gui=underline
 hi! link @markup.raw.vimdoc          Constant
 hi!      @markup.raw.block.vimdoc    guifg=white guibg=#252525 gui=italic
 
-hi! link @text.reference.vimdoc      @markup.link.vimdoc            " compat
-hi! link @text.literal.vimdoc        @markup.raw.vimdoc             " compat
-hi! link @text.literal.block.vimdoc  @markup.raw.block.vimdoc       " compat
 
 " Lua
 hi!      @lsp.mod.defaultLibrary.lua    guifg=#ffbf80
@@ -289,11 +226,10 @@ hi! link @keyword.return.luadoc     @keyword.luadoc    " @return
 hi! link @keyword.coroutine.luadoc  @keyword.luadoc    " @async
 hi! link @keyword.import.luadoc     @keyword.luadoc    " @module, @package
 hi! link @type.qualifier.luadoc     @keyword.luadoc    " @public, @private, etc.
-" - @field: see nvim-treesitter/nvim-treesitter#5762 and 5895
-hi!      @field.lua                 guifg=NONE
-hi! link @field.lua.luadoc          @type.lua
-hi!      @field.luadoc              guifg=#a4ad2b      " compat
-hi!      @variable.member.luadoc    guifg=#a4ad2b
+" - field: see nvim-treesitter/nvim-treesitter#5762 and 5895
+hi!      @variable.member.lua                 guifg=NONE
+hi! link @variable.member.lua.luadoc          @type.lua
+hi!      @variable.member.luadoc              guifg=#a4ad2b
 hi!      @operator.luadoc                  gui=NONE,nocombine           " no italic: operator inside type, e.g. foo|bar
 hi! link @punctuation.delimiter.luadoc     @punctuation.bracket         " comma e.g. table<string, integer>
 hi! link @punctuation.special.luadoc       @string.special              " optional e.g. integer?
@@ -322,17 +258,15 @@ hi! link semshiSelf             @variable.builtin.python
 " functions, methods
 hi! link pythonFunction         @function.python
 hi! link pythonParam            @variable.parameter.python
-hi! link @parameter.python      @variable.parameter.python       " compat
 hi! @variable.parameter.python  guifg=#dfaf5f
 hi! @function.python            guifg=#d7ff5f
-hi! @method.python              guifg=#d7ff5f
+hi! @function.method.python     guifg=#d7ff5f
 
-hi! @function.test.python       guifg=#ffff30 gui=bold
-hi! @method.test.python         guifg=#ffff30 gui=bold
+hi! @function.test.python           guifg=#ffff30 gui=bold
+hi! @function.method.test.python    guifg=#ffff30 gui=bold
 
 " }}}
 
 " Gitcommit
 hi!      @string.special.url.gitcommit    guifg=#df6383 gui=NONE
-hi! link @text.uri.gitcommit              @string.special.url.gitcommit     " compat
-hi! link @text.title.gitcommit            PreProc
+hi! link @markup.heading.gitcommit        PreProc

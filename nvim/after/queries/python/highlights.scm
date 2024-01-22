@@ -9,8 +9,8 @@
 ((class_definition
   body: (block
           (function_definition
-            name: (identifier) @method.test)))
- (#lua-match? @method.test "^test_"))
+            name: (identifier) @function.method.test)))
+ (#lua-match? @function.method.test "^test_"))
 
 ((function_definition
   name: (identifier) @function.test)
