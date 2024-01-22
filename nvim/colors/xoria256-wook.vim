@@ -200,7 +200,7 @@ hi link @lsp.type.struct                @type
 hi link @lsp.type.enum                  @type
 hi link @lsp.type.interface             @type
 hi link @lsp.type.typeAlias             @type
-hi link @lsp.type.macro                 @preproc
+hi link @lsp.type.macro                 @keyword.directive
 hi link @lsp.type.builtinConstant       @constant.builtin
 hi link @lsp.type.enumMember            @constant
 hi link @lsp.type.operator              @operator
@@ -209,7 +209,7 @@ hi link @lsp.type.namespace             @namespace
 hi link @lsp.type.parameter             @parameter
 hi link @lsp.type.decorator             @function
 hi link @lsp.type.comment               @comment
-hi link @lsp.type.lifetime              @storageclass
+hi link @lsp.type.lifetime              @keyword.storageclass
 
 hi! link @lsp.mod.documentation         @comment.documentation
 
@@ -218,6 +218,8 @@ hi!     @lsp.type.generic               guifg=#fae000
 hi!     @lsp.type.property              guifg=#afffaf
 hi!     @lsp.type.variable              guifg=NONE
 hi!     @lsp.type.unresolvedReference   guifg=#ffff00 gui=underline
+
+" hi!     @lsp.mod.declaration            gui=bold
 
 " Do not use semantic token highlight; instead basic tressitter highlights
 " (e.g. we want to distinguish @function.call from @function)
@@ -228,8 +230,8 @@ hi!     @lsp.type.function              guifg=NONE
 
 
 " Common for programming languages
-hi!      @type.qualifier              guifg=#3bc9db           " const, etc.
-hi!      @storageclass                guifg=#3bc9db           " static, extern, etc.
+hi!      @type.qualifier                guifg=#3bc9db           " const, etc.
+hi!      @keyword.storageclass          guifg=#3bc9db           " static, extern, etc.
 
 " Comments (common lang injection)
 " e.g., TODO WIP NOTE XXX INFO DOCS PERF TEST HACK WARN WARNING FIX FIXME BUG ERROR
@@ -242,7 +244,7 @@ hi! link @comment.warning.comment  @text.warning.comment
 hi! link @comment.note.comment     @text.note.comment
 
 " Bash
-hi! link @preproc.bash             SpecialComment
+hi! link @keyword.directive.bash             SpecialComment
 hi!      @command.bash             guifg=white
 hi! link @variable.bash            PreProc
 hi!      @variable.parameter.bash  guifg=NONE
@@ -286,7 +288,6 @@ hi!      @keyword.luadoc            guifg=#a488a6 gui=NONE
 hi! link @keyword.return.luadoc     @keyword.luadoc    " @return
 hi! link @keyword.coroutine.luadoc  @keyword.luadoc    " @async
 hi! link @keyword.import.luadoc     @keyword.luadoc    " @module, @package
-hi! link @include.luadoc            @keyword.import.luadoc    " compat
 hi! link @type.qualifier.luadoc     @keyword.luadoc    " @public, @private, etc.
 " - @field: see nvim-treesitter/nvim-treesitter#5762 and 5895
 hi!      @field.lua                 guifg=NONE
@@ -300,7 +301,6 @@ hi! link @punctuation.special.luadoc       @string.special              " option
 
 " C/C++
 hi!      @keyword.exception.cpp                   guifg=#ff5d62           " try, catch, ...
-hi! link @exception.cpp                           @keyword.exception.cpp  " compat
 hi!      @lsp.type.comment.cpp                    guifg=#778377
 hi! link @lsp.type.comment.c                      @lsp.type.comment.cpp
 hi!      @lsp.typemod.class.definition.cpp        guifg=#ffaf00 gui=bold
@@ -310,7 +310,7 @@ hi!      @lsp.typemod.class.definition.cpp        guifg=#ffaf00 gui=bold
 " Python (semantic highlighting and more syntax groups) {{{
 " ---------------------------------------------------------
 
-hi! link @preproc.python             SpecialComment
+hi! link @keyword.directive.python             SpecialComment
 
 " attribute (self.xxx)
 hi! link semshiAttribute        @lsp.type.property.python
