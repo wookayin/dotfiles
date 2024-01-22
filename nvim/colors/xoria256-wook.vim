@@ -291,7 +291,9 @@ hi!      @field.lua                 guifg=NONE
 hi! link @field.lua.luadoc          @type.lua
 hi!      @field.luadoc              guifg=#a4ad2b      " compat
 hi!      @variable.member.luadoc    guifg=#a4ad2b
-hi! link @operator.luadoc           @comment.documentation.lua   " operator inside type, e.g. foo|bar
+hi!      @operator.luadoc                  gui=NONE,nocombine           " no italic: operator inside type, e.g. foo|bar
+hi! link @punctuation.delimiter.luadoc     @punctuation.bracket         " comma e.g. table<string, integer>
+hi! link @punctuation.special.luadoc       @string.special              " optional e.g. integer?
 
 
 " C/C++
