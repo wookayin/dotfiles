@@ -176,14 +176,16 @@ hi link @diff.plus                  @text.diff.add
 hi link @diff.minus                 @text.diff.delete
 hi link @diff.delta                 @text.diff.change
 hi link @string.special.url         @text.uri
-hi link @keyword.directive          @preproc
-hi link @keyword.storage            @storageclass
-hi link @keyword.directive          @define
-hi link @keyword.conditional        @conditional
-hi link @keyword.debug              @debug
-hi link @keyword.exception          @exception
-hi link @keyword.import             @include
-hi link @keyword.repeat             @repeat
+
+" compat:   (previous group)         (new group)
+hi def link @preproc                 @keyword.directive
+hi def link @storageclass            @keyword.storage
+hi def link @define                  @keyword.directive
+hi def link @conditional             @keyword.conditional
+hi def link @debug                   @keyword.debug
+hi def link @exception               @keyword.exception
+hi def link @include                 @keyword.import
+hi def link @repeat                  @keyword.repeat
 
 " Diagnostics
 hi!     DiagnosticUnnecessary           gui=underline guifg=#87d7ff
