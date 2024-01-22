@@ -182,8 +182,8 @@ hi!      @keyword.storageclass          guifg=#3bc9db           " static, extern
 " Comments (common lang injection)
 " e.g., TODO WIP NOTE XXX INFO DOCS PERF TEST HACK WARN WARNING FIX FIXME BUG ERROR
 hi! link @comment.todo               Todo
-hi! comment.note.comment             guibg=#b2f2bb guifg=black
-hi! @comment.warning.comment         guibg=#ffa94d guifg=black
+hi! @comment.note                    guibg=#b2f2bb guifg=black
+hi! @comment.warning                 guibg=#ffa94d guifg=black
 hi! @comment.error                   guibg=#e03131 guifg=white
 
 " Bash
