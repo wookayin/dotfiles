@@ -126,6 +126,8 @@ hi link @string.documentation          SpecialComment
 hi link @comment.documentation         SpecialComment
 hi link @comment.special               SpecialComment
 
+hi link @string.special.url            Underlined
+
 hi! @markup.strong                     gui=bold
 hi! @markup.italic                     gui=italic
 hi! @markup.underline                  gui=underline
