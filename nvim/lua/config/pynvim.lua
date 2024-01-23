@@ -172,20 +172,22 @@ local function python3_version_check()
   local py_version = python3_version()  ---@type integer[]|nil
   if py_version and (
     py_version[1] > 3 or
-    py_version[1] == 3 and py_version[2] >= 6  -- requires python 3.6+
+    py_version[1] == 3 and py_version[2] >= 7  -- requires python 3.7+
   ) then
     return true
   end
 
   local msg
   if py_version then
-    msg = string.format("Your python3 version (%s) is too old; ", table.concat(py_version, "."))
+    msg = string.format("Your python3 version (%s) is too old;", table.concat(py_version, "."))
+  elseif vim.fn.exists(vim.g.python3_host_prog) == 0 then
+    msg = ("python3_host_prog does not exist."):format(vim.g.python3_host_prog)
   else
     msg = ("python3 version cannot be detected.")
   end
   do
-    warning(msg .. " : " .. vim.g.python3_host_prog)
-    msg = msg .. '\n' .. "python 3.6+ is required. Most features are disabled.\n"
+    warning(msg .. " g:python3_host_prog = " .. vim.g.python3_host_prog)
+    msg = msg .. '\n' .. "python 3.7+ is required. Most features are disabled.\n"
     msg = msg .. '\n' .. "g:python3_host_prog = " .. vim.g.python3_host_prog
     msg = msg .. '\n' .. "exepath = " .. vim.fn.exepath(vim.g.python3_host_prog)
     notify_later(msg)
