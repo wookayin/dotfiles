@@ -82,14 +82,6 @@ function M.define_commands()
     })
   end)
 
-  command("Highlights", { nargs='?', complete='highlight' }, function(e)
-    require("telescope.builtin").highlights({
-      default_text = vim.trim(e.args),
-      sorter = require("telescope.sorters").fuzzy_with_index_bias(),  -- better sorting
-    })
-  end)
-  vim.fn.CommandAlias("Hi", "Highlights")
-
   command("LspSymbols", { nargs='?' }, function(e)
     require("telescope.builtin").lsp_dynamic_workspace_symbols({
       default_text = vim.trim(e.args),
