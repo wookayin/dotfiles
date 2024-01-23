@@ -2,11 +2,9 @@
 
 local M = {}
 
-local ufo
-
 
 M.setup_ufo = function()
-  ufo = require('ufo')
+  local ufo = require('ufo')
 
   -- This is required by nvim-ufo (see kevinhwang91/nvim-ufo#30, kevinhwang91/nvim-ufo#57)
   -- otherwise folds will be unwantedly open/closed when nvim-ufo is in action
@@ -59,10 +57,9 @@ end
 --- (highlighted) preview of folded region.
 -- Preview, # of folded lines, etc.
 -- Part of code brought from kevinhwang91/nvim-ufo#38, credit goes to @ranjithshegde
----@type UfoFoldVirtTextHandler
 ---@return UfoExtmarkVirtTextChunk[]  return a list of virtual text chunks: { text, highlight }[].
+---@type UfoFoldVirtTextHandler
 M.virtual_text_handler = function(virt_text, lnum, end_lnum, width, truncate, ctx)
-
   local counts = ("  (󰁂 %d lines)"):format(end_lnum - lnum + 1)
   local ellipsis = "⋯"
   local padding = ""
@@ -174,19 +171,29 @@ M.get_fold_summary = function(virt_text, lnum, end_lnum, ctx)
   local bufnr = ctx.bufnr
   local filetype = vim.bo[bufnr].filetype
 
+  ---@param line_num integer line number (1-indexed)
+  ---@return string|nil
+  local read_line = function(line_num)
+    return vim.api.nvim_buf_get_lines(bufnr, line_num - 1, line_num, false)[1]
+  end
+
   if filetype == 'bib' then
     -- bibtex: Parse title = ... entry
     for l = lnum, end_lnum do
-      local line_string = vim.api.nvim_buf_get_lines(bufnr, l - 1, l, false)[1]
+      local line_string = read_line(l) or ""
       local m = line_string:gmatch("title%s*=%s*{(.*)}")()
       if m then
         return m --[[@as string]]
       end
     end
 
-  elseif filetype == 'lua' and ctx.text:match('^%-+%s*$') then
-    -- Exclude '-------------------' in the first line, and read the next line
-    return ctx.get_fold_virt_text(lnum + 1)
+  elseif filetype == 'lua' then
+    -- Skip not so informative first line, and read the next line
+    -- Example: `----------------`, `---@private`
+    local all_comment_marker = ctx.text:match('^%-+%s*$')
+    if all_comment_marker then
+      return ctx.get_fold_virt_text(lnum + 1)
+    end
   end
 
   return nil  -- Unknown
@@ -198,8 +205,8 @@ end
 
 M.attach_ufo_if_necessary = function()
   local bufnr = vim.api.nvim_get_current_buf()
-  if not ufo.hasAttached(bufnr) then
-    ufo.attach()
+  if not require("ufo").hasAttached(bufnr) then
+    require("ufo").attach()
     return true
   end
   return false
@@ -209,7 +216,7 @@ M.enable_ufo_fold = function()
   vim.wo.foldenable = true
   vim.wo.foldlevel = 99   -- sometimes get lost. Ensure to be 99 at all times (see kevinhwang91/nvim-ufo#89)
   M.attach_ufo_if_necessary()  -- some buffers may not have been attached
-  ufo.enableFold()   -- setlocal foldenable
+  require("ufo").enableFold()   -- setlocal foldenable
 end
 
 
@@ -217,26 +224,26 @@ end
 -- Note: z<space> ==> see vimrc
 M.open_all_folds = function()  -- zR
   M.enable_ufo_fold()
-  ufo.openAllFolds()
+  require("ufo").openAllFolds()
 end
 M.close_all_folds = function()  -- zM
   M.enable_ufo_fold()
-  ufo.closeAllFolds()
+  require("ufo").closeAllFolds()
 end
 M.reduce_folding = function()  -- zr
   M.enable_ufo_fold()
-  ufo.closeFoldsWith()
+  require("ufo").closeFoldsWith()
 end
 M.more_folding = function()  -- zm
   M.enable_ufo_fold()
-  ufo.openFoldsExceptKinds()
+  require("ufo").openFoldsExceptKinds()
 end
 
 -- Peek/preview a closed fold.
 M.peek_folded_lines = function()
   local enter = false
   local include_next_line = false
-  ufo.peekFoldedLinesUnderCursor(enter, include_next_line)
+  require("ufo").peekFoldedLinesUnderCursor(enter, include_next_line)
 end
 
 function M.setup_folding_keymaps()
