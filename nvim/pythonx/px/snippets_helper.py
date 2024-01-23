@@ -3,8 +3,13 @@
 # See $DOTVIM/UltiSnips/python.snippets
 # pyright: reportGeneralTypeIssues=false
 
+# Note: Minimum python version is: 3.7+
+from __future__ import annotations
+
+from typing import List, Set
 
 import vim  # type: ignore
+
 try:
     import typing
     if typing.TYPE_CHECKING:
@@ -37,14 +42,19 @@ def snip_expand(snip, jump_pos=1, jump_forward=False):
         vim.eval(r'feedkeys("\<C-R>=UltiSnips#JumpForwards()\<CR>")')
 
 
-def on_ts_node(type_name: str) -> bool:
+def on_ts_node(type_name: str | List[str] | Set[str]) -> bool:
     """Returns true if the innermost treesitter node on the current cursor
     has the given type."""
 
-    return int(vim.funcs.luaeval(
-        'require("utils.ts_utils").get_node_at_cursor():type() == "{}"'\
-        .format(type_name))
-    ) > 0
+    if isinstance(type_name, str):
+        type_name = [type_name]
+    type_name = set(type_name)
+
+    node_type: str | None = vim.funcs.luaeval(
+        '''(function(t) return t and t:type() or nil end)(
+            require("utils.ts_utils").get_node_at_cursor() )'''
+    )
+    return node_type in type_name
 
 
 __all__ = (
