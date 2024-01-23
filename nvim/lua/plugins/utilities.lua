@@ -37,6 +37,7 @@ return {
 
   -- Colors
   Plug 'NvChad/nvim-colorizer.lua' {
+    event = { 'BufReadPost' },
     config = require("config.utilities").setup_colorizer,
   };
 
