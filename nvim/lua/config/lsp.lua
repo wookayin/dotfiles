@@ -7,6 +7,7 @@
 local M = {}
 
 -- lsp_signature
+---@diagnostic disable-next-line: unused-local
 local on_attach_lsp_signature = function(client, bufnr)
   -- https://github.com/ray-x/lsp_signature.nvim#full-configuration-with-default-values
   require('lsp_signature').on_attach({
@@ -242,7 +243,7 @@ function M._ensure_mason_installed()
 
   -- Since this works asynchronously, apply on the already opened buffer as well
   vim.tbl_map(function(buf)
-    local valid = vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_option(buf, 'buflisted')
+    local valid = vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted
     if not valid then return end
     local handler = ft_handler[vim.bo[buf].filetype]
     if handler then handler() end
@@ -443,7 +444,7 @@ local attach_lsp_to_existing_buffers = vim.schedule_wrap(function()
   -- this can be easily achieved by firing an autocmd event for the open buffers.
   -- See lspconfig.configs (config.autostart)
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    local valid = vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_get_option(bufnr, 'buflisted')
+    local valid = vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted
     if valid and vim.bo[bufnr].buftype == "" then
       local augroup_lspconfig = vim.api.nvim_create_augroup('lspconfig', { clear = false })
       vim.api.nvim_exec_autocmds("FileType", { group = augroup_lspconfig, buffer = bufnr })
@@ -511,7 +512,7 @@ function M._setup_lsp_handlers()
     local bufnr, winnr = lsp_handlers_hover(err, result, ctx, config)
     if winnr ~= nil then
       -- opacity/alpha for hover window
-      vim.api.nvim_win_set_option(winnr, "winblend", 10)
+      vim.wo[winnr].winblend = 10
     end
     return bufnr, winnr
   end
@@ -546,12 +547,12 @@ function M._setup_diagnostic()
     virtual_text = {
       severity = { min = vim.diagnostic.severity.WARN },
       prefix = vim.fn.has('nvim-0.10') > 0 and
-        function(diagnostic, i, total)  ---@param diagnostic Diagnostic
+        function(diagnostic, i, total)  ---@param diagnostic vim.Diagnostic
           if total ~= nil and total > 4 and i > 4 then
             return i == 4 + 1 and string.format("⋯ (total %s):", total) or ""
           end
           return (icons[diagnostic.severity] or "") .. " "
-        end,
+        end or nil,
     },
     underline = {
       severity = { min = vim.diagnostic.severity.INFO },
@@ -563,6 +564,7 @@ function M._setup_diagnostic()
       border = 'single',
 
       -- Customize how diagnostic message will be shown: show error code.
+      ---@param diagnostic vim.Diagnostic
       format = function(diagnostic)
         -- See null-ls.nvim#632, neovim#17222 for how to pick up `code`
         local user_data
@@ -570,6 +572,7 @@ function M._setup_diagnostic()
         user_data = user_data.lsp or user_data.null_ls or user_data
         local code = (
             -- TODO: symbol is specific to pylint (will be removed)
+            ---@diagnostic disable-next-line: undefined-field
             diagnostic.symbol or diagnostic.code or
                 user_data.symbol or user_data.code
             )
@@ -597,7 +600,7 @@ function M._setup_diagnostic()
       local _, winnr = _G.LspDiagnosticsShowPopup()
       if winnr ~= nil then
         -- opacity/alpha for diagnostics
-        vim.api.nvim_win_set_option(winnr, "winblend", 20)
+        vim.wo[winnr].winblend = 20
       end
     end
   end

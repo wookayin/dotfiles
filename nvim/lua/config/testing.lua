@@ -83,8 +83,8 @@ function M.setup_commands_keymaps()
       vim.cmd(string.format([[ %dvsplit ]], size))
     end
     local win_id = vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_option(win_id, 'number', false)
-    vim.api.nvim_win_set_option(win_id, 'signcolumn', 'no')
+    vim.wo[win_id].number = false
+    vim.wo[win_id].signcolumn = 'no'
     return win_id
   end
 

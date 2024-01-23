@@ -18,7 +18,7 @@ function M.setup_notify()
     stages = "slide",
     on_open = function(win)
       vim.api.nvim_win_set_config(win, { focusable = false })
-      vim.api.nvim_win_set_option(win, "winblend", vim.g.nvim_notify_winblend)
+      vim.wo[win].winblend = vim.g.nvim_notify_winblend
     end,
     level = (function()
       local is_debug = #(os.getenv("DEBUG") or "") > 0 and os.getenv("DEBUG") ~= "0";
