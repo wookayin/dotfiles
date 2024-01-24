@@ -12,7 +12,7 @@
 local TERM = os.getenv('TERM') or ''
 local condition = vim.fn.has('nvim-0.7.0') > 0 and (
   TERM == "wezterm" or
-  TERM == "kitty" or
+  TERM == "alacritty" or
   TERM:match("^xterm")
 )
 if not condition then return end
