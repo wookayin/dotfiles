@@ -2,6 +2,8 @@
 # Install terminfo for kitty, wezterm, alacritty, etc.
 # $ infocmp <TERM name>
 
+set -e
+
 CSI="\x1b["
 
 test() {
@@ -55,12 +57,13 @@ install() {
 
 # https://wezfurlong.org/wezterm/faq.html#how-do-i-enable-undercurl-curly-underlines
 wezterm() {
-  set -ex
+  set -x
   tempfile=$(mktemp) \
     && curl -fsSL -o $tempfile https://raw.githubusercontent.com/wez/wezterm/master/termwiz/data/wezterm.terminfo \
     && tic -x -o ~/.terminfo $tempfile \
     && rm $tempfile
   infocmp wezterm > /dev/null && echo "wezterm: Installed."
+  set +x
 }
 
 # https://sw.kovidgoyal.net/kitty/kittens/ssh/
