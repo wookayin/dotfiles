@@ -23,6 +23,16 @@ if [ -f /etc/zsh/zshrc ]; then source /etc/zsh/zshrc; fi
 #  (END)   zprof >! ~/.zsh.startup.log
 # % repeat 3 {time zsh -i -c exit}
 
+# Check terminfo for $TERM and fall back if necessary
+# If terminfo is missing on a remote machine, give a warning
+if ! infocmp "$TERM" > /dev/null; then
+  echo -en '\033[0;33m'"terminfo for TERM=\"$TERM\" is missing."
+  echo -e " Run ~/.dotfiles/etc/terminfo.sh and restart shell."'\033[0m'
+
+  # Use xterm-256color as a fallback TERM
+  echo -e '\033[0;33m''Falling back to TERM="xterm-256color"; Check the terminal emulator config and fix $TERM.''\033[0m\n'
+  export TERM="xterm-256color"
+fi
 
 # Default prompt host color for pure theme and tmux statusbar.
 # You may want to have different color per machine (use ANSI color name or xterm color codes [0-255]).
@@ -191,18 +201,8 @@ fi
 # Source zsh script files after loading the zsh plugins.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
-# Use xterm-256color as a fallback TERM
-if [[ $TERM != "xterm-kitty" ]] && [[ $TERM != "alacritty" ]] && [[ $TERM != "wezterm" ]] ; then
-  export TERM="xterm-256color"
-fi
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.zsh/p10k.zsh ]] || source ~/.zsh/p10k.zsh
-
-# If terminfo is missing on a remote machine, give a warning
-if ! infocmp $TERM > /dev/null; then
-  echo -e '\033[0;33m'"terminfo for TERM = $TERM is missing. Run ~/.dotfiles/etc/terminfo.sh"'\033[0m'
-fi
 
 # iTerm integration (for OS X iTerm2)
 # @see https://iterm2.com/shell_integration.html
