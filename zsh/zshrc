@@ -32,6 +32,10 @@ if ! infocmp "$TERM" > /dev/null; then
   # Use xterm-256color as a fallback TERM
   echo -e '\033[0;33m''Falling back to TERM="xterm-256color"; Check the terminal emulator config and fix $TERM.''\033[0m\n'
   export TERM="xterm-256color"
+else
+  # On a interactive shell with valid $TERM, we assume 24-bit (true) color will be always supported.
+  # This is set explicitly because some terminfo (e.g. wezterm) does not advertise color capabilities properly
+  export COLORTERM="truecolor"
 fi
 
 # Default prompt host color for pure theme and tmux statusbar.
