@@ -19,7 +19,7 @@
 
 ; Highlight multi-line strings that start with a shebang
 ; see python/injections.scm
-(((string_content) @none.nested)
- (#match? @none.nested "^#!/bin/bash\n"))
-(((string_content) @none.nested)
- (#lua-match? @none.nested "^[%s]*#!/usr/bin/env python[%d.]*\n"))
+(((string_content) @string.injection)
+ (#match? @string.injection "^#!/bin/bash\n"))
+(((string_content) @string.injection)
+ (#lua-match? @string.injection "^[%s]*#!/usr/bin/env python[%d.]*\n"))
