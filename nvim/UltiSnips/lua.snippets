@@ -178,3 +178,15 @@ local row, col = vim.api.nvim_win_get_cursor(0)
 row = row - 1  -- (row, col) are now 0-indexed
 $0
 endsnippet
+
+# Busted-style Testing
+snippet describe
+describe("${1:something}", function()
+	$0
+end)
+endsnippet
+snippet it
+it("${1:works}", function()
+	$0
+end)
+endsnippet
