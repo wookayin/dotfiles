@@ -14,6 +14,7 @@ function M.setup_fugitive()
 
   nmap "<leader>gc" (vim_cmd [[tab Git commit --verbose]]);
   nmap "<leader>gC" (vim_cmd [[tab Git commit --amend --verbose]]);
+  nmap "<leader>gF" (vim_cmd [[tab Git fixup]]);
 
 
   --[[ Utilities commands for git, using terminal windows ]]
