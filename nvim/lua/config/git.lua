@@ -7,6 +7,7 @@ local M = {}
 function M.setup_fugitive()
   -- TODO: We still need to migrate a lot of configs from ~/.vimrc
 
+  -- Keymaps related to :Git command
   local nmap = function(lhs)  -- nmap "lhs" "rhs", no opts, noremap
     return function(rhs) vim.keymap.set('n', lhs, rhs) end
   end
@@ -16,6 +17,7 @@ function M.setup_fugitive()
   nmap "<leader>gC" (vim_cmd [[tab Git commit --amend --verbose]]);
   nmap "<leader>gF" (vim_cmd [[tab Git fixup]]);
 
+  nmap "<leader>gR" ':tab Git rebase -i --autosquash --autostash '
 
   --[[ Utilities commands for git, using terminal windows ]]
   local command_alias = function(lhs)
