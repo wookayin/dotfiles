@@ -1309,7 +1309,7 @@ command! StripTrailingWhitespacesToggle  let g:enable_strip_trailing_whitespaces
 
 augroup AutoStripTrailingWhitespaces
   autocmd!
-  autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
+  autocmd FileType c,cpp,java,javascript,html,ruby,python,markdown
         \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 augroup END
 
@@ -2357,7 +2357,7 @@ nmap ga <Plug>(EasyAlign)
 let g:PlugConfig['indent-blankline.nvim'] = 's:init_indent_blankline'
 function! s:init_indent_blankline() abort
   let g:indent_blankline_char = '┊'
-  let g:indent_blankline_filetype_exclude = ['help', 'NvimTree', 'pandoc']
+  let g:indent_blankline_filetype_exclude = ['help', 'NvimTree', 'markdown']
   let g:indent_blankline_buftype_exclude = ['terminal']
   let g:indent_blankline_show_first_indent_level = v:false
 endfunction
@@ -2379,7 +2379,7 @@ function! s:init_indentline_legacy() abort
   let g:indentLine_conceallevel = 1
 
   " conceal values might not work well for tex files (hides some characters)
-  let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'pandoc', 'NvimTree', 'floaterm', 'tagbar']
+  let g:indentLine_fileTypeExclude = ['tex', 'markdown', 'markdown', 'NvimTree', 'floaterm', 'tagbar']
 
   " command alias
   command! -nargs=0 ToggleIndentLines   :IndentLinesToggle
@@ -2424,26 +2424,6 @@ augroup END
 call CommandAlias('SnippetEdit', 'UltiSnipsEdit', v:true)
 call CommandAlias('EditSnippets', 'UltiSnipsEdit', v:true)
 call CommandAlias('USE', 'UltiSnipsEdit', v:false)
-
-" ---------------------------------------------------------------- }}}
-" vim-pandoc {{{
-
-let g:PlugConfig['vim-pandoc'] = 's:init_pandoc'
-function! s:init_pandoc() abort
-
-  " disable automatic folding
-  let g:pandoc#modules#disabled = ['folding']
-
-  " disable conceals
-  let g:pandoc#syntax#conceal#use = 0
-
-  " disable spell check
-  let g:pandoc#spell#enabled = 0
-
-  " Do not map <leader>{nr, rg, rb} by default
-  let g:pandoc#keyboard#use_default_mappings = 0
-
-endfunction
 
 " ---------------------------------------------------------------- }}}
 " semshi {{{

@@ -201,7 +201,8 @@ hi!      @variable.parameter.bash  guifg=NONE
 " Markdown
 hi!      @markup.raw.block.markdown          guibg=#3a3a3a                  " ```codeblock``` (injection)
 hi! link @markup.raw.markdown_inline         Constant
-hi!      @markup.link.markdown_inline     guifg=#228be6 gui=underline    " link
+hi!      @markup.link.markdown_inline        guifg=#228be6 gui=underline    " link
+hi!      @markup.quote.markdown              guifg=#77ef4f
 
 " Help (vimdoc)
 hi!      @markup.link.vimdoc         ctermfg=182 guifg=#228be6 gui=underline
