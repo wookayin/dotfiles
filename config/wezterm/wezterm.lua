@@ -20,6 +20,10 @@ end
 -- Config starts!
 -- https://wezfurlong.org/wezterm/config/lua/config/index.html
 
+function M.setup_general()
+  config.term = 'wezterm'
+end
+
 function M.setup_appearances()
   -- Appearances: https://wezfurlong.org/wezterm/config/appearance.html
   config.adjust_window_size_when_changing_font_size = false
