@@ -141,6 +141,15 @@ hi def link @markup.environment.name   Keyword
 
 " Diagnostics
 hi!     DiagnosticUnnecessary           gui=underline guifg=#87d7ff
+hi!     DiagnosticUnderlineError        gui=undercurl guisp=#e03131
+hi!     DiagnosticUnderlineWarn         gui=undercurl guisp=#fce094
+hi!     DiagnosticUnderlineInfo         gui=underline guisp=#777777
+
+if index(["wezterm", "alacritty", "xterm-kitty"], $TERM) < 0
+  " if TERM does not support colored underline (e.g. xterm-256color),
+  " undercurl falling back to white color can look quite annoying.
+  hi!     DiagnosticUnderlineInfo       gui=NONE
+end
 
 " LSP Semantic token support {{{
 " ------------------------------
