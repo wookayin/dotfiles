@@ -246,9 +246,12 @@ hi! link @type.qualifier.luadoc     @keyword.luadoc    " @public, @private, etc.
 hi!      @variable.member.lua                 guifg=NONE
 hi! link @variable.member.lua.luadoc          @type.lua
 hi!      @variable.member.luadoc              guifg=#a4ad2b
-hi!      @operator.luadoc                  gui=NONE,nocombine           " no italic: operator inside type, e.g. foo|bar
+
 hi! link @punctuation.delimiter.luadoc     @punctuation.bracket         " comma e.g. table<string, integer>
 hi! link @punctuation.special.luadoc       @string.special              " optional e.g. integer?
+
+" operator inside type, e.g. foo|bar: no italic, see SpecialComment
+hi!      @operator.luadoc                  guifg=#99a899 gui=NONE,nocombine
 
 
 " C/C++
