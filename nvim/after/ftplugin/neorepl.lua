@@ -1,6 +1,13 @@
--- https://github.com/ii14/neorepl.nvim/blob/master/doc/neorepl.txt#L101
+-- Docs: $VIMPLUG/neorepl.nvim/doc/neorepl.txt
 
 local bufnr = vim.fn.bufnr()
+
+-- highlight override for NeoREPL output
+local highlight = vim.api.nvim_set_hl
+highlight(0, 'neoreplOutput', { fg = 'NONE', bg = '#202020' })
+highlight(0, 'neoreplValue',  { fg = 'NONE', bg = '#101a10' })
+highlight(0, 'neoreplError',  { fg = 'NONE', bg = '#371515' })
+
 
 local disable_cmp = function()
   pcall(function()
