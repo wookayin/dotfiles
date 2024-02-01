@@ -218,6 +218,8 @@ hi!      @markup.link.vimdoc         ctermfg=182 guifg=#228be6 gui=underline
 hi! link @markup.raw.vimdoc          Constant
 hi!      @markup.raw.block.vimdoc    guifg=white guibg=#252525 gui=italic
 
+" Regex injections
+hi!      @punctuation.bracket.regex     guifg=#99c9a9
 
 " Lua
 hi!      @lsp.mod.defaultLibrary.lua    guifg=#ffbf80
