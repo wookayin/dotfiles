@@ -624,6 +624,10 @@ M.setup_python = function()
     -- let's work around the bug by disabling multiprocess patch in debugpy.
     -- see microsoft/debugpy#1096, mfussenegger/nvim-dap-python#21
     configuration.subProcess = false
+    -- Always use the current cwd of editor/buffer, not the file's absolute path
+    configuration.cwd = function()
+      return vim.fn.getcwd()
+    end
   end
 
   -- Unit test integration: see neotest config (config/testing)
