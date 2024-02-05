@@ -45,3 +45,19 @@ typeCheckingMode = "standard"  # off, basic, standard, strict
 reportPrivateImportUsage = "warning"
 
 endsnippet
+snippet ruff "configuration for ruff linter."
+# https://docs.astral.sh/ruff/configuration/
+[tool.ruff]
+line-length = 79
+tab-size = 4
+target-version = "py311"
+
+[tool.ruff.lint]
+# select = []
+ignore = [
+	# https://docs.astral.sh/ruff/rules/
+	"E702",  # multiple-statements-on-one-line-semicolon
+	"E731",  # lambda-assignment
+]
+
+endsnippet
