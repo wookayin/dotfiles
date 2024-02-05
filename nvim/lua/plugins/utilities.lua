@@ -49,7 +49,6 @@ return {
   Plug 'tpope/vim-commentary' { init = PlugConfig, event = 'VeryLazy' };
   Plug 'szw/vim-maximizer' { cmd = 'MaximizerToggle' };
   Plug 'junegunn/goyo.vim' { cmd = 'Goyo' };
-  Plug 'junegunn/vader.vim' { cmd = 'Vader', ft = 'vader' };
   Plug 'cocopon/colorswatch.vim' { cmd = 'ColorSwatchGenerate' };
   Plug 'wookayin/vim-typora' { cmd = 'Typora' };
   Plug 'mrjones2014/dash.nvim' {
