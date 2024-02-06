@@ -60,8 +60,7 @@ local function SourceThis()
     vim.notify(string.format("Reloaded lua package: `%s`", lua_package),
       vim.log.levels.INFO, { title = 'ftplugin/lua', markdown = true })
   else
-    -- Note: don't use vim.cmd, to clear lua stacktrace (see RC.should_resource)
-    require("utils.rc_utils").exec_keys '<Esc>:source %<CR>'
+    vim.cmd [[ source % ]]
     vim.notify(string.format("Sourced lua script: `%s`", vim.fn.bufname()),
       vim.log.levels.INFO, { title = 'ftplugin/lua', markdown = true })
   end

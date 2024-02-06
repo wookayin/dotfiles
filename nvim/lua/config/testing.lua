@@ -198,9 +198,8 @@ function M.setup()
   _G.neotest = require('neotest')
 end
 
-if RC and RC.should_resource() then
+if ... == nil then
   M.setup()
 end
 
-(RC or {}).testing = M
 return M

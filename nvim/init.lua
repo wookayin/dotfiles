@@ -6,12 +6,18 @@
 
 
 -- The global namespace for config-related stuffs.
-RC = {}
-
-function RC.should_resource()
-  -- true only if called in a top-level via :source or :luafile (not require)
-  return vim.v.vim_did_enter > 0 and #vim.split(debug.traceback(), '\n') <= 3
-end
+-- e.g., config.lsp should be the same as require("config.lsp")
+config = config or setmetatable({}, {
+  __index = function(self, key)
+    local modname = 'config.' .. key
+    if package.loaded[modname] then
+      return require(modname)
+    else
+      return nil
+    end
+  end
+})
+_G.config = config
 
 -- require a lua module, but force reload it (RC files can be re-sourced)
 function _require(name)

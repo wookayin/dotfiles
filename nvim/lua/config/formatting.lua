@@ -339,7 +339,7 @@ function M.setup()
   M.setup_autoformatting()
 end
 
-if RC and RC.should_resource() then
+if ... == nil then
   M.setup()
 end
 

@@ -903,9 +903,8 @@ end
 
 
 -- Resourcing support
-if RC and RC.should_resource() then
+if ... == nil then
   M.setup_all()
 end
 
-(RC or {}).lsp = M
 return M

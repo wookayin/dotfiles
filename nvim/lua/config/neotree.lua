@@ -175,9 +175,9 @@ function M.get_path(winid)
 end
 
 -- Resourcing support
-if RC and RC.should_resource() then
+if ... == nil then
+  vim.notify("oops")
   M.setup_neotree()
 end
 
-(RC or {}).neotree = M
 return M

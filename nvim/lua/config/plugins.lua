@@ -248,5 +248,4 @@ function M.load(names)
 end
 
 _G.lazy = require("lazy");
-(RC or {}).plugins = M;
 return M

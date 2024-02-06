@@ -62,4 +62,9 @@ M.setup_xtabline = function()
 end
 
 
+-- Resourcing support
+if ... == nil then
+  M.setup_xtabline()
+end
+
 return M

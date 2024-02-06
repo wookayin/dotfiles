@@ -137,7 +137,7 @@ function M.setup_quickui()
 end
 
 -- Resourcing support
-if RC and RC.should_resource() then
+if ... == nil then
   M.setup_notify()
   M.setup_dressing()
   M.init_quickui()

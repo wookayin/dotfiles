@@ -287,7 +287,7 @@ end)()
 
 
 -- Resourcing support
-if RC and RC.should_resource() then
+if ... == nil then
   M.setup_fugitive()
   M.setup_diffview()
   M.setup_gitsigns()
@@ -295,5 +295,4 @@ if RC and RC.should_resource() then
   M._setup_git_commands()
 end
 
-(RC or {}).git = M
 return M

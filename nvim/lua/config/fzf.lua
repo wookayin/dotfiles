@@ -585,9 +585,8 @@ function M.setup()
 end
 
 -- Resourcing support
-if RC and RC.should_resource() then
+if ... == nil then
   M.setup()
 end
 
-(RC or {}).fzf = M
 return M

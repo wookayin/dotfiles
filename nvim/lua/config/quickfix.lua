@@ -96,9 +96,8 @@ end, { bar = true, count = true, nargs = '?' })
 
 
 -- Resourcing support
-if RC and RC.should_resource() then
+if ... == nil then
   M.setup_bqf()
 end
 
-(RC or {}).quickfix = M
 return M
