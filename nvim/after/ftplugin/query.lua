@@ -1,5 +1,12 @@
 -- ftplugin/query.lua
 
+-- Override fold and tabsize config for query files and :InspectTree
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'v:lua:vim.treesitter.foldexpr()'
+vim.bo.ts = 2
+vim.bo.sts = 2
+vim.bo.sw = 2
+
 
 -- Custom commands
 
