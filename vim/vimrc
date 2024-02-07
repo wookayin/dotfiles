@@ -19,28 +19,14 @@ endif
 " 0. Load Plugin {{{
 """""""""""""""""""""""""""""""""""""""""
 
-" All the vim plugins are managed by 'vim-plug'
-" and listed up in the separate file 'plugins.vim',
-" so that this vimrc would still work standalone without plugins.
 let g:plugs = {}
-if filereadable(expand('$HOME/.vim/plugins.vim')) && !has('nvim')
-  " Note: on neovim, we will switch to lazy.vim (see init.lua).
-  " For the time being neovim <= 0.7.x will have limited support with vim-plug
-  " during the gradual transition period.
+if !has('nvim') && filereadable(expand('$HOME/.vim/plugins.vim'))
+  " Note: for neovim, we use lazy.vim in place of vim-plug.
   source $HOME/.vim/plugins.vim
 endif
 
 " Functions to be executed for each plugin BEFORE the plugin loads.
 let g:PlugConfig = {}
-
-" private helper functions
-function! s:list_plugs() abort
-  if has('nvim-0.8')   " lazy.nvim
-    return luaeval('require "config/plugins".list_plugs()')
-  else
-    return keys(g:plugs)
-  end
-endfunction
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""
