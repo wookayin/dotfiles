@@ -17,11 +17,11 @@ if [ -f /etc/zshrc ]; then source /etc/zshrc; fi
 if [ -f /etc/zsh/zshrc ]; then source /etc/zsh/zshrc; fi
 
 
-# To profile zsh startup, use the following:
-# In ~/.zshrc,
-#  (BEGIN) zmodload zsh/zprof
-#  (END)   zprof >! ~/.zsh.startup.log
-# % repeat 3 {time zsh -i -c exit}
+# To profile zsh startup: ZSH_PROFILE_LOG=/tmp/zsh-startup.log zsh -i -c exit
+# ZSH_PROFILE_LOG=/tmp/zsh-startup.log hyperfine "zsh -i -c exit"
+if [ -n "$ZSH_PROFILE_LOG" ]; then
+  zmodload zsh/zprof
+fi
 
 # Check terminfo for $TERM and fall back if necessary
 # If terminfo is missing on a remote machine, give a warning
@@ -256,5 +256,10 @@ if [ -f "$HOME/.zshrc.local" ]; then
     source "$HOME/.zshrc.local"
 fi
 
+
+# Profiling
+if [ -n "$ZSH_PROFILE_LOG" ]; then
+  zprof >! "$ZSH_PROFILE_LOG"
+fi
 
 # vim: set ts=2 sts=2 sw=2:
