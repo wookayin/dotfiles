@@ -68,6 +68,10 @@ require("lazy.manage.git").get_origin = function(repo)
   return origin
 end
 
+-- workaround for neovim/neovim#27413
+-- vim.fs must be loaded before vim.loader.enable()
+require("vim.fs")
+
 -- Setup and load plugins. All plugins will be source HERE!
 -- https://github.com/folke/lazy.nvim#%EF%B8%8F-configuration
 -- @see $VIMPLUG/lazy.nvim/lua/lazy/core/config.lua
