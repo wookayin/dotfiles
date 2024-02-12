@@ -11,7 +11,7 @@ return {
     dependencies = {'kevinhwang91/promise-async'},
     event = 'VeryLazy',
     init = require('config.folding').before_ufo,
-    config = require('config.folding').setup,
+    config = require('config.folding').setup_ufo,
   };
 
   -- Better Undo

@@ -2,6 +2,18 @@
 
 local M = {}
 
+--- Common config for folding;
+--- executed no matter what, even if nvim-ufo is disabled.
+function M.setup()
+  -- Workaround for neovim/neovim#20726: Ctrl-C on terminal can make neovim hang
+  vim.cmd [[
+    augroup terminal_disable_fold
+      autocmd!
+      autocmd TermOpen * setlocal foldmethod=manual foldexpr=0
+    augroup END
+  ]]
+end
+
 
 M.setup_ufo = function()
   local ufo = require('ufo')
@@ -40,6 +52,8 @@ M.setup_ufo = function()
       return require("config.folding").virtual_text_handler(...)
     end,
   }
+
+  M.setup_ufo_keymaps()
 end
 
 M.before_ufo = function()
@@ -246,7 +260,7 @@ M.peek_folded_lines = function()
   require("ufo").peekFoldedLinesUnderCursor(enter, include_next_line)
 end
 
-function M.setup_folding_keymaps()
+function M.setup_ufo_keymaps()
   vim.keymap.set('n', 'zR', M.open_all_folds,  {desc='ufo - open all folds'})
   vim.keymap.set('n', 'zM', M.close_all_folds, {desc='ufo - close all folds'})
   vim.keymap.set('n', 'zr', M.reduce_folding,  {desc='ufo - reduce fold (zr)'})
@@ -255,22 +269,11 @@ function M.setup_folding_keymaps()
 end
 
 
-function M.setup()
-  M.setup_ufo()
-  M.setup_folding_keymaps()
-
-  -- Workaround for neovim/neovim#20726: Ctrl-C on terminal can make neovim hang
-  vim.cmd [[
-    augroup terminal_disable_fold
-      autocmd!
-      autocmd TermOpen * setlocal foldmethod=manual
-    augroup END
-  ]]
-end
-
 -- Resourcing support
 if ... == nil then
-  M.setup()
+  M.setup_ufo()
 end
+
+M.setup()
 
 return M
