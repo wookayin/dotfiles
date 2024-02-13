@@ -4,6 +4,8 @@
 --   :HelpfulVersion
 ---@diagnostic disable: deprecated
 
+local has = function(feature) return vim.fn.has(feature) > 0 end
+
 
 -- Compatibility layer for neovim < 0.9.0 (see neovim#22761)
 vim.treesitter.query.set = vim.treesitter.query.set or vim.treesitter.query.set_query
@@ -24,6 +26,6 @@ if vim.treesitter.language.get_lang == nil then
 end
 
 -- for nvim < 0.10
-if vim.lsp.get_clients == nil then
+if not has('nvim-0.10') and vim.lsp.get_clients == nil then
   vim.lsp.get_clients = vim.lsp.get_active_clients
 end
