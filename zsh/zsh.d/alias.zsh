@@ -179,6 +179,9 @@ else
   alias gha='gh --all'   # git < 1.9 has no --exclude option
 fi
 
+# git branch: show commit/refs information as well.
+alias gb='git branch -vv'
+
 if (( $+commands[delta] )); then
     alias gd='git -c core.pager="delta" diff --no-prefix'
 else
