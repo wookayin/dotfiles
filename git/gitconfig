@@ -146,6 +146,8 @@
 [branch]
 	# Make all new branches to automatically use rebase rather than merge, on pull
 	autosetuprebase = always
+	# Sort branches by committer date, latest comes first.
+	sort = -committerdate
 
 [stash]
 	# Show diff when running 'git stash show <SHA>'.
