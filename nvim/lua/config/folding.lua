@@ -12,6 +12,12 @@ function M.setup()
       autocmd TermOpen * setlocal foldmethod=manual foldexpr=0
     augroup END
   ]]
+
+  -- highlighted foldtext without nvim-ufo (can be a sane default).
+  if vim.fn.has('nvim-0.10') > 0 then
+    vim.opt.foldtext = ''
+    vim.opt.fillchars:append({ fold = ' ' })
+  end
 end
 
 
