@@ -82,8 +82,8 @@ end
 
 -- Returns a list of regular and extmark signs sorted by priority (low to high)
 ---@return Sign[]
----@param buf buffer
----@param lnum number
+---@param buf integer
+---@param lnum integer
 function M.get_signs(buf, lnum)
   -- Get regular signs
   ---@type Sign[]
@@ -129,8 +129,8 @@ function M.get_signs(buf, lnum)
 end
 
 ---@return Sign?
----@param buf number
----@param lnum number
+---@param buf integer
+---@param lnum integer
 function M.get_mark(buf, lnum)
   local marks = vim.fn.getmarklist(buf)
   vim.list_extend(marks, vim.fn.getmarklist())
@@ -142,7 +142,7 @@ function M.get_mark(buf, lnum)
 end
 
 ---@param sign? Sign
----@param len number
+---@param len integer
 function M.icon(sign, len)
   sign = sign or {}
   assert(len, 'len must be given explicitly')

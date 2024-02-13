@@ -74,7 +74,7 @@ end
 --- This works only if treesitter parser has been already installed *through* nvim-treesitter
 --- because the neovim core's built-in parser queries may not be compatible (see M.has_parser)
 --- @param lang string
---- @param bufnr? buffer|nil
+--- @param bufnr? integer
 function M.setup_highlight(lang, bufnr)
   vim.validate { lang = { lang, 'string' }, bufnr = { bufnr, 'number', true } }
 

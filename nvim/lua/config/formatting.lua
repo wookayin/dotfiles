@@ -223,7 +223,7 @@ function M._should_format_on_save(buf)
   return vim.tbl_deep_extend("keep", format_opts, { lsp_fallback = true })
 end
 
----@param buf buffer?
+---@param buf? integer
 ---@param arg? 'on'|'off'|'toggle'|'status'|true|false
 ---@param opts? { ['reason']: string?, ['format_opts']: table? }
 function M.enable_autoformat(buf, arg, opts)
@@ -294,7 +294,7 @@ function M.setup_autoformatting()
 end
 
 --- Enable autoformatting if a condition is met (checked asynchronously).
----@param buf buffer?
+---@param buf? integer
 ---@param condition fun(project_root: string):boolean|string[],string?
 ---         Determine whether to autoformat. Returns:
 ---         - enable: boolean, or list of formatters to run (implies enabled)

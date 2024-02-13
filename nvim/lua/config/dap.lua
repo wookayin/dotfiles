@@ -416,7 +416,7 @@ M.setup_virtualtext = function()
 
     --- A callback that determines how a variable is displayed or whether it should be omitted
     --- @param variable Variable https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
-    --- @param buf number
+    --- @param buf integer
     --- @param stackframe dap.StackFrame https://microsoft.github.io/debug-adapter-protocol/specification#Types_StackFrame
     --- @param node userdata tree-sitter node identified as variable definition of reference (see `:h tsnode`)
     --- @param options nvim_dap_virtual_text_options Current options for nvim-dap-virtual-text
