@@ -118,6 +118,10 @@
 [rebase]
 	autosquash = true
 
+[rerere]
+	# https://git-scm.com/book/en/v2/Git-Tools-Rerere
+	enabled = true
+
 [format]
 	# based on 'fuller' format, but adds color customization
 	# https://git-scm.com/docs/pretty-formats
