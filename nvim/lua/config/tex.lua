@@ -20,6 +20,9 @@ function M.init()
   -- suppress version warning
   vim.g.vimtex_disable_version_warning = 1
 
+  -- Turn off matchparen plugin. It raises a lot of errors on autocmd:CursorMoved.
+  vim.g.vimtex_matchparen_enabled = 0
+
   -- Disable neovim's popup window for user prompt,
   -- the popup window blocks the UI in an unpleasant way
   vim.g.vimtex_ui_method = {
