@@ -75,7 +75,7 @@ return {
     event = 'VeryLazy',
     cmd = { 'DebugStart', 'DebugContinue' };
     dependencies = {
-      Plug 'rcarriga/nvim-dap-ui' { version = ">=3.0" };
+      Plug 'rcarriga/nvim-dap-ui' { version = '3.*' };
       Plug 'rcarriga/cmp-dap';
       Plug 'theHamsta/nvim-dap-virtual-text';
       Plug 'Weissle/persistent-breakpoints.nvim';
