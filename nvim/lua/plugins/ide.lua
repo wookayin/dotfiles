@@ -121,6 +121,7 @@ return {
 
   -- Testing
   Plug 'nvim-neotest/neotest' {
+    version = '4.*',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'antoinemadec/FixCursorHold.nvim',
