@@ -225,6 +225,7 @@ hi!      @punctuation.bracket.regex     guifg=#99c9a9
 hi!      @lsp.mod.defaultLibrary.lua    guifg=#ffbf80
 hi!      @lsp.type.property.lua         guifg=NONE
 hi!      @lsp.type.comment.lua          guifg=NONE       " don't override luadoc
+hi!      @lsp.type.keyword.lua          guifg=NONE       " don't override luadoc
 hi!      @lsp.mod.documentation.lua     guifg=NONE       " don't override luaodc
 
 hi!      @lsp.mod.global.lua                        gui=bold guifg=#ffaf00
