@@ -23,7 +23,7 @@ local on_attach_lsp_signature = function(client, bufnr)
 end
 
 --- A callback executed when LSP engine attaches to a buffer.
----@type fun(client: lsp.Client, bufnr: buffer)
+---@type fun(client: vim.lsp.Client, bufnr: integer)
 local on_attach = function(client, bufnr)
 
   -- Activate LSP signature on attach.
@@ -270,20 +270,22 @@ end
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 -- see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
----@type table<lspserver_name, table | fun():table>
+---@type table<lspserver_name, false | table | fun():table>
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
 
 ---@see lsp.ClientConfig :help vim.lsp.start_client()
----@type table<lspserver_name, fun(client: lsp.Client, init_result: table)>
+---@type table<lspserver_name, fun(client: vim.lsp.Client, init_result: table)>
 local on_init = {}
 M.on_init = on_init
 
-lsp_setup_opts['pyright'] = function()
+---@param setup_name 'python'|'basedpyright' for pyright, use 'python'.
+local pyright_opts = function(setup_name)
   return {
     -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
+    -- https://detachhead.github.io/basedpyright/
     settings = {
-      python = {
+      [setup_name] = {
         analysis = {
           typeCheckingMode = "basic",
         },
@@ -292,6 +294,18 @@ lsp_setup_opts['pyright'] = function()
       },
     },
   }
+end
+
+lsp_setup_opts['basedpyright'] = function()
+  -- basedpyright: experimental drop-in replacement of pyright (that supports inlay hints!)
+  -- To use it, simply install it with :Mason. When installed, basedpyright will be enabled
+  -- in place of pyright; otherwise, fallback to the standard pyright.
+  lsp_setup_opts['pyright'] = false
+  return pyright_opts('basedpyright')
+end
+
+lsp_setup_opts['pyright'] = function()
+  return pyright_opts('python')
 end
 
 lsp_setup_opts['ruff_lsp'] = function()
@@ -428,9 +442,20 @@ local function setup_lsp(lsp_name)
     }
   end
 
-  local opts = M.lsp_setup_opts[lsp_name] or {}
+  local opts = M.lsp_setup_opts[lsp_name]
+  if opts == false then
+    -- Explicitly configured to disable this LSP. Stop.
+    return
+  end
+
+  opts = opts or {} -- 'nil' means using the default opts
   if type(opts) == 'function' then
     opts = opts()
+  end
+
+  if opts == false then
+    -- Explicitly configured to disable this LSP (after evaluation). Stop.
+    return
   end
 
   -- Merge with lang-specific options
