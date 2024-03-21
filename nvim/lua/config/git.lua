@@ -83,6 +83,7 @@ function M.setup_gitsigns()
       virt_text_pos = 'right_align',
       ignore_whitespace = true,
     },
+    current_line_blame_formatter = '<abbrev_sha> <summary> - <author> <author_time>',
     diff_opts = {
       -- Use neovim's builtin diff (see diffopt in vimrc)
       internal = true,
