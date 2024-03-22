@@ -1,5 +1,11 @@
 ;; extends
 
+; Fold [[ ... ]] strings
+(string
+  "[[" (string_content) "]]"
+) @fold
+
+
 ; 🚧 Fold a maximally consecutive lines of luadoc comments.
 ; NOTE: This query is a hack until a upstream bug is fixed: neovim/neovim#17060
 ; where (node)+ quantifiers are not captured properly as a single group.
