@@ -202,7 +202,8 @@ function M.format(entry, vim_item)
         local label = (cmp_item.labelDetails or {}).description
         if not label or label == "" then return nil end
         local logo = ({
-          pyright = ""
+          pyright = "",
+          basedpyright = "",
         })[lspserver_name] or "󰋺"
         return logo .. " " .. truncate(label, 20)
       else
