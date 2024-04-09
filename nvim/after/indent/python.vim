@@ -28,7 +28,7 @@ function! PEP8PythonIndent(lnum)
     endif
 
     " If the current line is inside a string, ignore and keep the current one
-    let captures = b:ts_highlight ? luaeval('vim.treesitter.get_captures_at_pos(0, _A, 0)', a:lnum - 1) : []
+    let captures = get(b:, 'ts_highlight') ? luaeval('vim.treesitter.get_captures_at_pos(0, _A, 0)', a:lnum - 1) : []
     if ! captures->filter('v:val.capture == "string")')->empty()
         return -1  " inside a string node
     endif
@@ -124,7 +124,7 @@ endfunction
 
 
 function! s:should_skip_search_treesitter() abort
-    let captures = b:ts_highlight ? luaeval('vim.treesitter.get_captures_at_cursor(0)') : []
+    let captures = get(b:, 'ts_highlight') ? luaeval('vim.treesitter.get_captures_at_cursor(0)') : []
     return captures->index("comment") >= 0 || captures->index("string") >= 0
 endfunction
 
