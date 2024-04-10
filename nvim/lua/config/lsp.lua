@@ -270,7 +270,7 @@ end
 -- Optional and additional LSP setup options other than (common) on_attach, capabilities, etc.
 -- see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 -- see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
----@type table<lspserver_name, false | table | fun():table>
+---@type table<lspserver_name, false | table | fun():(table|false)>
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
 
@@ -305,6 +305,11 @@ lsp_setup_opts['basedpyright'] = function()
 end
 
 lsp_setup_opts['pyright'] = function()
+  -- Do not setup pyright when basedpyright is installed.
+  -- TODO: remove mason dependency.
+  if require('mason-registry').is_installed('basedpyright') then
+    return false
+  end
   return pyright_opts('python')
 end
 
