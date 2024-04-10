@@ -25,6 +25,7 @@ function M.build_directory_map()
   _scan('~/.config/nvim/lua/plugins/*.lua', 'plugins/')
   _scan('~/.config/nvim/after/ftplugin/*.lua', 'ftplugin/')
   _scan('~/.config/nvim/after/ftplugin/*.vim', 'ftplugin/')
+  _scan('~/.config/nvim/colors/*.vim', 'colors/')
   return map
 end
 
@@ -48,6 +49,8 @@ function M.action(arg)
     ['plug'] = 'plugins.lua',
     ['lazy'] = 'plugins.lua',
     ['ide'] = 'plugins/ide.lua',
+    ['theme'] = 'colors/xoria256-wook.vim',
+    ['color'] = 'colors/xoria256-wook.vim',
   }
   local file = map[arg] or map[arg .. '.lua'] or map[arg .. '.vim'] or map[aliases[arg]]
   if arg == 'ftplugin/' or arg == 'ftplugin' then
