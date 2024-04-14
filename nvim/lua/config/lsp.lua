@@ -57,11 +57,11 @@ local on_attach = function(client, bufnr)
   end
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  if pcall(require, 'telescope') then
-    nbufmap('gr', vim_cmd 'Telescope lsp_references')
-    nbufmap('gd', vim_cmd 'Telescope lsp_definitions')
-    nbufmap('gi', vim_cmd 'Telescope lsp_implementations')
-    nbufmap('gt', gt_action('Telescope lsp_type_definitions'))
+  if pcall(require, 'fzf-lua') then
+    nbufmap('gr', vim_cmd 'lua require("fzf-lua").lsp_references { jump_to_single_result = true, silent = true}')
+    nbufmap('gd', vim_cmd 'lua require("fzf-lua").lsp_definitions { jump_to_single_result = true, silent = true }')
+    nbufmap('gi', vim_cmd 'lua require("fzf-lua").lsp_implementations { jump_to_single_result = true, silent = true }')
+    nbufmap('gt', gt_action('lua require("fzf-lua").lsp_typedefs { jump_to_single_result = true, silent = true }'))
   else
     nbufmap('gd', vim_cmd 'lua vim.lsp.buf.definition()')
     nbufmap('gr', vim_cmd 'lua vim.lsp.buf.references()')
