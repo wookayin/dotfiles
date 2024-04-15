@@ -288,6 +288,10 @@ hi! @function.method.python     guifg=#d7ff5f
 hi! @function.test.python           guifg=#ffff30 gui=bold
 hi! @function.method.test.python    guifg=#ffff30 gui=bold
 
+" Override semantic token highlights (basedpyright):
+" No highlights for import module/package
+hi! @lsp.type.namespace.python  guifg=NONE
+
 " }}}
 
 " Gitcommit
