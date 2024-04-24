@@ -75,7 +75,7 @@ return {
     event = 'VeryLazy',
     cmd = { 'DebugStart', 'DebugContinue' };
     dependencies = {
-      Plug 'rcarriga/nvim-dap-ui' { version = '3.*' };
+      Plug 'rcarriga/nvim-dap-ui' { version = '>=4.0' };
       Plug 'rcarriga/cmp-dap';
       Plug 'theHamsta/nvim-dap-virtual-text';
       Plug 'Weissle/persistent-breakpoints.nvim';
@@ -121,9 +121,10 @@ return {
 
   -- Testing
   Plug 'nvim-neotest/neotest' {
-    version = '4.*',
+    version = '>=5.0',
     dependencies = {
       'nvim-lua/plenary.nvim',
+      'nvim-neotest/nvim-nio',
       'antoinemadec/FixCursorHold.nvim',
       Plug 'nvim-neotest/neotest-plenary';
       Plug 'nvim-neotest/neotest-python';
