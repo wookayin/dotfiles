@@ -109,7 +109,7 @@ local on_attach = function(client, bufnr)
       if enable == 'toggle' then
         enable = not vim.lsp.inlay_hint.is_enabled(bufnr)
       end
-      vim.lsp.inlay_hint.enable(bufnr, enable)
+      vim.lsp.inlay_hint.enable(enable, { bufnr = bufnr })
     end
     buf_command("InlayHintsToggle", function(_) inlay('toggle') end,
       { nargs = 0, desc = "Toggle inlay hints."})
