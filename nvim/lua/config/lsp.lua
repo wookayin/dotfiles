@@ -107,7 +107,7 @@ local on_attach = function(client, bufnr)
   if client.server_capabilities.inlayHintProvider and vim.fn.has('nvim-0.10') > 0 then
     local inlay = function(enable)
       if enable == 'toggle' then
-        enable = not vim.lsp.inlay_hint.is_enabled(bufnr)
+        enable = not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
       end
       vim.lsp.inlay_hint.enable(enable, { bufnr = bufnr })
     end
