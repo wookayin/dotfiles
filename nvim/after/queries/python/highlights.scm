@@ -23,3 +23,13 @@
  (#match? @string.injection "^#!/bin/bash\n"))
 (((string_content) @string.injection)
  (#lua-match? @string.injection "^[%s]*#!/usr/bin/env python[%d.]*\n"))
+
+
+; docstring for class fields or top-level defs, right below/adjacent to the field definition
+((expression_statement (assignment)) ; field: type = value
+  . (comment)*
+  . (expression_statement
+      (string
+        (string_start) @_string_start
+        )) @string.documentation
+  (#match? @_string_start "\"\"\"|'''$"))
