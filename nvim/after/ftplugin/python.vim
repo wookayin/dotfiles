@@ -5,13 +5,6 @@ if !filereadable('Makefile')
     let &l:makeprg='python "%"'
 endif
 
-if empty(get(b:, 'editorconfig'))
-  setlocal expandtab
-  setlocal ts=4
-  setlocal sw=4
-  setlocal sts=4
-end
-
 setlocal colorcolumn=+1
 setlocal textwidth=79
 

@@ -1,6 +1,16 @@
 -- python.lua: python ftplugin
 -- (see also python.vim)
 
+-- Basic buffer options (indent size, etc.)
+-- Note: FileType triggered again after editorconfig might override options, so set it again
+local indent_size = tonumber((vim.b.editorconfig or {}).indent_size) or 4
+vim.opt_local.expandtab = true
+vim.opt_local.ts = indent_size
+vim.opt_local.sw = indent_size
+vim.opt_local.sts = indent_size
+
+vim.g.python_recommended_style = 0  -- Prevent $VIMRUNTIME/ftplugin/python.vim from overridding tabsize
+
 -- Use treesitter highlight for python
 -- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
 require("config.treesitter").setup_highlight('python')
