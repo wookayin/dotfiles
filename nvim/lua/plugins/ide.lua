@@ -100,7 +100,7 @@ return {
   Plug 'wookayin/vim-autoimport' { cond = has_py3, ft = 'python' };
 
   -- Other languages
-  Plug 'editorconfig/editorconfig-vim';
+  Plug 'editorconfig/editorconfig-vim' { cond = not has('nvim') };
   Plug 'sheerun/vim-polyglot' { version = 'v4.2.1' };
   Plug 'vmchale/just-vim' { ft = 'just' };
   Plug 'tmux-plugins/vim-tmux' { ft = 'tmux' };
