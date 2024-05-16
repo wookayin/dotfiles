@@ -299,3 +299,4 @@ hi! @lsp.type.namespace.python  guifg=NONE
 " Gitcommit
 hi!      @string.special.url.gitcommit    guifg=#df6383 gui=NONE
 hi! link @markup.heading.gitcommit        PreProc
+hi!      @comment.warning.gitcommit       guibg=NONE gui=undercurl guisp=#ffa94d
