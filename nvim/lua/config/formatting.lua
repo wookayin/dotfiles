@@ -15,7 +15,7 @@ function M.setup_conform()
   -- Configure filetypes and formatters
   -- Do not configure if LSP provides a good formatting (e.g., rustfmt)
   local formatter_opts = require("conform").formatters
-  local one_of = vim.tbl_flatten
+  local one_of = function(x) return x end
   local cf = {}  ---@type table<string, conform.FiletypeFormatter>
 
   cf.lua = (function()
