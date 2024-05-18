@@ -29,3 +29,8 @@ end
 if not has('nvim-0.10') and vim.lsp.get_clients == nil then
   vim.lsp.get_clients = vim.lsp.get_active_clients
 end
+
+-- for nvim >= 0.11, against deprecated warnings (until plugins catch up)
+if has('nvim-0.11') then
+  vim.tbl_islist = vim.islist
+end
