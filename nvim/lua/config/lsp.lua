@@ -319,20 +319,24 @@ lsp_setup_opts['ruff_lsp'] = function()
   local init_options = {
     -- https://github.com/astral-sh/ruff-lsp#settings
     -- https://github.com/astral-sh/ruff-lsp/blob/main/ruff_lsp/server.py
+    -- Note: use pyproject.toml to configure ruff per project.
     settings = {
       fixAll = true,
       organizeImports = false,  -- let isort take care of organizeImports
       -- extra CLI arguments
-      -- https://beta.ruff.rs/docs/configuration/#command-line-interface
-      -- https://beta.ruff.rs/docs/rules/
-      args = { "--ignore", table.concat({
-        "E111", -- indentation-with-invalid-multiple
-        "E114", -- indentation-with-invalid-multiple-comment
-        "E402", -- module-import-not-at-top-of-file
-        "E501", -- line-too-long
-        "E702", -- multiple-statements-on-one-line-semicolon
-        "E731", -- lambda-assignment
-      }, ',') },
+      -- https://docs.astral.sh/ruff/configuration/#command-line-interface
+      -- https://docs.astral.sh/ruff/rules/
+      args = {
+        "--preview", -- Use experimental features
+        "--ignore", table.concat({
+          "E111", -- indentation-with-invalid-multiple
+          "E114", -- indentation-with-invalid-multiple-comment
+          "E402", -- module-import-not-at-top-of-file
+          "E501", -- line-too-long
+          "E702", -- multiple-statements-on-one-line-semicolon
+          "E731", -- lambda-assignment
+        }, ','),
+      },
     },
   };
   return { init_options = init_options }
