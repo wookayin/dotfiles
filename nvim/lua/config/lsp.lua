@@ -335,6 +335,7 @@ lsp_setup_opts['ruff_lsp'] = function()
           "E501", -- line-too-long
           "E702", -- multiple-statements-on-one-line-semicolon
           "E731", -- lambda-assignment
+          "F401", -- unused-import  (note: should be handled by pyright as 'hint')
         }, ','),
       },
     },
