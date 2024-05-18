@@ -877,7 +877,7 @@ function M.setup_null_ls()
           condition = function(utils)  ---@param utils ConditionalUtils
             -- https://pylint.pycqa.org/en/latest/user_guide/run.html#command-line-options
             return executable('pylint') and
-              utils.root_has_file({ "pylintrc", ".pylintrc", "setup.cfg", "pyproject.toml" })
+              utils.root_has_file({ "pylintrc", ".pylintrc" })
           end,
       },
     })
