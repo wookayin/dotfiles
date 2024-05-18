@@ -29,6 +29,7 @@ killall Karabiner-Elements; open /Applications/Karabiner-Elements.app
     - Tip: iTerm2 keymapping configuration
       - `⌘ ←` to Send Escape Sequence `[H`  (i.e., `\e[H`)
       - `⌘ →` to Send Escape Sequence `[F`  (i.e., `\e[F`)
+- Remap `<Ctrl-w>` to "kill words" in Google Chrome and Safari
 
 
 ## USB Vendor ID & Product ID
