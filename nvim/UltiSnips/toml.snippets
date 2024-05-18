@@ -49,15 +49,21 @@ snippet ruff "configuration for ruff linter."
 # https://docs.astral.sh/ruff/configuration/
 [tool.ruff]
 line-length = 79
-tab-size = 4
+indent-width = 4
 target-version = "py311"
 
+# https://docs.astral.sh/ruff/rules/
 [tool.ruff.lint]
-# select = []
+preview = true  # use experimental features
+extend-select = [
+    # In addition to the defaults: ["E4", "E7", "E9", "F"]
+    "PLE",     # pylint errors
+    "PLW",     # pylint warnings
+    "RUF",     # ruff-specific
+]
 ignore = [
-	# https://docs.astral.sh/ruff/rules/
-	"E702",  # multiple-statements-on-one-line-semicolon
-	"E731",  # lambda-assignment
+    "E702",    # multiple-statements-on-one-line-semicolon
+    "E731",    # lambda-assignment
 ]
 
 endsnippet
