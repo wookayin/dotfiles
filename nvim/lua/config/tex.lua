@@ -125,7 +125,7 @@ function M._setup_viewer()
         vim.fn.isdirectory('/Applications/TeX/TeXShop.app') > 0 or
         vim.fn.isdirectory('/Applications/TeXShop.app') > 0)
     end
-    local use_texshop = function()
+    M.use_texshop = function()
       -- TexShop: ~/.dotfiles/bin/texshop
       vim.g.vimtex_view_method = 'general'
       vim.g.vimtex_view_general_viewer = 'texshop'
@@ -134,7 +134,7 @@ function M._setup_viewer()
     local has_skim = function()
       return vim.fn.isdirectory('/Applications/Skim.app') > 0
     end
-    local use_skim = function()
+    M.use_skim = function()
       -- Skim.app (with TexSync)
       -- Note: to use inverse search (Shift+Cmd+Click) from Skim, see :help VimtexInverseSearch
       --   nvim --headless -c "VimtexInverseSearch %line '%file'"
@@ -146,8 +146,8 @@ function M._setup_viewer()
 
     -- Use Skim as a preferred latex viewer.
     -- Tip for Skim: Use "Single Page" display mode to avoid flickering
-    if has_skim() then use_skim()
-    elseif has_texshop() then use_texshop()
+    if has_skim() then M.use_skim()
+    elseif has_texshop() then M.use_texshop()
     end
   end
 end
