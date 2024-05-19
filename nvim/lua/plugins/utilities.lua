@@ -46,6 +46,7 @@ return {
     config = require("config.utilities").setup_hover,
     keys = { { "K", "<cmd>lua require('hover').hover()<CR>" } },
   };
+  Plug 'wookayin/nvim-profiler';
   Plug 'tpope/vim-commentary' { init = PlugConfig, event = 'VeryLazy' };
   Plug 'szw/vim-maximizer' { cmd = 'MaximizerToggle' };
   Plug 'junegunn/goyo.vim' { cmd = 'Goyo' };
