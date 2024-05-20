@@ -420,6 +420,15 @@ lsp_setup_opts['bashls'] = {
   filetypes = { 'sh', 'zsh' },
 }
 
+lsp_setup_opts['ltex'] = {
+  filetypes = { 'markdown', 'tex', 'gitcommit' },
+  settings = {
+    -- https://valentjn.github.io/ltex/settings.html
+    ltex = {
+    },
+  },
+}
+
 lsp_setup_opts['yamlls'] = {
   settings = {
     -- https://github.com/redhat-developer/yaml-language-server#language-server-settings
