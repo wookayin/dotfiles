@@ -158,9 +158,9 @@ function M.setup_lualine()
       },
       lualine_b = {
         { 'branch', cond = min_statusline_width(120) },
+        { custom_components.asyncrun_status },
       },
       lualine_c = {
-        custom_components.asyncrun_status,
         { custom_components.neotree_path, color = { fg = '#87afdf' } },
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
         { custom_components.lsp_context, fmt = truncate(180, 60, 100, true) },

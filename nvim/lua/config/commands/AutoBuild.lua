@@ -2,7 +2,7 @@
 
 local M = {}
 
-M.icon = '⚙️ '
+M.icon = '👀'
 
 -- State variables
 M._augroup = vim.api.nvim_create_augroup('AutoBuild', { clear = true })
