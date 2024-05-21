@@ -52,3 +52,10 @@ vim.keymap.set('n', '<leader>V', function()
     window = "call FloatingFZF()",
   })
 end, { buffer = true, desc = 'TeX: Table of Contents with fzf' })
+
+
+-- buffer-local keymaps
+do
+  -- <CR>: For forward search
+  vim.keymap.set('n', '<CR>', '<cmd>VimtexView<CR>', { buffer = true })
+end
