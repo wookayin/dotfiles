@@ -70,6 +70,7 @@ return {
       if vim.tbl_contains(vim.tbl_map(vim.fn.isdirectory, vim.fn.argv()), 1) then return nil
       else return 'VeryLazy' end
     end)(),
+    cmd = { 'Neotree' },
     init = function() vim.g.neo_tree_remove_legacy_commands = 1; end,
     config = require('config.neotree').setup_neotree,
   };
