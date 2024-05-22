@@ -98,6 +98,11 @@ end
 bufmap('n', '<leader>ti', make_repeatable_toggle_comment_keymap("type: ignore"), { remap = true })
 bufmap('n', '<leader>ty', make_repeatable_toggle_comment_keymap("yapf: ignore"), { remap = true })
 
+-- Insert pylint directives (via ultisnips)
+local ultisnips_expand = '<C-R>=UltiSnips#ExpandSnippet()<CR>'
+bufmap('n', '<leader>tl', 'A  pylint' .. ultisnips_expand)
+bufmap('n', '<leader>tL', 'Opylint' .. ultisnips_expand)
+
 -- Toggle Optional[...], Annotated[...] for typing
 bufmap('n', '<leader>O', '<leader>tO', { remap = true })
 bufmap('n', '<leader>tO', make_repeatable_keymap('n', '<Plug>(toggle-Optional)', function()
