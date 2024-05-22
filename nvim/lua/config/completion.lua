@@ -37,8 +37,13 @@ M.setup_cmp = function()
   local cmp_config = {
     ---@see cmp.SnippetConfig
     snippet = {
+      ---@param args cmp.SnippetExpansionParams
       expand = function(args)
-        vim.fn["UltiSnips#Anon"](args.body)
+        local snippet_expand = (
+          vim.snippet ~= nil and vim.snippet.expand  -- nvim 0.10+
+          or vim.fn["UltiSnips#Anon"]
+        )
+        snippet_expand(args.body)
       end,
     },
     ---@see cmp.WindowConfig
