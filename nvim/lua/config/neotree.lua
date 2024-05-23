@@ -35,24 +35,6 @@ function M.setup_neotree()
         force_visible_in_empty_folder = true,
       },
 
-      -- Append trailing slashes on directories (#112, $483)
-      components = {
-        trailing_slash = function ()
-          return {
-            text = "/",
-            highlight = "NeoTreeDirectoryIcon",
-          }
-        end,
-      },
-      renderers = {
-        directory = {
-          {"icon"},
-          {"name", use_git_status_colors = false, right_padding = 0},
-          {"trailing_slash"},
-          {"diagnostics"},
-          {"git_status"},
-        }
-      },
     },
 
     git_status = {
@@ -65,6 +47,10 @@ function M.setup_neotree()
 
     -- Layout (see nvim-neo-tree/neo-tree.nvim#130)
     default_component_configs = {
+      name = {
+        -- see also #112, #483
+        trailing_slash = true,
+      },
       indent = {
         with_markers = true,
         indent_marker = "│",
