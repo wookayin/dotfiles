@@ -2517,44 +2517,6 @@ function! s:init_airline_fugitive() abort
 endfunction
 
 " ---------------------------------------------------------------- }}}
-" gitsigns.nvim {{{
-" :Gitsigns
-
-" see ~/.config/nvim/lua/config/git.lua
-
-" ---------------------------------------------------------------- }}}
-" diffview.nvim {{{
-" Assumed fugitive is always available.
-
-" see ~/.config/nvim/lua/config/git.lua
-
-" ---------------------------------------------------------------- }}}
-" git-messenger {{{
-
-" map <C-O>/<C-I> to jumping to older and Older(recent) commits,
-" respectively (see rhysd/git-messenger.vim#3)
-augroup git_messenger_autocmd
-  autocmd!
-  autocmd FileType gitmessengerpopup nmap <buffer> <C-O> o
-  autocmd FileType gitmessengerpopup nmap <buffer> <C-I> O
-augroup END
-
-" Display content diff as well in the popup window
-let g:git_messenger_include_diff = 'current'
-
-" Use git blame -w (ignore-whitespaces).
-let g:git_messenger_extra_blame_args = '-w'
-
-" Use border for the popup window.
-if has('nvim-0.5.0')
-lua << EOF
-  vim.g.git_messenger_floating_win_opts = {
-    border = 'single',
-  }
-EOF
-endif
-
-" ---------------------------------------------------------------- }}}
 " gundo key mappings and options {{{
 let g:gundo_right = 1   " show at right
 nnoremap <leader>G :GundoToggle<CR>

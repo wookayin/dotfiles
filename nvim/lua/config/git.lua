@@ -51,6 +51,32 @@ function M.setup_fugitive()
   M._setup_git_commands()
 end
 
+function M.setup_gitmessenger()
+  --- https://github.com/rhysd/git-messenger.vim#variables
+
+  -- Use git blame -w (ignore-whitespaces).
+  vim.g.git_messenger_extra_blame_args = '-w'
+
+  -- Display content diff as well in the popup window
+  vim.g.git_messenger_include_diff = 'current'
+
+  -- Use border for the popup window.
+  vim.g.git_messenger_floating_win_opts = {
+    border = 'single',
+  }
+
+  -- map <C-O>/<C-I> to jumping to older and Older(recent) commits, respectively
+  -- (see rhysd/git-messenger.vim#3)
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'gitmessengerpopup',
+    group = vim.api.nvim_create_augroup('git_messenger_autocmd', { clear = true }),
+    callback = function()
+      vim.keymap.set('n', '<C-O>', 'o', {remap = true })
+      vim.keymap.set('n', '<C-I>', 'O', {remap = true })
+    end
+  })
+end
+
 function M.setup_gitsigns()
   -- :help gitsigns-usage
   -- :help gitsigns-config
