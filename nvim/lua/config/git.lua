@@ -71,8 +71,8 @@ function M.setup_gitmessenger()
     pattern = 'gitmessengerpopup',
     group = vim.api.nvim_create_augroup('git_messenger_autocmd', { clear = true }),
     callback = function()
-      vim.keymap.set('n', '<C-O>', 'o', {remap = true })
-      vim.keymap.set('n', '<C-I>', 'O', {remap = true })
+      vim.keymap.set('n', '<C-O>', 'o', { remap = true, buffer = true })
+      vim.keymap.set('n', '<C-I>', 'O', { remap = true, buffer = true })
     end
   })
 end
