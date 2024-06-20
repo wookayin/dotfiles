@@ -13,7 +13,7 @@
 ;   also relevant: tree-sitter/tree-sitter#2468
 (
   ; The following somehow doesn't work for a very long comments. Might be a bug?
-  ; (_) @_non_comment (#not-has-type? @_non_comment comment)
+  ; (_) @_non_comment (#not-kind-eq? @_non_comment comment)
   [
     (function_declaration)
     (assignment_statement)
