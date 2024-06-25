@@ -87,20 +87,19 @@ function M.setup_gitsigns()
     signs = {
       -- █ ▉ ▊ ▋ ▌ ▍ ▎ ▏ ┃│┆
       -- For highlights, see $DOTVIM/colors/xoria256-wook.vim
-      add          = { hl = 'GitSignsAdd'   ,    text = '┃', numhl = 'GitSignsAddNr'   , linehl = 'GitSignsAddLn' },
-      change       = { hl = 'GitSignsChange',    text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
-      topdelete    = { hl = 'GitSignsDelete',    text = '‾', numhl = 'GitSignsDeleteNr', linehl = 'GitSignsDeleteLn' },
-      delete       = { hl = 'GitSignsDelete',    text = '_', numhl = 'GitSignsDeleteNr', linehl = 'GitSignsDeleteLn' },
-      changedelete = { hl = 'GitSignsChange',    text = '┃', numhl = 'GitSignsChangeNr', linehl = 'GitSignsChangeLn' },
-      untracked    = { hl = 'GitSignsUntracked', text = '┆', numhl = 'GitSignsUntracked', linehl = 'GitSignsUntrackedLn' },
+      add          = { text = '┃' },
+      change       = { text = '┃' },
+      topdelete    = { text = '‾' },
+      delete       = { text = '_' },
+      changedelete = { text = '┃' },
+      untracked    = { text = '┆' },
     },
-    _signs_staged_enable = true, -- experimental
-    _signs_staged = {
-      add          = { hl = 'GitSignsStagedAdd'   , text = '█', numhl = 'GitSignsStagedAddNr'   , linehl = 'GitSignsStagedAddLn' },
-      change       = { hl = 'GitSignsStagedChange', text = '█', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
-      topdelete    = { hl = 'GitSignsStagedDelete', text = '🮂', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
-      delete       = { hl = 'GitSignsStagedDelete', text = '🬭', numhl = 'GitSignsStagedDeleteNr', linehl = 'GitSignsStagedDeleteLn' },
-      changedelete = { hl = 'GitSignsStagedChange', text = '█', numhl = 'GitSignsStagedChangeNr', linehl = 'GitSignsStagedChangeLn' },
+    signs_staged = {
+      add          = { text = '█' },
+      change       = { text = '█' },
+      topdelete    = { text = '🮂' },
+      delete       = { text = '🬭' },
+      changedelete = { text = '█' },
     },
     sign_priority = 6,  -- Note: LSP diagnostics sign priority is 10~13
     -- numhl = true,
