@@ -96,17 +96,27 @@ if [ -x /usr/libexec/path_helper ]; then
   path=($path_orig $path)
 fi
 
-# [For Apple Silicon (M1, M2) USERS]
+# [For Apple Silicon (M1, M2, M3, etc.) USERS]
 # Homebrew: /opt/homebrew/bin must precede /usr/local/bin, etc.
 # NOTE: It's also recommended to put /opt/homebrew/bin to /etc/path
-# for non-zsh programs (e.g., GUI apps and some bash scripts).
+# for non-interactive programs (e.g., GUI apps and some bash scripts).
 
-if [[ $(uname) == "Darwin" ]] && [[ $(uname -m) == "arm64" ]]; then
-  prepend_path "/opt/homebrew/bin"
-  # Homebrew ruby is keg-only, no links at /opt/homebrew/bin.
-  # Note that we need to pin an exact version of ruby
-  prepend_path "/opt/homebrew/opt/ruby@3.0/bin"
-  prepend_path "/opt/homebrew/lib/ruby/gems/3.0.0/bin"
+if [[ $(uname) == "Darwin" ]]; then
+  if [[ $(uname -m) == "arm64" ]] && [[ -d "/opt/homebrew" ]]; then
+    # Default homebrew installation for arm64
+    export HOMEBREW="/opt/homebrew"
+  elif [[ -d "$HOME/.homebrew" ]]; then
+    # Allow local installation for Homebrew (without sudo)
+    export HOMEBREW="$HOME/.homebrew"
+  fi
+
+  if [[ -n "$HOMEBREW" ]]; then
+    prepend_path "$HOMEBREW/bin"
+    # Homebrew ruby is keg-only, no links at /opt/homebrew/bin.
+    # Note that we need to pin an exact version of ruby
+    prepend_path "$HOMEBREW/opt/ruby@3.0/bin"
+    prepend_path "$HOMEBREW/lib/ruby/gems/3.0.0/bin"
+  fi
 fi
 
 # Node + Yarn
