@@ -37,8 +37,12 @@ local function notify_later(msg, level)
   end)
 end
 
+-- If the environment variable $PYTHON3_HOST_PROG is set, use that as the python rplugin host.
+if os.getenv('PYTHON3_HOST_PROG') then
+  vim.g.python3_host_prog = os.getenv('PYTHON3_HOST_PROG')
+end
 
--- Use python3 w.r.t. $PATH as the host python for neovim.
+-- By default, use python3 w.r.t. $PATH as the host python for neovim.
 if vim.g.python3_host_prog == "" or not vim.g.python3_host_prog then
   vim.g.python3_host_prog = vim.fn.exepath("python3")
 end
