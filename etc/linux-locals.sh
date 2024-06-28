@@ -51,10 +51,11 @@ _template_github_latest() {
   local releases_url="https://api.github.com/repos/${repo}/releases"
   echo -e "${COLOR_YELLOW}Reading: ${COLOR_NONE}$releases_url"
   local download_url=$(\
-    curl -fsSL "$releases_url" 2>/dev/null \
+    curl -fsSL "$releases_url" \
     | python3 -c "\
 import json, sys, fnmatch;
 I = sys.stdin.read()
+assert I, 'empty output: check curl error messages'
 try:
   J = json.loads(I)
 except:
@@ -67,7 +68,7 @@ for asset in J[0]['assets']:
 sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n'); sys.exit(1)
 ")
   echo -e "${COLOR_YELLOW}download_url = ${COLOR_NONE}$download_url"
-  test -n "$download_url"
+  test -n "${download_url:-ERROR}"
   sleep 0.5
 
   local tmpdir="$DOTFILES_TMPDIR/$name"
