@@ -290,6 +290,8 @@ local pyright_opts = function(setup_name)
       [setup_name] = {
         analysis = {
           typeCheckingMode = "basic",
+          -- see https://github.com/microsoft/pyright/blob/main/docs/import-resolution.md#resolution-order
+          extraPaths = { "./python" },
         },
         -- Always use the current python in accordance with $PATH (the current conda/virtualenv).
         pythonPath = vim.fn.exepath("python3"),
