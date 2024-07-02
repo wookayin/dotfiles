@@ -67,8 +67,8 @@ for asset in J[0]['assets']:
     sys.exit(0)
 sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n'); sys.exit(1)
 ")
-  echo -e "${COLOR_YELLOW}download_url = ${COLOR_NONE}$download_url"
-  test -n "${download_url:-ERROR}"
+  echo -e "${COLOR_YELLOW}download_url = ${COLOR_NONE}${download_url:-ERROR}"
+  test -n "${download_url}"
   sleep 0.5
 
   local tmpdir="$DOTFILES_TMPDIR/$name"
