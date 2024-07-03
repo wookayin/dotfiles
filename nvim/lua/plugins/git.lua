@@ -17,7 +17,7 @@ return {
   Plug 'lewis6991/gitsigns.nvim' {
     event = 'VeryLazy',
     config = require('config.git').setup_gitsigns,
-    version = '>=0.9.0',
+    commit = '39b5b6f', -- v0.10.0-dev, not compatible with v0.9.0
   };
 
   Plug 'sindrets/diffview.nvim' {
