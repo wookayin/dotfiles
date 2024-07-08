@@ -25,5 +25,8 @@ return {
     config = require('config.git').setup_diffview,
   };
 
-  Plug 'rhysd/git-messenger.vim' { keys = '<leader>gm' };
+  Plug 'rhysd/git-messenger.vim' {
+    keys = '<leader>gm',
+    config = require('config.git').setup_gitmessenger,
+  };
 }
