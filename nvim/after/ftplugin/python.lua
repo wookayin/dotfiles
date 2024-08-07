@@ -11,6 +11,10 @@ vim.opt_local.sts = indent_size
 
 vim.g.python_recommended_style = 0  -- Prevent $VIMRUNTIME/ftplugin/python.vim from overridding tabsize
 
+-- line-length: 79 by default, TODO read from pyproject.toml
+vim.opt_local.textwidth = 79
+vim.opt_local.colorcolumn = '+1'
+
 -- Use treesitter highlight for python
 -- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
 require("config.treesitter").setup_highlight('python')

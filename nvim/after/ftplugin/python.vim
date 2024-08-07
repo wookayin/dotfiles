@@ -5,9 +5,6 @@ if !filereadable('Makefile')
     let &l:makeprg='python "%"'
 endif
 
-setlocal colorcolumn=+1
-setlocal textwidth=79
-
 " disable automatic line wrap in normal text, in favor of formatters (yapf)
 setlocal formatoptions-=t
 " but auto-wrap comments after 79 characters
