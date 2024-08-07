@@ -226,9 +226,10 @@ fi
 
 # Anaconda3
 # see ~/.zshenv for $CONDA_EXE detection
+# non-standard conda (e.g. mamba) would need to have a proper setup script to make conda work
 function _conda_initialize() {
 # >>> conda initialize >>>
-if [ -n "${CONDA_EXE}" ]; then
+if [ -n "${CONDA_EXE}" ] && [[ "${CONDA_EXE}" == *conda ]]; then
   ${CONDA_EXE} config --set auto_activate_base false
   __conda_setup="$(${CONDA_EXE} 'shell.zsh' 'hook' 2> /dev/null)"
   if [ $? -eq 0 ]; then
