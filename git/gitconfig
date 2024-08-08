@@ -3,7 +3,9 @@
 
 [core]
 	excludesfile = ~/.gitignore
-	pager = "(diff-so-fancy 2>/dev/null || cat) | less --tabs=4 -RFX"
+
+	# pager: delta, or less as a fallback. Then less w.r.t. $LESS will be applied.
+	pager = "f() { local prettifier=$(which delta 2>/dev/null); ${prettifier:-less}; }; f"
 
 	# do not quote non-ascii characters; display unicodes as-is
 	quotepath = false

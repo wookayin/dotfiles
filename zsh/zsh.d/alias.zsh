@@ -182,11 +182,7 @@ fi
 # git branch: show commit/refs information as well.
 alias gb='git branch -vv'
 
-if (( $+commands[delta] )); then
-    alias gd='git -c core.pager="delta" diff --no-prefix'
-else
-    alias gd='git diff --no-prefix'
-fi
+alias gd='git diff --no-prefix'
 alias gdc='gd --cached --no-prefix'
 alias gds='gd --staged --no-prefix'
 alias gs='git status'
