@@ -30,7 +30,6 @@ function M.setup_fugitive()
   vim.api.nvim_create_user_command("GDiffTerm", function(e)
     local args = vim.fn.expandcmd(vim.trim(e.args))  -- supports '%'
     local cmd = "git diff --color " .. args
-    if vim.fn.executable('delta') > 0 then cmd = cmd .. ' | delta ' end
     -- Disable -F (exit on EOF) because we will autoclose the floaterm
     vim.fn['floaterm#new'](0, cmd .. " | less -+F", vim.empty_dict(), {
       name = 'git', autoclose = 1,
