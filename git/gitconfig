@@ -99,11 +99,18 @@
 	# smarter diff on splits around blank lines (git 2.9.0+)
 	compactionHeuristic = true
 
+	# Highlight moved lines in different colors (git diff --color-moved)
+	colorMoved = default
+	colorMovedWS = allow-indentation-change
+
 [delta]
 	features = decorations
 	keep-plus-minus-markers = true
 	hunk-header-style = file line-number syntax
 	line-numbers = true
+
+	# https://dandavison.github.io/delta/color-moved-support.html
+	map-styles = bold purple => syntax "#3e003e", bold cyan => syntax "#042c42"
 
 [diff-so-fancy]
 	markEmptyLines = false
