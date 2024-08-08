@@ -45,8 +45,10 @@
 	wdiff = diff --color-words
 	wshow = show --color-words
 
-	# side-by-side diff, requires cdiff
-	sdiff = "! git diff $@ | cdiff -s -w0 "
+	# side-by-side diff/show, requires delta
+	sdiff = diff-side
+	diff-side = -c core.pager='delta -s' diff
+	show-side = -c core.pager='delta -s | less' show
 
 [color]
 	status = auto
