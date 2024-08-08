@@ -114,6 +114,13 @@
 	# https://dandavison.github.io/delta/color-moved-support.html
 	map-styles = bold purple => syntax "#3e003e", bold cyan => syntax "#042c42"
 
+[delta "decorations"]
+	# see also: delta --show-config
+	# see also: https://github.com/dandavison/delta/blob/main/themes.gitconfig
+	file-style = yellow bold
+	file-decoration-style = yellow ul ol
+	commit-decoration-style = yellow bold ul ol
+
 [diff-so-fancy]
 	markEmptyLines = false
 	changeHunkIndicators = true
