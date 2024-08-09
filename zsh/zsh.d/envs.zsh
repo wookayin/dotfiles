@@ -31,6 +31,13 @@ export FZF_DEFAULT_OPTS="--color 'bg+:239,marker:226'"
 
 # }}}
 
+# fzf-git
+if (( $+commands[delta] )); then
+  export FZF_GIT_PAGER='delta --commit-decoration-style="none"'
+else
+  export FZF_GIT_PAGER='less'
+fi
+
 # Save more history entries
 # @see history/init.zsh
 export HISTSIZE=10000000
