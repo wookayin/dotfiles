@@ -5,6 +5,9 @@
 
 
 # Preambles
+snippet set
+set -eu -o pipefail
+endsnippet
 snippet scriptpath
 SCRIPT=$(readlink -f \$0)
 SCRIPTPATH=\`dirname \$SCRIPT\`
