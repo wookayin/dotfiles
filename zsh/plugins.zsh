@@ -31,10 +31,10 @@ plugin 'wookayin/fzf-fasd'
 plugin 'junegunn/fzf-git.sh' kind:clone
 
 plugin 'zsh-users/zsh-autosuggestions'
-if (( $+commands[virtualenvwrapper_lazy.sh] || $+commands[conda] )); then
-  # Use my own fork for a while, to support autoswitch into anaconda envs
-  plugin 'wookayin/zsh-autoswitch-virtualenv'
-fi
+
+# conda support: Use my own fork for a while, to support autoswitch into anaconda envs
+plugin 'wookayin/zsh-autoswitch-virtualenv'
+
 if [[ "`uname`" == "Darwin" ]]; then
   plugin 'wookayin/anybar-zsh'
 fi
