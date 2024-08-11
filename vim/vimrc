@@ -2438,13 +2438,15 @@ function! s:GCommit(mods, args) abort
 endfunction
 
 " Remove or replace some fugitive commands
-augroup FugitiveCustomizeCommands
-  autocmd CmdlineEnter * ++once silent! delcommand GDelete
+if has('nvim') || has('patch-8.1.1113')
+  augroup FugitiveCustomizeCommands
+    autocmd CmdlineEnter * ++once silent! delcommand GDelete
 
- " :G         => :GDiff
- " :G <args>  => :Git <args>
-  autocmd CmdlineEnter * ++once command! -nargs=?  -complete=customlist,fugitive#Complete  G    call s:G(<q-args>)
-augroup END
+    " :G         => :GDiff
+    " :G <args>  => :Git <args>
+    autocmd CmdlineEnter * ++once command! -nargs=?  -complete=customlist,fugitive#Complete  G    call s:G(<q-args>)
+  augroup END
+endif
 
 function! s:G(arg) abort
   if empty(Trim(a:arg))
