@@ -1252,7 +1252,7 @@ endif
 function! RegisterHighlights(funcname) abort
   call funcref(a:funcname)()
   augroup Colorscheme_RegisterHighlights
-    exec "autocmd Colorscheme *  call " .. a:funcname .. "()"
+    exec "autocmd Colorscheme *  call " . a:funcname . "()"
   augroup END
 endfunction
 augroup Colorscheme_RegisterHighlights | autocmd! | augroup END
