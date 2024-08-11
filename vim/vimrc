@@ -664,8 +664,10 @@ command! -nargs=1 MakeprgGlobal let &g:makeprg="<args>" | echo "&g:makeprg = <ar
 command! -nargs=1 MakeprgLocal  let &l:makeprg="<args>" | echo "&l:makeprg = <args>"
 
 " :Just, :just
-command! -nargs=* -bar Just   AsyncRun just <q-args>
-autocmd CmdlineEnter * ++once call CommandAlias('just', 'Just')
+if has('nvim')
+  command! -nargs=* -bar Just   AsyncRun just <q-args>
+  autocmd CmdlineEnter * ++once call CommandAlias('just', 'Just')
+endif
 
 " }}}
 
@@ -1200,7 +1202,9 @@ EOF
     return completions
   endfunction
 endfunction
-autocmd CmdlineEnter * ++once call s:setup_pyedit_commands()
+if has('nvim')
+  autocmd CmdlineEnter * ++once call s:setup_pyedit_commands()
+endif
 
 
 " }}}
