@@ -146,7 +146,7 @@ end
 --- @type table<lspserver_name, boolean|vim_filetype[]>
 local auto_lsp_servers = {
   -- @see $VIMPLUG/mason-lspconfig.nvim/lua/mason-lspconfig/mappings/filetype.lua
-  ['pyright'] = true,
+  ['basedpyright'] = true,
   ['ruff_lsp'] = true,
   ['vimls'] = true,
   ['lua_ls'] = true,
