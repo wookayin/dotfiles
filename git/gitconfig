@@ -134,7 +134,9 @@
 	conflictstyle = diff3
 
 [rebase]
-	autosquash = true
+	# always perform like: git rebase --autosquash --autostash
+	autoSquash = true
+	autoStash = true
 
 [rerere]
 	# https://git-scm.com/book/en/v2/Git-Tools-Rerere
