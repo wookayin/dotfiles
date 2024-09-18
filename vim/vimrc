@@ -1419,6 +1419,9 @@ let g:polyglot_disabled += ['lua']
 " LSP preview conflicts with polyglot's syntax.
 let g:polyglot_disabled += ['markdown']
 
+" csv: disable it, many strange errors
+let g:polyglot_disabled += ['csv']
+
 " ---------------------------------------------------------------- }}}
 " vim-asterisk (enhanced *) {{{
 
