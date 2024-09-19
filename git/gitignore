@@ -29,6 +29,7 @@ Thumbs.db
 .ipynb_checkpoints/
 tags
 .vimspector.json
+.cache/
 
 # Build artifacts
 *.dSYM
