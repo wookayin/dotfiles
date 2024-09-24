@@ -155,6 +155,10 @@ function ssh-tmuxa {
 alias sshta='ssh-tmuxa'
 alias ssh-ta='ssh-tmuxa'
 compdef '_hosts' ssh-tmuxa
+
+# skip ssh host key verification
+alias ssh-noverify='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+
 # }}}
 
 # More Git aliases ============================= {{{
