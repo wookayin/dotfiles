@@ -155,6 +155,9 @@
 %+B"
 #%w(0,0,4)%+B"
 
+[init]
+	defaultBranch = main
+
 [push]
 	# Adopt the new default in Git 2.x
 	default = simple
