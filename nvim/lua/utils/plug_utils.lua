@@ -1,8 +1,10 @@
+local M = {}
+
 -- Legacy vimscript config support. see vimrc:PlugConfig
 -- can be used as { init = PlugConfig } or { init = PlugConfig['plugin_name'] }
 ---@type fun(plugin: LazyPlugin)
 ---@diagnostic disable-next-line: assign-type-mismatch
-local PlugConfig = setmetatable({}, {
+M.PlugConfig = setmetatable({}, {
   ---@param name string
   __index = function(_, name)
     return function()
@@ -27,7 +29,7 @@ local PlugConfig = setmetatable({}, {
 -- Plug, a syntactic sugar for LazyPlugin specs.
 ---@param name string
 ---@return LazyPluginSpecFunctor
-local Plug = function(name)
+M.Plug = function(name)
   ---@diagnostic disable-next-line: return-type-mismatch
   return setmetatable({name}, {
     __call = function(self, opt)
@@ -37,7 +39,7 @@ local Plug = function(name)
 end
 
 -- :UpdateRemotePlugins build hook for (python) rplugins
-local UpdateRemotePlugins = function(lazy_plugin)
+M.UpdateRemotePlugins = function(lazy_plugin, opts)
   -- The generated rplugin manifest needs to be sourced
   -- so that the plugin is ready to use right after fresh installation.
   -- :UpdateRemotePlugins should be called only once after all rplugins are loaded,
@@ -46,19 +48,27 @@ local UpdateRemotePlugins = function(lazy_plugin)
     vim.g._need_UpdateRemotePlugins = 1
   else
     -- apply and source UpdateRemotePlugins after all rplugins are loaded
-    if vim.g._need_UpdateRemotePlugins then
+    if vim.g._need_UpdateRemotePlugins or (opts or {}).force then
+      -- activate all the plugins with UpdateRemotePlugins that are lazy-loaded
+      local to_load = {}
+      for name, spec in pairs(require("lazy.core.config").plugins) do
+        if spec.build == M.UpdateRemotePlugins then
+          to_load[#to_load + 1] = name
+        end
+      end
+      vim.notify("Force-loading plugins: " .. vim.inspect(to_load))
+      require("lazy.core.loader").load(to_load, { cmd = "UpdateRemotePlugins" })
+
       vim.cmd [[
         :UpdateRemotePlugins
-        :source $HOME/.local/share/nvim/rplugin.vim
+        try
+          :source $HOME/.local/share/nvim/rplugin.vim
+        catch  " ignore already-registered errors; on next startup it'll be fine.
+        endtry
         :unlet! g:_need_UpdateRemotePlugins
       ]]
     end
   end
 end
 
--- exports
-return {
-  Plug = Plug,
-  PlugConfig = PlugConfig,
-  UpdateRemotePlugins = UpdateRemotePlugins,
-}
+return M

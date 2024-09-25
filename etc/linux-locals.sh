@@ -8,6 +8,7 @@ set -e   # fail when any command fails
 set -o pipefail
 
 PREFIX="$HOME/.local"
+mkdir -p $PREFIX/share/zsh/site-functions
 
 DOTFILES_TMPDIR="/tmp/$USER/linux-locals"
 
@@ -15,6 +16,7 @@ COLOR_NONE="\033[0m"
 COLOR_RED="\033[0;31m"
 COLOR_GREEN="\033[0;32m"
 COLOR_YELLOW="\033[0;33m"
+COLOR_CYAN="\033[0;36m"
 COLOR_WHITE="\033[1;37m"
 
 #---------------------------------------------------------------------------------------------------
@@ -31,6 +33,12 @@ _version_check() {
   [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
 }
 
+_which() {
+  which "$@" >/dev/null || { echo "$@ not found"; return 1; }
+  echo -e "\n${COLOR_CYAN}$(which "$@")${COLOR_NONE}"
+}
+
+# _template_github_latest <name> <namespace/repo> <file *pattern* to match>
 _template_github_latest() {
   local name="$1"
   local repo="$2"
@@ -40,38 +48,75 @@ _template_github_latest() {
   fi
 
   echo -e "${COLOR_YELLOW}Installing $name from $repo ... ${COLOR_NONE}"
+  local releases_url="https://api.github.com/repos/${repo}/releases"
+  echo -e "${COLOR_YELLOW}Reading: ${COLOR_NONE}$releases_url"
   local download_url=$(\
-    curl -L https://api.github.com/repos/${repo}/releases 2>/dev/null | \
-    python -c "\
+    curl -fsSL "$releases_url" \
+    | python3 -c "\
 import json, sys, fnmatch;
-J = json.load(sys.stdin);
+I = sys.stdin.read()
+assert I, 'empty output: check curl error messages'
+try:
+  J = json.loads(I)
+except:
+  sys.stderr.write(I)
+  raise
 for asset in J[0]['assets']:
   if fnmatch.fnmatch(asset['name'], '$filename'):
     print(asset['browser_download_url'])
+    sys.exit(0)
+sys.stderr.write('ERROR: Cannot find a download matching \'$filename\'.\n'); sys.exit(1)
 ")
-  echo -e "${COLOR_YELLOW}download_url = ${COLOR_NONE}$download_url"
-  test -n $download_url
+  echo -e "${COLOR_YELLOW}download_url = ${COLOR_NONE}${download_url:-ERROR}"
+  test -n "${download_url}"
   sleep 0.5
 
   local tmpdir="$DOTFILES_TMPDIR/$name"
   local filename="$(basename $download_url)"
+  test -n "$filename"
   mkdir -p $tmpdir
-  wget -O "$tmpdir/$filename" "$download_url"
+  curl -fSL --progress-bar "$download_url" -o "$tmpdir/$filename"
 
-  echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
-  cd $tmpdir && tar -xvzf $filename
+  cd "$tmpdir"
+  if [[ "$filename" == *.tar.gz ]]; then
+    echo -e "${COLOR_YELLOW}Extracting to: $tmpdir${COLOR_NONE}"
+    tar -xvzf "$filename" $TAR_OPTIONS
+    local extracted_folder="${filename%.tar.gz}"
+    if [ -d "$extracted_folder" ]; then
+      cd "$extracted_folder"
+    fi
+  fi
+  echo -e "\n${COLOR_YELLOW}PWD = $(pwd)${COLOR_NONE}"
 
-  echo -e "${COLOR_YELLOW}Copying ...${COLOR_NONE}"
+  echo -e "${COLOR_YELLOW}Copying into $PREFIX ...${COLOR_NONE}"
 }
 
 #---------------------------------------------------------------------------------------------------
+
+install_cmake() {
+  local TMP_DIR="$DOTFILES_TMPDIR/cmake";
+  mkdir -p "$TMP_DIR" && cd "$TMP_DIR"
+
+  local CMAKE_VERSION="3.27.9"
+  test -d "cmake-${CMAKE_VERSION}" && {\
+    echo -e "${COLOR_RED}Error: $(pwd)/cmake-${CMAKE_VERSION} already exists.${COLOR_NONE}"; return 1; }
+
+  wget -N  "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz"
+  tar -xvzf "cmake-${CMAKE_VERSION}.tar.gz"
+  cd "cmake-${CMAKE_VERSION}"
+
+  ./configure --prefix="$PREFIX" --parallel=16
+  make -j16 && make install
+
+  "$PREFIX/bin/cmake" --version
+}
 
 install_git() {
   # installs a modern version of git locally.
 
   local GIT_LATEST_VERSION=$(\
-    curl -L https://api.github.com/repos/git/git/tags 2>/dev/null | \
-    python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+    curl -fL https://api.github.com/repos/git/git/tags 2>/dev/null | \
+    python3 -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
   )  # e.g. "v2.38.1"
   test  -n "$GIT_LATEST_VERSION"
 
@@ -101,26 +146,28 @@ install_git() {
   fi
 }
 
+install_git_cliff() {
+  # https://github.com/orhun/git-cliff/releases
+  TAR_OPTIONS="--strip-components 1"
+  _template_github_latest "git-cliff" "orhun/git-cliff" 'git-cliff-*-x86_64-*-linux-gnu.tar.gz'
+  cp -v git-cliff "$PREFIX/bin/"
+  cp -v man/git-cliff.1 "$PREFIX/share/man/man1/"
+}
+
 install_gh() {
   # github CLI: https://github.com/cli/cli/releases
+  _template_github_latest "gh" "cli/cli" "gh_*_linux_amd64.tar.gz"
 
-  local version="2.20.2"
-  local url="https://github.com/cli/cli/releases/download/v$version/gh_${version}_linux_amd64.tar.gz"
-
-  local tmpdir="$DOTFILES_TMPDIR/gh"; mkdir -p $tmpdir
-
-  wget -N -O $tmpdir/gh.tar.gz "$url"
-  tar -xvzf $tmpdir/gh.tar.gz -C $tmpdir --strip-components 1
-  mv $tmpdir/bin/gh $HOME/.local/bin/gh
-
+  cp -v ./bin/gh $HOME/.local/bin/gh
+  _which gh
   $HOME/.local/bin/gh --version
 }
 
 install_ncurses() {
   # installs ncurses (shared libraries and headers) into local namespaces.
 
-  TMP_NCURSES_DIR="$DOTFILES_TMPDIR/ncurses/"; mkdir -p $TMP_NCURSES_DIR
-  NCURSES_DOWNLOAD_URL="https://invisible-mirror.net/archives/ncurses/ncurses-5.9.tar.gz";
+  local TMP_NCURSES_DIR="$DOTFILES_TMPDIR/ncurses/"; mkdir -p $TMP_NCURSES_DIR
+  local NCURSES_DOWNLOAD_URL="https://invisible-mirror.net/archives/ncurses/ncurses-5.9.tar.gz";
 
   wget -nc -O $TMP_NCURSES_DIR/ncurses-5.9.tar.gz $NCURSES_DOWNLOAD_URL
   tar -xvzf $TMP_NCURSES_DIR/ncurses-5.9.tar.gz -C $TMP_NCURSES_DIR --strip-components 1
@@ -134,12 +181,12 @@ install_ncurses() {
 }
 
 install_zsh() {
+  local ZSH_VER="5.8"
+  local TMP_ZSH_DIR="$DOTFILES_TMPDIR/zsh/"; mkdir -p "$TMP_ZSH_DIR"
+  local ZSH_SRC_URL="https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.xz/download"
 
-  ZSH_VER="5.8"
-  TMP_ZSH_DIR="$DOTFILES_TMPDIR/zsh/"; mkdir -p $TMP_ZSH_DIR
-
-  wget -nc -O $TMP_ZSH_DIR/zsh.tar.xz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.xz/download"
-  tar xvJf $TMP_ZSH_DIR/zsh.tar.xz -C $TMP_ZSH_DIR --strip-components 1
+  wget -nc -O $TMP_ZSH_DIR/zsh.tar.xz "$ZSH_SRC_URL"
+  tar xvJf "$TMP_ZSH_DIR/zsh.tar.xz" -C "$TMP_ZSH_DIR" --strip-components 1
   cd $TMP_ZSH_DIR
 
   if [[ -d "$PREFIX/include/ncurses" ]]; then
@@ -170,23 +217,23 @@ install_node() {
   set -x
   curl -L "https://install-node.vercel.app/$NODE_VERSION" \
     | bash -s -- --prefix=$HOME/.local --verbose --yes
+  set +x
 
-  echo -e "\n$(which node) : $(node --version)"
+  _which node
   node --version
 
   # install some useful nodejs based utility (~/.local/lib/node_modules)
   $HOME/.local/bin/npm install -g yarn
-  which yarn && yarn --version
+  _which yarn && yarn --version
   $HOME/.local/bin/npm install -g http-server diff-so-fancy || true;
 }
 
 install_tmux() {
-  # tmux: we can do static compile, or use tmux-appimage (include libevents/ncurses)
+  # tmux: use tmux-appimage to avoid all the libevents/ncurses hassles
   # see https://github.com/nelsonenzo/tmux-appimage
-  TMUX_VER="3.2a"
+  _template_github_latest "tmux" "nelsonenzo/tmux-appimage" "tmux.appimage"
 
-  TMUX_APPIMAGE_URL="https://github.com/nelsonenzo/tmux-appimage/releases/download/${TMUX_VER}/tmux.appimage"
-  wget -O $HOME/.local/bin/tmux $TMUX_APPIMAGE_URL
+  cp -v "./tmux.appimage" "$HOME/.local/bin/tmux"
   chmod +x $HOME/.local/bin/tmux
 
   ~/.local/bin/tmux -V
@@ -195,62 +242,69 @@ install_tmux() {
 install_bazel() {
 
   # install the 'latest' stable release (no pre-releases.)
-  BAZEL_LATEST_VERSION=$(\
-    curl -L https://api.github.com/repos/bazelbuild/bazel/releases/latest 2>/dev/null | \
-    python -c 'import json, sys; print(json.load(sys.stdin)["name"])'\
+  local BAZEL_LATEST_VERSION=$(\
+    curl -fL https://api.github.com/repos/bazelbuild/bazel/releases/latest 2>/dev/null | \
+    python3 -c 'import json, sys; print(json.load(sys.stdin)["name"])'\
   )
   test -n $BAZEL_LATEST_VERSION
-  BAZEL_VER="${BAZEL_LATEST_VERSION}"
+  local BAZEL_VER="${BAZEL_LATEST_VERSION}"
   echo -e "${COLOR_YELLOW}Installing Bazel ${BAZEL_VER} ...${COLOR_NONE}"
 
-  BAZEL_URL="https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/bazel-${BAZEL_VER}-installer-linux-x86_64.sh"
+  local BAZEL_URL="https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/bazel-${BAZEL_VER}-installer-linux-x86_64.sh"
 
-  TMP_BAZEL_DIR="$DOTFILES_TMPDIR/bazel/"
+  local TMP_BAZEL_DIR="$DOTFILES_TMPDIR/bazel/"
   mkdir -p $TMP_BAZEL_DIR
   wget -O $TMP_BAZEL_DIR/bazel-installer.sh $BAZEL_URL
 
   # zsh completion
-  mkdir -p $HOME/.local/share/zsh/site-functions
-  wget -O $HOME/.local/share/zsh/site-functions/_bazel https://raw.githubusercontent.com/bazelbuild/bazel/master/scripts/zsh_completion/_bazel
+  wget -O $PREFIX/share/zsh/site-functions/_bazel https://raw.githubusercontent.com/bazelbuild/bazel/master/scripts/zsh_completion/_bazel
 
   # install bazel
   bash $TMP_BAZEL_DIR/bazel-installer.sh \
-      --bin=$HOME/.local/bin \
+      --bin=$PREFIX/bin \
       --base=$HOME/.bazel
 
   # print bazel version
-  echo -e "\n\n${COLOR_YELLOW}Bazel at $(which bazel): ${COLOR_NONE}"
+  _which bazel
   bazel 2>/dev/null | grep release | xargs
   echo ""
+}
+
+install_mambaforge() {
+  # Mambaforge.
+  # https://conda-forge.org/miniforge/
+  _template_github_latest "mambaforge" "conda-forge/miniforge" "Mambaforge-Linux-x86_64.sh"
+
+  local MAMBAFORGE_PREFIX="$HOME/.mambaforge"
+  bash "Mambaforge-Linux-x86_64.sh" -b -p "${MAMBAFORGE_PREFIX}"
+  _which $MAMBAFORGE_PREFIX/bin/python3
+  $MAMBAFORGE_PREFIX/bin/python3 --version
 }
 
 install_miniforge() {
   # Miniforge3.
   # https://github.com/conda-forge/miniforge
-  local URL="https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
-
-  local TMP_DIR="$DOTFILES_TMPDIR/miniforge/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
-  wget -nc "$URL"
+  _template_github_latest "mambaforge" "conda-forge/miniforge" "Miniforge3-Linux-x86_64.sh"
 
   local MINIFORGE_PREFIX="$HOME/.miniforge3"
   bash "Miniforge3-Linux-x86_64.sh" -b -p ${MINIFORGE_PREFIX}
+  _which $MINIFORGE_PREFIX/bin/python3
   $MINIFORGE_PREFIX/bin/python3 --version
 }
 
 install_miniconda() {
   # installs Miniconda3. (Deprecated: Use miniforge3)
   # https://conda.io/miniconda.html
-  MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+  local MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
 
-  TMP_DIR="$DOTFILES_TMPDIR/miniconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
+  local TMP_DIR="$DOTFILES_TMPDIR/miniconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
   wget -nc $MINICONDA_URL
 
-  MINICONDA_PREFIX="$HOME/.miniconda3/"
+  local MINICONDA_PREFIX="$HOME/.miniconda3/"
   bash "Miniconda3-latest-Linux-x86_64.sh" -b -p ${MINICONDA_PREFIX}
 
   # 3.9.5 as of Nov 2021
-  $MINICONDA_PREFIX/bin/python --version
-  echo -e "${COLOR_GREEN}All set!${COLOR_NONE}"
+  $MINICONDA_PREFIX/bin/python3 --version
 
   echo -e "${COLOR_YELLOW}Warning: miniconda is deprecated, consider using miniforge3.${COLOR_NONE}"
 }
@@ -260,7 +314,7 @@ install_vim() {
 
   # check python3-config
   local PYTHON3_CONFIGDIR=$(python3-config --configdir)
-  echo -e "${COLOR_YELLOW}$ python3-config --configdir =${COLOR_NONE} $PYTHON3_CONFIGDIR"
+  echo -e "${COLOR_YELLOW} python3-config --configdir =${COLOR_NONE} $PYTHON3_CONFIGDIR"
   if [[ "$PYTHON3_CONFIGDIR" =~ (conda|virtualenv|venv) ]]; then
     echo -e "${COLOR_RED}Error: python3-config reports a conda/virtual environment. Deactivate and try again."
     return 1;
@@ -269,8 +323,8 @@ install_vim() {
   # grab the lastest vim tarball and build it
   local TMP_VIM_DIR="$DOTFILES_TMPDIR/vim/"; mkdir -p $TMP_VIM_DIR
   local VIM_LATEST_VERSION=$(\
-    curl -L https://api.github.com/repos/vim/vim/tags 2>/dev/null | \
-    python -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
+    curl -fL https://api.github.com/repos/vim/vim/tags 2>/dev/null | \
+    python3 -c 'import json, sys; print(json.load(sys.stdin)[0]["name"])'\
   )
   test -n $VIM_LATEST_VERSION
   local VIM_LATEST_VERSION=${VIM_LATEST_VERSION/v/}    # (e.g) 8.0.1234
@@ -304,8 +358,8 @@ install_neovim() {
 
   # Otherwise, use the latest stable version.
   local NEOVIM_LATEST_VERSION=$(\
-    curl -L https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
-    python -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
+    curl -fL https://api.github.com/repos/neovim/neovim/releases/latest 2>/dev/null | \
+    python3 -c 'import json, sys; print(json.load(sys.stdin)["tag_name"])'\
   )   # usually "stable"
   : "${NEOVIM_VERSION:=$NEOVIM_LATEST_VERSION}"
 
@@ -356,142 +410,135 @@ install_neovim() {
   $PREFIX/bin/nvim --version | head -n3
 }
 
-install_exa() {
-  # https://github.com/ogham/exa/releases
-  EXA_VERSION="0.10.1"
-  EXA_BINARY_SHA1SUM="7bbd4be0bf44a0302970e7596f5753a0f31e85ac"
-  EXA_DOWNLOAD_URL="https://github.com/ogham/exa/releases/download/v$EXA_VERSION/exa-linux-x86_64-v$EXA_VERSION.zip"
-  TMP_EXA_DIR="$DOTFILES_TMPDIR/exa/"
+install_just() {
+  # https://github.com/casey/just/releases
+  _template_github_latest "just" "casey/just" 'just-*-x86_64-*-linux-musl.tar.gz'
 
-  wget -nc ${EXA_DOWNLOAD_URL} -P ${TMP_EXA_DIR} || exit 1;
-  cd ${TMP_EXA_DIR} && unzip -o "exa-linux-x86_64-v$EXA_VERSION.zip" || exit 1;
-  if [[ "$EXA_BINARY_SHA1SUM" != "$(sha1sum bin/exa | cut -d' ' -f1)" ]]; then
-      echo -e "${COLOR_RED}SHA1 checksum mismatch, aborting!${COLOR_NONE}"
-      exit 1;
-  fi
-  cp "bin/exa" "$PREFIX/bin/exa" || exit 1;
-  cp "completions/exa.zsh" "$PREFIX/share/zsh/site-functions/_exa" || exit 1;
-  echo "$(which exa) : $(exa --version)"
+  cp -v just "$PREFIX/bin/just"
+  cp -v just.1 "$PREFIX/share/man/man1/"
+  _which just
+  just --version
+}
+
+install_delta() {
+  # https://github.com/dandavison/delta/releases
+  _template_github_latest "delta" "dandavison/delta" 'delta-*-x86_64-*-linux-musl.tar.gz'
+
+  cp -v "./delta" "$PREFIX/bin/delta"
+  chmod +x "$PREFIX/bin/delta"
+  _which delta
+  delta --version
+}
+
+install_eza() {
+  # https://github.com/eza-community/eza/releases
+  _template_github_latest "eza" "eza-community/eza" 'eza_x86_64-*linux-gnu*'
+
+  cp -v "./eza" "$PREFIX/bin/eza"
+  curl -fL "https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza" > \
+    "$PREFIX/share/zsh/site-functions/_eza"
+  _which eza
+  eza --version
 }
 
 install_fd() {
-  # install fd
   # https://github.com/sharkdp/fd/releases
-  local FD_VERSION="v8.5.3"
+  _template_github_latest "fd" "sharkdp/fd" "fd-*-x86_64-unknown-linux-musl.tar.gz"
+  cp -v "./fd" $PREFIX/bin
+  cp -v "./autocomplete/_fd" $PREFIX/share/zsh/site-functions
 
-  TMP_FD_DIR="$DOTFILES_TMPDIR/fd"; mkdir -p $TMP_FD_DIR
-  FD_DOWNLOAD_URL="https://github.com/sharkdp/fd/releases/download/${FD_VERSION}/fd-${FD_VERSION}-x86_64-unknown-linux-musl.tar.gz"
-  echo $FD_DOWNLOAD_URL
-
-  cd $TMP_FD_DIR
-  curl -L $FD_DOWNLOAD_URL | tar -xvzf - --strip-components 1
-  cp "./fd" $PREFIX/bin
-  mkdir -p $HOME/.local/share/zsh/site-functions
-  cp "./autocomplete/_fd" $PREFIX/share/zsh/site-functions
-
+  _which fd
   $PREFIX/bin/fd --version
-  echo "$(which fd) : $(fd --version)"
 }
 
 install_ripgrep() {
-  # install ripgrep
-  RIPGREP_LATEST_VERSION=$(\
-      curl -L https://api.github.com/repos/BurntSushi/ripgrep/releases 2>/dev/null | \
-      python -c 'import json, sys; J = json.load(sys.stdin); assert J[0]["assets"][0]["name"].startswith("ripgrep"); print(J[0]["name"])'\
-  )
-  test -n $RIPGREP_LATEST_VERSION
-  echo -e "${COLOR_YELLOW}Installing ripgrep ${RIPGREP_LATEST_VERSION} ...${COLOR_NONE}"
-  RIPGREP_VERSION="${RIPGREP_LATEST_VERSION}"
+  # https://github.com/BurntSushi/ripgrep/releases
+  _template_github_latest "ripgrep" "BurntSushi/ripgrep" "ripgrep-*-x86_64-unknown-linux-musl.tar.gz"
+  cp -v "./rg" $PREFIX/bin/
+  cp -v "./complete/_rg" $PREFIX/share/zsh/site-functions
 
-  TMP_RIPGREP_DIR="$DOTFILES_TMPDIR/ripgrep"; mkdir -p $TMP_RIPGREP_DIR
-  RIPGREP_DOWNLOAD_URL="https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/ripgrep-${RIPGREP_VERSION}-x86_64-unknown-linux-musl.tar.gz"
-  echo $RIPGREP_DOWNLOAD_URL
-
-  cd $TMP_RIPGREP_DIR
-  curl -L $RIPGREP_DOWNLOAD_URL | tar -xvzf - --strip-components 1
-  cp "./rg" $PREFIX/bin
-
-  mkdir -p $HOME/.local/share/zsh/site-functions
-  cp "./complete/_rg" $PREFIX/share/zsh/site-functions
-
+  _which rg
   $PREFIX/bin/rg --version
-  echo "$(which rg) : $(rg --version)"
 }
 
 install_xsv() {
-  XSV_VERSION="0.13.0"
+  # https://github.com/BurntSushi/xsv/releases
+  _template_github_latest "xsv" "BurntSushi/xsv" "xsv-*-x86_64-unknown-linux-musl.tar.gz"
+  cp -v "./xsv" $PREFIX/bin/
 
-  set -x
-  mkdir -p $PREFIX/bin && cd $PREFIX/bin
-  curl -L "https://github.com/BurntSushi/xsv/releases/download/${XSV_VERSION}/xsv-${XSV_VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar zxf -
-  $PREFIX/bin/xsv
+  _which xsv
+  $PREFIX/bin/xsv --version
 }
 
 install_bat() {
   # https://github.com/sharkdp/bat/releases
-  local BAT_VERSION="0.22.1"
+  _template_github_latest "bat" "sharkdp/bat" "bat-*-x86_64-unknown-linux-musl.tar.gz"
+  cp -v "./bat" $PREFIX/bin/
+  cp -v "./autocomplete/bat.zsh" $PREFIX/share/zsh/site-functions/_bat
 
-  set -x
-  mkdir -p $PREFIX/bin && cd $PREFIX/bin
-  curl -L "https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat-v${BAT_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
-    | tar zxf - --strip-components 1 --wildcards --no-anchored 'bat*'     # bat, bat.1
-
+  _which bat
   $PREFIX/bin/bat --version
 }
 
 install_go() {
   # install go lang into ~/.go
   # https://golang.org/dl/
-  if [[ -d $HOME/.go ]]; then
+  set -x
+  if [ -d "$HOME/.go" ]; then
     echo -e "${COLOR_RED}Error: $HOME/.go already exists.${COLOR_NONE}"
     exit 1;
   fi
+  mkdir -p "$HOME/.go"
 
-  GO_DOWNLOAD_URL="https://dl.google.com/go/go1.9.3.linux-amd64.tar.gz"
+  local GO_VERSION="1.21.4"
+  local GO_DOWNLOAD_URL="https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz"
   TMP_GO_DIR="$DOTFILES_TMPDIR/go/"
 
   wget -nc ${GO_DOWNLOAD_URL} -P ${TMP_GO_DIR} || exit 1;
-  cd ${TMP_GO_DIR} && tar -xvzf "go1.9.3.linux-amd64.tar.gz" || exit 1;
-  mv go $HOME/.go
+  cd ${TMP_GO_DIR} && tar -xvzf "go${GO_VERSION}.linux-amd64.tar.gz" || exit 1;
+  mv go/* "$HOME/.go/"
 
   echo ""
   echo -e "${COLOR_GREEN}Installed at $HOME/.go${COLOR_NONE}"
-  $HOME/.go/bin/go version
+  "$HOME/.go/bin/go" version
+}
+
+install_jq() {
+  # https://github.com/jqlang/jq/releases
+  _template_github_latest "jq" "jqlang/jq" "jq-linux-amd64"
+
+  cp -v "./jq-linux-amd64" "$PREFIX/bin/jq"
+  chmod +x "$PREFIX/bin/jq"
+  _which jq
+  $PREFIX/bin/jq --version
 }
 
 install_duf() {
   # https://github.com/muesli/duf/releases
   _template_github_latest "duf" "muesli/duf" "duf_*_linux_x86_64.tar.gz"
-  [[ $(pwd) =~ ^"$DOTFILES_TMPDIR/" ]]
-
   cp -v "./duf" $PREFIX/bin
 
-  echo -e "\n\n${COLOR_WHITE}$(which duf)${COLOR_NONE}"
+  _which duf
   $PREFIX/bin/duf --version
 }
 
 install_lazydocker() {
   _template_github_latest "lazydocker" "jesseduffield/lazydocker" "lazydocker_*_Linux_x86_64.tar.gz"
-  [[ $(pwd) =~ ^$DOTFILES_TMPDIR/ ]]
-
   cp -v "./lazydocker" $PREFIX/bin
 
-  echo -e "\n\n${COLOR_WHITE}$(which lazydocker)${COLOR_NONE}"
+  _which lazydocker
   $PREFIX/bin/lazydocker --version
 }
 
 install_lazygit() {
   _template_github_latest "lazygit" "jesseduffield/lazygit" "lazygit_*_Linux_x86_64.tar.gz"
-  [[ $(pwd) =~ ^$DOTFILES_TMPDIR/ ]]
-
   cp -v "./lazygit" $PREFIX/bin
 
-  echo -e "\n\n${COLOR_WHITE}$(which lazydocker)${COLOR_NONE}"
+  _which lazygit
   $PREFIX/bin/lazygit --version
 }
 
 install_rsync() {
-
   local URL="https://www.samba.org/ftp/rsync/src/rsync-3.2.4.tar.gz"
   local TMP_DIR="$DOTFILES_TMPDIR/rsync"; mkdir -p $TMP_DIR
 
@@ -506,16 +553,20 @@ install_rsync() {
 
 install_mosh() {
   set -x
-  mkdir -p $DOTFILES_TMPDIR && cd $DOTFILES_TMPDIR/
   rm -rf mosh || true
-  git clone https://github.com/mobile-shell/mosh --depth=1
-  cd mosh
 
-  # bump up mosh version to indicate this is a HEAD version
-  sed -i -e 's/1\.3\.2/1.4.0/g' configure.ac
+  local URL="https://github.com/mobile-shell/mosh/archive/refs/tags/mosh-1.4.0.zip"
+  local TMP_DIR="$DOTFILES_TMPDIR/mosh"; mkdir -p $TMP_DIR
+  rm -rf mosh || true
+  cd "$TMP_DIR"
+
+  wget -N -O "mosh.tar.gz" "$URL"
+  unzip -o "mosh.tar.gz"   # It's actually a zip file, not a tar.gz ....
+  cd "mosh-mosh-1.4.0/"
 
   ./autogen.sh
   ./configure --prefix="$PREFIX"
+  make -j4
   make install
   $PREFIX/bin/mosh-server --version
 }
@@ -552,6 +603,13 @@ install_mujoco() {
     (should include $MUJOCO_ROOT/bin).${COLOR_NONE}\n"
 }
 
+install_ollama() {
+  # https://github.com/jmorganca/ollama/releases
+  curl -fSL --show-error --progress-bar -o "$HOME/.local/bin/ollama" "https://ollama.ai/download/ollama-linux-amd64"
+  chmod +x "$HOME/.local/bin/ollama"
+  _which ollama
+  ollama --version
+}
 
 # entrypoint script
 if [ `uname` != "Linux" ]; then

@@ -1,27 +1,36 @@
-# Start-up script executed if a login shell.
+# ~/.zprofile
+#
+# Start-up script executed if an "login shell"
+# Note: not executed when doing `exec zsh`; it's a non-login shell (unless `exec zsh -l`)
+#
+# Execution order:
+#   ~/.zshenv -> [/etc/zprofile] -> ~/.zprofile -> ~/.zshrc -> ~/.zlogin
+#                 (*)               ^^^^^^^^^^^
+#
+# (*) WARNING: on macOS, /etc/zprofile messes up $PATH.
+# This should have been disabled by disabling /etc/zprofile (see ~/.zshenv).
+# See [fighting with path_helper] https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2#order-is-key-and-everything-
+
 
 # set default permission of file to 644 (rw-r--r--)
 umask 022
 
-# At this point, /etc/zprofile has been executed (after ~/.zshenv)
-# which messes up $PATH due to the execution of `path_helper`.
-# Correct $PATH so that /usr/local/bin, etc. would come after
-# custom, local-preferred paths.
-path=( ${path[@]:#/usr/local/bin} )
-path=( ${path[@]:#/usr/local/sbin} )
-path=( ${path[@]:#/usr/bin} )
-path=( ${path[@]:#/usr/sbin} )
-path=( ${path[@]:#/sbin} )
-path=(
-  $path
-  "/usr/local/bin"
-  "/usr/local/sbin"
-  "/usr/bin"
-  "/usr/sbin"
-  "/sbin"
-)
+# Against "Too many open files"; default value (256) is too low
+ulimit -n 10240
 
-# Let ~/.local/bin take precedence
-if ! (( ${path[(I)$HOME/.local/bin]} )); then
-  path=( $HOME/.local/bin $path )
+
+# Cleanup some conda environment variables "on a login shell"
+# to avoid $CONDA_* env variables and $PATH messed up in tmux, etc.
+# (Somehow, tmux overrides $CONDA_DEFAULT_ENV unwantedly)
+# Note: for "a login shell".  non-login subshells would not be affected.
+if [[ -n "$CONDA_PREFIX" ]]; then
+  # remove all $PATH entry for the current conda env
+  # (except for $CONDA_EXE and condabin/)
+  path=(${(@)path:#${CONDA_PREFIX}/bin*})
 fi
+unset CONDA_PREFIX
+unset CONDA_DEFAULT_ENV
+unset CONDA_PYTHON_EXE
+unset CONDA_SHLVL
+
+# vim: set ft=zsh ts=2 sts=2 sw=2:

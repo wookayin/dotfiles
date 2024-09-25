@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
+# Note: it is not realtime, because two samples are needed, which takes ~1 second
+# Note: CPU usage ranges 0 - 100% (100% is when ALL the CPU cores are busy)
 
-# https://unix.stackexchange.com/questions/69185/getting-cpu-usage-same-every-time/
-# CAVEAT: it is not realtime, and takes ~1 second
-
-cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | \
-    awk -v RS="" '{printf "%.2f", ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5) "%"}'
+if [ `uname` == "Darwin" ]; then
+    # https://stackoverflow.com/questions/30855440/how-to-get-cpu-utilization-in-in-terminal-mac
+    # Sum of user + sys CPU usage
+    top -l 2 | grep -E "^CPU" | tail -1 | awk '{ printf "%.2f", $3 + $5 }'
+else
+    # https://unix.stackexchange.com/questions/69185/getting-cpu-usage-same-every-time/
+    cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | \
+        awk -v RS="" '{printf "%.2f", ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5) "%"}'
+fi

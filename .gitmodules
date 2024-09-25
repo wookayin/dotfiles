@@ -8,12 +8,6 @@
 [submodule "tmux/plugins/tpm"]
 	path = tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
-[submodule "zsh/zplug"]
-	path = zsh/zplug
-	url = https://github.com/zplug/zplug
-[submodule "zsh/is_mosh"]
-	path = zsh/is_mosh
-	url = https://github.com/wookayin/is_mosh
 [submodule "zsh/antidote"]
 	path = zsh/antidote
 	url = https://github.com/mattmc3/antidote

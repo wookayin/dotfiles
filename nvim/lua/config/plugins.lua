@@ -3,7 +3,11 @@
 
 local M = {}
 
+-- Pin at lazy < v10, because it breaks cond since fbb0bea2
+local LAZY_VERSION = 'v9.25.1'  -- or 'stable'
+
 local PLUGIN_SPEC = {
+  { 'folke/lazy.nvim', tag = LAZY_VERSION },
   { import = "plugins.basic" },
   { import = "plugins.appearance" },
   { import = "plugins.ui" },
@@ -13,6 +17,10 @@ local PLUGIN_SPEC = {
   { import = "plugins.treesitter" },
   { import = "plugins.utilities" },
 }
+if pcall(require, "plugins.local") then
+  -- see ~/.config/nvim/lua/plugins/local.lua
+  table.insert(PLUGIN_SPEC, { import = "plugins.local" })
+end
 
 -- $VIMPLUG
 -- vim.env.VIMPLUG = vim.fn.stdpath("data") .. "/lazy"
@@ -27,11 +35,42 @@ if not vim.loop.fs_stat(lazypath) then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    "--branch=" .. LAZY_VERSION,
     lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
+
+-- Disable lazy clean by monkey-patching. (see folke/lazy.nvim#762)
+require("lazy.manage").clean = function(opts)
+  opts = opts or {}
+  print("[lazy.nvim] Clean operation is disabled. args = " .. ((opts.plugin or {}).dir or '') .. '\n')
+  return require("lazy.manage").run({ pipeline = {} })
+end
+require("lazy.manage.task.fs").clean.run = function(self)
+  ---@diagnostic disable-next-line: undefined-field
+  local plugin_name = (self.plugin or {}).name or '(unknown)'
+  print("[lazy.nvim] Clean operation is disabled. (lazy.manage.task.fs) plugin = " .. plugin_name .. '\n')
+  local inform_user = function()
+    local msg = ("[lazy.nvim] Please check and remove `%s/%s.cloning` manually.\n"):format(vim.env.VIMPLUG, plugin_name)
+    vim.notify(msg, vim.log.levels.ERROR, { title = 'config/plugins.lua', timeout = 10000, markdown = true })
+  end
+  vim.api.nvim_create_autocmd('VimEnter', { pattern = '*', callback = inform_user })
+  inform_user()  -- for headless execution
+end
+
+-- Monkey-patch: Normalize git origin, avoid unnecessary re-cloning on update
+---@param repo string path to the git repository
+require("lazy.manage.git").get_origin = function(repo)
+  local origin = require("lazy.manage.git").get_config(repo)["remote.origin.url"]
+  origin = string.gsub(origin, 'git@github.com:', 'https://github.com/')
+  origin = string.gsub(origin, 'https://git::@github.com/', 'https://github.com/')
+  return origin
+end
+
+-- workaround for neovim/neovim#27413
+-- vim.fs must be loaded before vim.loader.enable()
+require("vim.fs")
 
 -- Setup and load plugins. All plugins will be source HERE!
 -- https://github.com/folke/lazy.nvim#%EF%B8%8F-configuration
@@ -56,9 +95,6 @@ require("lazy").setup(PLUGIN_SPEC, {
   },
   performance = {
     rtp = {
-      paths = {
-        '~/.vim',  -- Allows ~/.vim/colors, etc. accessible
-      },
       disabled_plugins = {
         "netrwPlugin",
       },
@@ -76,12 +112,6 @@ vim.cmd [[
 
 -- Add rplugins support on startup; see utils/plug_utils.lua
 require("utils.plug_utils").UpdateRemotePlugins()
-
--- Disable lazy clean by monkey-patching. (see #762)
-require("lazy.manage").clean = function(opts)
-  print("[lazy.nvim] Clean operation is disabled.")
-  return require("lazy.manage").run({ pipeline = {} })
-end
 
 -- Additional lazy-load events: 'func' (until it's officially supported)
 local Lazy_FuncUndefined = vim.api.nvim_create_augroup('Lazy_FuncUndefined', { clear = true })
@@ -159,9 +189,9 @@ function _G.lazy_foldexpr(lnum)
   end
 end
 
--- :Plugs -- quickly locate and find plugin defs
+-- :PlugWhere -- quickly locate and find plugin defs
 -- TODO: Use lazy API to retrieve full plugin spec instead of grep.
-vim.api.nvim_create_user_command('Plugs', function(opts)
+vim.api.nvim_create_user_command('PlugWhere', function(opts)
   local entry_maker = require('telescope.make_entry').gen_from_vimgrep({ })
   require('telescope.builtin').grep_string({
     search_dirs = { '~/.config/nvim/lua/plugins' },
@@ -188,15 +218,31 @@ vim.api.nvim_create_user_command('Plugs', function(opts)
       preview_width = 0.5,
     },
   })
-end, { nargs = '?', desc = 'Plugs: find lazy plugin declaration.',
-complete = function()
-  local names = M.list_plugs(); table.sort(names); return names
-end})
+end, {
+  nargs = '?', desc = 'PlugWhere: find lazy plugin declaration.',
+  complete = function()
+    local names = M.list_plugs(); table.sort(names); return names
+  end
+})
+pcall(vim.fn.CommandAlias, 'PW', 'PlugWhere', false)
 
--- list_plugs: Get all the registered plugins (including non-loaded ones)
+-- Some command alias for :Lazy
+pcall(function()
+  local register_cmd = true
+  vim.fn.CommandAlias('LazyProfile', 'Lazy profile', register_cmd)
+end)
+
+--- list_plugs: Get all the registered plugins (including non-loaded ones)
 ---@return string[]
 function M.list_plugs()
   return vim.tbl_keys(require("lazy.core.config").plugins)
+end
+
+--- Get a LazyPlugin table by its name (exact).
+---@param name string
+---@return LazyPlugin|nil
+function M.get_plugin(name)
+  return require("lazy.core.config").plugins[name]
 end
 
 -- load: immediately load (lazy) plugins synchronously
@@ -205,4 +251,5 @@ function M.load(names)
   require("lazy.core.loader").load(names, {}, { force = true })
 end
 
+_G.lazy = require("lazy");
 return M

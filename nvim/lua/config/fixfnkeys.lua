@@ -9,7 +9,12 @@
 -- normal modifier-enabled keycodes (e.g. <S-F1> .. <M-12>) everywhere in the config.
 
 
-local condition = vim.fn.has('nvim-0.7.0') > 0 and vim.fn.expand('$TERM'):match("^xterm")
+local TERM = os.getenv('TERM') or ''
+local condition = vim.fn.has('nvim-0.7.0') > 0 and (
+  TERM == "wezterm" or
+  TERM == "alacritty" or
+  TERM:match("^xterm")
+)
 if not condition then return end
 
 local mode = { 'n', 'v', 'x', 's', 'o', 'i', 'l', 'c', 't' }

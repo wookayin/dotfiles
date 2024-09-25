@@ -3,9 +3,9 @@
 local M = {}
 
 -- From nvim-lualine/lualine.nvim/wiki/Component-snippets
---- @param trunc_width number trunctates component when screen width is less then trunc_width
---- @param trunc_len number truncates component to trunc_len number of chars
---- @param hide_width number hides component when window width is smaller then hide_width
+--- @param trunc_width number|nil trunctates component when screen width is less then trunc_width
+--- @param trunc_len number|nil truncates component to trunc_len number of chars
+--- @param hide_width number|nil hides component when window width is smaller then hide_width
 --- @param trunc_right boolean whether to truncate at right (resulting in prefix) or left (resulting in suffix).
 --- return function that can format the component accordingly
 local function truncate(trunc_width, trunc_len, hide_width, trunc_right)
@@ -60,32 +60,80 @@ local custom_components = {
     local ret, _ = vim.bo.fileformat:gsub("^unix$", "")
     return ret
   end,
-  -- asyncrun & neomake job status
+  -- asyncrun job status
   asyncrun_status = function()
-    return table.concat(vim.tbl_values(vim.tbl_map(function(job)
-      if job.status == 'running' then return '⏳' end
-      return (job.status == 'success' and '✅' or '❌')
-    end, vim.g.asyncrun_job_status or {})))
+    local status = table.concat(vim.tbl_values(vim.tbl_map(function(job)
+      return job and ({
+        running = '⏳',
+        success = '✅',
+        failed = '❌',
+      })[job.status] or ''
+    end, vim.tbl_extend('keep',
+      vim.g.asyncrun_job_status or {},
+      { ['vimtex'] = _G.vimtex_jobs },
+      {}
+    ))))
+    -- Display whether :AutoBuild is enabled
+    if status == '' and require('config.commands.AutoBuild').is_enabled() then
+      return require('config.commands.AutoBuild').icon or ''
+    end
+    return status
   end,
-  neomake_status = function()
-    return table.concat(vim.tbl_values(vim.tbl_map(function(job)
-      if job.exit_code == nil then return '⏳' end
-      return (job.exit_code == 0 and '✅' or '❌')
-    end, vim.g.neomake_job_status or {})))
+  -- git objects (fugitive, diffview) for human
+  gitobject_bufname = (function()
+    local hlgroup = function(name, val)
+      vim.schedule(function() vim.api.nvim_set_hl(0, name, val) end)
+      return '%#' .. name .. '#'
+    end
+    local git_icon = ' '
+    local hl = {
+      index = hlgroup('lualine_gitobject_index', { bg = '#117711', fg = 'white', bold = false }),
+      commit = hlgroup('lualine_gitobject_commit', { bg = '#4dabf7', fg = 'black', bold = true }),
+      undefined = hlgroup('lualine_gitobject_undefined', { bg = '#ff8787', fg = 'black', italic = false }),
+    }
+
+    return function()
+      -- Extract git commit hash, or determine if it's the git index. Cache into b:git_info.
+      vim.b.git_sha = vim.b.git_sha or (function(bufname)
+        local sha ---@type string|nil
+        if vim.startswith(bufname, 'fugitive://') or vim.startswith(bufname, 'diffview://') then
+          sha = bufname:match([[.git%/%/?([0-9a-fA-F:]+)%/?]])
+        elseif vim.startswith(bufname, 'gitsigns://') then
+          sha = bufname:match([[.git%/:?([0-9a-fA-FH~]+):]]) -- .git/:0:<path>, .git/HEAD~:<path>
+        end
+        return sha
+      end)(vim.api.nvim_buf_get_name(0))
+
+      if vim.b.git_sha == '0' or vim.b.git_sha == ':0:' then
+        return hl.index .. git_icon .. 'index'
+      elseif type(vim.b.git_sha) == 'string' then
+        local revname = require("config.git").name_revision(vim.b.git_sha)
+        return (hl[revname or ''] or hl.commit) .. git_icon .. vim.b.git_sha:sub(1, 8) ..
+          (revname and revname ~= "undefined" and string.format(' (%s)', revname) or '')
+      end
+      return ''
+    end
+  end)(),
+  -- neotree path
+  neotree_path = function()
+    if vim.bo.filetype == 'neo-tree' then
+      return require("config.neotree").get_path(0)
+    end
+    return ''
   end,
   -- LSP status, with some trim
   lsp_status = function()
-    return LspStatus()
+    return _G.LspStatus()
   end,
   -- context (https://github.com/SmiteshP/nvim-navic)
   lsp_context = function()
-    if pcall(require, "nvim-navic") then
+    local txt = vim.F.npcall(function()
       local navic = require("nvim-navic")
       if navic.is_available() then
-        return navic.get_location() or ''
+        return navic.get_location()
       end
-    end
-    return ''
+    end) or ''
+    return txt
   end
 }
 _G.lualine_components = custom_components
@@ -102,20 +150,20 @@ function M.setup_lualine()
       -- https://github.com/shadmansaleh/lualine.nvim/blob/master/THEMES.md
       theme = 'onedark'
     },
-    -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/config.lua
-    -- see ~/.dotfiles/vim/plugged/lualine.nvim/lua/lualine/components
+    -- see $VIMPLUG/lualine.nvim/lua/lualine/config.lua
+    -- see $VIMPLUG/lualine.nvim/lua/lualine/components
     sections = {
       lualine_a = {
         { 'mode', cond = min_statusline_width(40) },
       },
       lualine_b = {
         { 'branch', cond = min_statusline_width(120) },
+        { custom_components.asyncrun_status },
       },
       lualine_c = {
-        custom_components.asyncrun_status,
-        custom_components.neomake_status,
+        { custom_components.neotree_path, color = { fg = '#87afdf' } },
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
-        { custom_components.lsp_context },
+        { custom_components.lsp_context, fmt = truncate(180, 60, 100, true) },
       },
       lualine_x = {
         --{ custom_components.lsp_status, fmt = truncate(120, 20, 60, false) },
@@ -125,10 +173,10 @@ function M.setup_lualine()
       },
       lualine_y = { -- excludes 'progress'
         { 'diff', cond = using_global_statusline },
-        'diagnostics',
+        { 'diagnostics', cond = min_statusline_width(130) },
       },
       lualine_z = {
-        { 'location', cond = min_statusline_width(90) },
+        { 'location', cond = min_statusline_width(190) },
       },
     },
     inactive_sections = {
@@ -149,13 +197,16 @@ function M.setup_winbar()
   if not use_global_statusline then
     return false
   end
+  vim.api.nvim_set_hl(0, 'lualine_winbar_filename', { fg = '#c92a2a', bg = '#eeeeee', bold = true })
 
   -- Define winbar using lualine components (see lualine.config.apply_configuration)
   local winbar_config = {
     sections = {
       lualine_w = {
-        { 'vim.fn.winnr()', color = { fg = 'white', bg = '#37b24d' } },
-        { 'filename', path = 1, color = { fg = '#c92a2a', bg = '#eeeeee', gui = 'bold' } },
+        { 'vim.fn.winnr()', color = 'TabLineSel' },
+        { custom_components.gitobject_bufname },
+        { 'filename', path = 1, color = 'lualine_winbar_filename',
+          fmt = truncate(80, 20, nil, true) },
         'diagnostics',
         { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
         function() return ' ' end,
@@ -164,7 +215,9 @@ function M.setup_winbar()
     inactive_sections = {
       lualine_w = {
         { 'vim.fn.winnr()', color = { fg = '#eeeeee' } },
-        { 'filename', path = 1 },
+        { custom_components.gitobject_bufname },
+        { 'filename', path = 1,
+          fmt = truncate(80, 20, nil, true) },
         'diagnostics',
         { custom_components.lsp_context, fmt = truncate(80, 20, 60, true) },
         function() return ' ' end,
@@ -184,7 +237,7 @@ function M.setup_winbar()
   require 'lualine.utils.loader'.load_all(winbar_config)
 
   -- The custom winbar function.
-  -- seealso ~/.vim/plugged/lualine.nvim/lua/lualine.lua, function statusline
+  -- seealso $VIMPLUG/lualine.nvim/lua/lualine.lua, function statusline
   _G.winbarline = function()
     local is_focused = require 'lualine.utils.utils'.is_focused()
     local line = require 'lualine.utils.section'.draw_section(
@@ -214,9 +267,8 @@ function M.setup()
 end
 
 -- Resourcing support
-if RC and RC.should_resource() then
+if ... == nil then
   M.setup()
 end
 
-(RC or {}).statusline = M
 return M

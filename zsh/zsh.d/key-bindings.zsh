@@ -26,6 +26,9 @@ bindkey '^H' backward-delete-char
 bindkey '^N' down-history
 bindkey '^P' up-history
 
+bindkey '^F' forward-word
+bindkey '^B' backward-word
+
 if [[ $(bindkey '^R') == *"undefined"* ]]; then
   bindkey '^R' history-incremental-search-backward
 fi

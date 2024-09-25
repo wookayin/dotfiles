@@ -1,0 +1,24 @@
+# Makefile template for LaTeX files
+snippet latex
+.PHONY: all clean
+
+SHELL=/bin/bash
+MAKEFLAGS := --jobs=4
+
+TARGET  := ${1:document}.pdf
+SRCS    := $(wildcard *.tex)
+BIBS    := $(wildcard *.bib)
+
+all: $(TARGET)
+
+%.pdf: %.tex $(BIBS) $(SRCS)
+	set -o pipefail; \
+		latexmk -pdf -pdflatex="pdflatex -halt-on-error -interaction=nonstopmode -file-line-error -synctex=1" $(basename $@)  2>&1\
+		| perl -nle'print if /^Latexmk: |\:\d{1,5}\:/'
+
+clean:
+	latexmk -f -c $(TARGET)
+	rm -f $(TARGET)
+	rm -rf *.log *.aux *.fdb_latexmk *.bbl *.dvi *.thm *.brf
+	rm -rf *.synctex.gz
+endsnippet

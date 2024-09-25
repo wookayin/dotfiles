@@ -28,19 +28,29 @@ extension-pkg-whitelist=numpy,torch
 # http://pylint-messages.wikidot.com/all-codes
 disable=blacklisted-name,
         invalid-name,
+        bad-indentation,
         too-few-public-methods,
         too-many-arguments,
+        too-many-branches,
         too-many-instance-attributes,
+        too-many-function-args,
         too-many-locals,
+        too-many-public-methods,
+        too-many-statements,
         wrong-import-position,
+        useless-import-alias,
+        consider-using-f-string,
         line-too-long,
-        #missing-class-docstring,
-        #missing-function-docstring,
         no-else-break,
         no-else-continue,
         no-else-raise,
         no-else-return,
         forgotten-debug-statement,
+        use-dict-literal,
+        # individual projects should enable missing-*
+        missing-class-docstring,
+        missing-module-docstring,
+        missing-function-docstring,
         fixme
 
 

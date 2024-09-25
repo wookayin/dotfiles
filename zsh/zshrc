@@ -1,13 +1,42 @@
 # .zshrc
 # ======
+#
+# zshrc is sourced for "interactive" shells (either non-login or login)
 # vim: set sts=2 sw=2 ts=2
 
-# To profile zsh startup, use the following:
-# In ~/.zshrc,
-#  (BEGIN) zmodload zsh/zprof
-#  (END)   zprof >! ~/.zsh.startup.log
-# % repeat 3 {time zsh -i -c exit}
+#   ~/.zshenv -> ~/.zprofile -> [/etc/zshrc] -> ~/.zshrc -> ~/.zlogin
+#                                               ^^^^^^^^
+#
+# See [fighting with path_helper] https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2
+# See https://github.com/rbenv/rbenv/wiki/Unix-shell-initialization
+# See https://unix.stackexchange.com/questions/71253/what-should-shouldnt-go-in-zshenv-zshrc-zlogin-zprofile-zlogout
+# See https://medium.com/@rajsek/zsh-bash-startup-files-loading-order-bashrc-zshrc-etc-e30045652f2e
 
+# Note that we have unsetopt GLOBAL_RCS in ~/.zshenv
+if [ -f /etc/zshrc ]; then source /etc/zshrc; fi
+if [ -f /etc/zsh/zshrc ]; then source /etc/zsh/zshrc; fi
+
+
+# To profile zsh startup: ZSH_PROFILE_LOG=/tmp/zsh-startup.log zsh -i -c exit
+# ZSH_PROFILE_LOG=/tmp/zsh-startup.log hyperfine "zsh -i -c exit"
+if [ -n "$ZSH_PROFILE_LOG" ]; then
+  zmodload zsh/zprof
+fi
+
+# Check terminfo for $TERM and fall back if necessary
+# If terminfo is missing on a remote machine, give a warning
+if ! infocmp "$TERM" > /dev/null; then
+  echo -en '\033[0;33m'"terminfo for TERM=\"$TERM\" is missing."
+  echo -e " Run ~/.dotfiles/etc/terminfo.sh and restart shell."'\033[0m'
+
+  # Use xterm-256color as a fallback TERM
+  echo -e '\033[0;33m''Falling back to TERM="xterm-256color"; Check the terminal emulator config and fix $TERM.''\033[0m\n'
+  export TERM="xterm-256color"
+else
+  # On a interactive shell with valid $TERM, we assume 24-bit (true) color will be always supported.
+  # This is set explicitly because some terminfo (e.g. wezterm) does not advertise color capabilities properly
+  export COLORTERM="truecolor"
+fi
 
 # Default prompt host color for pure theme and tmux statusbar.
 # You may want to have different color per machine (use ANSI color name or xterm color codes [0-255]).
@@ -23,9 +52,12 @@ fi
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+# Even if .zshrc fails to load powerlevel10k, do not enter the configuration wizard; just show errors!
+export POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
 # autoload built-in zsh utilities.
 autoload -Uz is-at-least
+autoload -Uz colors && colors
 
 
 # Source antidote
@@ -82,7 +114,7 @@ export FZF_MARKS_JUMP='^g'
 # antidote: zsh plugin specifications.
 # antidote-managed plugins will be stored at $ANTIDOTE_HOME
 export ANTIDOTE_HOME="$HOME/.zsh/antidote-plugins"
-export ANTIDOTE_BUNDLE="$HOME/.zsh_plugins.zsh"
+export ANTIDOTE_BUNDLE="$HOME/.zsh/antidote.bundled.zsh"
 zstyle ':antidote:bundle' use-friendly-names on
 
 if [ ! -d "$ANTIDOTE_HOME" ]; then
@@ -101,46 +133,26 @@ function antidote-reset() {
 # antidote: Use static loading (cache) for better performance
 # (see antidote#65 for more details)
 local -a bundles=()
+local _ANTIDOTE_SAVING=""
 
 function _antidote_compile_bundles() {
-  local _ANTIDOTE_SAVING="1"
-  echo -e "\033[0;33mWriting antidote cache file into $ANTIDOTE_BUNDLE ...\033[0m"
+  echo -e "$fg[yellow]Writing antidote cache file into $ANTIDOTE_BUNDLE ...$reset_color"
+  local PLUGINS_SPEC="$HOME/.zsh/plugins.zsh"
 
-  # TODO: Get rid of prezto, a legacy.
-  bundles+=('sorin-ionescu/prezto')
+  # run $PLUGINS_SPEC and get the list of plugins line-by-line
+  local -a bundles; bundles=("${(@f)$(zsh $PLUGINS_SPEC)}")
 
-  if is-at-least 5.4; then
-    # zsh theme: powerlevel10k + customization
-    # p10k's minimum zsh requirement is 5.1 but we require zsh 5.4+,
-    # because without the instant mode initialization is slower than pure.
-    bundles+=('romkatv/powerlevel10k')
-  else
-    # zsh theme: pure (forked ver). For OLD zsh.
-    bundles+=('mafredri/zsh-async')
-    bundles+=('wookayin/pure')
+  if [ ! $? -eq 0 ]; then  # error
+    echo -e "$fg[red]ERROR while generating plugin specs. Check $PLUGINS_SPEC.$reset_color"
+    return 1;
   fi
 
-  # zsh syntax: FSH (fast-syntax-highlighting)
-  # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
-  bundles+=('z-shell/F-Sy-H')
+  # list the plugins being loaded
+  print -P -- "%F{243}$(printf "  - %s\n" $bundles)%f"
 
-  # More completion support
-  bundles+=('esc/conda-zsh-completion')
-
-  # see ~/.zsh/zsh.d/envs.zsh for fzf configs
-  bundles+=('wookayin/fzf-fasd')
-  bundles+=('junegunn/fzf-git.sh kind:clone')
-
-  bundles+=('zsh-users/zsh-autosuggestions')
-  if (( $+commands[virtualenvwrapper_lazy.sh] || $+commands[conda] )); then
-    # Use my own fork for a while, to support autoswitch into anaconda envs
-    bundles+=('wookayin/zsh-autoswitch-virtualenv')
-  fi
-  if [[ "`uname`" == "Darwin" ]]; then
-    bundles+=('wookayin/anybar-zsh')
-  fi
-
-  printf "%s\n" $bundles | antidote bundle >! "$ANTIDOTE_BUNDLE"
+  ( set -o pipefail;
+    echo "# Auto-generated by antidote and $PLUGINS_SPEC"
+    printf "%s\n" $bundles | antidote bundle ) >! "$ANTIDOTE_BUNDLE"
 }
 
 # If $ANTIDOTE_BUNDLE is empty (blank) file, refresh the static cache
@@ -151,30 +163,41 @@ fi
 # Load the static script for loading zsh plugins.
 source $ANTIDOTE_BUNDLE
 if [ ! $? -eq 0 ] ; then   # error, refresh the script and try again
-    _antidote_compile_bundles
-    source $ANTIDOTE_BUNDLE
+  echo -e "$fg[yellow]Sourcing ${ANTIDOTE_BUNDLE} has failed. Trying to reset zsh plugins ...$rest_color"
+  _antidote_compile_bundles
+  source $ANTIDOTE_BUNDLE
 fi
 
 if [[ -n "$_ANTIDOTE_SAVING" ]]; then
-    fast-theme "XDG:wook"
+  # See fast-theme -i
+  fast-theme "$HOME/.dotfiles/config/f-sy-h/wook.ini"
 fi
 
 # }}} ===================
 
+# Fix inconsistent fpath order (workaround for antidote#157)
+# system-wide zsh site-functions (/usr/local/share/zsh/, /opt/homebrew/share/zsh, etc.)
+# should come AFTER local and antidote paths.
+# some zsh magic: https://stackoverflow.com/questions/3435355/remove-entry-from-array
+fpath_user=(${(@)fpath:#/(opt|usr)/*zsh*})   # remove all /opt, /usr path
+fpath_system=(${(@)fpath:|fpath_user})       # $fpath \setminus $fpath_system
+fpath=($fpath_user $fpath_system)
+
 # fzf
+(( ! ${path[(I)$HOME/.fzf/bin]} )) && path=( $HOME/.fzf/bin $path )
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Manually source fzf-git.sh,
+# Manually source fzf-git.sh *after* fzf
 # because sourcing it via plugin manager will make shell terminate
 if type antidote >/dev/null 2>&1; then
-  source $(__antidote_bundledir junegunn/fzf-git.sh)/fzf-git.sh
+  source $(antidote-path "junegunn/fzf-git.sh")/fzf-git.sh
   bindkey '^g^o' fzf-git-hashes-widget
   bindkey '^go' fzf-git-hashes-widget
 
 else
   # old systems (e.g. Ubuntu 16.04) has low zsh version < 5.4
   # where antidote doesn't load. Fallback to zgen if possible
-  echo -e "\033[0;31mERROR: mantidote cannot load (your zsh is too old).\033[0m"
+  echo -e "\033[0;31mERROR: antidote cannot load (your zsh is too old).\033[0m"
   [[ -f ~/.zgen/init.zsh ]] && { echo "Falling back to zgen..."; source ~/.zgen/init.zsh } || return 0;
 fi
 
@@ -182,20 +205,13 @@ fi
 # Source zsh script files after loading the zsh plugins.
 for config_file (${ZDOTDIR:-$HOME}/.zsh/zsh.d/*.zsh(N)) source $config_file
 
-# Terminal
-# Use xterm-256color (for tmux, too)
-if [[ $TERM != "xterm-kitty" ]]; then
-  export TERM="xterm-256color"
-fi
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.zsh/p10k.zsh ]] || source ~/.zsh/p10k.zsh
 
-
 # iTerm integration (for OS X iTerm2)
 # @see https://iterm2.com/shell_integration.html
-if [[ "`uname`" == "Darwin" ]] && [[ -f ${HOME}/.iterm2_shell_integration.zsh ]]; then
-    source ${HOME}/.iterm2_shell_integration.zsh
+if [[ "`uname`" == "Darwin" ]] && [[ -z "$NVIM" ]] && [[ -f ${HOME}/.iterm2_shell_integration.zsh ]]; then
+  source ${HOME}/.iterm2_shell_integration.zsh
 fi
 
 if (( $+commands[iterm-tab-color] )); then
@@ -210,18 +226,32 @@ fi
 
 # Anaconda3
 # see ~/.zshenv for $CONDA_EXE detection
+# non-standard conda (e.g. mamba) would need to have a proper setup script to make conda work
 function _conda_initialize() {
 # >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/aditya/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/aditya/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/aditya/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/aditya/anaconda3/bin:$PATH"
-    fi
+
+
+# # !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$('/home/aditya/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "/home/aditya/anaconda3/etc/profile.d/conda.sh" ]; then
+#         . "/home/aditya/anaconda3/etc/profile.d/conda.sh"
+#     else
+#         export PATH="/home/aditya/anaconda3/bin:$PATH"
+#     fi
+
+
+
+if [ -n "${CONDA_EXE}" ] && [[ "${CONDA_EXE}" == *conda ]]; then
+  ${CONDA_EXE} config --set auto_activate_base false
+  __conda_setup="$(${CONDA_EXE} 'shell.zsh' 'hook' 2> /dev/null)"
+  if [ $? -eq 0 ]; then
+      eval "$__conda_setup"
+  fi
+  unset __conda_setup
+
 fi
 unset __conda_setup
 # <<< conda initialize <<<
@@ -232,8 +262,6 @@ conda() {
   _conda_initialize
   conda "$@"
 }
-# Workaround conda's bug where $HOST gets altered to 'x86_64-conda-linux-gnu', etc.
-export HOST=$(hostname)
 
 if [[ -z "$CONDA_EXE" && -d "/opt/homebrew/Caskroom/miniconda" ]]; then
   echo "Warning: Please install miniconda locally on your HOME, not via Homebrew."
@@ -246,3 +274,11 @@ fi
 if [ -f "$HOME/.zshrc.local" ]; then
     source "$HOME/.zshrc.local"
 fi
+
+
+# Profiling
+if [ -n "$ZSH_PROFILE_LOG" ]; then
+  zprof >! "$ZSH_PROFILE_LOG"
+fi
+
+# vim: set ts=2 sts=2 sw=2:

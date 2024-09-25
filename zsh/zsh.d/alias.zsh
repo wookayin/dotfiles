@@ -9,18 +9,26 @@ _version_check() {
 # -----------------------------
 
 # Basic
-alias reload!="command -v antidote 2>&1 > /dev/null && antidote reset; \
-    source ~/.zshrc && echo 'sourced ~/.zshrc' again"
+alias reload!="command -v antidote 2>&1 > /dev/null && antidote reset; exec zsh --login"
 alias c='command'
 alias ZQ='exit'
 alias QQ='exit'
 
-alias cp='nocorrect cp -iv'
+alias cp='nocorrect cp -ivp'
 alias mv='nocorrect mv -iv'
 alias rm='nocorrect rm -iv'
 
 # sudo, but inherits $PATH from the current shell
 alias sudoenv='sudo env PATH=$PATH'
+
+alias path='print -l $path'
+function fpath() {
+  if [ $# == 0 ]; then
+    print -l $fpath
+  else  # fpath _something: find _something within all $fpath's
+    local f; for f in `fpath`; do find -L $f -maxdepth 1 -type f -name "$@" | xargs exa; done
+  fi
+}
 
 if (( $+commands[htop] )); then
     alias top='htop'
@@ -29,8 +37,11 @@ if (( $+commands[htop] )); then
 fi
 
 # list
-if command -v exa 2>&1 >/dev/null; then
-    # exa is our friend :)
+if command -v eza 2>&1 >/dev/null; then
+    # eza is our friend :)
+    alias ls='eza'
+    alias l='eza --long --group --git'
+elif command -v exa 2>&1 >/dev/null; then
     alias ls='exa'
     alias l='exa --long --group --git'
 else
@@ -57,6 +68,17 @@ alias zshrc='vim +cd\ ~/.zsh -O ~/.zsh/zshrc ~/.zsh/zsh.d/alias.zsh'
 function plugged() {
     [ -z "$1" ] && { echo "plugged: args required"; return 1; }
     cd "$HOME/.vim/plugged/$1"
+}
+
+# Running lua tests for neovim in the command line
+function plenary-busted() {
+    if [ $# == 0 ]; then
+        plenary-busted . || return 1;
+    else
+        for f in "$@"; do
+            nvim --headless --clean -u ~/.dotfiles/nvim/init.testing.lua -c "PlenaryBustedDirectory $f" || return 1;
+        done
+    fi
 }
 
 # Tmux ========================================= {{{
@@ -110,6 +132,7 @@ function tmuxp {
 
 alias set-pane-title='set-window-title'
 alias tmux-pane-title='set-window-title'
+alias tmux-window-title='tmux rename-window'
 
 # }}}
 # SSH ========================================= {{{
@@ -132,6 +155,10 @@ function ssh-tmuxa {
 alias sshta='ssh-tmuxa'
 alias ssh-ta='ssh-tmuxa'
 compdef '_hosts' ssh-tmuxa
+
+# skip ssh host key verification
+alias ssh-noverify='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+
 # }}}
 
 # More Git aliases ============================= {{{
@@ -156,16 +183,16 @@ else
   alias gha='gh --all'   # git < 1.9 has no --exclude option
 fi
 
-if (( $+commands[delta] )); then
-    alias gd='git -c core.pager="delta" diff --no-prefix'
-else
-    alias gd='git diff --no-prefix'
-fi
+# git branch: show commit/refs information as well.
+alias gb='git branch -vv'
+
+alias gd='git diff --no-prefix'
 alias gdc='gd --cached --no-prefix'
 alias gds='gd --staged --no-prefix'
 alias gs='git status'
 alias gsu='gs -u'
 alias gu='git pull --autostash'
+alias gmb='git merge-base HEAD master'
 
 function ghad() {
   # Run gha (git history) and refresh if anything in .git/ changes
@@ -227,7 +254,7 @@ alias gfx='git fixup'
 
 # using the vim plugin GV/Flog
 function _vim_gv {
-    vim -c ":GV $1"
+    vim -c ":GV $1" -c "tabclose $"
 }
 alias gv='_vim_gv'
 alias gva='gv --all'
@@ -237,6 +264,9 @@ function cd-git-root() {
   local _root; _root=$(git-root)
   [ $? -eq 0 ] && cd "$_root" || return 1;
 }
+
+# Unalias some prezto aliases due to conflict
+if alias gpt > /dev/null; then unalias gpt; fi
 
 # }}}
 
@@ -312,6 +342,11 @@ alias pytest='python -m pytest -vv'
 alias pytest-pudb='pytest -s --pudb'
 alias pytest-html='pytest --self-contained-html --html'
 alias green='green -vv'
+
+# py-spy: on macOS, root priviliege is needed
+if [[ "$(uname)" == "Darwin" ]]; then
+  alias py-spy='sudoenv py-spy'
+fi
 
 # some useful fzf-grepping functions for python
 function pip-list-fzf() {
@@ -398,6 +433,16 @@ if (( $+commands[http-server] )); then
     alias http-server="http-server -c-1"
 fi
 
+# ffmpeg/ffprobe
+# Use -hide_banner, only if args are provided (if no args, show banner)
+if (( $+commands[ffmpeg] )); then
+  alias ffmpeg='(){ ffmpeg ${@:+-hide_banner} $@ ;}'
+fi
+if (( $+commands[ffprobe] )); then
+  alias ffprobe='(){ ffprobe ${@:+-hide_banner} $@ ;}'
+fi
+
+# df (duf, pydf)
 if (( $+commands[duf] )); then
     # dotfiles install duf
     alias df="duf"

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 '''
@@ -14,6 +14,7 @@
 print(__doc__)  # print logo.
 
 
+import os
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--force', action="store_true", default=False,
@@ -26,6 +27,7 @@ parser.add_argument('--skip-zplug', action='store_true',
 args = parser.parse_args()
 
 ################# BEGIN OF FIXME #################
+IS_SSH = os.getenv('SSH_TTY', None) is not None
 
 # Task Definition
 # (path of target symlink) : (location of source file in the repository)
@@ -58,7 +60,6 @@ tasks = {
     # Bins
     '~/.local/bin/dotfiles' : 'bin/dotfiles',
     '~/.local/bin/fasd' : 'zsh/fasd/fasd',
-    '~/.local/bin/is_mosh' : 'zsh/is_mosh/is_mosh',
     '~/.local/bin/fzf' : dict(src='~/.fzf/bin/fzf', force=True),
 
     # X
@@ -67,8 +68,10 @@ tasks = {
     # GTK
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
 
-    # kitty
-    '~/.config/kitty/kitty.conf': 'config/kitty/kitty.conf',
+    # terminal emulators (kitty, alacritty, wezterm)
+    '~/.config/kitty': dict(src='config/kitty', cond=not IS_SSH),
+    '~/.config/alacritty': dict(src='config/alacritty', cond=not IS_SSH),
+    '~/.config/wezterm': dict(src='config/wezterm', cond=not IS_SSH),
 
     # tmux
     '~/.tmux'      : 'tmux',
@@ -77,7 +80,6 @@ tasks = {
     # .config (XDG-style)
     '~/.config/terminator' : 'config/terminator',
     '~/.config/pudb/pudb.cfg' : 'config/pudb/pudb.cfg',
-    '~/.config/fsh/wook.ini' : 'config/fsh/wook.ini',
 
     # pip and python
     #'~/.pip/pip.conf' : 'pip/pip.conf',
@@ -115,6 +117,26 @@ Please remove your local folder/file $f and try again.\033[0m"
     done
 ''']
 
+post_actions += [  # fzf
+    r'''#!/bin/bash
+    # Install junegunn/fzf
+    FZF_REPO="https://github.com/junegunn/fzf.git"
+    if [[ ! -d "$HOME/.fzf" ]]; then
+        git clone "$FZF_REPO" "$HOME/.fzf"
+    else
+        cd $HOME/.fzf && git fetch --tags
+    fi
+    cd $HOME/.fzf
+
+    # Checkout the latest release (tag)
+    tag=$(git ls-remote --tags --exit-code --refs "$FZF_REPO" \
+          | sed -E 's/^[[:xdigit:]]+[[:space:]]+refs\/tags\/(.+)/\1/g' \
+          | sort -V | tail -n1)
+    git checkout "$tag"
+
+    ./install --all --no-update-rc
+''']
+
 post_actions += [  # video2gif
     '''#!/bin/bash
     # Download command line scripts
@@ -143,6 +165,7 @@ ERROR: antidote not found. Double check the submodule exists, and you have a val
         fi
         antidote update
         antidote reset
+        source ~/.zshrc
     "
     ''' if not args.skip_zplug else \
         '# zsh plugins update (Skipped)'
@@ -196,8 +219,7 @@ post_actions += [  # install some essential packages (linux)
 
 post_actions += [  # neovim
     '''#!/bin/bash
-    # validate neovim package installation on python2/3 and automatically install if missing
-    bash "etc/install-neovim-py.sh"
+    bash "etc/install-neovim.sh"
 ''']
 
 post_actions += [  # vim-plug
@@ -206,6 +228,13 @@ post_actions += [  # vim-plug
      'update'  : 'PATH="$PATH:~/.local/bin"  nvim --headless +"Lazy! update"  +qall',
      'none'    : '# vim plugins: skipped',
      }['update' if not args.skip_vimplug else 'none']
+    + '\n' +
+    r'''#!/bin/bash
+    if [[ -n "~/.vim/plugged/*.cloning(#qN)" ]]; then
+        echo "Cleaning up plugin installation artifacts..."
+        rm -fv ~/.vim/plugged/*.cloning
+    fi
+    '''
 ]
 
 post_actions += [  # gitconfig.secret
@@ -277,7 +306,7 @@ def log(msg, cr=True):
 def log_boxed(msg, color_fn=WHITE, use_bold=False, len_adjust=0):
     import unicodedata
     pad_msg = (" " + msg + "  ")
-    l = sum(not unicodedata.combining(ch) for ch in unicode(pad_msg, 'utf-8')) + len_adjust
+    l = sum(not unicodedata.combining(ch) for ch in unicode(pad_msg, 'utf-8')) + len_adjust  # noqa
     if use_bold:
         log(color_fn("┏" + ("━" * l) + "┓\n" +
                      "┃" + pad_msg   + "┃\n" +
@@ -302,7 +331,8 @@ os.chdir(current_dir)
 # check if git submodules are loaded properly
 stat = subprocess.check_output("git submodule status --recursive",
                                shell=True, universal_newlines=True)
-submodule_issues = [(l.split()[1], l[0]) for l in stat.split('\n') if len(l) and l[0] != ' ']
+submodule_issues = [(l.split()[1], l[0]) for l in stat.split('\n')  # noqa
+                    if len(l) and l[0] != ' ']
 
 if submodule_issues:
     stat_messages = {'+': 'needs update', '-': 'not initialized', 'U': 'conflict!'}
@@ -317,9 +347,11 @@ if submodule_issues:
         git_submodule_update_cmd = 'git submodule update --init --recursive'
         # git 2.8+ supports parallel submodule fetching
         try:
-            git_version = str(subprocess.check_output("""git --version | awk '{print $3}'""", shell=True))
-            if git_version >= '2.8': git_submodule_update_cmd += ' --jobs 8'
-        except Exception as ex:
+            git_version = str(subprocess.check_output(
+                """git --version | awk '{print $3}'""", shell=True))
+            if git_version >= '2.8':
+                git_submodule_update_cmd += ' --jobs 8'
+        except Exception:
             pass
         log("Running: %s" % CYAN(git_submodule_update_cmd))
         subprocess.call(git_submodule_update_cmd, shell=True)
@@ -334,7 +366,12 @@ for target, item in sorted(tasks.items()):
     if isinstance(item, str):
         item = {'src': item}
 
-    source, force = item.get('src', None), item.get('force', False)
+    source = item.get('src', None)
+    force = item.get('force', False)
+    fail_on_error = item.get('fail_on_error', False)
+
+    if not item.get('cond', True):
+        continue
 
     if source:
         source = os.path.join(current_dir, os.path.expanduser(source))
@@ -347,6 +384,7 @@ for target, item in sorted(tasks.items()):
             pass
         continue
 
+    assert source is not None
     # bad entry if source does not exists...
     if force:
         pass  # Even if the source does not exist, always make a symlink
@@ -357,21 +395,29 @@ for target, item in sorted(tasks.items()):
     # if --force option is given, delete and override the previous symlink
     if os.path.lexists(target):
         is_broken_link = os.path.islink(target) and not os.path.exists(os.readlink(target))
+        err = ""
 
-        if args.force or is_broken_link:
+        if is_broken_link:  # safe to remove
             if os.path.islink(target):
                 os.unlink(target)
+
+        elif os.path.islink(target):
+            if args.force:
+                os.unlink(target)
             else:
-                log("{:50s} : {}".format(
-                    BLUE(target),
-                    YELLOW("already exists but not a symbolic link; --force option ignored")
-                ))
+                msg = GRAY("already exists, skipped")
+                log("{:60s} : {}".format(BLUE(target), msg))
+        elif fail_on_error:
+            err = RED("already exists, please remove " + target + " manually.")
         else:
-            log("{:50s} : {}".format(
-                BLUE(target),
-                GRAY("already exists, skipped") if os.path.islink(target) \
-                    else YELLOW("exists, but not a symbolic link. Check by yourself!!")
-            ))
+            if args.force:
+                err = YELLOW("already exists but not a symbolic link; --force option ignored")
+            else:
+                err = YELLOW("exists, but not a symbolic link. Check by yourself!!")
+        if err:
+            log("{:60s} : {}".format(BLUE(target), err))
+            if fail_on_error:
+                sys.exit(1)
 
     # make a symbolic link if available
     if not os.path.lexists(target):
@@ -380,7 +426,7 @@ for target, item in sorted(tasks.items()):
             makedirs(mkdir_target)
             log(GREEN('Created directory : %s' % mkdir_target))
         os.symlink(source, target)
-        log("{:50s} : {}".format(
+        log("{:60s} : {}".format(
             BLUE(target),
             GREEN("symlink created from '%s'" % source)
         ))
@@ -396,7 +442,7 @@ for action in post_actions:
 
     log("\n", cr=False)
     log_boxed("Executing: " + action_title, color_fn=CYAN)
-    ret = subprocess.call(['bash', '-c', action],
+    ret = subprocess.call(['bash', '-e', '-c', action],
                           preexec_fn=lambda: signal(SIGPIPE, SIG_DFL))
 
     if ret:

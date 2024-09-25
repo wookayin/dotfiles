@@ -6,6 +6,7 @@ function _require(name)
   return require(name)
 end
 
+_require 'config/commands/AutoBuild'
 _require 'config/commands/Config'
 _require 'config/commands/Makeprg'
 _require 'config/commands/Defer'

@@ -16,9 +16,16 @@ if [[ `uname` == 'Darwin' ]]; then
 fi
 
 # history settings
-shopt -s histappend		# append, no overwrite
+shopt -s histappend  # append, no overwrite
 HISTSIZE=10000
 HISTFILESIZE=20000
+
+# ulimits
+ulimit -n 10240
+
+# Clear environment variables in nested session
+unset VIM
+unset VIMRUNTIME
 
 ##############
 # 2. Aliases #
@@ -39,12 +46,16 @@ alias egrep='egrep --color=auto'
 
 # alert for rm, cp, mv
 alias rm='rm -iv'
-alias cp='cp -iv'
+alias cp='cp -ivp'
 alias mv='mv -iv'
 
 # screens
 alias scr='screen -rD'
 
+# inspect $PATH
+path() {
+  printf "%s\n" $(echo $PATH | tr ":" "\n")
+}
 
 ##################
 # 3. Color & PS1 #
@@ -96,7 +107,9 @@ else
 fi
 
 # PATH for local settings
-export PATH="~/.local/bin/:$PATH"
+if [[ ! "$PATH" == *~/.local/bin* ]]; then
+  export PATH="~/.local/bin:$PATH"
+fi
 
 # Additional Completion
 if [ -f /usr/local/etc/bash_completion ]; then source /usr/local/etc/bash_completion; fi

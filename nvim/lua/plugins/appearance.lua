@@ -9,14 +9,19 @@ return {
 
   -- statusline
   Plug 'nvim-lualine/lualine.nvim' {
-    event = 'UIEnter',
+    event = 'UIEnter',  -- load the plugin earlier than VimEnter, before drawing the UI, to avoid flickering transition
+    init = function()
+      -- lualine initializes lazily; to hide unwanted text changes in the statusline,
+      -- draw an empty statusline with no text before the first draw of lualine
+      vim.o.statusline = ' '
+    end,
     config = require('config.statusline').setup,
   };
 
   -- tabline
   Plug 'mg979/vim-xtabline' {
-    -- can be initialized lazily after vim UI is ready
-    event = 'UIEnter',
-    init = PlugConfig,
+    event = 'UIEnter',  -- load the plugin before drawing UI to not flicker; it takes only 2-3 ms
+    init = require("config.tabline").init_xtabline,
+    config = require("config.tabline").setup_xtabline,
   };
 }

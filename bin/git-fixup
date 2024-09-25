@@ -2,7 +2,7 @@
 # git-fixup (interactive) using fzf-git.sh
 #
 # Usage:
-# $ git-fixup
+# $ git-fixup <commit>
 # $ git-fixup --rebase:  Perform interactive rebase after committing
 
 set -e
@@ -12,14 +12,21 @@ zparseopts -E -D -- \
     -rebase="opt_rebase"
 
 function git-fixup() {
+    local target="$@"  # target commit SHA to which we are going to fix up
+
     if git diff --staged --quiet; then
         echo >&2 'No changes added to commit'; return 1;
-    else
+    elif [ -z "$target" ]; then
         echo 'Choose which commit to fix up:';
         zsh -i --no-rcs -c '\
             source ~/.zsh/antidote-plugins/junegunn/fzf-git.sh/fzf-git.sh && \
             git commit --fixup $(_fzf_git_hashes) || exit 1; \
         ';
+    elif [ -n "$target" ]; then
+        git commit --fixup "$target"
+    else
+        >&2 echo "git fixup: arguments required (or run inside tmux)"
+        return 1;
     fi
 
     if [ -n "$opt_rebase" ]; then
@@ -38,9 +45,5 @@ if (( $# )); then
     fi
     set -- "${@[0,end_opts-1]}" "${@[end_opts+1,-1]}"
 fi
-if (( $# )); then
-    echo >&2 "No positional arguments expected";
-    exit 2;
-fi
 
-git-fixup
+git-fixup "$@"
