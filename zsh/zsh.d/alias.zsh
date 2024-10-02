@@ -445,7 +445,7 @@ fi
 # df (duf, pydf)
 if (( $+commands[duf] )); then
     # dotfiles install duf
-    alias df="duf"
+    alias df="duf -hide=fuse"
 elif (( $+commands[pydf] )); then
     # pip install --user pydf
     # pydf: a colorized df
