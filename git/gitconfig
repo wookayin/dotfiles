@@ -144,3 +144,6 @@ lg = !"git lg1"
 	name = Amelie Schmidt-Colberg
 	email = amelie.schmidtcolberg@gmail.com
 
+[user]
+	email = amelie.schmidt-colberg@fokus.fraunhofer.de
+	name = Amelie Schmidt-Colberg
