@@ -1,10 +1,28 @@
 # .pythonrc.py
+
+# Auto-load common built-in modules that are frequently used
+# For instant startup, non-builtins should be imported upon request (use %imp)
+
+import asyncio
+import contextlib
+import functools
+import hashlib
+import importlib
+import io
+import os
+import pathlib
+import re
+import sys
+from importlib import reload
+from pathlib import Path
+
+# Install Jedi completer to readline (tab completion in vanilla python REPL)
 # http://jedi.jedidjah.ch/en/dev/docs/usage.html
 try:
     from jedi.utils import setup_readline
     setup_readline()
 except ImportError:
-    import readline, rlcompleter
+    import readline, rlcompleter   # isort:skip
     readline.parse_and_bind("tab: complete")
 
 # https://github.com/laike9m/pdir2
@@ -12,12 +30,6 @@ try:
     import pdir
 except ImportError:
     pass
-
-# Auto-load common packages that are frequently used
-# For instant startup, non-builtins should be imported upon request (use %imp)
-import os, sys, re
-import importlib, contextlib
-from importlib import reload
 
 
 def _import_common_modules(full=False):
@@ -55,6 +67,8 @@ def _import_common_modules(full=False):
             sys.stdout.flush()
 
     _import('numpy', _as='np')
+    _import('jax')
+    _import('jax.numpy', _as='jnp')
     _import('pandas', _as='pd')
     _import('matplotlib', _as='mpl')
     _import('matplotlib.pyplot', _as='plt')
@@ -64,7 +78,6 @@ def _import_common_modules(full=False):
 
     if full:   # %imp -a
         _import('tensorflow', _as='tf')
-        _import('torch')
 
 
 def _import_common_magics():
@@ -79,6 +92,7 @@ except ModuleNotFoundError:
     pass'''.format(line=line))
 
     _run(r'%load_ext autoreload')
+    _run(r'%load_ext imgcat')
     _run(r'%load_ext line_profiler')
 
 
@@ -95,8 +109,8 @@ try:
     from IPython.core.magic import register_line_magic
 
     @register_line_magic
-    def imp(line):
-        """%imp: Magic for loading common packages you would need."""
+    def i(line):
+        """%i: Magic for loading common packages you would need."""
         _import_common(line.strip() == '-a')
 
     del register_line_magic

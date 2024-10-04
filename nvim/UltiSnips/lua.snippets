@@ -1,0 +1,192 @@
+# lua.snippets
+# Common luascript usage for neovim config and plugin development
+
+global !p
+import px
+
+snippets_helper = px.__import__('snippets_helper')
+on_ts_node = snippets_helper.on_ts_node
+endglobal
+
+# General Lua
+# -----------
+
+snippet fn "function" w
+function($1)
+	$2
+end$0
+endsnippet
+snippet fun "function" w
+function($1)
+	$2
+end$0
+endsnippet
+snippet req
+require('$1')
+endsnippet
+snippet getinfo
+debug.getinfo($1)
+endsnippet
+snippet M "Template for a lua module"
+local M = {}
+
+$0
+
+return M
+endsnippet
+
+# Typing
+snippet as "--[[ @as ... ]]"
+--[[ @as $1 ]]$0
+endsnippet
+
+# Neovim Development
+# ------------------
+
+# Lua Debugging
+snippet p "vim.print(...) with automatic vim.inspect"
+vim.print(${1}) -- XXX DEBUG
+endsnippet
+snippet i  "vim.notify + vim.inspect for debugging"
+require("utils.debug_utils").inspect({ $1 }) -- XXX DEBUG
+endsnippet
+snippet inspect
+vim.inspect(${1})
+endsnippet
+snippet notify
+vim.notify(${1:"message"}, vim.log.levels.${3:INFO}, { title = "${2:Title}" })
+endsnippet
+snippet ptrace  "print traceback"
+print(debug.traceback()) -- XXX DEBUG
+$0
+endsnippet
+snippet trace  "vim.notify + traceback"
+require("utils.debug_utils").notify_traceback() -- XXX DEBUG
+$0
+endsnippet
+snippet reload
+require('plenary.reload').reload_module('$1')
+endsnippet
+snippet xpcall "xpcall, like a try-catch"
+xpcall(function()
+	$1
+end, function(err)
+	local msg = debug.traceback(err, 1)
+	vim.notify(msg, vim.log.levels.ERROR)
+end)
+endsnippet
+
+# Log levels
+snippet INFO
+vim.log.levels.INFO
+endsnippet
+snippet WARN
+vim.log.levels.WARN
+endsnippet
+snippet ERROR
+vim.log.levels.ERROR
+endsnippet
+snippet DEBUG
+vim.log.levels.DEBUG
+endsnippet
+
+# Defining User Commands and Keymaps (neovim 0.7.0+)
+# https://github.com/nanotee/nvim-lua-guide/blob/master/README.md#defining-user-commands
+snippet command
+vim.api.nvim_create_user_command('${1:CommandName}', ${2:function(opts) end}, {
+	nargs = ${3:'?'},
+	desc = '$1',
+})
+endsnippet
+snippet commandbuf
+vim.api.nvim_buf_create_user_command(bufnr, '${1:CommandName}', ${2:function(opts) end}, {
+	nargs = ${3:'?'},
+	desc = '$1',
+})
+endsnippet
+snippet augroup
+vim.api.nvim_create_augroup('$1', { clear = true })
+endsnippet
+snippet autocmd
+vim.api.nvim_create_autocmd('${1:FileType}', {
+	pattern = '${2:*}',
+	group = ${3:augroup},
+	callback = function(args)
+		$0
+	end,
+})
+endsnippet
+snippet keymap
+vim.keymap.set('${1:n}', '${2:<Key>}', function()
+	${4:-- or a key sequence str instead of function}
+end, {remap = false, buffer = ${3:true}, desc = '$5'})
+endsnippet
+snippet bufmap
+vim.keymap.set('${1:n}', '${2:<Key>}', function()
+	${3:-- or a key sequence str instead of function}
+end, {buffer = true, desc = '$4'})
+endsnippet
+snippet nmap
+vim.keymap.set('n', '${1:<Key>}', function()
+	${2:-- or a key sequence str instead of function}
+end, {remap = true, desc = '$3'})
+endsnippet
+snippet noremap
+vim.keymap.set('n', '${1:<Key>}', function()
+	${2:-- or a key sequence str instead of function}
+end, {desc = '$3'})
+endsnippet
+snippet , "<leader> key" "on_ts_node('string_content')" ei
+<leader>
+endsnippet
+
+# Idioms
+snippet extend "merge two tables A and B (B takes precedence)"
+vim.tbl_deep_extend("force", ${1:...})$0
+endsnippet
+snippet format.gsub
+("$1"):gsub('%$(%w+)', { $2 })
+endsnippet
+snippet echo "nvim_echo() call (like echon)"
+vim.api.nvim_echo({{ ${1:"message"}, ${2:"WarningMsg"} }}, false, {})
+endsnippet
+snippet echom "nvim_echo() call (like echom)"
+vim.api.nvim_echo({{ ${1:"message"}, ${2:"WarningMsg"} }}, true, {})
+endsnippet
+
+snippet is_float "is the window a floating window?"
+vim.api.nvim_win_get_config(${1:winnr}).relative ~= ""$0
+endsnippet
+snippet bufnr "Get the bufnr of the current buffer"
+vim.api.nvim_get_current_buf()
+endsnippet
+snippet bufname "Get the name of a buffer"
+vim.fn.bufname(${1:bufnr})$0
+endsnippet
+snippet buftype "Get the type of a buffer (<empty>, nofile, terminal, etc.)"
+vim.bo.buftype
+endsnippet
+snippet filetype "Get the filetype of a buffer"
+vim.bo.filetype
+endsnippet
+snippet has "vim.fn.has"
+vim.fn.has('$1') > 0$0
+endsnippet
+
+snippet cursor "get current cursor position (0-indexed)"
+local row, col = vim.api.nvim_win_get_cursor(0)
+row = row - 1  -- (row, col) are now 0-indexed
+$0
+endsnippet
+
+# Busted-style Testing
+snippet describe
+describe("${1:something}", function()
+	$0
+end)
+endsnippet
+snippet it
+it("${1:works}", function()
+	$0
+end)
+endsnippet

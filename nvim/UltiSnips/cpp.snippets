@@ -1,0 +1,106 @@
+# C++
+
+# General
+snippet using "using namespace std"
+using namespace std;
+endsnippet
+snippet main
+int main() {
+	${1}
+	return 0;
+}
+endsnippet
+
+# Loop
+snippet for
+for(int ${1:i} = ${2:0}; $1 < ${3:n}; ++$1) {
+	$0
+}
+endsnippet
+snippet repi "for i = 0..n"
+for(int i = 0; i < ${1:n}; ++ i) {
+    $0
+}
+endsnippet
+snippet repj "for j = 0..n"
+for(int j = 0; j < ${1:n}; ++ j) {
+    $0
+}
+endsnippet
+snippet '(rep|REP)\((\w+),\s(.*)\) ' "REP(i, n) -> for(int i = 0; i < n; ++ i)" rA
+for(int `!p snip.rv = match.group(2)` = 0; `!p snip.rv = match.group(2)` < `!p snip.rv = match.group(3)`; ++ `!p snip.rv = match.group(2)`) $0
+endsnippet
+
+# STL Idioms
+snippet all
+${1:container}.begin(), $1.end()${0}
+endsnippet
+snippet 'all\((\w+)\)' "all(foo) -> foo.begin(), foo.end()" rA
+`!p snip.rv = match.group(1)`.begin(), `!p snip.rv = match.group(1)`.end()${0}
+endsnippet
+snippet unique
+${1:container}.erase(unique($1.begin(), $1.end()), $1.end());${0}
+endsnippet
+snippet memset
+memset(${1:array}, ${2:0}, sizeof($1));
+endsnippet
+snippet vec
+vector<${1:int}> ${2:v}
+endsnippet
+snippet vi
+vector<int> ${1:v}
+endsnippet
+snippet vs
+vector<string> ${1:v}
+endsnippet
+snippet pu "push_back" w
+push_back(${1})
+endsnippet
+snippet emp "emplace_back" w
+emplace_back(${1})
+endsnippet
+
+# Competitive Programming snippets
+snippet MACROS "common macros for competitive programming"
+#define DEBUG(x) cerr << #x << " = " << x << endl;
+#define DEBUGALL(x) { cerr << #x << " = "; for(const auto &e: x) cerr << e << " "; cerr << endl; }
+endsnippet
+snippet #include
+#include <array>
+#include <cassert>
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <functional>
+#include <string>
+#include <vector>
+#include <queue>
+#include <map>
+#include <set>
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+
+using namespace std;
+
+$0
+endsnippet
+snippet kase
+for(int kase = 1; kase <= T; ++ kase) {
+	${1}
+	printf("Case #%d: ", kase);
+}
+endsnippet
+snippet cin.sync "cin.sync_with_stdio(false)"
+cin.sync_with_stdio(false);
+$0
+endsnippet
+snippet ONLINE_JUDGE
+#ifndef ONLINE_JUDGE
+	freopen("${1:problem.in}", "rt", stdin);
+#endif
+endsnippet
+snippet freopen
+freopen("${1:input.txt}", "rt", stdin);
+freopen("${2:output.txt}", "wt", stdout);
+endsnippet

@@ -1,0 +1,28 @@
+# Snippets for shell and bash sripts
+
+# Useful references:
+# https://github.com/dylanaraps/pure-bash-bible
+
+
+# Preambles
+snippet set
+set -eu -o pipefail
+endsnippet
+snippet scriptpath
+SCRIPT=$(readlink -f \$0)
+SCRIPTPATH=\`dirname \$SCRIPT\`
+endsnippet
+
+snippet PS4
+PS4="\033[1;33m>>>\033[0m "; set -x;
+endsnippet
+
+# UI
+snippet confirm
+read -p "Continue (y/n)? " choice
+case "$choice" in
+    y|Y) echo "Yes!" ;;
+    n|N) echo "Aborted."; exit 1; ;;
+    *)   echo "Invalid input"; exit 1; ;;
+esac
+endsnippet

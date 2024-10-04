@@ -48,9 +48,9 @@ def add_argument(*args, **kwargs):
 
 ###############################################################################################
 
-@add_argument('--fast', action='store_true', help='Skip all slow updates (zgen, vimplug)')
-@add_argument('--skip-zplug', action='store_true', help='Skip zplug/zgen update')
-@add_argument('--skip-vimplug', action='store_true', help='Skip vim-plug update')
+@add_argument('--fast', action='store_true', help='Skip all slow updates (zsh/vim plugins)')
+@add_argument('--skip-zplug', action='store_true', help='Skip updating zsh plugins (antidote)')
+@add_argument('--skip-vimplug', action='store_true', help='Skip updating vim plugins (vim-plug)')
 def update(fast=False,
            skip_zplug=False,
            skip_vimplug=False):
@@ -74,19 +74,25 @@ def update(fast=False,
     install_args = ' '.join(install_args)
 
     # TODO: check if current branch is master
-    action = '''
+    action = '''#!/bin/bash
+        set -e
         set -x
+        ret=0
         cd ~/.dotfiles
         git fetch origin
         git stash push -m "DOTFILES_UPDATE"
-        git merge --ff-only && python install.py {install_args}
+        git merge --ff-only && \
+            python3 install.py %s || { ret=$?; }
         git stash list | grep "DOTFILES_UPDATE" && git stash pop --index -q
-    '''.format(install_args=install_args)
-    subprocess.call(['bash', '-c', action])
+        exit $ret;
+    ''' % install_args
 
+    ret = subprocess.call(['bash', '-c', action])
     git_new_head = _git_head()
 
-    if git_old_head == git_new_head:
+    if ret != 0:
+        print(RED('[*] installer has failed. Check the log.'))
+    elif git_old_head == git_new_head:
         print(YELLOW('[*] dotfiles is up-to-date ({}).'.format(git_new_head)))
     else:
         print(GREEN('[*] Update complete!'))
@@ -145,9 +151,9 @@ def install_local(target, force, argv=[]):
         if ret != 0: # error
             return ret
 
-        print(GREEN("[*] Installation successful: {}\n".format(t)))
+        print(GREEN("\n[*] Installation successful: {}".format(t)))
 
-    print(GREEN("\n[*] Installation(s) successful. You may need to run ") + \
+    print(GREEN("\n\n[*] Installation(s) successful. You may need to run ") + \
           WHITE("`exec zsh`") + \
           GREEN(" to reflect changes in PATH."))
 

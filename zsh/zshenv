@@ -1,8 +1,18 @@
+# ~/.zshenv
 #
-# Defines environment variables.
+# Defines environment variables for ZSH.
+# **ALWAYS** sourced first on interactive, login, non-login (script) shells.
+#
+#   ~/.zshenv -> ~/.zprofile -> ~/.zshrc -> ~/.zlogin
+#   ^^^^^^^^^
+#
+# See [fighting with path_helper] https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2
+# See https://unix.stackexchange.com/questions/71253/what-should-shouldnt-go-in-zshenv-zshrc-zlogin-zprofile-zlogout
+# TL;DR) $PATH for interactive shell configs should be in ~/.zprofile
 #
 # See also: ~/.zsh/zsh.d/envs.zsh
 #
+
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
@@ -17,13 +27,18 @@ if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'
 fi
 
-#
-# Editors
-#
+# See https://github.com/neovim/neovim/issues/22717
+# There is really no reason for $VIM and $VIMRUNTIME need to be set on zsh.
+if [[ -o interactive ]]; then
+  unset VIM
+  unset VIMRUNTIME
+fi
 
-export EDITOR='vim'
-export VISUAL='vim'
-export PAGER='less'
+# Workaround conda's bug where $HOST messed up to 'x86_64-conda-linux-gnu', etc.
+# https://github.com/conda/conda/issues/7031
+if [[ "$HOST" == *conda* ]]; then
+  export HOST=$(hostname)
+fi
 
 #
 # Language
@@ -38,54 +53,98 @@ if [[ "$LC_CTYPE" == "UTF-8" ]]; then
   export LC_CTYPE='en_US.UTF-8'
 fi
 
+# DO NOT run system startup files (e.g., /etc/zprofile, /etc/zshrc, /etc/zsh/*, etc.).
+# This is important to prevent the problematic /etc/zprofile from messing up $PATH (on macOS).
+# On Linux systems, it won't matter as $PATH are not corrupted by /etc/zprofile.
+# A consequence is that /etc/path, /etc/paths.d/*, are no longer added to the $PATH by default,
+# so these would need to be added manually by this user startup file (~/.zshenv).
+# Also, system-wide zshrc (e.g., /etc/zshrc) would need to be manually sourced in ~/.zshrc.
+# see: https://gist.github.com/Linerre/f11ad4a6a934dcf01ee8415c9457e7b2
+unsetopt GLOBAL_RCS
+
 #
-# Paths
+# Paths ($PATH, $path)
 #
 
 typeset -gU cdpath fpath mailpath path
 
-# [For Mac M1 USERS]
-# Homebrew: /opt/homebrew/bin must precede /usr/local/bin.
-# Please update /etc/paths: add `/opt/homebrew/bin` manually.
+# NOTE: the order is *VERY* important, should be defined in the order of
+#  increasing importance and precedence so that we can "prepend" directories to $path.
+#  It's also important to NOT prepend if already included in $path,
+#  because some PATH entry for subshell or subprocess can be shadowed.
+# NOTE: paths for interactive shells should go into ~/.zshrc
+#
 
-# Set the the list of directories that cd searches.
-# cdpath=(
-#   $cdpath
-# )
+function prepend_path() {
+  # prepend to $PATH, only if the directory exists and is not already included.
+  local p; for p in "$@"; do
+    if [ -d "$p" ] && (( ! ${path[(I)$p]} )); then
+      path=( $p $path )
+    fi
+  done
+}
 
-# Set the list of directories that Zsh searches for programs.
-# see ~/.zprofile as well
-path=(
-  $path
-  /usr/local/{bin,sbin}
-)
 
-# Let ~/.local/bin take precedence
-if ! (( ${path[(I)$HOME/.local/bin]} )); then
-  path=( $HOME/.local/bin $path )
+# Add macOS system path (see the "disabled" /etc/zprofile)
+# Note: since path_helper always prepend, it can mess up the order if
+# $PATH is inherited from a parent env (e.g., tmux, nested shell, etc.).
+# So we make a backup before calling it to have the current $path prioritized
+# and those "system path" (e.g., /usr/local/bin) always come after user-config.
+if [ -x /usr/libexec/path_helper ]; then
+  local -a path_orig=($path)
+  eval `/usr/libexec/path_helper -s`
+  path=($path_orig $path)
 fi
 
-# Additional $PATH configuration:
+# [For Apple Silicon (M1, M2, M3, etc.) USERS]
+# Homebrew: /opt/homebrew/bin must precede /usr/local/bin, etc.
+# NOTE: It's also recommended to put /opt/homebrew/bin to /etc/path
+# for non-interactive programs (e.g., GUI apps and some bash scripts).
 
-# dotfiles-populated bin.
-if [ -d $HOME/.dotfiles/bin/ ]; then
-  path=( $path $HOME/.dotfiles/bin )
+if [[ $(uname) == "Darwin" ]]; then
+  if [[ $(uname -m) == "arm64" ]] && [[ -d "/opt/homebrew" ]]; then
+    # Default homebrew installation for arm64
+    export HOMEBREW="/opt/homebrew"
+  elif [[ -d "$HOME/.homebrew" ]]; then
+    # Allow local installation for Homebrew (without sudo)
+    export HOMEBREW="$HOME/.homebrew"
+  fi
+
+  if [[ -n "$HOMEBREW" ]]; then
+    prepend_path "$HOMEBREW/bin"
+    # Homebrew ruby is keg-only, no links at /opt/homebrew/bin.
+    # Note that we need to pin an exact version of ruby
+    prepend_path "$HOMEBREW/opt/ruby@3.0/bin"
+    prepend_path "$HOMEBREW/lib/ruby/gems/3.0.0/bin"
+  fi
 fi
 
 # Node + Yarn
-if [ -d $HOME/.yarn/bin/ ]; then
-  path=( $path $HOME/.yarn/bin )
+prepend_path "$HOME/.yarn/bin"
+
+# GO
+# $GOPATH is where go-installed libraries or command line utilities will be installed.
+# Especially, binaries will be located at $HOME/.go/bin, which should be added to $PATH.
+export GOPATH=$HOME/.go
+mkdir -p $GOPATH
+prepend_path "$GOPATH/bin"
+
+# rust (cargo)
+prepend_path "$HOME/.cargo/bin"
+
+# Bazel {{{
+if [ -f "$HOME/.bazel/bin/bazel" ]; then
+  export BAZEL_HOME="$HOME/.bazel"
+  prepend_path "$BAZEL_HOME/bin"
 fi
 
-# Cleanup some anaconda environment variables to avoid messing up in tmux, etc.
-# (these environment variables might be copied and inherited unwantedly)
-unset CONDA_EXE
-unset CONDA_PREFIX
-unset CONDA_DEFAULT_ENV
-unset CONDA_PYTHON_EXE
-unset CONDA_SHLVL
+# dotfiles-populated bin (having quite high priority)
+prepend_path "$HOME/.dotfiles/bin"
 
-# Miniconda3
+# Let ~/.local/bin take the most, biggest precedence
+prepend_path "$HOME/.local/bin"
+
+# conda (miniforge3, miniconda3)
 function _try_conda_base() {
   local conda_base="$1"
   [[ -z "$conda_base" ]] && return 1;
@@ -93,23 +152,48 @@ function _try_conda_base() {
     return 0;  # do nothing, CONDA_EXE is already found
   fi
 
-  if [ -d "$conda_base" ]; then
-    path=( $path "$conda_base/bin" )
+  if [ -d "$conda_base/condabin" ]; then
+    prepend_path "$conda_base/condabin"
     export CONDA_EXE="$conda_base/bin/conda"
     if [ ! -f "$CONDA_EXE" ]; then
       echo "Warning: $CONDA_EXE does not exist"
     fi
+    return 0;
   fi
+  return 1;
 }
-_try_conda_base "$HOME/.miniconda3";
-_try_conda_base "$HOME/miniconda3";
-_try_conda_base "$HOME/.miniforge3";
-_try_conda_base "/usr/local/miniconda3";
+
+_try_conda_base "$HOME/.mambaforge" || \
+_try_conda_base "$HOME/mambaforge" || \
+_try_conda_base "$HOME/.miniforge3" || \
+_try_conda_base "$HOME/miniforge3"  || \
+_try_conda_base "$HOME/.miniconda3" || \
+_try_conda_base "$HOME/miniconda3"  || \
+_try_conda_base "/usr/local/miniconda3" || true;
 unfunction _try_conda_base
 
-# rust (cargo)
-if [ -d $HOME/.cargo/bin/ ]; then
-  path=( $path $HOME/.cargo/bin )
+
+#
+# Editors
+#
+
+if (( $+commands[nvim] )); then
+  export EDITOR='nvim'
+  export VISUAL='nvim'
+else
+  export EDITOR='vim'
+  export VISUAL='vim'
+fi
+
+export PAGER='less'
+
+# in neovim, try :echo stdpath("data")  or :echo $MASON
+export MASON="$HOME/.local/share/nvim/mason/"
+
+# Unset GIT_EDITOR (usually nvr) inside a neovim-floaterm session.
+# See ~/.vimrc: $GIT_EDITOR section for more details.
+if [[ -n "$FLOATERM" ]]; then
+  unset GIT_EDITOR
 fi
 
 
@@ -142,13 +226,23 @@ fi
 #
 # Add custom config directory.
 #  (note that this line is executed before initialization of prezto.)
+# TODO: This is not the right place to configure "custom" $fpath,
+# as some linux systems zsh might be locally-installed on ~/.local/share (like a site config)
+#   but on other systems ~/.local may be treated as user-local config.
 #
-fpath=(${ZDOTDIR:-$HOME}/.zsh/prezto-themes ~/.zsh/functions ~/.local/share/zsh/site-functions $fpath)
+fpath=(
+  ${ZDOTDIR:-$HOME}/.zsh/prezto-themes
+  $HOME/.zsh/functions
+  $HOME/.local/share/zsh/site-functions
+  $fpath   # e.g. /usr/local/share/zsh/site-functions
+)
 
 
 # #
 # # Python - Virtualenv, etc.
 # # 
+
+export PYTHONBREAKPOINT='pudb.set_trace'
 
 if [[ "$(uname)" == "Darwin" ]]; then
     # Mac OS X: use python shipped by Homebrew for virtualenv.
@@ -177,8 +271,22 @@ if [ -f "$HOME/.zshenv.local" ]; then
   source "$HOME/.zshenv.local"
 fi
 
-FPATH=~/.zsh/misc:$FPATH
-PATH=~/.zsh/misc:$PATH
-autoload -Uz module_init
 
 . "$HOME/.cargo/env"
+
+# Enforce system-wide PATH entries to be put at the back, always
+# (this can correct some PATH issues for subshell or subprocess)
+# Note: see ~/.zprofile and ~/.zshrc
+path=( ${path[@]:#/usr/local/bin} )
+path=( ${path[@]:#/usr/local/sbin} )
+path=( ${path[@]:#/usr/bin} )
+path=( ${path[@]:#/usr/sbin} )
+path=( ${path[@]:#/bin} )
+path=( ${path[@]:#/sbin} )
+path=(
+  $path
+  /usr/local/{bin,sbin}
+  /usr/{bin,sbin}
+  /bin
+  /sbin
+)

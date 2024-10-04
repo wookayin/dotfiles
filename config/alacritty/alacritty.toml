@@ -1,0 +1,79 @@
+# https://alacritty.org/config-alacritty.html
+
+# ┏━━━━━━━━━━━━━━━━┓
+# ┃ General Config ┃
+# ┗━━━━━━━━━━━━━━━━┛
+
+[shell]
+program = "/bin/zsh"
+args = ["-l"]
+
+[scrolling]
+history = 100000
+
+# ┏━━━━━━━━━━━━━━━┓
+# ┃ Font Settings ┃
+# ┗━━━━━━━━━━━━━━━┛
+
+[font]
+size = 17.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font Mono"
+style = "ExtraLight"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font Mono"
+style = "ExtraLight Italic"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font Mono"
+style = "SemiBold"  # Bold is too thick ...
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font Mono"
+style = "SemiBold Italic"
+
+[font.offset]
+x = -2  # compacter letter spacing
+y = -6  # compacter line spacing
+
+# ┏━━━━━━━━━━━━┓
+# ┃ Appearance ┃
+# ┗━━━━━━━━━━━━┛
+
+[window]
+padding = { x = 2, y = 2 }
+dynamic_padding = false
+
+option_as_alt = "OnlyLeft"
+
+# ┏━━━━━━━━┓
+# ┃ Colors ┃
+# ┗━━━━━━━━┛
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.primary]
+background = "#000000"
+
+[colors.normal]
+black   = "#000000"
+red     = "#983019"
+green   = "#51bf37"
+yellow  = "#c6c43d"
+blue    = "#3a64bf"
+magenta = "#b93ec1"
+cyan    = "#53c2c5"
+white   = "#c7c7c7"
+
+[colors.bright]
+black   = "#676767"
+red     = "#ef766d"
+green   = "#8cf67a"
+yellow  = "#fefb40"
+blue    = "#6971f6"
+magenta = "#d561df"
+cyan    = "#8ef9fd"
+white   = "#feffff"

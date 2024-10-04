@@ -1,0 +1,137 @@
+# An UltiSnip that can be used everywhere.
+
+# Snippet options: (@see :help snippet-options)
+#   b - Beginning of line.
+#   i - In-word expansion.
+#   w - Word boundary.
+#   r - Regular expression.
+#   t - Do not expand tabs.
+#   s - Remove whitespace immediately before tabstop.
+#   m - Trim all whitespaces from right side.
+#   e - Custom context snippet.
+#   A - Snippet will be triggered automatically, when condition matches.
+#
+# Snippet Python objects: @see :help Ultisnips-python
+
+
+global !p
+def t_get(index, default=''):
+    # Get the value of the placeholder `t`, but avoids IndexError.
+    try:
+        return t[index]
+    except IndexError:
+        return default
+endglobal
+
+
+# ┏━━━━━━━━━┓
+# ┃ Shebang ┃
+# ┗━━━━━━━━━┛
+
+snippet #! "Shebang"
+`!p snip.rv = shebang()`
+
+endsnippet
+global !p
+def shebang():
+	if snip.ft == 'sh':  # shell or bash
+		return "#!/bin/bash"
+	return "#!/usr/bin/env " + snip.ft
+endglobal
+
+# ┏━━━━━━━┓
+# ┃ Boxes ┃
+# ┗━━━━━━━┛
+
+snippet box "Box (uses thiner unicode ──)"
+`!p snip.rv = '┌' + '─' * (len(t_get(1)) + 2) + '┐'`
+│ $1 │
+`!p snip.rv = '└' + '─' * (len(t_get(1)) + 2) + '┘'`
+$0
+endsnippet
+
+snippet Box "Box (uses thicker unicode ━━)"
+`!p snip.rv = '┏' + '━' * (len(t_get(1)) + 2) + '┓'`
+┃ $1 ┃
+`!p snip.rv = '┗' + '━' * (len(t_get(1)) + 2) + '┛'`
+$0
+endsnippet
+
+snippet %box "Box (with %)"
+`!p snip.rv = '%' + '%' * (len(t_get(1)) + 2) + '%'`
+% $1 %
+`!p snip.rv = '%' + '%' * (len(t_get(1)) + 2) + '%'`
+$0
+endsnippet
+
+snippet %Box "Box (uses thicker unicode ━━, and with %comments)"
+`!p snip.rv = '% ┏' + '━' * (len(t_get(1)) + 2) + '┓'`
+% ┃ $1 ┃
+`!p snip.rv = '% ┗' + '━' * (len(t_get(1)) + 2) + '┛'`
+$0
+endsnippet
+
+snippet #box "Box (with #)"
+`!p snip.rv = '#' + '#' * (len(t_get(1)) + 2) + '#'`
+# $1 #
+`!p snip.rv = '#' + '#' * (len(t_get(1)) + 2) + '#'`
+$0
+endsnippet
+
+snippet #Box "Box (uses thicker unicode ━━, and with #comments)"
+`!p snip.rv = '# ┏' + '━' * (len(t_get(1)) + 2) + '┓'`
+# ┃ $1 ┃
+`!p snip.rv = '# ┗' + '━' * (len(t_get(1)) + 2) + '┛'`
+$0
+endsnippet
+
+
+# ┏━━━━━━━━━━━━━━━━┓
+# ┃ Splitter Lines ┃
+# ┗━━━━━━━━━━━━━━━━┛
+
+snippet %% "Horizontal rule filled with %%%"
+`!p snip.rv = '%' * 100`
+endsnippet
+
+snippet ## "Horizontal rule filled with ###"
+`!p snip.rv = '#' * 100`
+endsnippet
+
+snippet %- "Horizontal rule filled with %--"
+`!p snip.rv = '%' + '-' * 99`
+endsnippet
+snippet #- "Horizontal rule filled with #--"
+`!p snip.rv = '#' + '-' * 99`
+endsnippet
+
+snippet %= "Horizontal rule filled with %=="
+`!p snip.rv = '%' + '=' * 99`
+endsnippet
+snippet #= "Horizontal rule filled with #=="
+`!p snip.rv = '#' + '=' * 99`
+endsnippet
+
+snippet %-- "Horizontal rule filled with %── (unicode)"
+`!p snip.rv = '%' + '─' * 99`
+endsnippet
+snippet #-- "Horizontal rule filled with #── (unicode)"
+`!p snip.rv = '#' + '─' * 99`
+endsnippet
+
+snippet %== "Horizontal rule filled with %━━ (unicode)"
+`!p snip.rv = '%' + '━' * 99`
+endsnippet
+snippet #== "Horizontal rule filled with %━━ (unicode)"
+`!p snip.rv = '#' + '━' * 99`
+endsnippet
+
+# ┏━━━━━━━━━━━━━━━━┓
+# ┃ common emojies ┃
+# ┗━━━━━━━━━━━━━━━━┛
+snippet :v
+✅
+endsnippet
+snippet :x
+❌
+endsnippet

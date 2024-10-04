@@ -9,17 +9,26 @@ _version_check() {
 # -----------------------------
 
 # Basic
-alias reload!="command -v zgen 2>&1 > /dev/null && zgen reset; \
-    source ~/.zshrc && echo 'sourced ~/.zshrc' again"
+alias reload!="command -v antidote 2>&1 > /dev/null && antidote reset; exec zsh --login"
 alias c='command'
 alias ZQ='exit'
+alias QQ='exit'
 
-alias cp='nocorrect cp -iv'
+alias cp='nocorrect cp -ivp'
 alias mv='nocorrect mv -iv'
 alias rm='nocorrect rm -iv'
 
 # sudo, but inherits $PATH from the current shell
 alias sudoenv='sudo env PATH=$PATH'
+
+alias path='print -l $path'
+function fpath() {
+  if [ $# == 0 ]; then
+    print -l $fpath
+  else  # fpath _something: find _something within all $fpath's
+    local f; for f in `fpath`; do find -L $f -maxdepth 1 -type f -name "$@" | xargs exa; done
+  fi
+}
 
 if (( $+commands[htop] )); then
     alias top='htop'
@@ -28,8 +37,11 @@ if (( $+commands[htop] )); then
 fi
 
 # list
-if command -v exa 2>&1 >/dev/null; then
-    # exa is our friend :)
+if command -v eza 2>&1 >/dev/null; then
+    # eza is our friend :)
+    alias ls='eza'
+    alias l='eza --long --group --git'
+elif command -v exa 2>&1 >/dev/null; then
     alias ls='exa'
     alias l='exa --long --group --git'
 else
@@ -58,7 +70,35 @@ function plugged() {
     cd "$HOME/.vim/plugged/$1"
 }
 
+# Running lua tests for neovim in the command line
+function plenary-busted() {
+    if [ $# == 0 ]; then
+        plenary-busted . || return 1;
+    else
+        for f in "$@"; do
+            nvim --headless --clean -u ~/.dotfiles/nvim/init.testing.lua -c "PlenaryBustedDirectory $f" || return 1;
+        done
+    fi
+}
+
 # Tmux ========================================= {{{
+
+function tmux-wrapper() {
+    if [ $# -lt 1 ]; then
+        command tmux -V || return 2;
+        echo 'tmux: Using tmux with no arguments is discouraged, try some aliases:\n' >&2
+        echo '  tmuxnew SESSION_NAME : Create a new session with the name' >&2
+        echo '  tmuxa   SESSION_NAME : Attach to an existing session' >&2
+        echo '  tmuxl                : List all the existing sessions' >&2
+        echo '' >&2
+
+        tmux --help || true;
+        return 1;
+    fi
+    command tmux "$@"
+}
+compdef '_tmux' tmux-wrapper
+alias tmux='tmux-wrapper'
 
 # create a new session with name
 alias tmuxnew='tmux new -s'
@@ -70,8 +110,8 @@ alias tmuxa='tmux -2 attach-session -d -t'
 # tmux kill-session -t
 alias tmuxkill='tmux kill-session -t'
 
-# I am lazy, yeah
-alias t='tmuxa'
+# t <session>: attach to <session> (if exists) or create a new session with the name
+alias t='tmux new-session -AD -s'
 alias T='TMUX= tmuxa'
 
 # tmuxp
@@ -92,6 +132,7 @@ function tmuxp {
 
 alias set-pane-title='set-window-title'
 alias tmux-pane-title='set-window-title'
+alias tmux-window-title='tmux rename-window'
 
 # }}}
 # SSH ========================================= {{{
@@ -114,6 +155,10 @@ function ssh-tmuxa {
 alias sshta='ssh-tmuxa'
 alias ssh-ta='ssh-tmuxa'
 compdef '_hosts' ssh-tmuxa
+
+# skip ssh host key verification
+alias ssh-noverify='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+
 # }}}
 
 # More Git aliases ============================= {{{
@@ -123,7 +168,14 @@ GIT_VERSION=$(git --version | awk '{print $3}')
 
 alias github='\gh'
 
-alias gh='git history'
+function ghn() {
+    # git history, but truncate w.r.t the terminal size. Assumes not headless.
+    # A few lines to subtract from the height: previous prompt (2) + blank (1) + current prompt (2)
+    local num_lines=$(($(stty size | cut -d" " -f1) - 5))
+    if [[ $num_lines -gt 25 ]]; then num_lines=$((num_lines - 5)); fi  # more margin
+    git history --color=always -n$num_lines "$@" | head -n$num_lines | less --QUIT-AT-EOF -F
+}
+alias gh='ghn'
 alias ghA='gh --all'
 if _version_check $GIT_VERSION "2.0"; then
   alias gha='gh --exclude=refs/stash --all'
@@ -131,12 +183,16 @@ else
   alias gha='gh --all'   # git < 1.9 has no --exclude option
 fi
 
+# git branch: show commit/refs information as well.
+alias gb='git branch -vv'
+
 alias gd='git diff --no-prefix'
 alias gdc='gd --cached --no-prefix'
 alias gds='gd --staged --no-prefix'
 alias gs='git status'
 alias gsu='gs -u'
 alias gu='git pull --autostash'
+alias gmb='git merge-base HEAD master'
 
 function ghad() {
   # Run gha (git history) and refresh if anything in .git/ changes
@@ -194,9 +250,11 @@ function gsd() {
   return 0
 }
 
+alias gfx='git fixup'
+
 # using the vim plugin GV/Flog
 function _vim_gv {
-    vim -c ":GV $1"
+    vim -c ":GV $1" -c "tabclose $"
 }
 alias gv='_vim_gv'
 alias gva='gv --all'
@@ -206,6 +264,9 @@ function cd-git-root() {
   local _root; _root=$(git-root)
   [ $? -eq 0 ] && cd "$_root" || return 1;
 }
+
+# Unalias some prezto aliases due to conflict
+if alias gpt > /dev/null; then unalias gpt; fi
 
 # }}}
 
@@ -251,16 +312,16 @@ function pip-search() {
 }
 
 # PREFIX/bin/python -> PREFIX/bin/ipython, etc.
-alias ipdb='${$(which python)%/*}/ipdb'
-alias pudb='${$(which python)%/*}/pudb3'
-alias pudb3='${$(which python)%/*}/pudb3'
+alias ipdb='python -m ipdb'
+alias pudb='python -m pudb'
+alias pudb3='pudb'
 alias python-config='${$(which python)%/*}/python3-config'
 alias python3-config='${$(which python)%/*}/python3-config'
 
 # ipython
-alias ipython='${$(which python)%/*}/ipython'
-alias ipy='ipython'
-alias ipypdb='ipy -c "%pdb" -i'   # with auto pdb calling turned ON
+alias ipython='python -m IPython --no-confirm-exit'
+alias ipy='ipython --InteractiveShellApp.exec_lines "%i"'  # see ~/.pythonrc.py
+alias ipypdb='ipy --InteractiveShellApp.exec_lines "%pdb"'   # with auto pdb calling turned ON
 
 alias ipynb='jupyter notebook'
 alias ipynb0='ipynb --ip=0.0.0.0'
@@ -268,8 +329,8 @@ alias jupyter='${$(which python)%/*}/jupyter'
 alias jupyter-lab='${$(which python)%/*}/jupyter-lab --no-browser'
 
 # ptpython
-alias ptpython='${$(which python)%/*}/ptpython'
-alias ptipython='${$(which python)%/*}/ptipython'
+alias ptpython='python -m ptpython'
+alias ptipython='python -m ptpython.entry_points.run_ptipython'
 alias ptpy='ptipython'
 alias pt='ptpy'
 
@@ -281,6 +342,11 @@ alias pytest='python -m pytest -vv'
 alias pytest-pudb='pytest -s --pudb'
 alias pytest-html='pytest --self-contained-html --html'
 alias green='green -vv'
+
+# py-spy: on macOS, root priviliege is needed
+if [[ "$(uname)" == "Darwin" ]]; then
+  alias py-spy='sudoenv py-spy'
+fi
 
 # some useful fzf-grepping functions for python
 function pip-list-fzf() {
@@ -367,7 +433,20 @@ if (( $+commands[http-server] )); then
     alias http-server="http-server -c-1"
 fi
 
-if (( $+commands[pydf] )); then
+# ffmpeg/ffprobe
+# Use -hide_banner, only if args are provided (if no args, show banner)
+if (( $+commands[ffmpeg] )); then
+  alias ffmpeg='(){ ffmpeg ${@:+-hide_banner} $@ ;}'
+fi
+if (( $+commands[ffprobe] )); then
+  alias ffprobe='(){ ffprobe ${@:+-hide_banner} $@ ;}'
+fi
+
+# df (duf, pydf)
+if (( $+commands[duf] )); then
+    # dotfiles install duf
+    alias df="duf"
+elif (( $+commands[pydf] )); then
     # pip install --user pydf
     # pydf: a colorized df
     alias df="pydf"
@@ -384,21 +463,6 @@ function site-packages() {
     else
         echo "$base/$1"
     fi;
-}
-
-function vimpy() {
-    # Open a corresponding file of specified python module.
-    # e.g. $ vimpy numpy.core    --> opens $(site-package)/numpy/core/__init__.py
-    if [[ -z "$1" ]]; then; echo "Argument required"; return 1; fi
-
-    local _module_path=$(python -c "import $1; print($1.__file__)" 2>/dev/null)
-    if [[ -n "$_module_path" ]]; then
-        echo $_module_path
-        vim "$_module_path"
-     else
-        echo "Cannot import module: $1"
-        return 1;
-    fi
 }
 
 # open some macOS applications
@@ -429,6 +493,10 @@ if [[ "$(uname)" == "Darwin" ]]; then
         alias pbcopy='reattach-to-user-namespace pbcopy'
         alias pbpaste='reattach-to-user-namespace pbpaste'
     fi
+
+    # Misc.
+    alias texshop-preview="texshop"
+
 fi
 
 
