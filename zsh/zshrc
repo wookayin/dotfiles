@@ -178,14 +178,14 @@ fi
 function _conda_initialize() {
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/ame31942/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$('$HOME/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/ame31942/miniforge3/etc/profile.d/conda.sh" ]; then
-        . "/Users/ame31942/miniforge3/etc/profile.d/conda.sh"
+    if [ -f "$HOME/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/miniforge3/etc/profile.d/conda.sh"
     else
-        export PATH="/Users/ame31942/miniforge3/bin:$PATH"
+        export PATH="$HOME/miniforge3/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -228,10 +228,10 @@ vterm_printf(){
 
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/ame31942/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ame31942/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '$HOME/google-cloud-sdk/path.zsh.inc' ]; then . '$HOME/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/ame31942/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ame31942/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '$HOME/google-cloud-sdk/completion.zsh.inc' ]; then . '$HOME/google-cloud-sdk/completion.zsh.inc'; fi
 
 # The next line adds tex to path
 export PATH="/Library/TeX/texbin/:$PATH"
