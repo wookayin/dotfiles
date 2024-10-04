@@ -177,14 +177,18 @@ fi
 # see ~/.zshenv for $CONDA_EXE detection
 function _conda_initialize() {
 # >>> conda initialize >>>
-if [ -n "${CONDA_EXE}" ]; then
-  ${CONDA_EXE} config --set auto_activate_base false
-  __conda_setup="$(${CONDA_EXE} 'shell.zsh' 'hook' 2> /dev/null)"
-  if [ $? -eq 0 ]; then
-      eval "$__conda_setup"
-  fi
-  unset __conda_setup
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/ame31942/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/ame31942/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/Users/ame31942/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/ame31942/miniforge3/bin:$PATH"
+    fi
 fi
+unset __conda_setup
 # <<< conda initialize <<<
 }
 # Note: conda initialize is slow (0.3 sec), so execute lazily
@@ -210,3 +214,27 @@ fi
 pyenv virtualenvwrapper_lazy
 
 
+vterm_printf(){
+    if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ] ); then
+        # Tell tmux to pass the escape sequences through
+        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$1"
+    else
+        printf "\e]%s\e\\" "$1"
+    fi
+}
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/ame31942/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ame31942/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/ame31942/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ame31942/google-cloud-sdk/completion.zsh.inc'; fi
+
+# The next line adds tex to path
+export PATH="/Library/TeX/texbin/:$PATH"
+
+# Environment Variables
+source ~/.env_local
