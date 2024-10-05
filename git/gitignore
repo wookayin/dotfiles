@@ -42,6 +42,7 @@ tags
 __pycache__
 *.py[cod]
 .condaenv
+.virtual_documents/
 
 # Node
 node_modules/
