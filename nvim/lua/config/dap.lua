@@ -604,33 +604,65 @@ end
 
 --- python dap: https://github.com/mfussenegger/nvim-dap-python
 M.setup_python = function()
-  require('dap-python').setup()
-  require('dap-python').test_runner = 'pytest'
+  require('dap-python').setup('python3', {
+    -- use my own adapter configuration, default configs are not good enough
+    include_configs = false,
+  })
+
+  -- debugpy launch configuration (:help dap-python.DebugpyLaunchConfig)
+  -- https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
+  local configurations = require('dap').configurations
+  configurations.python = {}
+
+  local base_config = {
+    type = 'python',
+    ---@type DebugpyConsole
+    console = 'integratedTerminal',
+    -- makes third party libraries and packages debuggable
+    justMyCode = false,
+    -- stop at first line of user code for better interaction.
+    stopOnEntry = true,
+    -- dap-adapter-python does not support multiprocess yet (it often leads to deadlock)
+    -- let's work around the bug by disabling multiprocess patch in debugpy.
+    -- see microsoft/debugpy#1096, mfussenegger/nvim-dap-python#21
+    subProcess = false,
+    -- Always use the current cwd of editor/buffer, not the file's absolute path
+    cwd = function()
+      return vim.fn.getcwd()
+    end
+  }
+
+  local add_configuration = function(config)
+    config = vim.tbl_deep_extend('force', base_config, config)  ---@cast config dap.Configuration
+    configurations.python[#configurations.python + 1] = config
+  end
+  do
+    add_configuration {
+      request = 'launch',
+      name = 'Launch this file (with optional arguments)',
+      program = '${file}',
+      args = function()
+        local args_string = vim.fn.input('Arguments: ')
+        return vim.split(args_string, " +")
+      end,
+    }
+    add_configuration {
+      request = 'attach',
+      name = 'Attach remote (via debugpy)',
+      connect = function()
+        local host = vim.fn.input('Host [127.0.0.1]: ')
+        host = host ~= '' and host or '127.0.0.1'
+        local port = tonumber(vim.fn.input('Port [5678]: ')) or 5678
+        return { host = host, port = port }
+      end,
+    }
+  end
 
   -- Let python breakpoint() hit DAP's breakpoint
   vim.env.PYTHONBREAKPOINT = 'debugpy.breakpoint'
 
-  -- Customize launch configuration (:help dap-python.DebugpyLaunchConfig)
-  -- https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
-  ---@diagnostic disable-next-line: undefined-field
-  local configurations = require('dap').configurations.python
-  for _, configuration in pairs(configurations) do
-    ---@cast configuration table<string, any>
-    -- makes third party libraries and packages debuggable
-    configuration.justMyCode = false
-    -- stop at first line of user code for better interaction.
-    configuration.stopOnEntry = true
-    -- dap-adapter-python does not support multiprocess yet (it often leads to deadlock)
-    -- let's work around the bug by disabling multiprocess patch in debugpy.
-    -- see microsoft/debugpy#1096, mfussenegger/nvim-dap-python#21
-    configuration.subProcess = false
-    -- Always use the current cwd of editor/buffer, not the file's absolute path
-    configuration.cwd = function()
-      return vim.fn.getcwd()
-    end
-  end
-
   -- Unit test integration: see neotest config (config/testing)
+  require('dap-python').test_runner = 'pytest'
 end
 
 
