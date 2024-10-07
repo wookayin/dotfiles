@@ -649,12 +649,23 @@ M.setup_python = function()
     add_configuration {
       request = 'attach',
       name = 'Attach remote (via debugpy)',
-      connect = function()
-        local host = vim.fn.input('Host [127.0.0.1]: ')
-        host = host ~= '' and host or '127.0.0.1'
-        local port = tonumber(vim.fn.input('Port [5678]: ')) or 5678
-        return { host = host, port = port }
-      end,
+      connect = wrap_coroutine(function(yield)
+        -- local host = vim.fn.input('Host [127.0.0.1]: ')
+        -- host = host ~= '' and host or '127.0.0.1'
+        local host = '127.0.0.1'  -- I never had a scenario attaching debugger to remote nodes
+        vim.ui.input({
+          prompt = 'Debugpy port [5678]:',
+          default = '5678',
+          relative = 'editor',
+        }, function(input)
+          if not input or input == "" then return end
+          local port = tonumber(input)
+          if not port then
+            return vim.schedule_wrap(vim.api.nvim_err_writeln)("Invalid port number: " .. input)
+          end
+          yield { host = host, port = port }
+        end)
+      end),
     }
   end
 
