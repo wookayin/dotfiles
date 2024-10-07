@@ -215,17 +215,36 @@ M.setup_ui = function()
 end
 
 
+--- Body of :DebugStart.
+--- @param opts { filetype: string }
 function M.start(opts)
   -- Currently, there is no public API to override filetype (see mfussenegger/nvim-dap#1090)<
   -- so we re-implement "select_config_and_run" and call dap.run() manually
   local filetype = opts.filetype or vim.bo.filetype
 
+  ---@type dap.Configuration[]
   local configurations = require('dap').configurations[filetype] or {}
+
+  -- apply pre-filter to prune out
+  configurations = vim.tbl_filter(function(configuration)
+    local typ = type(configuration.available)
+    if typ == "nil" then
+      return true
+    elseif typ == "boolean" then
+      return configuration.available --[[@as boolean]]
+    elseif typ == "function" then
+      return configuration.available(configuration, { filetype = filetype })
+    else
+      error(string.format("Unknown type: %s", typ))
+    end
+  end, configurations)
+
   if #configurations == 0 then
-    vim.notify(('No DAP configuration for filetype `%s`.'):format(filetype),
+    vim.notify(('No available DAP configuration for filetype `%s`.'):format(filetype),
       vim.log.levels.WARN, { title = 'config/dap' })
     return
   end
+
   require('dap.ui').pick_if_many(
     configurations,
     ("Choose Configuration [%s]"):format(filetype),
@@ -530,6 +549,12 @@ end
 -- @see :help dap-configuration
 ------------------------------------------------------------------------------
 
+---@class dapext.ConfigurationMixin: dap.Configuration
+---@field available? boolean|fun(self: dapext.Configuration, context: table):boolean
+
+---@class dapext.Configuration: dap.Configuration, dapext.ConfigurationMixin
+
+
 ---@param fn fun(yield: fun(ret))  A callback function to be wrapped in a coroutine.
 ---            The wrapped function takes a argument `yield`, which a result is passed to.
 local function wrap_coroutine(fn)
@@ -632,8 +657,9 @@ M.setup_python = function()
     end
   }
 
+  ---@param config dapext.Configuration
   local add_configuration = function(config)
-    config = vim.tbl_deep_extend('force', base_config, config)  ---@cast config dap.Configuration
+    config = vim.tbl_deep_extend('force', base_config, config)  ---@cast config dapext.Configuration
     configurations.python[#configurations.python + 1] = config
   end
   do
@@ -645,6 +671,10 @@ M.setup_python = function()
         local args_string = vim.fn.input('Arguments: ')
         return vim.split(args_string, " +")
       end,
+      available = function()
+        -- available only if the current buffer is a python file
+        return vim.bo.filetype == 'python'
+      end
     }
     add_configuration {
       request = 'attach',
