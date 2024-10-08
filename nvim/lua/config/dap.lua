@@ -680,6 +680,12 @@ M.setup_python = function()
       request = 'attach',
       name = 'Attach remote (via debugpy)',
       connect = wrap_coroutine(function(yield)
+        -- XXX for now, do not allow non-default ports. Just default is OK enough.
+        -- TODO: revive this back later when implementing arguments
+        if true then
+          yield { host = '127.0.0.1', port = '5678' }
+          return
+        end
         -- local host = vim.fn.input('Host [127.0.0.1]: ')
         -- host = host ~= '' and host or '127.0.0.1'
         local host = '127.0.0.1'  -- I never had a scenario attaching debugger to remote nodes
