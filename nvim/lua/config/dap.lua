@@ -75,8 +75,8 @@ M.setup_ui = function()
           { id = "watches", size = height_ratio(0.4) },
         },
       },
-      { elements = { "repl" }, size = height_ratio(0.25), position = "bottom" },
-      { elements = { "console", }, size = width_ratio(0.25), position = "right" },
+      { elements = { "repl" }, size = height_ratio(0.25), position = "right" },
+      { elements = { "console", }, size = width_ratio(0.25), position = "bottom" },
     },
     controls = {
       -- Enable control buttons
