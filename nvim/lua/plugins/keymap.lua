@@ -9,9 +9,9 @@ return {
   Plug 'junegunn/vim-peekaboo' { event = 'VeryLazy' };
   Plug 'folke/which-key.nvim' {
     event = 'VeryLazy',
-    version = '>=v3.13.3',
+    version = 'v2.1.0',  -- v3 is not compatible with lazy.nvim < v11
     opts = {
-      win = { border = "single", winblend = 10 },  -- >= 3.13.3
+      window = { border = "single", winblend = 10 },
       layout = { height = { min = 4, max = 8 } },
     }
     --hi WhichKeyFloat  guibg=#1a2a3a
