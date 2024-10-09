@@ -216,16 +216,18 @@ end
 
 
 --- Body of :DebugStart.
---- @param opts { filetype: string }
+--- @param opts { adapter: string, configuration?: string, args: string[] }
 function M.start(opts)
   -- Currently, there is no public API to override filetype (see mfussenegger/nvim-dap#1090)<
   -- so we re-implement "select_config_and_run" and call dap.run() manually
-  local filetype = opts.filetype or vim.bo.filetype
+  local adapter = opts.adapter or vim.bo.filetype
+  local launch_ctx = { adapter = adapter, args = opts.args }
 
   ---@type dap.Configuration[]
-  local configurations = require('dap').configurations[filetype] or {}
+  local configurations = require('dap').configurations[adapter] or {}
 
   -- apply pre-filter to prune out
+  ---@param configuration dapext.Configuration
   configurations = vim.tbl_filter(function(configuration)
     local typ = type(configuration.available)
     if typ == "nil" then
@@ -233,27 +235,71 @@ function M.start(opts)
     elseif typ == "boolean" then
       return configuration.available --[[@as boolean]]
     elseif typ == "function" then
-      return configuration.available(configuration, { filetype = filetype })
+      return configuration.available(configuration, launch_ctx)
     else
       error(string.format("Unknown type: %s", typ))
     end
   end, configurations)
 
+  -- apply configuration filter: e.g. :DebugStart python.attach
+  if opts.configuration then
+    configurations = vim.tbl_filter(function(config) ---@param config dapext.Configuration
+      return config.id == opts.configuration
+    end, configurations)
+  end
+
   if #configurations == 0 then
-    vim.notify(('No available DAP configuration for filetype `%s`.'):format(filetype),
-      vim.log.levels.WARN, { title = 'config/dap' })
+    local msg = ('No available DAP configuration for filetype/adapter `%s`'):format(adapter)
+    if opts.configuration then
+      msg = msg .. (' and configuration `%s`'):format(opts.configuration)
+    end
+    vim.notify(msg .. '.', vim.log.levels.WARN, { title = 'config/dap' })
     return
+  end
+
+  if #configurations > 1 and #launch_ctx.args > 0 then
+    local msg = 'DebugStart: Cannot have arguments when there are multiple configurations.'
+    vim.notify(msg, vim.log.levels.ERROR, { title = 'config/dap' })
+    return
+  end
+
+  ---@param configuration dapext.Configuration
+  local run = function(configuration)
+    require('dap').run(configuration, {
+      ---@type fun(config: dapext.Configuration):dap.Configuration
+      before = function(config)
+        -- create a new copy of configuration to override with runtime arguments
+        if config.resolve_args then
+          local mt = getmetatable(config)
+          if not xpcall(function()
+            local override = config.resolve_args(launch_ctx.args)
+            config = vim.tbl_deep_extend('force', config, override or {})
+          end, function(err)
+            vim.api.nvim_err_writeln(err)
+          end) then
+            return { _ = require('dap').ABORT }
+          end
+          config.resolve_args = nil  -- do not call it again
+          return setmetatable(config, mt)
+        end
+        return config
+      end
+    })
   end
 
   require('dap.ui').pick_if_many(
     configurations,
-    ("Choose Configuration [%s]"):format(filetype),
+    ("Choose Configuration [%s]"):format(adapter),
     function(configuration)
-      return configuration.name
+      local label = configuration.name
+      if configuration.id then
+        label = string.format('[%s] %s', configuration.id, label)
+      end
+      return label
     end,
     function(configuration)
       if configuration then
-        require('dap').run(configuration, {})
+        run(configuration)
       end
     end)
 end
@@ -290,9 +336,30 @@ M.setup_cmds_and_keymaps = function()  -- Commands and Keymaps.
     end
   end, { desc = 'Start or continue DAP.' })
 
+  -- :DebugStart {adapter[.config]} [args...]
   command('DebugStart', function(e)
-    M.start { filetype = e.fargs[1] }
-  end, { nargs = '?', complete = function(...) return vim.tbl_keys(dap.configurations) end })
+    local arg = e.fargs[1]
+    local adapter, config_id = arg, nil
+    if arg and arg:find('%.') then
+      adapter, config_id = unpack(vim.split(arg, "%."))
+    end
+    M.start {
+      adapter = adapter,
+      configuration = config_id,
+      args = { unpack(e.fargs, 2) },
+    }
+  end, { nargs = '*', complete = function(arglead, cmdline, cursorpos)
+    local fargs = vim.split(cmdline, ' +', { trimempty = true })
+    if not (fargs[2] or ''):find('%.') then -- no dot yet, complete adapters
+      return vim.tbl_keys(dap.configurations)  ---@type string[]
+    elseif vim.iter then -- complete configurations id for the adapter, requires nvim 0.10+
+      local adapter, _ = unpack(vim.split(fargs[2], "%."))
+      return (vim.iter(dap.configurations[adapter] or {})
+        :filter(function(c) return c.id ~= nil end)
+        :map(function(c) return adapter .. '.' .. c.id end)
+        :totable())
+    end
+  end })
 
   command('DebugContinue', 'DapContinue')
 
@@ -550,7 +617,9 @@ end
 ------------------------------------------------------------------------------
 
 ---@class dapext.ConfigurationMixin: dap.Configuration
+---@field id? string
 ---@field available? boolean|fun(self: dapext.Configuration, context: table):boolean
+---@field resolve_args? fun(args: string[]):table|nil
 
 ---@class dapext.Configuration: dap.Configuration, dapext.ConfigurationMixin
 
@@ -664,8 +733,9 @@ M.setup_python = function()
   end
   do
     add_configuration {
-      request = 'launch',
+      id = 'launch',
       name = 'Launch this file (with optional arguments)',
+      request = 'launch',
       program = '${file}',
       args = function()
         local args_string = vim.fn.input('Arguments: ')
@@ -677,15 +747,22 @@ M.setup_python = function()
       end
     }
     add_configuration {
-      request = 'attach',
+      id = 'attach',
       name = 'Attach remote (via debugpy)',
+      request = 'attach',
+      resolve_args = function(args)
+        -- args: { "port" }
+        if #args == 0 then return nil end
+        if #args > 1 then return error("only one argument (port) expected") end
+        local port = args[1]:match("^%d+$") and tonumber(args[1]) or nil ---@type integer?
+        return {
+          connect = {
+            host = '127.0.0.1',
+            port = port or error("Invalid port: " .. args[1])
+          }
+        }
+      end,
       connect = wrap_coroutine(function(yield)
-        -- XXX for now, do not allow non-default ports. Just default is OK enough.
-        -- TODO: revive this back later when implementing arguments
-        if true then
-          yield { host = '127.0.0.1', port = '5678' }
-          return
-        end
         -- local host = vim.fn.input('Host [127.0.0.1]: ')
         -- host = host ~= '' and host or '127.0.0.1'
         local host = '127.0.0.1'  -- I never had a scenario attaching debugger to remote nodes
