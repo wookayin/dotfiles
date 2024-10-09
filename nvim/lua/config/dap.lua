@@ -665,12 +665,19 @@ M.setup_lua = function()
                 "Run `:DebugStart lua` in another vim."):format(server.port))
   end, { nargs = '?' })
 
+  ---@type dapext.Configuration[]
   dap.configurations.lua = {
     {
+      name = "Attach to an remote Neovim instance",
       type = 'nlua',
       request = 'attach',
-      name = "Attach to an remote Neovim instance",
       host = "127.0.0.1",
+      resolve_args = function(args)
+        if #args == 0 then return end
+        if #args > 1 then error("only one argument (port) expected") end
+        local port = (args[1] or ''):match("^%d+$") and tonumber(args[1]) or nil ---@type integer?
+        return { port = port or error("Invalid port: " .. args[1]) }
+      end,
       port = wrap_coroutine(function(yield)
         vim.ui.input({
           prompt = "Lua OSV server port (:LuaDebugServerLaunch) [8086]:",
