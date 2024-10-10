@@ -1,10 +1,12 @@
 " Indent adopted from python-mode's indent/python.vim
-" (Legacy vimscript support, we will move to treesitter indent soon)
 " vim: set ts=4 sts=4 sw=4:
 
-setlocal autoindent
-setlocal indentexpr=PEP8PythonIndent(v:lnum)
-setlocal indentkeys=!^F,o,O,<:>,0),0],0},=elif,=except
+" DEPRECATED: Use treesitter indent. see $DOTVIM/after/indent/python.lua
+" ======================================================================
+
+"setlocal autoindent
+"setlocal indentexpr=PEP8PythonIndent(v:lnum)
+"setlocal indentkeys=!^F,o,O,<:>,0),0],0},=elif,=except
 
 
 " PEP8 compatible Python indent file

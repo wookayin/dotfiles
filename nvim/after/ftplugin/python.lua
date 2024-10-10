@@ -19,6 +19,9 @@ vim.opt_local.colorcolumn = '+1'
 -- Note: nvim >= 0.9 recommended, injection doesn't work well in 0.8.x
 require("config.treesitter").setup_highlight('python')
 
+-- treesitter indentation: see ../indent/python.lua
+-- (can't set here because filetype plugin will reset b:did_indent)
+
 -- Formatting
 require("config.formatting").create_buf_command("Isort", "isort")
 require("config.formatting").create_buf_command("Yapf", "yapf")
