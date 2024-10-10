@@ -34,6 +34,9 @@ def main(width=27):
     mem_total, mem_used, mem_free, mem_shared, mem_buffcache, mem_avail = map(int, mem.split()[1:])
     swap_total, swap_used, swap_free = map(int, swap.split()[1:])
 
+    # include shared memory usage; htop also needs to do so!
+    mem_used += mem_shared
+
     print("Mem : ", end='')
     ascii_bar((mem_used) / 1024., mem_total / 1024.,
               unit=' G', width=width, end='')

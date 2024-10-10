@@ -138,7 +138,8 @@ component-ram() {
   case $(uname -s) in
     Linux)
       if ! command -v free 2>&1 > /dev/null; then return 1; fi
-      IFS=" " read -r mem_used mem_total mem_percentage <<<"$(free -m | awk '/^Mem/ { print ($3/1024), ($2/1024), ($3/$2*100) }')"
+      # mem_used includes shared memory usage: `free` reports total($2), used($3), free, shared($5), buff/cache, available.
+      IFS=" " read -r mem_used mem_total mem_percentage <<<"$(free -m | awk '/^Mem/ { print (($3+$5)/1024), ($2/1024), (($3+$5)/$2*100) }')"
     ;;
     Darwin)
       if ! command -v vm_stat 2>&1 > /dev/null; then return 1; fi
