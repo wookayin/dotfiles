@@ -208,7 +208,7 @@ hi! link @variable.bash            PreProc
 hi!      @variable.parameter.bash  guifg=NONE
 
 " Markdown
-hi!      @markup.raw.block.markdown          guibg=#3a3a3a                  " ```codeblock``` (injection)
+hi!      @markup.raw.block.markdown          guibg=#222222                  " ```codeblock``` (injection)
 hi!      @markup.link.markdown_inline        guifg=#228be6 gui=underline    " link
 hi!      @markup.quote.markdown              guifg=#77ef4f
 
