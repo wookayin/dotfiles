@@ -1,4 +1,5 @@
 # Custom alias and functions for ZSH
+# see also: ~/.zsh/zsh.d/alias.local.zsh
 
 # -------- Utilities ----------
 _version_check() {
