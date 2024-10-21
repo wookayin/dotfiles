@@ -6,7 +6,15 @@ snippet isort "configuration for isort formatter."
 profile = "google"
 single_line_exclusions = ['typing', 'typing_extensions']
 extra_standard_library = ['typing_extensions']
+known_first_party = []
 known_third_party = []
+
+[tool.ruff.lint.isort]
+# ruff as isort: ruff check --fix --select=I001 <FILES>
+# https://docs.astral.sh/ruff/settings/#lintisort
+extra-standard-library = ['typing_extensions']
+known-first-party = []
+known-third-party = []
 
 endsnippet
 snippet black "configuration for black formatter."
