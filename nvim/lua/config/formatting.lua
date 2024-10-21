@@ -40,7 +40,9 @@ function M.setup_conform()
     })
     formatter_opts["yapf"] = { cwd = py_root }
     formatter_opts["isort"] = { cwd = py_root }
-    return { "isort", "yapf" }
+    formatter_opts["ruff_format"] = { cwd = py_root }
+    formatter_opts["ruff_organize_imports"] = { cwd = py_root }
+    return { "ruff_organize_imports", "ruff_format" }
   end)()
   cf.sh = (function()
     formatter_opts["shfmt"] = {

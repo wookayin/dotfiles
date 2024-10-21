@@ -23,8 +23,10 @@ require("config.treesitter").setup_highlight('python')
 -- (can't set here because filetype plugin will reset b:did_indent)
 
 -- Formatting
-require("config.formatting").create_buf_command("Isort", "isort")
-require("config.formatting").create_buf_command("Yapf", "yapf")
+require("config.formatting").create_buf_command("RuffIsort", "ruff_organize_imports")
+require("config.formatting").create_buf_command("OrganizeImports", "ruff_organize_imports")
+require("config.formatting").create_buf_command("Isort", "isort")  -- slow, deprecated
+require("config.formatting").create_buf_command("Yapf", "yapf")  -- deprecated in favor of ruff format
 require("config.formatting").create_buf_command("Black", "black")
 
 local bufnr = vim.api.nvim_get_current_buf()
@@ -34,7 +36,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   callback = function()
     require("config.formatting").maybe_autostart_autoformatting(bufnr, function(project_root)
       -- Autoformatting: detect yapf, isort independently.
-      local formatters = {} ---@type table<"yapf"|"isort",string> formatter -> reason
+      local formatters = {} ---@type table<string,string> conform formatter name -> reason
 
       local style_yapf = assert(project_root) .. '/.style.yapf'
       if vim.fn.filereadable(style_yapf) > 0 then
@@ -46,13 +48,20 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local file_contains_pattern = require("utils.path_utils").file_contains_pattern
         for formatter, pattern in pairs {
           yapf = "^%[tool%.yapf%]",
-          isort = "^%[tool%.isort%]",
+          isort = "^%[tool%.isort%]",  -- FIXME
+          ruff_organize_imports = "^%[tool%.ruff%.lint%.isort%]",
+          ruff_format = "^%[tool.ruff%.format%]",
+          -- ruff format?
         } do
-          _, match = file_contains_pattern(pyproject_toml, { pattern })
+          local _, match = file_contains_pattern(pyproject_toml, { pattern })
           if match then
             formatters[formatter] = ("`pyproject.toml:%s: %s`"):format(match.line, match.match)
           end
         end
+      end
+      -- Special priority handling: favor ruff instead of isort
+      if formatters["ruff_organize_imports"] then
+        formatters["isort"] = nil
       end
 
       if vim.tbl_isempty(formatters) then
