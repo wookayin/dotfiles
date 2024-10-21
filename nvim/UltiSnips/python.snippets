@@ -125,7 +125,9 @@ snippet "(#\s*)?pylint"  "'pylint: disable=...' marker" r
 # pylint: disable=${1:`!p snip.rv = collect_lsp_lint_codes("pylint")`}
 endsnippet
 priority 0
-
+snippet "(#\s*)?fmt"  "fmt: skip marker for the line (line comment)" r
+# fmt: skip
+endsnippet
 snippet "#\s*type"  "'type: ignore' marker (mypy, pyright)" r
 # type: ignore
 endsnippet
