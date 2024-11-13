@@ -183,6 +183,16 @@ if _version_check $GIT_VERSION "2.0"; then
 else
   alias gha='gh --all'   # git < 1.9 has no --exclude option
 fi
+function ghb() {
+  local branch="HEAD"
+  if [[ "$#" -gt 0 && "$1" != -* ]]; then
+    branch="$1"; shift;
+  fi
+  local merge_base=$(git merge-base "$branch" master)
+  git history --color=always "$merge_base".."$branch" "$@" && \
+    echo "|" && \
+    git history "$merge_base~".."$merge_base"
+}
 
 # git branch: show commit/refs information as well.
 alias gb='git branch -vv'
