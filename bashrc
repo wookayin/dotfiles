@@ -99,12 +99,7 @@ git_branch() {
 PS1="\[$BOLD_GREEN\][\[$BOLD_YELLOW\]\u\[$BOLD_GREEN\]@\[$BOLD_BLUE\]\h:\[$BOLD_RED\]"'`pwd`'"\[$BOLD_GREEN\]] "'`git_branch`'" \[$GRAY\]\t\n\[$BOLD_GREEN\]"'\$'"\[$COLOR_NONE\] "
 
 # Terminal
-# screen-256color if inside tmux, xterm-256color otherwise
-if [[ -n "$TMUX" ]]; then
-  export TERM="screen-256color"
-else
-  export TERM="xterm-256color"
-fi
+export TERM="xterm-256color"
 
 # PATH for local settings
 if [[ ! "$PATH" == *~/.local/bin* ]]; then
