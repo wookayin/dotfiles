@@ -38,6 +38,10 @@ if not vim.loop.fs_stat(lazypath) then
     "--branch=" .. LAZY_VERSION,
     lazypath,
   })
+  if vim.v.shell_error > 0 then
+    vim.api.nvim_err_writeln("Downloading lazy.nvim failed. Please check your internet connection.")
+    return false
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 

@@ -1,6 +1,9 @@
 -- :C, :Config
 -- Quickly open config files that are very commonly accessed
 
+if not pcall(require, "plenary.path") then
+  return
+end
 local Path = require "plenary.path"
 
 local M = {}
