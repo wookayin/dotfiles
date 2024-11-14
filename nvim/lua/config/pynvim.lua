@@ -207,6 +207,9 @@ pcall(vim.fn.py3eval, "1")  -- TODO: Remove this workaround once pynvim 0.5 is o
 if vim.F.npcall(vim.fn.py3eval, "1") ~= 1 then
   -- python3 host has failed to load.
   local py_version = python3_version_check()
+  if not py_version then
+    return NO_PYNVIM
+  end
 
   -- pynvim is missing, try installing it
   xpcall(autoinstall_pynvim, function(err)
