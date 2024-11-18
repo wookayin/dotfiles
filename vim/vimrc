@@ -84,7 +84,11 @@ set ruler
 set backspace=indent,eol,start     " allow backspaces over everything
 set autoindent
 set smartindent
-set pastetoggle=<F8>
+
+if exists('+pastetoggle')
+	" only for legacy vim; nvim 0.11 has removed this option
+	set pastetoggle=<F8>
+endif
 
 set nowrap
 set textwidth=0             " disable automatic line breaking
