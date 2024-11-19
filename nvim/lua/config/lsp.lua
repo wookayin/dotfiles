@@ -147,7 +147,7 @@ end
 local auto_lsp_servers = {
   -- @see $VIMPLUG/mason-lspconfig.nvim/lua/mason-lspconfig/mappings/filetype.lua
   ['basedpyright'] = true,
-  ['ruff_lsp'] = true,
+  ['ruff'] = true, -- Note: ruff_lsp is deprecated, :MasonUninstall ruff-lsp
   ['vimls'] = true,
   ['lua_ls'] = true,
   ['bashls'] = true,
@@ -228,6 +228,7 @@ function M._ensure_mason_installed()
           _requested[pkg_name] = true
           require("mason-lspconfig.install").install(pkg)  -- async
         end
+        -- TODO: uninstall deprecated packages, e.g. ruff-lsp => ruff
       end
     end)
 
@@ -317,7 +318,8 @@ lsp_setup_opts['pyright'] = function()
   return pyright_opts('python')
 end
 
-lsp_setup_opts['ruff_lsp'] = function()
+lsp_setup_opts['ruff_lsp'] = false  -- deprecated, should never setup
+lsp_setup_opts['ruff'] = function()
   local init_options = {
     -- https://github.com/astral-sh/ruff-lsp#settings
     -- https://github.com/astral-sh/ruff-lsp/blob/main/ruff_lsp/server.py
@@ -342,9 +344,19 @@ lsp_setup_opts['ruff_lsp'] = function()
       },
     },
   };
-  return { init_options = init_options }
+  return {
+    init_options = init_options,
+    capabilities = {
+      general = {
+        -- pyright uses utf-16, and ruff uses utf-8 by default.
+        -- To avoid 'multiple different client offset_encodings ...', we tell ruff to use 'utf-16' only
+        -- https://github.com/astral-sh/ruff/issues/14483
+        positionEncodings = { "utf-16" },
+      },
+    }
+  }
 end
-on_init['ruff_lsp'] = function(client, _)
+on_init['ruff'] = function(client, _)
   if client.server_capabilities then
     -- Disable ruff hover in favor of Pyright
     client.server_capabilities.hoverProvider = false
