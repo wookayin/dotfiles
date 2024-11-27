@@ -162,7 +162,7 @@ snippet ipdb "ipdb.set_trace"
 __import__('ipdb').set_trace(cond=True)  # XXX DEBUG
 endsnippet
 snippet pudb "pudb.set_trace"
-__import__('pudb').set_trace(cond=True)  # XXX DEBUG
+__import__('pudb').set_trace()  # XXX DEBUG
 endsnippet
 snippet nest_asyncio "nest_asyncio.apply"
 import nest_asyncio; nest_asyncio.apply()  # yapf: disable
