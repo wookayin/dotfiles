@@ -40,3 +40,13 @@
   )
   (#set! injection.language "query")
 )
+; CSS injection: local css = [[ .... ]]
+((assignment_statement
+    (variable_list
+      name: (identifier) @_identifier)
+    (#eq? @_identifier "css")
+    (expression_list
+      value: (string content: (string_content) @injection.content))
+  )
+  (#set! injection.language "css")
+)
