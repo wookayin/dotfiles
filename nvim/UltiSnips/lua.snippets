@@ -75,6 +75,11 @@ end, function(err)
 	vim.notify(msg, vim.log.levels.ERROR)
 end)
 endsnippet
+snippet schedule "vim.schedule"
+vim.schedule(function()
+	$0
+end)
+endsnippet
 
 # Log levels
 snippet INFO
