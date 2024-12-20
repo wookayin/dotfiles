@@ -643,6 +643,22 @@ local function wrap_coroutine(fn)
   end
 end
 
+-- Parse "[host]:port" format. e.g. 5678, localhost:5678, :5678, foo_bar:5678.
+---@return string? host. nil if omitted or on error
+---@return integer? port. nil on error
+local parse_host_and_port = function(input)
+  local host, port = input:match("^([%w%.%-]*):(%d+)$")
+  if not port then
+    port = input:match("^(%d+)$")
+  end
+  port = tonumber(port)
+  if not port then
+    return nil, nil
+  end
+  if host == "" then host = nil end
+  return host, port
+end
+
 --- Lua adapter(osv): https://github.com/jbyuki/one-small-step-for-vimkind
 ---
 --- Our use case of lua debugging is limited to the following scenario:
@@ -753,37 +769,35 @@ M.setup_python = function()
         return vim.bo.filetype == 'python'
       end
     }
+
     add_configuration {
       id = 'attach',
       name = 'Attach remote (via debugpy)',
       request = 'attach',
       resolve_args = function(args)
-        -- args: { "port" }
+        -- args: { "[host:]port" }
         if #args == 0 then return nil end
         if #args > 1 then return error("only one argument (port) expected") end
-        local port = args[1]:match("^%d+$") and tonumber(args[1]) or nil ---@type integer?
+        local host, port = parse_host_and_port(args[1])
         return {
           connect = {
-            host = '127.0.0.1',
-            port = port or error("Invalid port: " .. args[1])
+            host = host or 'localhost',
+            port = port or error("Invalid host/port: " .. args[1])
           }
         }
       end,
       connect = wrap_coroutine(function(yield)
-        -- local host = vim.fn.input('Host [127.0.0.1]: ')
-        -- host = host ~= '' and host or '127.0.0.1'
-        local host = '127.0.0.1'  -- I never had a scenario attaching debugger to remote nodes
         vim.ui.input({
-          prompt = 'Debugpy port [5678]:',
-          default = '5678',
+          prompt = 'Debugpy port [5678] or host:port (e.g. localhost:5678):',
+          default = 'localhost:5678',
           relative = 'editor',
         }, function(input)
           if not input or input == "" then return end
-          local port = tonumber(input)
+          local host, port = parse_host_and_port(input)
           if not port then
-            return vim.schedule_wrap(vim.api.nvim_err_writeln)("Invalid port number: " .. input)
+            return vim.schedule_wrap(vim.api.nvim_err_writeln)("Invalid host/port number: " .. input)
           end
-          yield { host = host, port = port }
+          yield { host = host or 'localhost', port = port }
         end)
       end),
     }
