@@ -195,10 +195,23 @@ function M.setup_diffview()
         disable_diagnostics = true,
       },
     },
+    hooks = {
+      ---@param ctx { symbol: string, layout_name: string }
+      diff_buf_win_enter = function(bufnr, winid, ctx)
+        -- see :help diffview-layouts
+        if ctx.layout_name == 'diff4_mixed' then
+          -- turn off 'diff' for the current version (ours) and local copy,
+          -- as only the diff between base..incoming(theris) is useful.
+          if ctx.symbol == 'a' or ctx.symbol == 'b' then
+            vim.wo[winid].diff = false
+          end
+        end
+      end,
+    },
     default_args = {
       -- :DiffviewOpen --untracked-files=no
       DiffviewOpen = { '--untracked-files=no' },
-    }
+    },
   }
 
   vim.cmd [[
