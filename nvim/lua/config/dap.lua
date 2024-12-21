@@ -656,6 +656,7 @@ local parse_host_and_port = function(input)
     return nil, nil
   end
   if host == "" then host = nil end
+  if host == "localhost" then host = "127.0.0.1" end
   return host, port
 end
 
@@ -788,8 +789,8 @@ M.setup_python = function()
       end,
       connect = wrap_coroutine(function(yield)
         vim.ui.input({
-          prompt = 'Debugpy port [5678] or host:port (e.g. localhost:5678):',
-          default = 'localhost:5678',
+          prompt = 'Debugpy port [5678] or host:port (e.g. 127.0.0.1:5678):',
+          default = '127.0.0.1:5678',
           relative = 'editor',
         }, function(input)
           if not input or input == "" then return end
@@ -797,7 +798,7 @@ M.setup_python = function()
           if not port then
             return vim.schedule_wrap(vim.api.nvim_err_writeln)("Invalid host/port number: " .. input)
           end
-          yield { host = host or 'localhost', port = port }
+          yield { host = host or '127.0.0.1', port = port }
         end)
       end),
     }
