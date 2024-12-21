@@ -7,16 +7,13 @@ packages_basic=(
     # shell :)
     ipython ptpython jedi
     # debugging
-    pudb ipdb py-spy
+    pudb ipdb py-spy debugpy
     # testing
     pytest pytest-xdist pytest-runner pytest-pudb
     # linter
     mypy pylint ruff
-    # formatter
-    yapf black
-    # LSP and DAP
-    python-lsp-server pyright
-    debugpy
+    # LSP
+    python-lsp-server basedpyright
     # other common modules
     tqdm rich
     imgcat matplotlib Pillow
