@@ -47,12 +47,15 @@ end, {
 })
 
 -- :V -- table of contents
-vim.keymap.set('n', '<leader>V', function()
+vim.keymap.set('n', '<leader>V', '<cmd>V<CR>', { buffer = true })
+vim.api.nvim_buf_create_user_command(0, 'V', function(opts)
   vim.fn['vimtex#fzf#run']("ctli", {
     window = "call FloatingFZF()",
   })
-end, { buffer = true, desc = 'TeX: Table of Contents with fzf' })
-
+end, {
+  nargs = 0,
+  desc = 'TeX: Table of Contents with fzf',
+})
 
 -- buffer-local keymaps
 do
