@@ -296,6 +296,9 @@ hi! @lsp.type.namespace.python  guifg=NONE
 
 " }}}
 
+" justfile
+hi!      @command.just                    guifg=white
+
 " Gitcommit
 hi!      @string.special.url.gitcommit    guifg=#df6383 gui=NONE
 hi! link @markup.heading.gitcommit        PreProc

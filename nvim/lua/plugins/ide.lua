@@ -102,7 +102,6 @@ return {
   -- Other languages
   Plug 'editorconfig/editorconfig-vim' { cond = not has('nvim') };
   Plug 'sheerun/vim-polyglot' { version = 'v4.2.1' };
-  Plug 'vmchale/just-vim' { ft = 'just' };
   Plug 'tmux-plugins/vim-tmux' { ft = 'tmux' };
   Plug 'fladson/vim-kitty' { ft = 'kitty' };
   Plug 'lervag/vimtex' { init = require('config.tex').init, config = require('config.tex').setup };
@@ -111,7 +110,6 @@ return {
   Plug 'tfnico/vim-gradle' { ft = 'gradle' };
   Plug 'Tyilo/applescript.vim' { ft = 'applescript' };
   Plug 'rdolgushin/groovy.vim' { ft = 'groovy' };
-  Plug 'NoahTheDuke/vim-just' { ft = 'just' };
 
   -- Lua REPL
   Plug 'ii14/neorepl.nvim' { lazy = true };  -- :LuaREPL

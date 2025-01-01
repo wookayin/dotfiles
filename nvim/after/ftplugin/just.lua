@@ -4,7 +4,9 @@ setlocal.sts = 2
 setlocal.sw = 2
 setlocal.expandtab = true
 
--- auto-indent is lacking: NoahTheDuke/vim-just#19
-vim.cmd.source "$VIMRUNTIME/indent/make.vim"
-vim.b.undo_indent = nil
-vim.opt_local.indentexpr = 'GetMakeIndent()'
+-- treesitter highlight
+require("config.treesitter").ensure_parsers_installed { "just" }
+require("config.treesitter").setup_highlight("just")
+
+-- treesitter indent
+vim.bo.indentexpr = "nvim_treesitter#indent()"
