@@ -125,4 +125,4 @@ License
 
 [The MIT License (MIT)](LICENSE)
 
-Copyright (c) 2012-2024 Jongwook Choi (@wookayin)
+Copyright (c) 2012-2025 Jongwook Choi (@wookayin)
