@@ -418,6 +418,10 @@ install_just() {
   cp -v just.1 "$PREFIX/share/man/man1/"
   _which just
   just --version
+
+  # install zsh completions
+  echo -e "\nWriting zsh completion script at: $PREFIX/share/zsh/site-functions/_just"
+  just --completions zsh > "$PREFIX/share/zsh/site-functions/_just"
 }
 
 install_delta() {
