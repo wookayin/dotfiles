@@ -1,0 +1,16 @@
+# snippets for justfile
+# override the shebang snippet from all.snippets
+priority 1
+
+snippet #! "shebang for justfile"
+#!/usr/bin/env -S just --justfile
+
+$0
+endsnippet
+
+snippet list "add a recipe, list"
+list:
+	just --list --unsorted
+
+$0
+endsnippet
