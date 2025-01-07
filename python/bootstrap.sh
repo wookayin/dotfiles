@@ -1,7 +1,7 @@
 #!/bin/bash
 # Installs essential packages for usual python development environments.
 
-set -ex
+set -eu -o pipefail
 
 packages_basic=(
     # shell :)
@@ -30,8 +30,18 @@ packages_jupyter=(
     pretty-jupyter
 )
 
-python -m pip install --upgrade pip
-python -m pip install --upgrade "${packages_basic[@]}"
-python -m pip install --upgrade "${packages_jupyter[@]}"
+# pip: use uv if available. export UV=0 to disable
+if [ "${UV:-}" != "0" ] && command -v "uv" 2>&1 >/dev/null; then
+    PIP="uv pip"
+else
+    PIP="python -m pip"
+    $PIP install --upgrade pip
+fi
+
+PS4='\033[1;33m>>> \033[0m'; set -x;
+$PIP install --upgrade "${packages_basic[@]}"
+$PIP install --upgrade "${packages_jupyter[@]}"
 
 exit 0;
+
+# vim: set ts=4 sts=4 sw=4:
