@@ -273,6 +273,9 @@ hi!      @lsp.typemod.class.definition.cpp        guifg=#ffaf00 gui=bold
 
 hi! link @keyword.directive.python             SpecialComment
 
+" import statements (do not link module to Type)
+hi! @module.python              guifg=NONE
+
 " attribute (self.xxx)
 hi! link semshiAttribute        @lsp.type.property.python
 
