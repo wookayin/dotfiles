@@ -4,8 +4,8 @@
 set -eu -o pipefail
 
 packages_basic=(
-    # shell :)
-    ipython ptpython jedi
+    # shell & dev env
+    ipython ptpython jedi pynvim
     # debugging
     pudb ipdb py-spy debugpy
     # testing
