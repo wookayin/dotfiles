@@ -31,6 +31,8 @@ function fpath() {
   fi
 }
 
+alias j='just'
+
 if (( $+commands[htop] )); then
     alias top='htop'
     alias topc='htop -s PERCENT_CPU'
