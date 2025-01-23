@@ -1,4 +1,5 @@
 # ghostty +show-config --default --docs
+# https://ghostty.org/docs/config/reference
 
 ####################################################################################################
 # General
@@ -68,3 +69,5 @@ macos-option-as-alt = left
 ####################################################################################################
 
 macos-non-native-fullscreen = visible-menu
+
+# vim: set ft=conf:
