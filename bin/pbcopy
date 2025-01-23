@@ -1,0 +1,6 @@
+#!/bin/bash
+# pbcopy -- Copy contents from STDIN (excluding the last newline character) through OSC52 (works remotely over SSH).
+# Note: to make it work inside tmux, some config is needed. See https://github.com/tmux/tmux/wiki/Clipboard
+
+printf "\033]52;c;%s\007" "$(perl -0777 -p0e 's/\n$//' | base64 | tr -d '\n')"
+#                            ^ remove the final EOL in the last line
