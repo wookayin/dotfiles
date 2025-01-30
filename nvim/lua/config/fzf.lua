@@ -28,8 +28,15 @@ end
 
 function M.setup_fzf()
   local defaults = require('fzf-lua.defaults').defaults
-  local FZF_VERSION = require("fzf-lua.utils").fzf_version() or 0.0  ---@type number (float)
-  local GIT_VERSION = require("fzf-lua.utils").git_version() or 0.0  ---@type number (float)
+  local FZF_VERSION = require("fzf-lua.utils").fzf_version() or 0.0  ---@type table|number
+  local GIT_VERSION = require("fzf-lua.utils").git_version() or 0.0  ---@type table|number
+
+  local has_fzf_0_42  ---@type boolean
+  if type(FZF_VERSION) == 'number' then
+    has_fzf_0_42 = FZF_VERSION >= 0.42
+  else -- changed since fzf-lua 2024-12-20
+    has_fzf_0_42 = vim.version.cmp(FZF_VERSION, {0, 42}) >= 0
+  end
 
   -- fzf-lua.setup(opts)
   local global_opts = {
@@ -47,7 +54,7 @@ function M.setup_fzf()
       },
     },
     fzf_opts = { -- global fzf opts to apply by default
-      ["--info"] = FZF_VERSION >= 0.42 and "inline-right" or nil,
+      ["--info"] = has_fzf_0_42 and  "inline-right" or nil,
       ["--scrollbar"] = '▌',  -- use slightly thicker scrollbar
     },
     winopts = {
@@ -97,7 +104,7 @@ function M.setup_fzf()
     },
     -- headers = {}, -- Do not use the default "interactive_header_txt" header, it's misleading
     fzf_opts = {
-      ["--info"] = FZF_VERSION >= 0.42 and "inline-right" or nil,
+      ["--info"] = has_fzf_0_42 and "inline-right" or nil,
     },
     copen = "horizontal copen", -- see ibhagwan/fzf-lua#712
   }
