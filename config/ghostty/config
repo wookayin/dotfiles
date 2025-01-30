@@ -28,8 +28,10 @@ adjust-cell-height = -7
 ####################################################################################################
 
 background = #000000
+foreground = #cccccc
 
 bold-is-bright = true
+selection-invert-fg-bg = true
 
 # black
 palette =  0=#000000
