@@ -10,3 +10,6 @@ require("config.treesitter").setup_highlight("just")
 
 -- treesitter indent
 vim.bo.indentexpr = "nvim_treesitter#indent()"
+
+-- etc.
+setlocal.commentstring = '# %s'
