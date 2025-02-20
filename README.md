@@ -1,10 +1,10 @@
-Dotfiles
-========
+
+# Dotfiles
 
 🏠 Personal dotfiles for \*NIX (macOS and Linux) systems.
 
-Installation
-------------
+
+## Installation
 
 ### 👉 One-liner (if you trust me):
 
@@ -46,8 +46,7 @@ The installation script will clone the repository into `~/.dotfiles` and create 
 If target files already exist (e.g. `~/.vim`, `~/.vimrc`), you will need to manually resolve the conflict (delete the old one or just ignore). See Troubleshooting below for details.
 
 
-`$ dotfiles`
-------------
+## `$ dotfiles`
 
 **To update dotfiles** (pull changes from upstream and run [`install.py`][install.py] again):
 
@@ -64,8 +63,8 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 ```
 
 
-🆘 Troubleshooting
-------------------
+
+## 🆘 Troubleshooting
 
 *Please read carefully warning messages during installation !!*
 
@@ -120,8 +119,7 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 [install.py]: https://github.com/wookayin/dotfiles/blob/master/install.py
 
 
-License
--------
+## License
 
 [The MIT License (MIT)](LICENSE)
 
