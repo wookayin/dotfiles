@@ -26,15 +26,7 @@ return {
   };
 
   -- Additional highlight/extmark providers
-  Plug 'lukas-reineke/headlines.nvim' {
-    opts = {
-      markdown = {
-        bullets = {}, -- disable, show '#, '##', '-', etc. as-is
-        fat_headlines = false,
-        headline_highlights = { "@markup.heading.1.markdown", "@markup.heading.2.markdown" },
-        codeblock_highlight = "@markup.raw.block.markdown",
-      },
-    },
+  Plug 'MeanderingProgrammer/render-markdown.nvim' {
+    config = require('config.markdown').setup_render,
   };
-
 }
