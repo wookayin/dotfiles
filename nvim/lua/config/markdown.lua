@@ -24,6 +24,13 @@ function M.setup_render()
       highlight_language = '@label.markdown',
       highlight_inline = '@markup.raw.block.markdown',
     },
+    on = {
+      attach = function(_)
+        -- <Ctrl-/> to toggle markdown rendering (local to buffer)
+        vim.keymap.set('n', '<c-/>', '<c-_>', { buffer = true })
+        vim.keymap.set('n', '<c-_>', '<Cmd>RenderMarkdown buf_toggle<CR>', { buffer = true })
+      end
+    }
   }
 
   require('utils.rc_utils').RegisterHighlights(function()
