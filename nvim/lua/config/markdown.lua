@@ -27,7 +27,7 @@ function M.setup_render()
     on = {
       attach = function(_)
         -- <Ctrl-/> to toggle markdown rendering (local to buffer)
-        vim.keymap.set('n', '<c-/>', '<c-_>', { buffer = true })
+        vim.keymap.set('n', '<c-/>', '<c-_>', { buffer = true, remap = true })
         vim.keymap.set('n', '<c-_>', '<Cmd>RenderMarkdown buf_toggle<CR>', { buffer = true })
       end
     }
