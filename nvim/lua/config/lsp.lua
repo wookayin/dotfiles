@@ -282,41 +282,30 @@ M.lsp_setup_opts = lsp_setup_opts
 local on_init = {}
 M.on_init = on_init
 
----@param setup_name 'python'|'basedpyright' for pyright, use 'python'.
-local pyright_opts = function(setup_name)
+lsp_setup_opts['basedpyright'] = function()
+  -- https://docs.basedpyright.com/latest/configuration/language-server-settings/
+  -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
   return {
-    -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
-    -- https://detachhead.github.io/basedpyright/
     settings = {
-      [setup_name] = {
+      python = {
+        -- Always use the current python in $PATH (the current conda/virtualenv).
+        -- NOTE: python.pythonPath (not basedpyright.pythonPath), see the basedpyright docs
+        pythonPath = vim.fn.exepath("python3"),
+      },
+      basedpyright = {
+        -- in favor of ruff's import organizer
+        disableOrganizeImports = true,
         analysis = {
           typeCheckingMode = "basic",
+          -- see https://docs.basedpyright.com/latest/usage/import-resolution/#configuring-your-python-environment
           -- see https://github.com/microsoft/pyright/blob/main/docs/import-resolution.md#resolution-order
           extraPaths = { "./python" },
         },
-        -- Always use the current python in accordance with $PATH (the current conda/virtualenv).
-        pythonPath = vim.fn.exepath("python3"),
       },
     },
   }
 end
-
-lsp_setup_opts['basedpyright'] = function()
-  -- basedpyright: experimental drop-in replacement of pyright (that supports inlay hints!)
-  -- To use it, simply install it with :Mason. When installed, basedpyright will be enabled
-  -- in place of pyright; otherwise, fallback to the standard pyright.
-  lsp_setup_opts['pyright'] = false
-  return pyright_opts('basedpyright')
-end
-
-lsp_setup_opts['pyright'] = function()
-  -- Do not setup pyright when basedpyright is installed.
-  -- TODO: remove mason dependency.
-  if require('mason-registry').is_installed('basedpyright') then
-    return false
-  end
-  return pyright_opts('python')
-end
+lsp_setup_opts['pyright'] = false  -- disable even if it's installed, in favor of basedpyright
 
 lsp_setup_opts['ruff_lsp'] = false  -- deprecated, should never setup
 lsp_setup_opts['ruff'] = function()
