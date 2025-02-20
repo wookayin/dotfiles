@@ -48,7 +48,7 @@
 	# side-by-side diff/show, requires delta
 	sdiff = diff-side
 	diff-side = -c core.pager='delta -s' diff
-	show-side = -c core.pager='delta -s | less' show
+	show-side = -c core.pager='delta -s' show
 
 [color]
 	status = auto
