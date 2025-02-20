@@ -16,6 +16,8 @@ setlocal.conceallevel = 0
 require("config.treesitter").ensure_parsers_installed { "markdown" }
 require("config.treesitter").setup_highlight("markdown")
 
+-- Use spell checking
+setlocal.spell = true
 
 -- GFM markdown preview using grip
 -- (pip install grip)
