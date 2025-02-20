@@ -22,7 +22,7 @@ function M.setup_render()
     code = {
       highlight = '@markup.raw.block.markdown',
       highlight_language = '@label.markdown',
-      highlight_inline = '@markup.raw.block.markdown',
+      highlight_inline = '@markup.raw.markdown_inline',
     },
     on = {
       attach = function(_)

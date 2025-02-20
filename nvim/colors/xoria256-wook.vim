@@ -209,6 +209,7 @@ hi!      @variable.parameter.bash  guifg=NONE
 
 " Markdown
 hi!      @markup.raw.block.markdown          guibg=#222222                  " ```codeblock``` (injection)
+hi!      @markup.raw.markdown_inline         guifg=#ff5f87 guibg=#222222    " `code` (injection), fg is from Constant
 hi!      @markup.link.markdown_inline        guifg=#228be6 gui=underline    " link
 hi!      @markup.quote.markdown              guifg=#77ef4f
 
