@@ -4,6 +4,7 @@
 -- See 'plugins.ide' for the Plug specs
 -- nvim-cmp config has been moved to nvim/lua/config/completion.lua
 
+---@class config.lsp
 local M = {}
 
 -- lsp_signature
@@ -320,7 +321,7 @@ lsp_setup_opts['ruff'] = function()
     -- Note: use pyproject.toml to configure ruff per project.
     settings = {
       fixAll = true,
-      organizeImports = false,  -- let isort take care of organizeImports
+      organizeImports = false, -- in favor of Conform (:Format ruff_organize_imports)
       -- extra CLI arguments
       -- https://docs.astral.sh/ruff/configuration/#command-line-interface
       -- https://docs.astral.sh/ruff/rules/
@@ -354,7 +355,7 @@ on_init['ruff'] = function(client, _)
   if client.server_capabilities then
     -- Disable ruff hover in favor of Pyright
     client.server_capabilities.hoverProvider = false
-    -- Disable ruff formatting in favor of yapf (null-ls)
+    -- Disable ruff formatting in favor of Conform (ruff_format)
     -- NOTE: ruff-lsp's formatting is a bit buggy, doesn't respect indent_size
     client.server_capabilities.documentFormattingProvider = false
   end
