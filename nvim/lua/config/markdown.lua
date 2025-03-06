@@ -40,8 +40,19 @@ function M.setup_render()
     vim.api.nvim_set_hl(0, 'RenderMarkdownH3Bg', { link = 'StatusLine' })
   end)
 
-  -- for now, we don't use lazy loading so that startup markdown buffers can also be attached
   require('render-markdown').setup(opts)
+
+  -- Markdown buffers already loaded before lazy-loading needs manual attaching
+  require('utils.rc_utils').bufdo(function(buf)
+    if vim.bo[buf].filetype == 'markdown' then
+      vim.api.nvim_exec_autocmds('FileType', { buffer = buf, group = 'RenderMarkdown' })
+    end
+  end)
+end
+
+-- Resourcing support
+if ... == nil then
+  M.setup()
 end
 
 return M
