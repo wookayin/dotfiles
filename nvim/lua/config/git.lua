@@ -195,6 +195,7 @@ function M.setup_diffview()
         disable_diagnostics = true,
       },
     },
+    -- :help diffview-config-hooks
     hooks = {
       ---@param ctx { symbol: string, layout_name: string }
       diff_buf_win_enter = function(bufnr, winid, ctx)
@@ -327,6 +328,7 @@ end)()
 -- Resourcing support
 if ... == nil then
   M.setup_fugitive()
+  M.setup_gitmessenger()
   M.setup_diffview()
   M.setup_gitsigns()
 
