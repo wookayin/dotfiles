@@ -164,29 +164,32 @@ local auto_lsp_servers = {
 }
 
 --- Refresh or force-update mason-registry if needed (e.g. pkgs are missing)
---- and execute the callback asynchronously.
+--- and execute the callback *asynchronously*.
 local function maybe_refresh_mason_registry_and_then(callback, opts)
+  opts = opts or {}
   local mason_registry = require("mason-registry")
-  local function _notify(msg, opts)
+  local function _notify(msg, notify_opts)
     return vim.notify_once(msg, vim.log.levels.INFO,
-      vim.tbl_deep_extend("force", { title = "config/lsp.lua" }, (opts or {})))
+      vim.tbl_deep_extend("force", { title = "config/lsp.lua" }, (notify_opts or {})))
   end
-  local h = nil
-  if vim.tbl_count(mason_registry.get_all_packages()) == 0 then
-    h = _notify("Initializing mason.nvim registry for the first time,\n" ..
-               "please wait a bit until LSP servers start installed.")
+
+  local should_update = false
+  local update_msg = nil
+  if opts.force then
+    should_update, update_msg = true, 'Initializing mason.nvim registry for the first time, please wait a bit until LSP servers are installed.'
+  elseif vim.tbl_count(mason_registry.get_all_package_names()) == 0 then
+    -- TODO: get_all_package_names() still involves blocking file API, avoid duplicate calls
+    should_update, update_msg = true, 'Updating mason.nvim registry ...'
+  end
+
+  if should_update then
+    _notify(update_msg)
     mason_registry.update(function()
       _notify("Updating mason.nvim registry done.")
-      vim.schedule(callback)  -- must detach
-    end)
-  elseif (opts or {}).force then
-    _notify("Updating mason.nvim registry ...")
-    mason_registry.update(function()
-      _notify("Updating mason.nvim registry done.")
-      vim.schedule(callback)  -- must detach
+      vim.schedule(callback)  -- runs asynchronously
     end)
   else
-    callback()  -- don't refresh, for fast startup
+    vim.schedule(callback)
   end
 end
 
