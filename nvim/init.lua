@@ -25,6 +25,22 @@ function _require(name)
   return require(name)
 end
 
+-- Lua profiling startup time. Make sure lazy.nvim plugins are already installed.
+-- Use `NVIM_LUA_PROFILING=1 nvim` to enable.
+-- Use `NVIM_LUA_PROFILING=2 nvim` to include lazy-loaded plugins as well.
+if vim.env.NVIM_LUA_PROFILING then
+  package.path = string.format("%s;%s/lua/?.lua", package.path, vim.fn.expand("~/.vim/plugged/nvim-profiler"))
+  require('profiler').reload_builtin_modules()
+  require('profiler').start()
+  _G._stop_profiling = function()
+    require('profiler').stop()
+    require('profiler').open_result()
+  end
+  if vim.env.NVIM_LUA_PROFILING == '2' then
+    _G._stop_profiling = vim.schedule_wrap(_G._stop_profiling)
+  end
+end
+
 -- This is the home folder of NVIM config files.
 vim.env.DOTVIM = vim.fn.expand('~/.config/nvim')
 
@@ -103,4 +119,9 @@ _require 'config.statuscolumn'
 -- Source local-only lua configs (not git tracked)
 if vim.fn.filereadable(vim.fn.expand('~/.config/nvim/lua/config/local.lua')) > 0 then
   require 'config.local'
+end
+
+
+if vim.env.NVIM_LUA_PROFILING then
+  vim.api.nvim_create_autocmd('VimEnter', { pattern = '*', callback = _G._stop_profiling })
 end
