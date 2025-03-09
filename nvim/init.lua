@@ -101,7 +101,12 @@ end
 do
   -- Colorscheme needs to be called AFTER plugins are loaded,
   -- because of the different plugin loading mechanism and order.
-  vim.cmd [[ colorscheme xoria256-wook ]]
+  -- NOTE: while we can simply do 'colorscheme xoria256-wook', this will trigger lazy.nvim to
+  -- invoke a ColorschemePre event and wastes ~10ms. But we still need to trigger 'Colorscheme'.
+  vim.cmd [[
+   noautocmd colorscheme xoria256-wook
+   doautocmd ColorScheme xoria256-wook
+  ]]
 end
 
 if noplugin then
