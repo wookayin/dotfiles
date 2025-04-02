@@ -16,6 +16,12 @@ return {
     config = require('config.ui').setup_quickui,
   };
 
+  -- Image
+  Plug '3rd/image.nvim' {
+    event = 'VeryLazy',  -- TODO support startup arguments
+    config = require('config.ui').setup_image,
+  };
+
   -- FZF & Grep
   Plug 'junegunn/fzf' {
     name = 'fzf',
