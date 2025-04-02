@@ -67,15 +67,14 @@ if vim.fn.has('nvim-0.9.2') == 0 then
   vim.o.shadafile = "NONE"
   return
 
-elseif vim.fn.has('nvim-0.9.2') == 0 then
-  ---@type string  e.g. "NVIM v0.9.2"
-  ---@diagnostic disable-next-line: deprecated ; can be removed in nvim 0.9+
-  local nvim_version = vim.split(vim.api.nvim_command_output('version'), '\n', { trimempty = true })[1]
+elseif vim.fn.has('nvim-0.10') == 0 then
+  ---@type string  e.g. "NVIM v0.10.0"
+  local nvim_version = vim.split(vim.api.nvim_exec2('version', { output = true }).output, '\n', { trimempty = true })[1]
   local show_warning = function()
     local like_false = function(x) return x == nil or x == "0" or x == "" end
     if not like_false(vim.env.DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING) then return end
-    local msg = 'Please upgrade to latest neovim (0.9.5+).\n'
-    msg = msg .. 'Support for neovim <= 0.8.x will be dropped soon.'
+    local msg = 'Please upgrade to a recent version of neovim (0.10+).\n'
+    msg = msg .. 'Support for old neovim will be dropped soon.'
     msg = msg .. '\n\n' .. string.format('Try: $ %s install neovim', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
     msg = msg .. '\n\n' .. ('If you cannot upgrade yet but want to suppress this warning,\n'
                             .. 'use `export DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING=1`.')
