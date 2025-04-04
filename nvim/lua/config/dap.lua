@@ -138,19 +138,22 @@ M.setup_ui = function()
   ]]
 
   -- Completion in DAP widgets, via nvim-cmp
-  require("cmp").setup {
-    enabled = function()
-      return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt"
-        or require("cmp_dap").is_dap_buffer()
-    end
-  }
-  require("cmp").setup.filetype({
-    "dap-repl", "dapui_watches", "dapui_hover", "dapui_eval_input"
-  }, {
-    sources = {
-      { name = "dap", trigger_characters = { '.' } },
-    },
-  })
+  if pcall(require, "cmp") then
+    local cmp = require("cmp")
+    cmp.setup {
+      enabled = function()
+        return vim.bo[0].buftype ~= "prompt"
+          or require("cmp_dap").is_dap_buffer()
+      end
+    }
+    cmp.setup.filetype({
+      "dap-repl", "dapui_watches", "dapui_hover", "dapui_eval_input"
+    }, {
+      sources = {
+        { name = "dap", trigger_characters = { '.' } },
+      },
+    })
+  end
 
   -- Events
   -- https://microsoft.github.io/debug-adapter-protocol/specification#Events
