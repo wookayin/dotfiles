@@ -90,10 +90,10 @@ local function autoinstall_pynvim()
     return false
   end
 
-  -- Ensure pynvim >= 0.4.0.
+  -- Ensure pynvim >= 0.5.0.
   local python3_neovim_version = system(assert(vim.g.python3_host_prog) ..
     " -W ignore -c 'import pynvim; print(pynvim.VERSION.minor)' 2>/dev/null")
-  local needs_install = tonumber(python3_neovim_version) == nil or tonumber(python3_neovim_version) < 4
+  local needs_install = tonumber(python3_neovim_version) == nil or tonumber(python3_neovim_version) < 5
   if not needs_install then
     return false
   end
@@ -198,11 +198,6 @@ local function python3_version_check()
   end
   return false
 end
-
--- Make a dummy call first, to workaround a bug neovim/neovim#14438 and neovim/pynvim#496
--- At this point the python3 provider will be loaded. py3eval() may throw if python3 host cannot be loaded.
--- NOTE: This takes some init time (~50ms), but is necessary otherwise other python plugins will fail
-pcall(vim.fn.py3eval, "1")  -- TODO: Remove this workaround once pynvim 0.5 is out.
 
 if vim.F.npcall(vim.fn.py3eval, "1") ~= 1 then
   -- python3 host has failed to load.
