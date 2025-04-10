@@ -272,6 +272,11 @@ function _vim_gv {
 alias gv='_vim_gv'
 alias gva='gv --all'
 
+# .git dir (even if the current working copy is a worktree)
+function gitdir() {
+  realpath "$(git rev-parse --git-dir)"
+}
+
 # cd to $(git-root)
 function cd-git-root() {
   local _root; _root=$(git-root)
