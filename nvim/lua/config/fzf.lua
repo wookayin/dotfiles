@@ -131,13 +131,13 @@ function M.setup_fzf()
   end
 
   global_opts.lsp = {
+    async_or_timeout = 500,  -- 500ms. for gd, gr, code actions, etc.
     code_actions = {
       previewer = "codeaction_native",
       preview_pager = (
         "delta --side-by-side --width=$FZF_PREVIEW_COLUMNS " ..
         "--hunk-header-style='omit' --file-style='omit' "
       ),
-      async_or_timeout = 1000,
       winopts = {
         preview = {
           layout = "vertical",
