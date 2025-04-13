@@ -49,6 +49,8 @@ function M.setup_render()
     hl('RenderMarkdownH1Bg', { fg = fg_heading, bg = bg_heading[1] })
     hl('RenderMarkdownH2Bg', { fg = fg_heading, bg = bg_heading[2] })
     hl('RenderMarkdownH3Bg', { fg = fg_heading, bg = bg_heading[3] })
+
+    hl('RenderMarkdownCodeBorder', { fg = 'yellow', bg = '#222222', italic = true })
   end)
 
   require('render-markdown').setup(opts)
