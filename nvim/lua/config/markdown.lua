@@ -23,6 +23,10 @@ function M.setup_render()
       highlight = '@markup.raw.block.markdown',
       highlight_language = '@label.markdown',
       highlight_inline = '@markup.raw.markdown_inline',
+
+      -- Nvim 0.11 can completely conceal vertical lines, hiding the lines (```) around codeblocks.
+      -- This can be inconvenient while scrolling, so we don't want to hide the entire line.
+      border = 'thin',
     },
     on = {
       attach = function(_)
