@@ -54,16 +54,23 @@ function M.setup_render()
   require('render-markdown').setup(opts)
 
   -- Markdown buffers already loaded before lazy-loading needs manual attaching
+  local file_types = vim.F.npcall(function()
+    -- Private API. The 'ft' field of the lazy plugin spec will be read.
+    return require('render-markdown.state').file_types
+  end) or { 'markdown' } ---@type string[]
+
   require('utils.rc_utils').bufdo(function(buf)
-    if vim.bo[buf].filetype == 'markdown' then
+    -- Attach on existing buffers (including unlisted buffers, e.g. hover docs, codecompanion)
+    -- see $VIMPLUG/render-markdown.nvim/lua/render-markdown/manager.lua
+    if vim.tbl_contains(file_types, vim.bo[buf].filetype) then
       vim.api.nvim_exec_autocmds('FileType', { buffer = buf, group = 'RenderMarkdown' })
     end
-  end)
+  end, { include_unlisted = true })
 end
 
 -- Resourcing support
 if ... == nil then
-  M.setup()
+  M.setup_render()
 end
 
 return M

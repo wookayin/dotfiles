@@ -63,11 +63,16 @@ end
 
 
 -- List bufnr for all the existing, listed buffers.
-M.list_bufs = function()
+---@param opts { include_unlisted: boolean }
+M.list_bufs = function(opts)
+  opts = vim.tbl_deep_extend('force', {
+    include_unlisted = false,
+  }, opts or {})
+
   return vim.tbl_filter(function(buf)
     return (
       vim.api.nvim_buf_is_valid(buf) and
-      vim.api.nvim_get_option_value('buflisted', { buf = buf })
+      (opts.include_unlisted or vim.api.nvim_get_option_value('buflisted', { buf = buf }))
     )
   end, vim.api.nvim_list_bufs())
 end
@@ -75,12 +80,14 @@ end
 
 -- Execute fn: fun(bufnr) for all the existing, listed buffers,
 -- with bufnr being the current buffer when executing fn.
-M.bufdo = function(fn)
+---@param opts { include_unlisted: boolean }
+M.bufdo = function(fn, opts)
+  opts = opts or {}
   vim.tbl_map(function(buf)
     vim.api.nvim_buf_call(buf, function()
       fn(buf)
     end)
-  end, M.list_bufs())
+  end, M.list_bufs(opts))
 end
 
 _G.rc_utils = M
