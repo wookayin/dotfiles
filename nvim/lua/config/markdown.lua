@@ -6,6 +6,10 @@ function M.setup_render()
   -- :help render-markdown-setup
   ---@type render.md.UserConfig
   local opts = {
+    -- Include the insert mode as well (to avoid flickering during mode change),
+    -- but exclude the visual modes because we would want letter-precise visual blocks
+    render_modes = { 'n', 'c', 't', 'i' },
+
     heading = {
       border = { true, true, false, false, false, false }, -- only h1 and h2
       backgrounds = nil,  ---@see render.md.Colors, e.g. RenderMarkdownH1Bg
