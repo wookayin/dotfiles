@@ -11,8 +11,8 @@ function M.setup_render()
     render_modes = { 'n', 'c', 't', 'i' },
 
     heading = {
-      border = { true, true, false, false, false, false }, -- only h1 and h2
-      backgrounds = nil,  ---@see render.md.Colors, e.g. RenderMarkdownH1Bg
+      border = { true, true, true, false, false, false }, -- only h1, h2, and h3
+      backgrounds = nil,  ---@see render.md.Colors, e.g. RenderMarkdownH1Bg; see below
       position = 'inline',
       icons = { '# ', '## ', '### ', '#### ', '##### ', '###### ' },
     },
@@ -42,10 +42,13 @@ function M.setup_render()
   }
 
   require('utils.rc_utils').RegisterHighlights(function()
-    -- TODO: improve background color, or define highlight color on its own
-    vim.api.nvim_set_hl(0, 'RenderMarkdownH1Bg', { link = 'lualine_a_normal' })
-    vim.api.nvim_set_hl(0, 'RenderMarkdownH2Bg', { link = 'lualine_a_command' })
-    vim.api.nvim_set_hl(0, 'RenderMarkdownH3Bg', { link = 'StatusLine' })
+    ---@param rhs vim.api.keyset.highlight
+    local hl = function(group, rhs) vim.api.nvim_set_hl(0, group, rhs) end
+    local fg_heading = '#282c34'
+    local bg_heading = { '#c678dd', '#61afef', '#98c379' }
+    hl('RenderMarkdownH1Bg', { fg = fg_heading, bg = bg_heading[1] })
+    hl('RenderMarkdownH2Bg', { fg = fg_heading, bg = bg_heading[2] })
+    hl('RenderMarkdownH3Bg', { fg = fg_heading, bg = bg_heading[3] })
   end)
 
   require('render-markdown').setup(opts)
