@@ -20,8 +20,11 @@ function M.setup_render()
       icons = { '•', '◦', '‣', '-' },
     },
     checkbox = {
-      checked = { icon = '✅', },
-      unchecked = { icon = '⬜️', },
+      checked = { icon = '• ✅', },  -- raw = '[x]'
+      unchecked = { icon = '• ⬜️', }, -- raw = '[ ]'
+      custom = {
+        todo = { rendered = '• ⏳', raw = '[-]', },
+      }
     },
     code = {
       highlight = '@markup.raw.block.markdown',
