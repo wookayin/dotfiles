@@ -26,7 +26,9 @@ Plug 'vim-airline/vim-airline-themes'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc' }
 Plug 'junegunn/fzf.vim'
-Plug 'mg979/vim-xtabline'
+if v:version >= 800
+  Plug 'mg979/vim-xtabline'
+endif
 
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
