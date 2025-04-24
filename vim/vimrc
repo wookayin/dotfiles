@@ -11,7 +11,7 @@ autocmd! User LazyInit
 if exists("*timer_start") && exists('*nvim_command')  " neovim
   autocmd! VimEnter * call timer_start(0, { -> nvim_command('doautocmd User LazyInit') })
 else  " No timer support, this will run during VimEnter (before UI draws)
-  autocmd! VimEnter * doautocmd User LazyInit
+  autocmd! VimEnter * silent! doautocmd User LazyInit
 endif
 
 
@@ -2370,10 +2370,12 @@ function! s:init_indent_blankline() abort
   let g:indent_blankline_show_first_indent_level = v:false
 endfunction
 
-function! HighlightsIndentBlankline() abort
-  highlight! IndentBlanklineChar guifg=#444444 gui=nocombine
-endfunction
-call RegisterHighlights('HighlightsIndentBlankline')
+if has('nvim')
+  function! HighlightsIndentBlankline() abort
+    highlight! IndentBlanklineChar guifg=#444444 gui=nocombine
+  endfunction
+  call RegisterHighlights('HighlightsIndentBlankline')
+endif
 
 " ---------------------------------------------------------------- }}}
 " indentLine {{{
