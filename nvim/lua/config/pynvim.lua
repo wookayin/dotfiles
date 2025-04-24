@@ -234,6 +234,7 @@ if vim.F.npcall(vim.fn.py3eval, "1") ~= 1 then
 
   -- Still need to disable python3 provider, it's already broken
   vim.g.loaded_python3_provider = 0  -- Disable has('python3'), see neovim#32696
+  return NO_PYNVIM
 else
   -- pynvim already there and probably working fine,
   -- check versions lazily and asynchronously without blocking nvim
