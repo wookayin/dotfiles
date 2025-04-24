@@ -1256,6 +1256,7 @@ endif
 " Helper to register Colorscheme autocmd events (and call once immediately)
 " so that custom highlight overrides can still be applied after changing colorscheme
 function! RegisterHighlights(funcname) abort
+  call function(a:funcname)()
   augroup Colorscheme_RegisterHighlights
     exec "autocmd Colorscheme *  call " . a:funcname . "()"
   augroup END
@@ -1319,20 +1320,18 @@ function! HighlightsExtraWhitespace() abort
 endfunction
 call RegisterHighlights('HighlightsExtraWhitespace')
 
-if has('nvim') || has('patch-7.4.2103')
-  augroup trailing_whitespaces
-    autocmd!
-    autocmd FileType GV,gitmessengerpopup,gitcommit,fugitive highlight clear ExtraWhitespace
-    autocmd BufWinEnter * if _is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif
-    autocmd InsertEnter * if _is_file_buffer() | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
-    autocmd InsertLeave * if _is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif
-    autocmd BufWinLeave * call clearmatches()
-  augroup END
+augroup trailing_whitespaces
+  autocmd!
+  autocmd FileType GV,gitmessengerpopup,gitcommit,fugitive silent! highlight clear ExtraWhitespace
+  autocmd BufWinEnter * execute "if _is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif"
+  autocmd InsertEnter * execute "if _is_file_buffer() | match ExtraWhitespace /\s\+\%#\@<!$/ | endif"
+  autocmd InsertLeave * execute "if _is_file_buffer() | match ExtraWhitespace /\s\+$/ | endif"
+  autocmd BufWinLeave * call clearmatches()
+augroup END
 
-  function! _is_file_buffer() abort
-    return &filetype != '' && &buftype == '' && &modifiable
-  endfunction
-endif
+function! _is_file_buffer() abort
+  return &filetype != '' && &buftype == '' && &modifiable
+endfunction
 
 
 " Unset paste when leaving insert mode
