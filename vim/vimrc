@@ -1232,7 +1232,7 @@ if &term =~ '256color'
 endif
 
 " Use 24-bit color.
-if has('termguicolors')
+if has('nvim')
   " Note: We will use GUI colors even if the current session is running under mosh.
   " Although the stable release does not support 24-bit color yet (see GH-961),
   " users are expected to use a HEAD version of mosh both on server and client
