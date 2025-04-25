@@ -164,6 +164,10 @@ endsnippet
 snippet pudb "pudb.set_trace"
 __import__('pudb').set_trace()  # XXX DEBUG
 endsnippet
+snippet debugpy "attach debugpy"
+exec('import debugpy\n' + 'try:\n debugpy.listen(5678); debugpy.wait_for_client()\n' + 'except: pass')  # XXX DEBUG  # fmt: skip
+breakpoint()  # XXX DEBUG
+endsnippet
 snippet nest_asyncio "nest_asyncio.apply"
 import nest_asyncio; nest_asyncio.apply()  # yapf: disable
 endsnippet
