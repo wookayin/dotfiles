@@ -430,10 +430,8 @@ endsnippet
 # ML & Data Science
 ################################################################################
 
-# matplotlib
-snippet mpl_colorbar
+# matplotlib idioms
+snippet mpl.colorbar "add a colorbar aligned to an Axes {axis} in a Figure {fig}"
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
-from mpl_toolkits.axes_grid1.colorbar import colorbar
-cax = make_axes_locatable(${1:ax}).append_axes("right", size="5%", pad=0.05)
-colorbar(${2:im}, cax=cax)
+fig.colorbar(${2:im}, cax=make_axes_locatable(${1:ax}).append_axes("right", size="5%", pad=0.05))
 endsnippet
