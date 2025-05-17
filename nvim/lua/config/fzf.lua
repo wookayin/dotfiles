@@ -253,6 +253,7 @@ function M.setup_fzf()
     if e.args == "?" then  -- GFiles?
       return vim.cmd [[ GitStatus ]]
     end
+    vim.api.nvim_echo({ {':GitFiles! ('}, {vim.fn.getcwd(), 'Directory'}, {')'} }, false, {})
     ---@diagnostic disable-next-line: param-type-mismatch
     if #e.args > 0 and vim.loop.fs_stat(vim.fn.expand(e.args) or "") == nil then
       return vim.notify("Not found: " .. e.args, vim.log.levels.WARN, { title = "config.fzf" })

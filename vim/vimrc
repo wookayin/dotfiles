@@ -1853,10 +1853,10 @@ function! FzfSmart(path) abort
     let l:old_cwd = getcwd()
     execute ':tcd ' . l:git_workdir
     try
-      echon ':GitFiles! (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
       if l:fzf_lua  " see $DOTVIM/lua/config/fzf.lua
         exec 'GitFiles! ' . l:path
       else  " vanilla vim, using fzf.vim
+        echon ':GitFiles! (' | echohl Directory | echon getcwd() | echohl NONE | echon ')' | echon '    '
         exec 'GFiles --cached --others --modified --exclude-standard --deduplicate ' . l:path
       endif
     finally
