@@ -3,6 +3,21 @@
 
 local M = {}
 
+-- Experimental: highlight cmdline, messages in a real buffer.
+-- See https://github.com/neovim/neovim/pull/27811 and :help vim._extui
+function M.setup_extui()
+  if vim.fn.has('nvim-0.12') == 0 then
+    return false
+  end
+
+  require('vim._extui').enable {
+    enable = true,
+    msg = {
+      pos = 'cmd',  -- for now I'm happy with 'cmd'; 'box' seems buggy
+    },
+  }
+end
+
 function M.setup_notify()
   vim.cmd [[
     command! -nargs=0 NotificationsPrint   :lua require('notify')._print_history()
