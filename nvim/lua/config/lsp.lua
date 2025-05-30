@@ -213,12 +213,23 @@ end
 --- Install auto_lsp_servers on demand (FileType)
 function M._ensure_mason_installed()
   local augroup = vim.api.nvim_create_augroup('mason_autoinstall', { clear = true })
-  local lspconfig_to_package = require("mason-lspconfig.mappings.server").lspconfig_to_package
-  local filetype_mappings = require("mason-lspconfig.mappings.filetype")
+
+  -- Hotfix against mason_lspconfig v2.0 breaking changes
+  local lspconfig_to_package = vim.F.npcall(function()
+    return require("mason-lspconfig.mappings.server").lspconfig_to_package
+  end)
+  local filetype_mappings = vim.F.npcall(function()
+    return require("mason-lspconfig.mappings.filetype")
+  end)
+  if lspconfig_to_package == nil then
+    vim.notify("mason-lspconfig is broken in v2.0; please downgrade to v1.32.0 by manual checkout",
+      vim.log.levels.ERROR, { title = "config/lsp" })
+  end
+
   local _requested = {}
 
   local ft_handler = {}
-  for ft, lsp_names in pairs(filetype_mappings) do
+  for ft, lsp_names in pairs(filetype_mappings or {}) do
     lsp_names = vim.tbl_filter(function(lsp_name)
       ---@diagnostic disable-next-line: param-type-mismatch
       return auto_lsp_servers[lsp_name] == true or vim.tbl_contains(auto_lsp_servers[lsp_name] or {}, ft)
@@ -226,7 +237,7 @@ function M._ensure_mason_installed()
 
     ft_handler[ft] = vim.schedule_wrap(function()
       for _, lsp_name in pairs(lsp_names) do
-        local pkg_name = lspconfig_to_package[lsp_name]
+        local pkg_name = (lspconfig_to_package or {})[lsp_name]
         local ok, pkg = pcall(require("mason-registry").get_package, pkg_name)
         if ok and not pkg:is_installed() and not _requested[pkg_name] then
           _requested[pkg_name] = true
@@ -512,7 +523,9 @@ end)
 
 --- setup all known and available LSP servers that are installed
 function M._setup_lspconfig()
-  local all_known_lsps = require('mason-lspconfig.mappings.server').lspconfig_to_package
+  local all_known_lsps = vim.F.npcall(function()
+    return require('mason-lspconfig.mappings.server').lspconfig_to_package
+  end) or {}
   local lsp_uninstalled = {}   --- { lspconfig name => mason package name }
   local mason_need_refresh = false
 
