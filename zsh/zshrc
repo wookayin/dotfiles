@@ -161,11 +161,14 @@ if [ ! -s "$ANTIDOTE_BUNDLE" ] || ! grep -q '[^[:space:]]' < "$ANTIDOTE_BUNDLE";
 fi
 
 # Load the static script for loading zsh plugins.
-source $ANTIDOTE_BUNDLE
+source "$ANTIDOTE_BUNDLE"
 if [ ! $? -eq 0 ] ; then   # error, refresh the script and try again
-  echo -e "$fg[yellow]Sourcing ${ANTIDOTE_BUNDLE} has failed. Trying to reset zsh plugins ...$rest_color"
+  echo -e "$fg[yellow]Sourcing $ANTIDOTE_BUNDLE has failed. Trying to reset zsh plugins ...$reset_color"
   _antidote_compile_bundles
-  source $ANTIDOTE_BUNDLE
+  source "$ANTIDOTE_BUNDLE"
+fi
+if ! grep -q "prezto/init.zsh" "$ANTIDOTE_BUNDLE" ; then
+  echo -e "$fg[red]ERROR: $ANTIDOTE_BUNDLE is probably broken. Please check the file, run $fg[yellow]antidote reset$fg[red] and try again.$rest_color"
 fi
 
 if [[ -n "$_ANTIDOTE_SAVING" ]]; then
