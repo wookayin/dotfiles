@@ -168,7 +168,7 @@ if [ ! $? -eq 0 ] ; then   # error, refresh the script and try again
   source "$ANTIDOTE_BUNDLE"
 fi
 if ! grep -q "prezto/init.zsh" "$ANTIDOTE_BUNDLE" ; then
-  echo -e "$fg[red]ERROR: $ANTIDOTE_BUNDLE is probably broken. Please check the file, run $fg[yellow]antidote reset$fg[red] and try again.$rest_color"
+  echo -e "$fg[red]ERROR: $ANTIDOTE_BUNDLE is probably broken. Please check the file, run $fg[yellow]antidote reset$fg[red] and try again.$reset_color"
 fi
 
 if [[ -n "$_ANTIDOTE_SAVING" ]]; then
