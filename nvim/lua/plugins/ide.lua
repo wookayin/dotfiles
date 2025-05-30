@@ -89,7 +89,9 @@ return {
   -- Python
   Plug 'wookayin/semshi' {
     ft = 'python',
-    cond = has_py3,
+    cond = function()
+      return not vim.g.vscode and has_py3()
+    end,
     config = function()
       -- Semshi uses FileType autocmds on init. Have it called once again when lazy loaded.
       vim.cmd [[ doautocmd SemshiInit FileType python ]]

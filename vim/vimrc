@@ -2141,6 +2141,9 @@ function! s:setup_wilder() abort
   if !luaeval('require("config.pynvim")()') | return | endif
   if !luaeval('vim.F.npcall(require, "wilder") and true') | return | endif
 
+  " Do not set up wilder.nvim in vscode-neovim (g:vscode)
+  if get(g:, 'vscode', 0) | return | endif
+
   call s:check_wilder_rplugins()
 
   " only / and ? are enabled by default
