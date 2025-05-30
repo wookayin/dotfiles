@@ -14,6 +14,7 @@ function M.setup()
   ]]
 
   -- highlighted foldtext without nvim-ufo (can be a sane default).
+  -- see https://github.com/neovim/neovim/pull/20750
   if vim.fn.has('nvim-0.10') > 0 then
     vim.opt.foldtext = ''
     vim.opt.fillchars:append({ fold = ' ' })

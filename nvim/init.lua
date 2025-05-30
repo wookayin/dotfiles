@@ -120,6 +120,8 @@ _require 'config.keymap'
 _require 'config.commands'
 _require 'config.statuscolumn'
 
+require 'config.folding'
+
 -- Neovim 0.12+, :help vim._extui
 require('config.ui').setup_extui()
 
