@@ -13,6 +13,13 @@ function M.setup()
     augroup END
   ]]
 
+  vim.opt.foldmethod = 'expr'
+  if vim.fn.has('nvim-0.11') > 0 then
+    vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+  elseif pcall(require, 'nvim-treesitter') then  -- for nvim-0.10.x
+    vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+  end
+
   -- highlighted foldtext without nvim-ufo (can be a sane default).
   -- see https://github.com/neovim/neovim/pull/20750
   if vim.fn.has('nvim-0.10') > 0 then
@@ -33,6 +40,7 @@ M.setup_ufo = function()
 
   -- See $VIMPLUG/nvim-ufo/lua/ufo/config.lua
   -- See https://github.com/kevinhwang91/nvim-ufo/blob/master/README.md#setup-and-description
+  ---@diagnostic disable-next-line: missing-fields
   ufo.setup {
     open_fold_hl_timeout = 150,
     provider_selector = function(bufnr, filetype)

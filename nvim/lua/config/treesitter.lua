@@ -61,10 +61,6 @@ function M.setup()
     },
   }
 
-  -- Folding support
-  vim.opt.foldmethod = 'expr'
-  vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
-
   M.setup_keymap()
 end
 
