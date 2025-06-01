@@ -30,11 +30,13 @@ return {
     dependencies = { 'mason.nvim' },
     config = require('config.lsp').setup_lsp, -- mason, lspconfig, etc.
   };
-  Plug 'williamboman/mason.nvim' {
+  Plug 'mason-org/mason.nvim' {
+    version = 'v1.11.0',  -- TODO v2.0 support
     event = LspSetup, -- as a dependency for nvim-lspconfig
-    dependencies = {
-      Plug 'williamboman/mason-lspconfig.nvim';
-    },
+  };
+  Plug 'mason-org/mason-lspconfig.nvim' {
+    version = 'v1.32.0',  -- TODO v2.0 support
+    event = LspSetup,
   };
   Plug 'folke/neodev.nvim' { event = LspSetup };
   Plug 'ray-x/lsp_signature.nvim' { event = LspSetup };
