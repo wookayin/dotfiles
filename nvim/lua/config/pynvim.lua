@@ -95,15 +95,18 @@ local function determine_pip_args(pynvim_minimum_version)
 end
 
 -- This works "synchronously", blocks until the pip command terminates
-local function autoinstall_pynvim()
+---@param skip_check boolean?
+local function autoinstall_pynvim(skip_check)
   if vim.fn.exepath(vim.g.python3_host_prog) == "" then
     return false
   end
   if vim.system == nil then
-    notify_later(
-      ("pynvim not installed for " .. vim.g.python3_host_prog .. "\n" ..
-       "please run `python3 -m pip install --upgrade pynvim` manually."),
-      vim.log.levels.ERROR)
+    if not skip_check then
+      notify_later(
+        ("pynvim not installed for " .. vim.g.python3_host_prog .. "\n" ..
+        "please run `python3 -m pip install --upgrade pynvim` manually."),
+        vim.log.levels.ERROR)
+    end
     return false  -- neovim < 0.10, give up and don't do anything fancy
   end
   local verbose = vim.o.verbose
@@ -241,7 +244,7 @@ else
   vim.schedule(function()
     python3_version_check()
     -- TODO do not try installing pynvim if python3 version is too old.
-    autoinstall_pynvim()
+    autoinstall_pynvim(true)
   end)
 end
 
