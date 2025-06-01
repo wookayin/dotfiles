@@ -172,6 +172,7 @@ _try_conda_base "$HOME/.miniforge3" || \
 _try_conda_base "$HOME/miniforge3"  || \
 _try_conda_base "$HOME/.miniconda3" || \
 _try_conda_base "$HOME/miniconda3"  || \
+_try_conda_base "/opt/miniconda3" || \
 _try_conda_base "/usr/local/miniconda3" || true;
 unfunction _try_conda_base
 
