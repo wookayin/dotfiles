@@ -10,12 +10,14 @@ function M.setup_extui()
     return false
   end
 
-  require('vim._extui').enable {
-    enable = true,
-    msg = {
-      pos = 'cmd',  -- for now I'm happy with 'cmd'; 'box' seems buggy
-    },
-  }
+  vim.schedule(function()
+    require('vim._extui').enable {
+      enable = true,
+      msg = {
+        pos = 'cmd',  -- for now I'm happy with 'cmd'; 'box' seems buggy
+      },
+    }
+  end)
 end
 
 function M.setup_notify()
