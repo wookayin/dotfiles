@@ -14,11 +14,11 @@ _version_check() {
     curver="${1/v/}"; targetver="$2";
     [ "$targetver" = "$(echo -e "$curver\n$targetver" | sort -V | head -n1)" ]
 }
-NVIM_RECOMMENDED_VERSION="0.9.4"
+NVIM_RECOMMENDED_VERSION="0.11.2"
 neovim_current_verson=$(nvim --version 2>/dev/null | head -n1 | cut -d' ' -f2)
 
-if which nvim >/dev/null && _version_check "$neovim_current_verson" "$RECOMMENDED_VERSION"; then
-    echo -e "neovim found at ${GREEN}$(which nvim) ($neovim_current_verson)${RESET}"
+if which nvim >/dev/null && _version_check "$neovim_current_verson" "$NVIM_RECOMMENDED_VERSION"; then
+    echo -e "neovim found at ${GREEN}$(which nvim) ($neovim_current_verson, >= $NVIM_RECOMMENDED_VERSION)${RESET}"
 
 else
     # neovim not found. install one!
@@ -30,7 +30,7 @@ else
     if ! which nvim >/dev/null; then
         echo -e "${RED}Neovim not found."
     else
-        echo -e "${RED}Neovim is outdated (recommended >= $RECOMMENDED_VERSION): $(nvim --version | head -1)"
+        echo -e "${RED}Neovim is outdated (recommended >= $NVIM_RECOMMENDED_VERSION): $(nvim --version | head -1)"
     fi
     echo -e "Please install using '${NEOVIM_INSTALL_CMD}'.${RESET}"
 
