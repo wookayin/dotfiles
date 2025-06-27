@@ -14,7 +14,7 @@ function M.setup_extui()
     require('vim._extui').enable {
       enable = true,
       msg = {
-        pos = 'cmd',  -- for now I'm happy with 'cmd'; 'box' seems buggy
+        target = 'cmd', -- for now I'm happy with 'cmd'; 'box' seems buggy
       },
     }
   end)
