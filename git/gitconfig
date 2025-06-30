@@ -13,6 +13,9 @@
 	# editor
 	editor = vim
 
+	# git: Do not hang forever over SSH(22) under firewall
+	sshCommand = "ssh -o ConnectTimeout=2"
+
 [pager]
 	# Make sure the pager terminates when it hits on the end of log
 	log = less -FE
