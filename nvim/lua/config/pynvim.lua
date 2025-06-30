@@ -47,7 +47,7 @@ end
 
 -- Run host python3 to get the version info table (asynchronously).
 -- Note: we don't run the provider (py3eval) directly, because it can block the UI.
----@param callback fun(version_info: integer[]|nil)  version_info: e.g., { 3, 11, 5 }; or nil if python3 failed
+---@param callback fun(version_info: integer[]|nil, result: vim.SystemCompleted)  version_info: e.g., { 3, 11, 5 }; or nil if python3 failed
 local function python3_version_async(callback)
   local done = false
   local version_info = nil
@@ -63,7 +63,7 @@ local function python3_version_async(callback)
       if result.code == 0 then
         version_info = vim.F.npcall(vim.json.decode, result.stdout)
       end
-      callback(version_info)
+      callback(version_info, result)
     end)
   )
   -- timeout: 2000ms
@@ -174,7 +174,7 @@ end
 --- Runs asynchronously, to prevent neovim from freezing while an external process is running.
 local function python3_version_check()
   local verbose = vim.o.verbose
-  python3_version_async(function(py_version)
+  python3_version_async(function(py_version, p)
     local ok = py_version and (
       py_version[1] > 3 or
       py_version[1] == 3 and py_version[2] >= 7  -- requires python 3.7+
@@ -193,14 +193,15 @@ local function python3_version_check()
     -- TODO validate this works actually
     local msg
     if py_version then
-      msg = string.format("Your python3 version (%s) is too old;", table.concat(py_version, "."))
+      msg = string.format("Your python3 version (%s) is too old; ", table.concat(py_version, "."))
     elseif vim.fn.filereadable(vim.g.python3_host_prog) == 0 then
-      msg = ("python3_host_prog executable does not exist: %s"):format(vim.g.python3_host_prog)
+      msg = ("python3_host_prog executable does not exist: ")
     else
-      msg = ("python3 version cannot be detected.")  -- TODO: attach stderr msg or more context
+      msg = ("python3 version cannot be detected: %s"):format(vim.g.python3_host_prog) ..
+        ("\nstderr:\n%s\nstdout:\n%s\n"):format(p.stderr or '', p.stdout or '')
     end
     do
-      warning(msg .. " g:python3_host_prog = " .. vim.g.python3_host_prog)
+      warning(msg .. "g:python3_host_prog = " .. vim.g.python3_host_prog)
       msg = msg .. '\n' .. "python 3.7+ is required. Most features are disabled.\n"
       msg = msg .. '\n' .. "g:python3_host_prog = " .. vim.g.python3_host_prog
       msg = msg .. '\n' .. "exepath = " .. vim.fn.exepath(vim.g.python3_host_prog)
