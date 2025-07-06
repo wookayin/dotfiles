@@ -35,11 +35,28 @@ fi
 
 bindkey '\e.' insert-last-word # Alt-.
 
+# zsh-history-substring-search 키바인딩
+# 화살표 키로 부분 문자열 히스토리 검색
+if [[ -n "$terminfo[kcuu1]" ]]; then
+  bindkey "$terminfo[kcuu1]" history-substring-search-up      # Up arrow
+fi
+if [[ -n "$terminfo[kcud1]" ]]; then
+  bindkey "$terminfo[kcud1]" history-substring-search-down    # Down arrow
+fi
+
+# 다양한 터미널에서 호환성을 위한 추가 바인딩
+bindkey '^[[A' history-substring-search-up      # Up arrow
+bindkey '^[[B' history-substring-search-down    # Down arrow
+bindkey '^[OA' history-substring-search-up      # Up arrow (alternative)
+bindkey '^[OB' history-substring-search-down    # Down arrow (alternative)
+
+# Vi mode에서도 작동하도록 설정
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
 
 # Vi mode key bindings
 # CTRL-X CTRL-E: Edit command in an external editor (even in insert mode)
 bindkey -M viins "$key_info[Control]X$key_info[Control]E" edit-command-line
-
 
 # Note: see ~/.zsh/zsh.d/fzf-widgets.zsh
 # for more zsh widgets and their keybindings.

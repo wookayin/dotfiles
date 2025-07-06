@@ -32,6 +32,9 @@ plugin 'junegunn/fzf-git.sh' kind:clone
 
 plugin 'zsh-users/zsh-autosuggestions'
 
+# History substring search - 화살표 키로 부분 문자열 히스토리 검색
+plugin 'zsh-users/zsh-history-substring-search'
+
 # conda support: Use my own fork for a while, to support autoswitch into anaconda envs
 plugin 'wookayin/zsh-autoswitch-virtualenv'
 
