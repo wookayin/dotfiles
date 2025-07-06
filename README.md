@@ -10,6 +10,7 @@
 - Add `substring-history-search` to zsh & keybindings
 - Add [`stat_dataset`](https://github.com/kojunseo/stat_dataset) as submodule and install it to `/usr/local/bin`
 - Enable word-wise cursor movement with `opt+left/right`
+- Change installation script source from unstable personal webpage to `githubusercontent`. And installation script follows current repository
 
 ## Installation
 
