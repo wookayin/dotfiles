@@ -9,6 +9,7 @@
 - Added `pp` alias to `poetry run python`
 - Add `substring-history-search` to zsh & keybindings
 - Add [`stat_dataset`](https://github.com/kojunseo/stat_dataset) as submodule and install it to `/usr/local/bin`
+- Enable word-wise cursor movement with `opt+left/right`
 
 ## Installation
 
