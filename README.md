@@ -8,6 +8,7 @@
 - Added `gdns` alias to `git diff --name-status`
 - Added `pp` alias to `poetry run python`
 - Add `substring-history-search` to zsh & keybindings
+- Add [`stat_dataset`](https://github.com/kojunseo/stat_dataset) as submodule and install it to `/usr/local/bin`
 
 ## Installation
 
