@@ -2,33 +2,22 @@
 # Dotfiles
 
 🏠 Personal dotfiles for \*NIX (macOS and Linux) systems.
-
+- Forked from [@wookayin's dotfiles](https://github.com/wookayin/dotfiles) and modifed to fit my needs.
 
 ## Installation
 
 ### 👉 One-liner (if you trust me):
 
 ```bash
-curl -fsSL https://dotfiles.wook.kr/etc/install | bash
+curl -fsSL https://raw.githubusercontent.com/kojunseo/dotfiles/master/etc/install | bash
 ```
-
-<details><summary>
-💡 (Tip) You only need to remember <code>curl dotfiles.wook.kr</code> (Click to expand)
-</summary></p>
-
-* Every file is accessible through `dotfiles.wook.kr` (via `curl -L` or `wget`), e.g.,
-  * https://dotfiles.wook.kr/vimrc
-  * https://dotfiles.wook.kr/vimrc?raw=true
-  * https://dotfiles.wook.kr/bin/tb
-
-<p></details>
 
 <details><summary>
 🤔 Want to manually clone and install? (Click to expand)
 </summary><p>
 
 ```bash
-$ git clone --recursive https://github.com/wookayin/dotfiles.git ~/.dotfiles
+$ git clone --recursive https://github.com/kojunseo/dotfiles.git ~/.dotfiles
 $ cd ~/.dotfiles && python install.py
 ```
 

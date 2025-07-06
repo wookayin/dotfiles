@@ -2,7 +2,8 @@
 -- ~/.config/nvim/init.lua
 --
 -- Jongwook Choi (@wookayin)
--- https://dotfiles.wook.kr
+-- Forked from https://dotfiles.wook.kr
+-- New home: https://github.com/kojunseo/dotfiles
 
 
 -- The global namespace for config-related stuffs.

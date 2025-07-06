@@ -1,7 +1,9 @@
-" @wookayin's vimrc file
+" Forked from @wookayin's vimrc file
 " https://dotfiles.wook.kr/vim/vimrc
-"
+" 
 " https://github.com/wookayin/dotfiles
+"
+" Fix to work with https://github.com/kojunseo/dotfiles
 
 scriptencoding utf-8
 

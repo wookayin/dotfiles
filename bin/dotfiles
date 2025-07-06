@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''
+"""
    @wookayin's              ███████╗██╗██╗     ███████╗███████╗
    ██████╗  █████╗ ████████╗██╔════╝██║██║     ██╔════╝██╔════╝
    ██╔══██╗██╔══██╗╚══██╔══╝█████╗  ██║██║     █████╗  ███████╗
@@ -10,30 +10,33 @@
    ╚═════╝  ╚════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
 
 bin/dotfiles -- a command-line helper for managing dotfiles
-https://dotfiles.wook.kr
-'''
+https://github.com/kojunseo/dotfiles
+"""
 
 from __future__ import print_function
 
+import collections
 import functools
+import os.path
 import platform
 import subprocess
-import collections
-import os.path
 import sys
 
 
 def _wrap_colors(ansicode):
-    return (lambda msg: ansicode + str(msg) + '\033[0m')
-GRAY   = _wrap_colors("\033[0;37m")
-WHITE  = _wrap_colors("\033[1;37m")
-RED    = _wrap_colors("\033[0;31m")
-GREEN  = _wrap_colors("\033[0;32m")
+    return lambda msg: ansicode + str(msg) + "\033[0m"
+
+
+GRAY = _wrap_colors("\033[0;37m")
+WHITE = _wrap_colors("\033[1;37m")
+RED = _wrap_colors("\033[0;31m")
+GREEN = _wrap_colors("\033[0;32m")
 YELLOW = _wrap_colors("\033[0;33m")
-BLUE   = _wrap_colors("\033[0;34m")
+BLUE = _wrap_colors("\033[0;34m")
 
 
 _command_args = collections.defaultdict(list)
+
 
 def add_argument(*args, **kwargs):
     def decorator(func):
@@ -43,38 +46,51 @@ def add_argument(*args, **kwargs):
         def f(*args, **kwargs):
             ret = func(*args, **kwargs)
             return ret
+
         return f
+
     return decorator
+
 
 ###############################################################################################
 
-@add_argument('--fast', action='store_true', help='Skip all slow updates (zsh/vim plugins)')
-@add_argument('--skip-zplug', action='store_true', help='Skip updating zsh plugins (antidote)')
-@add_argument('--skip-vimplug', action='store_true', help='Skip updating vim plugins (vim-plug)')
-def update(fast=False,
-           skip_zplug=False,
-           skip_vimplug=False):
-    '''Update the dotfiles from github.'''
 
-    dotfiles_dir = os.path.expanduser('~/.dotfiles')
+@add_argument(
+    "--fast", action="store_true", help="Skip all slow updates (zsh/vim plugins)"
+)
+@add_argument(
+    "--skip-zplug", action="store_true", help="Skip updating zsh plugins (antidote)"
+)
+@add_argument(
+    "--skip-vimplug", action="store_true", help="Skip updating vim plugins (vim-plug)"
+)
+def update(fast=False, skip_zplug=False, skip_vimplug=False):
+    """Update the dotfiles from github."""
+
+    dotfiles_dir = os.path.expanduser("~/.dotfiles")
 
     def _git_head():
-        ret = subprocess.check_output('git rev-parse --short HEAD',
-                                      shell=True, cwd=dotfiles_dir)
+        ret = subprocess.check_output(
+            "git rev-parse --short HEAD", shell=True, cwd=dotfiles_dir
+        )
         if sys.version_info[0] >= 3 and isinstance(ret, bytes):
-            ret = ret.decode('utf-8')
+            ret = ret.decode("utf-8")
         return ret.strip()
 
     git_old_head = _git_head()
 
     install_args = set()
-    if skip_zplug: install_args.add("--skip-zplug")
-    if skip_vimplug: install_args.add("--skip-vimplug")
-    if fast: install_args.update(["--skip-zplug", "--skip-vimplug"])
-    install_args = ' '.join(install_args)
+    if skip_zplug:
+        install_args.add("--skip-zplug")
+    if skip_vimplug:
+        install_args.add("--skip-vimplug")
+    if fast:
+        install_args.update(["--skip-zplug", "--skip-vimplug"])
+    install_args = " ".join(install_args)
 
     # TODO: check if current branch is master
-    action = '''#!/bin/bash
+    action = (
+        """#!/bin/bash
         set -e
         set -x
         ret=0
@@ -85,96 +101,115 @@ def update(fast=False,
             python3 install.py %s || { ret=$?; }
         git stash list | grep "DOTFILES_UPDATE" && git stash pop --index -q
         exit $ret;
-    ''' % install_args
+    """
+        % install_args
+    )
 
-    ret = subprocess.call(['bash', '-c', action])
+    ret = subprocess.call(["bash", "-c", action])
     git_new_head = _git_head()
 
     if ret != 0:
-        print(RED('[*] installer has failed. Check the log.'))
+        print(RED("[*] installer has failed. Check the log."))
     elif git_old_head == git_new_head:
-        print(YELLOW('[*] dotfiles is up-to-date ({}).'.format(git_new_head)))
+        print(YELLOW("[*] dotfiles is up-to-date ({}).".format(git_new_head)))
     else:
-        print(GREEN('[*] Update complete!'))
-        print(WHITE('Changelog: {}..{}'.format(git_old_head, git_new_head)))
-        subprocess.call('git log --pretty=oneline --abbrev-commit {}..{}'\
-                        .format(git_old_head, git_new_head),
-                        shell=True, cwd=dotfiles_dir)
+        print(GREEN("[*] Update complete!"))
+        print(WHITE("Changelog: {}..{}".format(git_old_head, git_new_head)))
+        subprocess.call(
+            "git log --pretty=oneline --abbrev-commit {}..{}".format(
+                git_old_head, git_new_head
+            ),
+            shell=True,
+            cwd=dotfiles_dir,
+        )
 
 
 def open_github():
-    '''Open the github repository in the web browser.'''
+    """Open the github repository in the web browser."""
 
     import webbrowser
-    webbrowser.open("https://dotfiles.wook.kr", new=0)
+
+    webbrowser.open("https://github.com/kojunseo/dotfiles", new=0)
 
 
-@add_argument('target', nargs='*', help='target package to install, see ~/.dotfiles/etc/linux-locals.sh for list')
-@add_argument('--force', action='store_true')
+@add_argument(
+    "target",
+    nargs="*",
+    help="target package to install, see ~/.dotfiles/etc/linux-locals.sh for list",
+)
+@add_argument("--force", action="store_true")
 def install_local(target, force, argv=[]):
-    '''
+    """
     Install local packages as specified in /etc/linux-locals.sh.
     Available only in Linux.
-    '''
+    """
 
-    if platform.system() != 'Linux':
+    if platform.system() != "Linux":
         print("Error: only available on linux systems.")
-        if platform.system() == 'Darwin':
-            print("On macOS, try " + YELLOW("brew install <package>")
-                  + " instead (https://brew.sh/)")
+        if platform.system() == "Darwin":
+            print(
+                "On macOS, try "
+                + YELLOW("brew install <package>")
+                + " instead (https://brew.sh/)"
+            )
         sys.exit(1)
 
     if not isinstance(target, (list, tuple)):
         target = [target]
 
-    dotfiles_dir = os.path.expanduser('~/.dotfiles')
+    dotfiles_dir = os.path.expanduser("~/.dotfiles")
 
     if not target:
-        ret = subprocess.check_output('./etc/linux-locals.sh || true',
-                                      shell=True, cwd=dotfiles_dir)
-        if not isinstance(ret, str): ret = ret.decode()
+        ret = subprocess.check_output(
+            "./etc/linux-locals.sh || true", shell=True, cwd=dotfiles_dir
+        )
+        if not isinstance(ret, str):
+            ret = ret.decode()
         print("Available packages:")
-        packages = [l[8:] for l in ret.split() if l.startswith('install_')]
-        print('\n'.join(['- {l}'.format(l=l) for l in packages]))
+        packages = [l[8:] for l in ret.split() if l.startswith("install_")]
+        print("\n".join(["- {l}".format(l=l) for l in packages]))
         return 1
 
     for t in target:
         ret = subprocess.call(
-            './etc/linux-locals.sh install_{target} {force_flag} {flag}'.format(
+            "./etc/linux-locals.sh install_{target} {force_flag} {flag}".format(
                 target=t,
-                force_flag='--force' if force else '',
-                flag=' '.join(argv)   # TODO: shlex (python 3+)
+                force_flag="--force" if force else "",
+                flag=" ".join(argv),  # TODO: shlex (python 3+)
             ),
-            shell=True, cwd=dotfiles_dir
+            shell=True,
+            cwd=dotfiles_dir,
         )
 
-        if ret != 0: # error
+        if ret != 0:  # error
             return ret
 
         print(GREEN("\n[*] Installation successful: {}".format(t)))
 
-    print(GREEN("\n\n[*] Installation(s) successful. You may need to run ") + \
-          WHITE("`exec zsh`") + \
-          GREEN(" to reflect changes in PATH."))
+    print(
+        GREEN("\n\n[*] Installation(s) successful. You may need to run ")
+        + WHITE("`exec zsh`")
+        + GREEN(" to reflect changes in PATH.")
+    )
+
 
 def main():
     COMMANDS = {
-        'update': update,
-        'github': open_github,
-        'install' : install_local,
+        "update": update,
+        "github": open_github,
+        "install": install_local,
     }
     for fn in COMMANDS.values():
         fn.__doc__ = fn.__doc__.strip()
 
     from argparse import ArgumentParser, RawTextHelpFormatter
-    parser = ArgumentParser(description=__doc__,
-                            formatter_class=RawTextHelpFormatter)
-    subparsers = parser.add_subparsers(title='Available commands',
-                                       dest="command")
 
-    for (cmd, action) in COMMANDS.items():
+    parser = ArgumentParser(description=__doc__, formatter_class=RawTextHelpFormatter)
+    subparsers = parser.add_subparsers(title="Available commands", dest="command")
+
+    for cmd, action in COMMANDS.items():
         sp = subparsers.add_parser(cmd, help=action.__doc__)
-        for (args, kwargs) in _command_args.get(action.__name__, []):
+        for args, kwargs in _command_args.get(action.__name__, []):
             sp.add_argument(*args, **kwargs)
 
     if len(sys.argv) == 1:
@@ -184,15 +219,14 @@ def main():
         args, unknown = parser.parse_known_args()
 
     kwargs = vars(args)
-    command = kwargs.pop('command')
+    command = kwargs.pop("command")
     if unknown:
-        kwargs['argv'] = unknown
+        kwargs["argv"] = unknown
     ret = COMMANDS[command](**kwargs)
 
     if ret:  # non-zero exit code
         sys.exit(ret)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
