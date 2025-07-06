@@ -4,6 +4,11 @@
 🏠 Personal dotfiles for \*NIX (macOS and Linux) systems.
 - Forked from [@wookayin's dotfiles](https://github.com/wookayin/dotfiles) and modifed to fit my needs.
 
+### My customizations
+- Added `gdns` alias to `git diff --name-status`
+- Added `pp` alias to `poetry run python`
+- Add `substring-history-search` to zsh & keybindings
+
 ## Installation
 
 ### 👉 One-liner (if you trust me):
