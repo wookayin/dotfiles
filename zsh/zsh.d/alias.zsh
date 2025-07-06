@@ -202,6 +202,7 @@ alias gb='git branch -vv'
 alias gd='git diff --no-prefix'
 alias gdc='gd --cached --no-prefix'
 alias gds='gd --staged --no-prefix'
+alias gdns='gd --name-status'
 alias gs='git status'
 alias gsu='gs -u'
 alias gu='git pull --autostash'
@@ -322,6 +323,9 @@ alias pip3='python3 -m pip'
 alias mypy='python -m mypy'
 alias pycodestyle='python -m pycodestyle'
 alias pylint='python -m pylint'
+
+# poetry
+alias pp='poetry run python'
 
 # pip
 function pip-search() {
