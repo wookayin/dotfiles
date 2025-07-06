@@ -11,3 +11,6 @@
 [submodule "zsh/antidote"]
 	path = zsh/antidote
 	url = https://github.com/mattmc3/antidote
+[submodule "external/stat_dataset"]
+	path = external/stat_dataset
+	url = https://github.com/kojunseo/stat_dataset
