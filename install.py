@@ -202,6 +202,38 @@ post_actions += [  # tmux plugins
 """,
 ]
 
+post_actions += [  # stat_dataset
+    r"""#!/bin/bash
+    # Install stat_dataset tool to /usr/local/bin
+    OS=$(uname)
+    if [[ "$OS" == "Darwin" ]] || [[ "$OS" == "Linux" ]]; then
+        STAT_DATASET_SRC="external/stat_dataset/bin/stat_dataset"
+        STAT_DATASET_DEST="/usr/local/bin/stat_dataset"
+        
+        if [[ -f "$STAT_DATASET_SRC" ]]; then
+            echo -e "\033[0;33mInstalling stat_dataset to $STAT_DATASET_DEST...\033[0m"
+            
+            if sudo cp "$STAT_DATASET_SRC" "$STAT_DATASET_DEST" 2>/dev/null; then
+                sudo chmod +x "$STAT_DATASET_DEST"
+                echo -e "\033[0;32m✔ Successfully installed stat_dataset → $STAT_DATASET_DEST\033[0m"
+            else
+                echo -e "\033[0;31m✗ Failed to install stat_dataset (sudo required)\033[0m"
+                echo -e "\033[0;33mTrying to install to ~/.local/bin instead...\033[0m"
+                mkdir -p "$HOME/.local/bin"
+                cp "$STAT_DATASET_SRC" "$HOME/.local/bin/stat_dataset"
+                chmod +x "$HOME/.local/bin/stat_dataset"
+                echo -e "\033[0;32m✔ Successfully installed stat_dataset → ~/.local/bin/stat_dataset\033[0m"
+                echo -e "\033[0;33mMake sure ~/.local/bin is in your PATH\033[0m"
+            fi
+        else
+            echo -e "\033[0;31m✗ stat_dataset source file not found at $STAT_DATASET_SRC\033[0m"
+        fi
+    else
+        echo -e "\033[0;33mstat_dataset installation skipped (unsupported OS: $OS)\033[0m"
+    fi
+""",
+]
+
 post_actions += [  # default shell
     r"""#!/bin/bash
     # Change default shell to zsh
