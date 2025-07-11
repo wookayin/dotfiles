@@ -103,6 +103,10 @@ os.chdir(__PATH__)
 
 
 post_actions = []
+
+post_actions += [
+    "git clone https://github.com/pyenv/pyenv.git ~/.pyenv"
+]
 post_actions += [  # Check symbolic link at $HOME
     """#!/bin/bash
     # Check whether ~/.vim and ~/.zsh are well-configured
