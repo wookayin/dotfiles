@@ -439,6 +439,23 @@ lsp_setup_opts['clangd'] = {
   }
 }
 
+lsp_setup_opts['cssls'] = {
+  settings = {
+    css = {
+      validate = true,
+      lint = {
+        unknownAtRules = 'ignore', -- e.g. @apply
+      },
+    },
+    less = {
+      validate = true,
+    },
+    scss = {
+      validate = true,
+    }
+  },
+}
+
 lsp_setup_opts['bashls'] = {
   filetypes = { 'sh', 'zsh' },
 }
