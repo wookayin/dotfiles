@@ -13,8 +13,19 @@ SCRIPT=$(readlink -f \$0)
 SCRIPTPATH=\`dirname \$SCRIPT\`
 endsnippet
 
-snippet PS4
+snippet setx "set -x with customized PS4"
 PS4="\033[1;33m>>>\033[0m "; set -x;
+endsnippet
+snippet PS4 "set -x with customized PS4"
+PS4="\033[1;33m>>>\033[0m "; set -x;
+endsnippet
+
+snippet cmd "multi-line cmd call in an array"
+cmd=(
+	$0
+)
+printf "%q " "${cmd[@]}" | bat --style=plain --pager=never -l bash
+"${cmd[@]}"
 endsnippet
 
 # UI

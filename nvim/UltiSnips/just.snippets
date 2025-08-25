@@ -8,12 +8,19 @@ snippet #! "shebang for justfile"
 $0
 endsnippet
 
+# https://github.com/casey/just?tab=readme-ov-file#table-of-settings
+snippet set "Add a bunch of common preambles."
+set positional-arguments
+set ignore-comments
+endsnippet
+
 snippet positional
 set positional-arguments
 $0
 endsnippet
 
 snippet list "add a recipe, list"
+default: list
 list:
 	just --list --unsorted
 
@@ -35,4 +42,15 @@ endsnippet
 snippet python
 #!/usr/bin/env python3
 $0
+endsnippet
+
+# Bash scripting
+snippet setx "set -x with customized PS4"
+PS4="\033[1;33m>>>\033[0m "; set -x;
+endsnippet
+snippet cmd "multi-line cmd call in an array"
+cmd=(
+	$0
+)
+"${cmd[@]}"
 endsnippet

@@ -2,5 +2,12 @@
 # pbcopy -- Copy contents from STDIN (excluding the last newline character) through OSC52 (works remotely over SSH).
 # Note: to make it work inside tmux, some config is needed. See https://github.com/tmux/tmux/wiki/Clipboard
 
+# On a "local" machine with pbcopy (e.g. macOS), do not use osc52
+# This path is used by neovim's clipboard provider (pbcopy)
+if test -z "$SSH_TTY" && test -f /usr/bin/pbcopy; then
+  exec /usr/bin/pbcopy "$@"
+fi
+
+# Use OSC52 otherwise; it's usually a remote (SSH) machine.
 printf "\033]52;c;%s\007" "$(perl -0777 -p0e 's/\n$//' | base64 | tr -d '\n')"
 #                            ^ remove the final EOL in the last line

@@ -55,8 +55,8 @@ function M.setup_conform()
   end)()
   cf.bash = cf.sh
   cf.zsh = cf.sh
-  cf.javascript = { one_of({ "prettierd", "prettier" }) }
-  cf.typescript = { one_of({ "prettierd", "prettier" }) }
+  cf.javascript = { "prettierd", "prettier", stop_after_first = true }
+  cf.typescript = { "prettierd", "prettier", stop_after_first = true }
 
   for ft, v in pairs(cf) do
     require("conform").formatters_by_ft[ft] = v

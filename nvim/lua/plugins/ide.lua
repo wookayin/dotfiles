@@ -67,7 +67,7 @@ return {
 
   -- Formatting
   Plug 'stevearc/conform.nvim' {
-    version = '>=5.0',
+    version = 'v9.*',
     config = require('config.formatting').setup,
   };
 
