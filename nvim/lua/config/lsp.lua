@@ -709,15 +709,17 @@ function M._setup_diagnostic()
     vim.fn.sign_define("DiagnosticSignHint",   {text = icons[vim.diagnostic.severity.HINT],  texthl = "DiagnosticSignHint"})
   end
   require('utils.rc_utils').RegisterHighlights(function()
-    vim.cmd [[
-      hi DiagnosticSignError    guifg=#e6645f ctermfg=167
-      hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
-      hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
+    -- Diagnostic signs
+    vim.api.nvim_set_hl(0, "DiagnosticSignError", { fg = "#e6645f", ctermfg = 167 })
+    vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { fg = "#b1b14d", ctermfg = 143 })
+    vim.api.nvim_set_hl(0, "DiagnosticSignHint", { fg = "#3e6e9e", ctermfg = 75 })
 
-      hi DiagnosticVirtualTextError   guifg=#a6242f  gui=italic,underdashed,underline
-      hi DiagnosticVirtualTextWarn    guifg=#777744  gui=italic,underdashed,underline
-      hi DiagnosticVirtualTextHint    guifg=#555555  gui=italic,underdashed,underline
-    ]]
+    -- Diagnostic virtual text
+    local default_virtualtext = { italic = true, underdashed = true, underline = true, }
+    local hl_virt = function(c) return vim.tbl_deep_extend('force', default_virtualtext, c) end
+    vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", hl_virt { fg = "#a6242f" })
+    vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", hl_virt { fg = "#777744" })
+    vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", hl_virt { fg = "#555555" })
   end)
 
   -- Turning on and off diagnostics
