@@ -8,7 +8,7 @@ local has = function(feature) return vim.fn.has(feature) > 0 end
 
 
 -- for nvim < 0.10
-if not has('nvim-0.10') and vim.lsp.get_clients == nil then
+if vim.lsp.get_clients == nil then
   vim.lsp.get_clients = vim.lsp.get_active_clients
 end
 
