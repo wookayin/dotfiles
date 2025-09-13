@@ -22,6 +22,16 @@ if vim.hl == nil then
   vim.hl = vim.highlight
 end
 
+-- Nvim 0.11: vim.diagnostic.jump() deprecated vim.diagnostic.goto_{next,prev}.
+if vim.diagnostic.jump ~= nil then  -- nvim >= 0.11+
+  vim.diagnostic.goto_prev = function(opts)
+    vim.diagnostic.jump(vim.tbl_deep_extend('force', { count = -1, float = true }, opts or {}))
+  end
+  vim.diagnostic.goto_next = function(opts)
+    vim.diagnostic.jump(vim.tbl_deep_extend('force', { count = 1, float = true }, opts or {}))
+  end
+end
+
 -- deprecated in nvim 0.12, use the same behavior (exclude false and nil)
 if has('nvim-0.12') then
   vim.tbl_flatten = function(t)
