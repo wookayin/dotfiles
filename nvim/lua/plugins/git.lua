@@ -9,6 +9,11 @@ return {
     func = {'Fugitive*', 'fugitive#*'},
     config = require('config.git').setup_fugitive,
   };
+
+  Plug 'rbong/vim-flog' {
+    version = '>=3.0',
+    init = require('config.git').setup_flog,
+  };
   Plug 'junegunn/gv.vim' {
     cmd = 'GV',
     dependencies = 'tpope/vim-fugitive',
