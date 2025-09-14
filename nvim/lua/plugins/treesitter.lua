@@ -1,4 +1,5 @@
 -- Treesitter plugins.
+---@diagnostic disable: missing-fields
 
 local Plug = require('utils.plug_utils').Plug
 local function has(f) return vim.fn.has(f) > 0 end
