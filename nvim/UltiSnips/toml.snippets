@@ -53,13 +53,21 @@ typeCheckingMode = "standard"  # off, basic, standard, strict
 reportPrivateImportUsage = "warning"
 
 endsnippet
-snippet ruff "configuration for ruff linter."
+snippet ruff "configuration for ruff linter and formatter."
 # https://docs.astral.sh/ruff/configuration/
 [tool.ruff]
 line-length = 79
 indent-width = 4
 target-version = "py311"
 
+[tool.ruff.format]
+# https://docs.astral.sh/ruff/settings/#format
+# https://docs.astral.sh/ruff/formatter/#configuration
+preview = true
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+# https://docs.astral.sh/ruff/settings/#lint
 # https://docs.astral.sh/ruff/rules/
 [tool.ruff.lint]
 preview = true  # use experimental features
