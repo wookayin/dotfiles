@@ -76,6 +76,12 @@ palette = 15=#feffff
 
 macos-option-as-alt = left
 
+# Navigation across ghostty window split, ctrl+cmd+{h,j,k,l}  (in addition to cmd+[ and cmd+])
+keybind = unconsumed:ctrl+cmd+k=goto_split:top
+keybind = unconsumed:ctrl+cmd+j=goto_split:bottom
+keybind = unconsumed:ctrl+cmd+h=goto_split:left
+keybind = unconsumed:ctrl+cmd+l=goto_split:right
+
 
 ####################################################################################################
 # Etc.
