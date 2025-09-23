@@ -729,10 +729,10 @@ function M._setup_diagnostic()
 
   do
     vim.cmd [[
-      command! DiagnosticsDisableBuffer       :lua vim.diagnostic.disable(0)
-      command! DiagnosticsEnableBuffer        :lua vim.diagnostic.enable(0)
-      command! DiagnosticsDisableAll          :lua vim.diagnostic.disable()
-      command! DiagnosticsEnableAll           :lua vim.diagnostic.enable()
+      command! DiagnosticsDisableBuffer       :lua vim.diagnostic.enable(false, { bufnr = 0 })
+      command! DiagnosticsEnableBuffer        :lua vim.diagnostic.enable(true, { bufnr = 0 })
+      command! DiagnosticsDisableAll          :lua vim.diagnostic.enable(false)
+      command! DiagnosticsEnableAll           :lua vim.diagnostic.enable(true)
       command! DiagnosticsVirtualTextToggle   :lua require('toggle_lsp_diagnostics').toggle_diagnostic('virtual_text')
       command! DiagnosticsUnderlineToggle     :lua require('toggle_lsp_diagnostics').toggle_diagnostic('underline')
     ]]
