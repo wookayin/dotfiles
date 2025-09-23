@@ -5,8 +5,9 @@
 # E111: indentation is not a multiple of four
 #       (python indent is usually checked with pylint)
 # E127: continuation line over-indented for visual indent
+# E402: module level import not at top of file
 # E501: line too long
-ignore = E111,E127,E501
+ignore = E111, E127, E402, E501
 
 
 # vim: set ft=config:
