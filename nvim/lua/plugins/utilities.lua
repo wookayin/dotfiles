@@ -25,7 +25,9 @@ return {
   Plug 'windwp/nvim-autopairs' {
     version = '*',
     event = 'InsertEnter',
-    opts = {},
+    opts = { 
+      ignored_next_char = '[%w]',  -- Don't add pairs if the next char is a 'word' character
+    },
   };
 
   -- Indent Guideline and Scrollbar
