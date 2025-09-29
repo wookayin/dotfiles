@@ -28,6 +28,6 @@ return {
   -- Additional highlight/extmark providers
   Plug 'MeanderingProgrammer/render-markdown.nvim' {
     config = require('config.markdown').setup_render,
-    ft = { 'markdown' },  -- lazy-loading
+    ft = { 'markdown', 'Avante', 'codecompanion' },  -- lazy-loading on these filetypes
   };
 }
