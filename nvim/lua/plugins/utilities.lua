@@ -21,6 +21,13 @@ return {
     opts = {},
   };
 
+  -- Insert mode
+  Plug 'windwp/nvim-autopairs' {
+    version = '*',
+    event = 'InsertEnter',
+    opts = {},
+  };
+
   -- Indent Guideline and Scrollbar
   Plug 'lukas-reineke/indent-blankline.nvim' { tag = 'v2.20.8', init = PlugConfig, event = 'VeryLazy' };
   Plug 'dstein64/nvim-scrollview' { event = 'VeryLazy' };
