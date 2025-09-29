@@ -2416,7 +2416,10 @@ let g:scrollview_excluded_filetypes = [
 
 " ---------------------------------------------------------------- }}}
 " UltiSnips {{{
-let g:UltiSnipsExpandTrigger = '<c-j>'
+
+if !has('nvim')  " for nvim, we define imap <c-j> on our own (see config/keymap.lua)
+  let g:UltiSnipsExpandTrigger = '<c-j>'
+end
 let g:UltiSnipsJumpForwardTrigger = '<c-j>'
 let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
 
