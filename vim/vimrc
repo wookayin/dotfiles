@@ -380,7 +380,6 @@ nnoremap <leader>:  :
 
 nnoremap <Space> :
 
-inoremap <silent> <C-k>       <Cmd>stopinsert<CR><Cmd>if &buftype == '' <bar> update <bar> endif<CR>
 nnoremap          <leader>e   <Cmd>e<CR>zR
 
 nnoremap Q <Nop>
