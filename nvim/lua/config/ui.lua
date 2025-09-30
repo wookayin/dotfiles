@@ -5,6 +5,7 @@ local M = {}
 
 -- Experimental: highlight cmdline, messages in a real buffer.
 -- See https://github.com/neovim/neovim/pull/27811 and :help vim._extui
+-- NOTE: Use 'g<' to see more messages!
 function M.setup_extui()
   if vim.fn.has('nvim-0.12') == 0 then
     return false
@@ -18,6 +19,16 @@ function M.setup_extui()
       },
     }
   end)
+
+  -- Customization for 'cmdline', 'msgmore', 'msgbox', 'msgprompt', 'pager' buffers/windows
+  local augroup_extui = vim.api.nvim_create_augroup('extui_custom', { clear = true })
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'pager',
+    group = augroup_extui,
+    callback = function(args)
+      vim.keymap.set('n', '<C-c>', '<cmd>close<CR>', { buffer = true, remap = false })
+    end,
+  })
 end
 
 function M.setup_notify()
