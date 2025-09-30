@@ -13,6 +13,7 @@ function M.setup_bqf()
   require "bqf".setup {
     auto_enable = true,
 
+    ---@diagnostic disable-next-line: missing-fields
     preview = {
       should_preview_cb = function(bufnr, qf_winid)
         local bufname = vim.api.nvim_buf_get_name(bufnr)
