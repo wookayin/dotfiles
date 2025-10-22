@@ -100,7 +100,12 @@ snippet "@?dataclass" "@dataclasse.dataclass" r
 class ${1}:
 	pass
 endsnippet
-
+snippet "@?classmethod" "classmethod" r
+@classmethod
+def ${1:make}(cls, ${2:*args}) -> ${3:Self}:
+	${4:...}
+$0
+endsnippet
 
 ################################################################################
 # Functional Programming
