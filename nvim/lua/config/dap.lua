@@ -268,6 +268,9 @@ function M.start(opts)
 
   ---@param configuration dapext.Configuration
   local run = function(configuration)
+    -- Open a new tab with the current buffer to preserve the editor/window state.
+    vim.cmd [[ tabnew % ]]
+
     require('dap').run(configuration, {
       ---@type fun(config: dapext.Configuration):dap.Configuration
       before = function(config)
