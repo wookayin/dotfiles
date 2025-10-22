@@ -223,8 +223,8 @@ install_node() {
   node --version
 
   # install some useful nodejs based utility (~/.local/lib/node_modules)
-  $HOME/.local/bin/npm install -g yarn
-  _which yarn && yarn --version
+  $HOME/.local/bin/npm install -g pnpm
+  _which pnpm && pnpm --version
   $HOME/.local/bin/npm install -g http-server diff-so-fancy || true;
 }
 
