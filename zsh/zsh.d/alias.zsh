@@ -190,10 +190,18 @@ function ghb() {
   if [[ "$#" -gt 0 && "$1" != -* ]]; then
     branch="$1"; shift;
   fi
-  local merge_base=$(git merge-base "$branch" master)
-  git history --color=always "$merge_base".."$branch" "$@" && \
-    echo "|" && \
-    git history "$merge_base~".."$merge_base"
+  local base="master"  # TODO main? take args?
+  local branch_head=$(git rev-parse --revs-only "$branch")
+  if [[ -z "$branch_head" ]]; then
+    echo "Unknown branch or ref: $branch"
+    return 1
+  fi
+  local merge_base=$(git merge-base "$branch" "$base")
+  if [[ "$branch_head" == $merge_base ]]; then
+    echo "Looks like you are on the $base branch; no new commits to show."
+    return
+  fi
+  git history --color=always --boundary "$merge_base".."$branch" "$@"
 }
 
 # git branch: show commit/refs information as well.
