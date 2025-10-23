@@ -28,7 +28,7 @@ snippet cmd "multi-line cmd call in an array"
 cmd=(
 	$0
 )
-printf "%q " "${cmd[@]}" | bat --style=plain --pager=never -l bash
+printf "%q " "${cmd[@]}" | bat --style=rule --pager=never -l bash
 "${cmd[@]}"
 endsnippet
 snippet stderr "write to stderr"
