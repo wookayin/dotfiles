@@ -3,6 +3,9 @@
 # Auto-load common built-in modules that are frequently used
 # For instant startup, non-builtins should be imported upon request (use %imp)
 
+# ruff: noqa: F401,E401
+# pyright: reportUnusedImport=false
+
 import asyncio
 import contextlib
 import functools
@@ -58,7 +61,7 @@ def _import_common_modules(full=False):
             if verbose:
                 tl_package = module_name.split('.')[0]
                 version = getattr(sys.modules[tl_package], '__version__', '')
-            sys.stdout.write(version and ('[' + version + ']') or '')
+                sys.stdout.write(version and ('[' + version + ']') or '')
         except ImportError:
             sys.stdout.write('not found')
             return
@@ -105,7 +108,7 @@ def _import_common(full=False):
 
 
 try:
-    get_ipython()   # only if is in ipython
+    get_ipython()   # only if is in ipython  # type: ignore
     from IPython.core.magic import register_line_magic
 
     @register_line_magic
