@@ -94,6 +94,9 @@ try:
 except ModuleNotFoundError:
     pass'''.format(line=line))
 
+    _run(r'%matplotlib inline')
+    _run(r'%config InlineBackend.figure_format = "retina"')
+
     _run(r'%load_ext autoreload')
     _run(r'%load_ext imgcat')
     _run(r'%load_ext line_profiler')
