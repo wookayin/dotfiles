@@ -310,6 +310,8 @@ lsp_setup_opts['basedpyright'] = function()
       basedpyright = {
         -- in favor of ruff's import organizer
         disableOrganizeImports = true,
+        -- use auto-import (which is also by default)
+        autoImportCompletions = true,
 
         -- NOTE: the "discouraged settings" here will be ignored if the project root contains
         -- either a pyproject.toml ([tool.pyright]) or pyrightconfig.json configuration file.
@@ -320,6 +322,14 @@ lsp_setup_opts['basedpyright'] = function()
           -- see https://docs.basedpyright.com/latest/usage/import-resolution/#configuring-your-python-environment
           -- see https://github.com/microsoft/pyright/blob/main/docs/import-resolution.md#resolution-order
           extraPaths = { "./python" },
+        },
+
+        inlayHints = {
+          callArgumentNames = true,
+          callArgumentNamesMathcing = false,
+          functionReturnTypes = true,
+          variableTypes = true,
+          genericTypes = true,  --(override)
         },
       },
     },
