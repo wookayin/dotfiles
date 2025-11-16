@@ -423,6 +423,12 @@ fi
 
 # Google Cloud ============================== {{{
 
+function gscat() {
+  gsutil cat "$@"
+}
+function gsls() {
+  gsutil ls "$@"
+}
 function gcp-instances() {
   noglob gcloud compute instances list --filter 'name:'${1:-*} | less -F
 }
