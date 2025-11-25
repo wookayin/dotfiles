@@ -238,6 +238,12 @@ post_actions += [  # stat_dataset
 """,
 ]
 
+post_actions += [  # pman
+    """#!/bin/bash
+    bash "etc/install-pman.sh"
+"""
+]
+
 post_actions += [  # default shell
     r"""#!/bin/bash
     # Change default shell to zsh
