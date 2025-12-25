@@ -1,0 +1,2 @@
+# config/nvim/ is symlinked to nvim/, all files under which appear in duplicate otherwise
+config/nvim/**
