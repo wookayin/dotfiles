@@ -3,6 +3,9 @@
 -- Make timeout delay for key sequence, default is 1000ms
 vim.opt.timeoutlen = 500
 
+-- Temporary workaround for 2-set Korean IME input bug in ghostty: a character gets inserted upon input source transition while input combination is pending.
+vim.o.langmap = "ㅁa,ㅠb,ㅊc,ㅇd,ㄷe,ㄹf,ㅎg,ㅗh,ㅑi,ㅓj,ㅏk,ㅣl,ㅡm,ㅜn,ㅐo,ㅔp,ㅂq,ㄱr,ㄴs,ㅅt,ㅕu,ㅍv,ㅈw,ㅌx,ㅛy,ㅋz"
+
 -- Note: noremap = true (remap = false) by default
 local nmap = function(...) vim.keymap.set('n', ...) end
 local imap = function(...) vim.keymap.set('i', ...) end
