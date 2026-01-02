@@ -76,13 +76,14 @@ elseif vim.fn.has('nvim-0.11') == 0 then
     local like_false = function(x) return x == nil or x == "0" or x == "" end
     if not like_false(vim.env.DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING) then return end
     local msg = 'Please upgrade to a recent version of neovim (0.11+).\n'
-    msg = msg .. 'Support for old neovim will be dropped soon.'
-    msg = msg .. '\n\n' .. string.format('Try: $ %s install neovim', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
+    msg = msg .. 'Support for outdated neovim will be dropped soon.\n'
+    msg = msg .. 'Some features for nvim <= 0.10 might have been disabled.\n'  -- for neovim 0.11+
+    msg = msg .. '\n' .. string.format('Try: `$ %s install neovim`', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
     msg = msg .. '\n\n' .. (
       'If you cannot upgrade yet but want to suppress this warning,\n' ..
       'use `export DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING=1` in your shell (e.g. `~/.zshrc.local`).'
     )
-    vim.notify(msg, vim.log.levels.ERROR, { title = 'Deprecation Warning', timeout = 5000 })
+    vim.notify(msg, vim.log.levels.ERROR, { title = 'Deprecation Warning', timeout = 5000, markdown = true })
     vim.g.DOTFILES_DEPRECATION_CACHE = { version = nvim_version, timestamp = os.time() }
   end
   vim.defer_fn(function()
