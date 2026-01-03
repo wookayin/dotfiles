@@ -27,7 +27,6 @@ return {
 
   -- LSP (lazy loaded, see config/lsp.lua)
   Plug 'neovim/nvim-lspconfig' {
-    version = 'v2.5.0',
     event = LspSetup,
     dependencies = { 'mason.nvim' },
     config = require('config.lsp').setup_lsp, -- mason, lspconfig, etc.

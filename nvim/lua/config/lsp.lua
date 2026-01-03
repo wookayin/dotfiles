@@ -289,6 +289,7 @@ end
 -- see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 -- see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
 ---@type table<lspserver_name, false | table | fun():(table|false)>
+---@deprecated We will use vim.lsp.config() and per-lsp configuration for nvim 0.11
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
 
@@ -531,7 +532,13 @@ local function setup_lsp(lsp_name)
 
   -- Merge with lang-specific options
   opts = vim.tbl_extend("force", {}, common_opts, opts)
-  require('lspconfig')[lsp_name].setup(opts)
+  if vim.lsp.config ~= nil then  -- requires NVIM 0.11+
+    vim.lsp.config(lsp_name, opts)
+    vim.lsp.enable(lsp_name)
+  else  -- prior to NVIM 0.11 (requires lspconfig<3.0)
+    -- Deprecated, will be removed soon
+    require('lspconfig')[lsp_name].setup(opts)
+  end
 end
 
 -- lsp configs are lazy-loaded or can be triggered after LSP installation,
