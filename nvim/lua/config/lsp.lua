@@ -7,28 +7,9 @@
 ---@class config.lsp
 local M = {}
 
--- lsp_signature
----@diagnostic disable-next-line: unused-local
-local on_attach_lsp_signature = function(client, bufnr)
-  -- https://github.com/ray-x/lsp_signature.nvim#full-configuration-with-default-values
-  require('lsp_signature').on_attach({
-    bind = true, -- This is mandatory, otherwise border config won't get registered.
-    floating_window = true,
-    handler_opts = {
-      border = "single"
-    },
-    zindex = 99, -- <100 so that it does not hide completion popup.
-    fix_pos = false, -- Let signature window change its position when needed, see GH-53
-    toggle_key = '<M-x>', -- Press <Alt-x> to toggle signature on and off.
-  })
-end
-
 --- A callback executed when LSP engine attaches to a buffer.
 ---@type fun(client: vim.lsp.Client, bufnr: integer)
 local on_attach = function(client, bufnr)
-
-  -- Activate LSP signature on attach.
-  on_attach_lsp_signature(client, bufnr)
 
   -- Activate LSP status on attach (see a configuration below).
   require('lsp-status').on_attach(client)
@@ -756,6 +737,23 @@ function M._setup_diagnostic()
   end
 end
 
+--------------------------
+--- LSP signature
+--------------------------
+function M._setup_lsp_signature()
+  -- :help lsp_signature-configure
+  require('lsp_signature').setup {
+    bind = true, -- This is mandatory, otherwise border config won't get registered.
+    floating_window = true,
+    handler_opts = {
+      border = "single",
+    },
+    zindex = 99, -- <100 so that it does not hide completion popup.
+    fix_pos = false, -- Let signature window change its position when needed, see GH-53
+    toggle_key = '<M-x>', -- Press <Alt-x> to toggle signature on and off.
+  }
+end
+
 ------------------------------
 --- Configs for PeekDefinition
 ------------------------------
@@ -923,6 +921,7 @@ function M.setup_lsp()
   M._setup_mason()
   M._setup_lspconfig()
   M._setup_diagnostic()
+  M._setup_lsp_signature()
   M._setup_lsp_keymap()
   M._setup_lsp_commands()
   M._setup_lsp_handlers()
