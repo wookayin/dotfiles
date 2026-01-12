@@ -47,7 +47,7 @@ If target files already exist (e.g. `~/.vim`, `~/.vimrc`), you will need to manu
 
 ## Howto Use
 
-- Click [Usage](https://github.com/kojunseo/dotfiles/usage.md) to check the instruction.
+- Click [Usage](https://github.com/kojunseo/dotfiles/blob/master/usage.md) to check the instruction.
 
 ## `$ dotfiles`
 
