@@ -100,24 +100,32 @@ os.chdir(__PATH__)
 
 
 post_actions = []
-
-post_actions += ["git clone https://github.com/pyenv/pyenv.git ~/.pyenv"]
-post_actions += [  # Check symbolic link at $HOME
-    """#!/bin/bash
-    # Check whether ~/.vim and ~/.zsh are well-configured
-    for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
-        if ! readlink $f >/dev/null; then
-            echo -e "\033[0;31m\
-WARNING: $f is not a symbolic link to ~/.dotfiles.
-Please remove your local folder/file $f and try again.\033[0m"
-            echo -n "(Press any key to continue) "; read user_confirm
-            exit 1;
-        else
-            echo "$f --> $(readlink $f)"
-        fi
-    done
-"""
-]
+# pyenv의 경우 이미 설치되어 있다면 건너뛰기
+if not os.path.isdir(os.path.expanduser("~/.pyenv")):
+    post_actions += ["git clone https://github.com/pyenv/pyenv.git ~/.pyenv"]
+    post_actions += [  # Check symbolic link at $HOME
+        """#!/bin/bash
+        # Check whether ~/.vim and ~/.zsh are well-configured
+        for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
+            if ! readlink $f >/dev/null; then
+                echo -e "\033[0;31m\
+    WARNING: $f is not a symbolic link to ~/.dotfiles.
+    Please remove your local folder/file $f and try again.\033[0m"
+                echo -n "(Press any key to continue) "; read user_confirm
+                exit 1;
+            else
+                echo "$f --> $(readlink $f)"
+            fi
+        done
+    """
+    ]
+else:
+    post_actions += [
+        """#!/bin/bash
+        echo -e "\033[0;33m\
+    Skipping pyenv installation since ~/.pyenv already exists. If you want to reinstall pyenv, please remove ~/.pyenv first.\033[0m"
+    """
+    ]
 
 post_actions += [  # fzf
     r"""#!/bin/bash
