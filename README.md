@@ -18,6 +18,8 @@
 
 ### 👉 One-liner (if you trust me):
 
+- If you already set zshrc for alias, remove it before installation.
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kojunseo/dotfiles/master/etc/install | bash
 ```
@@ -42,6 +44,10 @@ For older versions of Git, try without `-j` option.
 
 The installation script will clone the repository into `~/.dotfiles` and create symbolic links (e.g., `~/.vimrc`) for you.
 If target files already exist (e.g. `~/.vim`, `~/.vimrc`), you will need to manually resolve the conflict (delete the old one or just ignore). See Troubleshooting below for details.
+
+## Howto Use
+
+- Click [Usage](https://github.com/kojunseo/dotfiles/usage.md) to check the instruction.
 
 ## `$ dotfiles`
 
