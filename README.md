@@ -120,4 +120,4 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 
 [The MIT License (MIT)](LICENSE)
 
-Copyright (c) 2012-2025 Jongwook Choi (@wookayin)
+Copyright (c) 2012-2026 Jongwook Choi (@wookayin)

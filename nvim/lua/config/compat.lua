@@ -8,7 +8,7 @@ local has = function(feature) return vim.fn.has(feature) > 0 end
 
 
 -- for nvim < 0.10
-if not has('nvim-0.10') and vim.lsp.get_clients == nil then
+if vim.lsp.get_clients == nil then
   vim.lsp.get_clients = vim.lsp.get_active_clients
 end
 
@@ -20,6 +20,16 @@ end
 -- nvim 0.11: vim.highlight => vim.hl (does not exist in neovim 0.10)
 if vim.hl == nil then
   vim.hl = vim.highlight
+end
+
+-- Nvim 0.11: vim.diagnostic.jump() deprecated vim.diagnostic.goto_{next,prev}.
+if vim.diagnostic.jump ~= nil then  -- nvim >= 0.11+
+  vim.diagnostic.goto_prev = function(opts)
+    vim.diagnostic.jump(vim.tbl_deep_extend('force', { count = -1, float = true }, opts or {}))
+  end
+  vim.diagnostic.goto_next = function(opts)
+    vim.diagnostic.jump(vim.tbl_deep_extend('force', { count = 1, float = true }, opts or {}))
+  end
 end
 
 -- deprecated in nvim 0.12, use the same behavior (exclude false and nil)

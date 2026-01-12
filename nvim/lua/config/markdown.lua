@@ -48,10 +48,11 @@ function M.setup_render()
     ---@param rhs vim.api.keyset.highlight
     local hl = function(group, rhs) vim.api.nvim_set_hl(0, group, rhs) end
     local fg_heading = '#282c34'
-    local bg_heading = { '#c678dd', '#61afef', '#98c379' }
+    local bg_heading = { '#c678dd', '#61afef', '#98c379', '#e5c07b' }
     hl('RenderMarkdownH1Bg', { fg = fg_heading, bg = bg_heading[1] })
     hl('RenderMarkdownH2Bg', { fg = fg_heading, bg = bg_heading[2] })
     hl('RenderMarkdownH3Bg', { fg = fg_heading, bg = bg_heading[3] })
+    hl('RenderMarkdownH4Bg', { fg = fg_heading, bg = bg_heading[4] })
 
     hl('RenderMarkdownCodeBorder', { fg = 'yellow', bg = '#222222', italic = true })
   end)

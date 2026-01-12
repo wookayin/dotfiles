@@ -1,6 +1,9 @@
 # ghostty +show-config --default --docs
 # https://ghostty.org/docs/config/reference
 
+# Based on Ghostty 1.2.0
+# To reload, Press <Shift+Cmd+,>
+
 ####################################################################################################
 # General
 ####################################################################################################
@@ -27,6 +30,14 @@ adjust-cell-height = -7
 # Colors and Appearances
 ####################################################################################################
 
+# Tab style: use the native style, not transparent
+# https://ghostty.org/docs/config/reference#macos-titlebar-style
+macos-titlebar-style = native
+
+# Windows split
+split-divider-color = #333333
+
+# Colors
 background = #000000
 foreground = #cccccc
 
@@ -64,6 +75,12 @@ palette = 15=#feffff
 ####################################################################################################
 
 macos-option-as-alt = left
+
+# Navigation across ghostty window split, ctrl+cmd+{h,j,k,l}  (in addition to cmd+[ and cmd+])
+keybind = unconsumed:ctrl+cmd+k=goto_split:top
+keybind = unconsumed:ctrl+cmd+j=goto_split:bottom
+keybind = unconsumed:ctrl+cmd+h=goto_split:left
+keybind = unconsumed:ctrl+cmd+l=goto_split:right
 
 
 ####################################################################################################

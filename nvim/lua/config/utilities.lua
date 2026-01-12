@@ -6,14 +6,20 @@ local M = {}
 
 function M.setup_hover()
   require("hover").setup {
-    init = function()
-      require("hover.providers.lsp")
-      require('hover.providers.gh')
-      require('hover.providers.gh_user')
-      require('hover.providers.man')
-    end,
+    providers = {
+      'hover.providers.diagnostic',
+      'hover.providers.lsp',
+      'hover.providers.man',
+      'hover.providers.gh',
+      'hover.providers.gh_user',
+      -- Disabled:
+      -- 'hover.providers.dap',
+      -- 'hover.providers.dictionary',
+      -- 'hover.providers.highilight',
+      -- 'hover.providers.fold_preview',
+    },
     preview_opts = {
-      border = nil
+      border = nil,
     },
     -- Whether the contents of a currently open hover window should be moved
     -- to a :h preview-window when pressing the hover keymap.

@@ -100,7 +100,12 @@ snippet "@?dataclass" "@dataclasse.dataclass" r
 class ${1}:
 	pass
 endsnippet
-
+snippet "@?classmethod" "classmethod" r
+@classmethod
+def ${1:make}(cls, ${2:*args}) -> ${3:Self}:
+	${4:...}
+$0
+endsnippet
 
 ################################################################################
 # Functional Programming
@@ -280,6 +285,9 @@ endsnippet
 # Logging
 ################################################################################
 # f-strings
+snippet f "template for f-string" w
+f"{${1:expr} = }$0"
+endsnippet
 snippet f"
 f"{$1}"
 endsnippet

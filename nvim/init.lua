@@ -58,9 +58,11 @@ vim.cmd [[
 ]]
 
 -- Check neovim version
-if vim.fn.has('nvim-0.9.2') == 0 then
+if vim.fn.has('nvim-0.10') == 0 then
   vim.cmd [[
-    echohl WarningMsg | echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.9.2+ or higher.' | echohl None
+    echohl WarningMsg
+    echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.10+ or higher.'
+    echohl None
   ]]
   vim.cmd [[ filetype plugin off ]]
   vim.o.loadplugins = false
@@ -68,18 +70,21 @@ if vim.fn.has('nvim-0.9.2') == 0 then
   vim.o.shadafile = "NONE"
   return
 
-elseif vim.fn.has('nvim-0.10') == 0 then
-  ---@type string  e.g. "NVIM v0.10.0"
+elseif vim.fn.has('nvim-0.11') == 0 then
+  ---@type string  e.g. "NVIM v0.11.0"
   local nvim_version = vim.split(vim.api.nvim_exec2('version', { output = true }).output, '\n', { trimempty = true })[1]
   local show_warning = function()
     local like_false = function(x) return x == nil or x == "0" or x == "" end
     if not like_false(vim.env.DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING) then return end
-    local msg = 'Please upgrade to a recent version of neovim (0.10+).\n'
-    msg = msg .. 'Support for old neovim will be dropped soon.'
-    msg = msg .. '\n\n' .. string.format('Try: $ %s install neovim', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
-    msg = msg .. '\n\n' .. ('If you cannot upgrade yet but want to suppress this warning,\n'
-                            .. 'use `export DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING=1`.')
-    vim.notify(msg, vim.log.levels.ERROR, { title = 'Deprecation Warning', timeout = 5000 })
+    local msg = 'Please upgrade to a recent version of neovim (0.11+).\n'
+    msg = msg .. 'Support for outdated neovim will be dropped soon.\n'
+    msg = msg .. 'Some features for nvim <= 0.10 might have been disabled.\n'  -- for neovim 0.11+
+    msg = msg .. '\n' .. string.format('Try: `$ %s install neovim`', vim.fn.has('mac') > 0 and 'brew' or 'dotfiles')
+    msg = msg .. '\n\n' .. (
+      'If you cannot upgrade yet but want to suppress this warning,\n' ..
+      'use `export DOTFILES_SUPPRESS_NEOVIM_VERSION_WARNING=1` in your shell (e.g. `~/.zshrc.local`).'
+    )
+    vim.notify(msg, vim.log.levels.ERROR, { title = 'Deprecation Warning', timeout = 5000, markdown = true })
     vim.g.DOTFILES_DEPRECATION_CACHE = { version = nvim_version, timestamp = os.time() }
   end
   vim.defer_fn(function()

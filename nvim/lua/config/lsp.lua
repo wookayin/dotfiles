@@ -59,10 +59,10 @@ local on_attach = function(client, bufnr)
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   if pcall(require, 'fzf-lua') then
-    nbufmap('gr', vim_cmd 'lua require("fzf-lua").lsp_references { jump_to_single_result = true, silent = true }', { nowait = true })
-    nbufmap('gd', vim_cmd 'lua require("fzf-lua").lsp_definitions { jump_to_single_result = true, silent = true }')
-    nbufmap('gi', vim_cmd 'lua require("fzf-lua").lsp_implementations { jump_to_single_result = true, silent = true }')
-    nbufmap('gt', gt_action('lua require("fzf-lua").lsp_typedefs { jump_to_single_result = true, silent = true }'))
+    nbufmap('gr', vim_cmd 'lua require("fzf-lua").lsp_references { jump1 = true, silent = true }', { nowait = true })
+    nbufmap('gd', vim_cmd 'lua require("fzf-lua").lsp_definitions { jump1 = true, silent = true }')
+    nbufmap('gi', vim_cmd 'lua require("fzf-lua").lsp_implementations { jump1 = true, silent = true }')
+    nbufmap('gt', gt_action('lua require("fzf-lua").lsp_typedefs { jump1 = true, silent = true }'))
   else
     nbufmap('gd', vim_cmd 'lua vim.lsp.buf.definition()')
     nbufmap('gr', vim_cmd 'lua vim.lsp.buf.references()', { nowait = true })
@@ -289,6 +289,7 @@ end
 -- see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 -- see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
 ---@type table<lspserver_name, false | table | fun():(table|false)>
+---@deprecated We will use vim.lsp.config() and per-lsp configuration for nvim 0.11
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
 
@@ -310,6 +311,8 @@ lsp_setup_opts['basedpyright'] = function()
       basedpyright = {
         -- in favor of ruff's import organizer
         disableOrganizeImports = true,
+        -- use auto-import (which is also by default)
+        autoImportCompletions = true,
 
         -- NOTE: the "discouraged settings" here will be ignored if the project root contains
         -- either a pyproject.toml ([tool.pyright]) or pyrightconfig.json configuration file.
@@ -320,6 +323,14 @@ lsp_setup_opts['basedpyright'] = function()
           -- see https://docs.basedpyright.com/latest/usage/import-resolution/#configuring-your-python-environment
           -- see https://github.com/microsoft/pyright/blob/main/docs/import-resolution.md#resolution-order
           extraPaths = { "./python" },
+        },
+
+        inlayHints = {
+          callArgumentNames = true,
+          callArgumentNamesMathcing = false,
+          functionReturnTypes = true,
+          variableTypes = true,
+          genericTypes = true,  --(override)
         },
       },
     },
@@ -439,6 +450,23 @@ lsp_setup_opts['clangd'] = {
   }
 }
 
+lsp_setup_opts['cssls'] = {
+  settings = {
+    css = {
+      validate = true,
+      lint = {
+        unknownAtRules = 'ignore', -- e.g. @apply
+      },
+    },
+    less = {
+      validate = true,
+    },
+    scss = {
+      validate = true,
+    }
+  },
+}
+
 lsp_setup_opts['bashls'] = {
   filetypes = { 'sh', 'zsh' },
 }
@@ -504,7 +532,13 @@ local function setup_lsp(lsp_name)
 
   -- Merge with lang-specific options
   opts = vim.tbl_extend("force", {}, common_opts, opts)
-  require('lspconfig')[lsp_name].setup(opts)
+  if vim.lsp.config ~= nil then  -- requires NVIM 0.11+
+    vim.lsp.config(lsp_name, opts)
+    vim.lsp.enable(lsp_name)
+  else  -- prior to NVIM 0.11 (requires lspconfig<3.0)
+    -- Deprecated, will be removed soon
+    require('lspconfig')[lsp_name].setup(opts)
+  end
 end
 
 -- lsp configs are lazy-loaded or can be triggered after LSP installation,
@@ -692,15 +726,17 @@ function M._setup_diagnostic()
     vim.fn.sign_define("DiagnosticSignHint",   {text = icons[vim.diagnostic.severity.HINT],  texthl = "DiagnosticSignHint"})
   end
   require('utils.rc_utils').RegisterHighlights(function()
-    vim.cmd [[
-      hi DiagnosticSignError    guifg=#e6645f ctermfg=167
-      hi DiagnosticSignWarn     guifg=#b1b14d ctermfg=143
-      hi DiagnosticSignHint     guifg=#3e6e9e ctermfg=75
+    -- Diagnostic signs
+    vim.api.nvim_set_hl(0, "DiagnosticSignError", { fg = "#e6645f", ctermfg = 167 })
+    vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { fg = "#b1b14d", ctermfg = 143 })
+    vim.api.nvim_set_hl(0, "DiagnosticSignHint", { fg = "#3e6e9e", ctermfg = 75 })
 
-      hi DiagnosticVirtualTextError   guifg=#a6242f  gui=italic,underdashed,underline
-      hi DiagnosticVirtualTextWarn    guifg=#777744  gui=italic,underdashed,underline
-      hi DiagnosticVirtualTextHint    guifg=#555555  gui=italic,underdashed,underline
-    ]]
+    -- Diagnostic virtual text
+    local default_virtualtext = { italic = true, underdashed = true, underline = true, }
+    local hl_virt = function(c) return vim.tbl_deep_extend('force', default_virtualtext, c) end
+    vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", hl_virt { fg = "#a6242f" })
+    vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", hl_virt { fg = "#777744" })
+    vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", hl_virt { fg = "#555555" })
   end)
 
   -- Turning on and off diagnostics
@@ -710,10 +746,10 @@ function M._setup_diagnostic()
 
   do
     vim.cmd [[
-      command! DiagnosticsDisableBuffer       :lua vim.diagnostic.disable(0)
-      command! DiagnosticsEnableBuffer        :lua vim.diagnostic.enable(0)
-      command! DiagnosticsDisableAll          :lua vim.diagnostic.disable()
-      command! DiagnosticsEnableAll           :lua vim.diagnostic.enable()
+      command! DiagnosticsDisableBuffer       :lua vim.diagnostic.enable(false, { bufnr = 0 })
+      command! DiagnosticsEnableBuffer        :lua vim.diagnostic.enable(true, { bufnr = 0 })
+      command! DiagnosticsDisableAll          :lua vim.diagnostic.enable(false)
+      command! DiagnosticsEnableAll           :lua vim.diagnostic.enable(true)
       command! DiagnosticsVirtualTextToggle   :lua require('toggle_lsp_diagnostics').toggle_diagnostic('virtual_text')
       command! DiagnosticsUnderlineToggle     :lua require('toggle_lsp_diagnostics').toggle_diagnostic('underline')
     ]]

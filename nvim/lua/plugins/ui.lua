@@ -1,4 +1,5 @@
 -- UI-related plugins.
+---@diagnostic disable: missing-fields
 
 local Plug = require('utils.plug_utils').Plug
 local PlugConfig = require('utils.plug_utils').PlugConfig
@@ -40,6 +41,7 @@ return {
     cmd = 'FZF', func = 'fzf#*',
   };
   Plug 'ibhagwan/fzf-lua' {
+    version = '>=0.7', -- see fzf-lua:7cede182 (2025.2+)
     event = { 'VeryLazy', 'CmdlineEnter' },
     config = require('config.fzf').setup,
   };

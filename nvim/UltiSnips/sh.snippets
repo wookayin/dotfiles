@@ -16,16 +16,38 @@ endsnippet
 snippet setx "set -x with customized PS4"
 PS4="\033[1;33m>>>\033[0m "; set -x;
 endsnippet
+snippet set+x "set +x but do not print itself"
+{ set +x; } 2>/dev/null
+endsnippet
 snippet PS4 "set -x with customized PS4"
 PS4="\033[1;33m>>>\033[0m "; set -x;
 endsnippet
 
+# Common idioms
 snippet cmd "multi-line cmd call in an array"
 cmd=(
 	$0
 )
-printf "%q " "${cmd[@]}" | bat --style=plain --pager=never -l bash
+printf "%q " "${cmd[@]}" | bat --style=rule --pager=never -l bash
 "${cmd[@]}"
+endsnippet
+snippet stderr "write to stderr"
+>&2 echo "$1"
+$0
+endsnippet
+
+# colors
+snippet colors
+bold=$(\tput bold)
+red=$(\tput setaf 1)
+green=$(\tput setaf 2)
+yellow=$(\tput setaf 3)
+blue=$(\tput setaf 4)
+purple=$(\tput setaf 5)
+cyan=$(\tput setaf 6)
+white=$(\tput setaf 7)
+reset=$(\tput sgr0)
+$0
 endsnippet
 
 # UI

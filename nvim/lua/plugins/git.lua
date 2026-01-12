@@ -1,4 +1,5 @@
 -- Git-related plugins.
+---@diagnostic disable: missing-fields
 
 local Plug = require('utils.plug_utils').Plug
 
@@ -8,6 +9,11 @@ return {
     event = {'CmdlineEnter'},   -- so many :G.. commands
     func = {'Fugitive*', 'fugitive#*'},
     config = require('config.git').setup_fugitive,
+  };
+
+  Plug 'rbong/vim-flog' {
+    version = '>=3.0',
+    init = require('config.git').setup_flog,
   };
   Plug 'junegunn/gv.vim' {
     cmd = 'GV',

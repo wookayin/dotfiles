@@ -1,8 +1,8 @@
 -- Basic and essential plugins.
+---@diagnostic disable: missing-fields
 
 local Plug = require('utils.plug_utils').Plug
 
----@diagnostic disable: missing-fields
 return {
   Plug 'nvim-lua/plenary.nvim' { priority = 10000 };
   Plug 'rcarriga/nvim-notify' {

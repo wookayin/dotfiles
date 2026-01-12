@@ -133,10 +133,3 @@ elseif exists('g:loaded_floaterm')
   command! -buffer -bar  Build   w | call MakeInTerminal() | stopinsert
   command! -buffer -bar  Output  FloatermShow makepython
 endif
-
-" DAP + Unit test
-if s:has_dap
-  if b:is_test_file
-    command! -buffer -bang  DebugStart   TestDebug
-  end
-endif

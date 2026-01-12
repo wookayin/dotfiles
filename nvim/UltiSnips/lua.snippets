@@ -184,6 +184,12 @@ row = row - 1  -- (row, col) are now 0-indexed
 $0
 endsnippet
 
+snippet functor "A table that is callable."
+local ${1:name} = setmetatable({ $2 }, { __call = function(self)
+	$3
+end})$0
+endsnippet
+
 # Busted-style Testing
 snippet describe
 describe("${1:something}", function()
