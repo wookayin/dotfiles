@@ -96,14 +96,4 @@ if [[ -z "${installed_dir}" ]]; then
   echo "granted installed to user bin; ensure ${HOME}/.local/bin is in PATH."
 fi
 
-if [[ "${OS}" == "Darwin" && "${installed_dir}" == "${DEST_SYSTEM_DIR}" ]]; then
-  if [[ -w "${DEST_SYSTEM_DIR}" ]]; then
-    ln -sf "${DEST_SYSTEM_DIR}/granted" "${DEST_SYSTEM_DIR}/assumego"
-  elif command -v sudo >/dev/null 2>&1; then
-    sudo ln -sf "${DEST_SYSTEM_DIR}/granted" "${DEST_SYSTEM_DIR}/assumego"
-  else
-    echo "granted: cannot create assumego symlink in ${DEST_SYSTEM_DIR} (no permissions)."
-  fi
-fi
-
 echo "granted installed to: ${installed_dir}"
