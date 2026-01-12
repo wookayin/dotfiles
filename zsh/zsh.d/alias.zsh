@@ -215,7 +215,13 @@ alias gs='git status'
 alias gsu='gs -u'
 alias gu='git pull --autostash'
 alias gmb='git merge-base HEAD master'
+alias gp='git push'
+alias gpc='git push --set-upstream origin "$(git-branch-current 2> /dev/null)"'
 
+## Authentication helpers
+alias a='assume ai-developers --exec --'
+alias s='summon -p summon-aws-secrets'
+alias sa='assume ai-developers --exec -- summon -p summon-aws-secrets'
 
 
 function ghad() {
@@ -567,7 +573,4 @@ fi
 
 # }}}
 
-## Authentication helpers
-alias a='assume ai --exec --'
-alias sa='assume ai --exec -- summon --provider summon-aws-secrets'
 

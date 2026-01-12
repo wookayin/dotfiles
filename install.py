@@ -123,7 +123,7 @@ else:
     post_actions += [
         """#!/bin/bash
         echo -e "\033[0;33m\
-    Skipping pyenv installation since ~/.pyenv already exists. If you want to reinstall pyenv, please remove ~/.pyenv first.\033[0m"
+    Skipping pyenv installation since ~/.pyenv already exists.\033[0m"
     """
     ]
 
