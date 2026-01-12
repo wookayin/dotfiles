@@ -25,7 +25,7 @@ case "$OS" in
     ;;
   Linux)
     case "$ARCH" in
-      x86_64|amd64) DOWNLOAD="${BASE_URL}/granted_0.36.2_linux_x86_64.tar" ;;
+      x86_64|amd64) DOWNLOAD="${BASE_URL}/granted_0.36.2_linux_x86_64.tar.gz" ;;
       arm64|aarch64) DOWNLOAD="${BASE_URL}/granted_0.36.2_linux_arm64.tar.gz" ;;
       *) echo "granted: no prebuilt binary for Linux ${ARCH}, skipping."; exit 0 ;;
     esac
