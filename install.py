@@ -241,7 +241,7 @@ post_actions += [  # pman
 
 post_actions += [  # summon
     """#!/bin/bash
-    curl -sSL https://raw.githubusercontent.com/cyberark/summon/main/install.sh | bash"
+    bash "etc/install-summon.sh"
 """
 ]
 
