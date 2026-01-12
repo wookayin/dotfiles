@@ -216,6 +216,10 @@ alias gsu='gs -u'
 alias gu='git pull --autostash'
 alias gmb='git merge-base HEAD master'
 
+## Authentication helpers
+alias a='assume ai --exec --'
+alias sa='assume ai --exec -- summon --provider summon-aws-secrets'
+
 function ghad() {
   # Run gha (git history) and refresh if anything in .git/ changes
   local GIT_DIR=$(git rev-parse --git-dir)

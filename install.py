@@ -31,12 +31,8 @@ parser.add_argument(
     default=False,
     help="If set, it will override existing symbolic links",
 )
-parser.add_argument(
-    "--skip-vimplug", action="store_true", help="If set, do not update vim plugins."
-)
-parser.add_argument(
-    "--skip-zplug", action="store_true", help="If set, skip update of zsh plugins."
-)
+parser.add_argument("--skip-vimplug", action="store_true", help="If set, do not update vim plugins.")
+parser.add_argument("--skip-zplug", action="store_true", help="If set, skip update of zsh plugins.")
 
 args = parser.parse_args()
 
@@ -105,9 +101,7 @@ os.chdir(__PATH__)
 
 post_actions = []
 
-post_actions += [
-    "git clone https://github.com/pyenv/pyenv.git ~/.pyenv"
-]
+post_actions += ["git clone https://github.com/pyenv/pyenv.git ~/.pyenv"]
 post_actions += [  # Check symbolic link at $HOME
     """#!/bin/bash
     # Check whether ~/.vim and ~/.zsh are well-configured
@@ -214,10 +208,10 @@ post_actions += [  # stat_dataset
     if [[ "$OS" == "Darwin" ]] || [[ "$OS" == "Linux" ]]; then
         STAT_DATASET_SRC="external/stat_dataset/bin/stat_dataset"
         STAT_DATASET_DEST="/usr/local/bin/stat_dataset"
-        
+
         if [[ -f "$STAT_DATASET_SRC" ]]; then
             echo -e "\033[0;33mInstalling stat_dataset to $STAT_DATASET_DEST...\033[0m"
-            
+
             if sudo cp "$STAT_DATASET_SRC" "$STAT_DATASET_DEST" 2>/dev/null; then
                 sudo chmod +x "$STAT_DATASET_DEST"
                 echo -e "\033[0;32m✔ Successfully installed stat_dataset → $STAT_DATASET_DEST\033[0m"
@@ -242,6 +236,18 @@ post_actions += [  # stat_dataset
 post_actions += [  # pman
     """#!/bin/bash
     bash "etc/install-pman.sh"
+"""
+]
+
+post_actions += [  # summon
+    """#!/bin/bash
+    curl -sSL https://raw.githubusercontent.com/cyberark/summon/main/install.sh | bash"
+"""
+]
+
+post_actions += [  # granted(assume)
+    """#!/bin/bash
+    bash "etc/install-granted.sh"
 """
 ]
 
@@ -368,38 +374,15 @@ def log_boxed(msg, color_fn=WHITE, use_bold=False, len_adjust=0):
     import unicodedata
 
     pad_msg = " " + msg + "  "
-    l = (
-        sum(not unicodedata.combining(ch) for ch in unicode(pad_msg, "utf-8"))
-        + len_adjust
-    )  # noqa
+    l = sum(not unicodedata.combining(ch) for ch in unicode(pad_msg, "utf-8")) + len_adjust  # noqa
     if use_bold:
         log(
-            color_fn(
-                "┏"
-                + ("━" * l)
-                + "┓\n"
-                + "┃"
-                + pad_msg
-                + "┃\n"
-                + "┗"
-                + ("━" * l)
-                + "┛\n"
-            ),
+            color_fn("┏" + ("━" * l) + "┓\n" + "┃" + pad_msg + "┃\n" + "┗" + ("━" * l) + "┛\n"),
             cr=False,
         )
     else:
         log(
-            color_fn(
-                "┌"
-                + ("─" * l)
-                + "┐\n"
-                + "│"
-                + pad_msg
-                + "│\n"
-                + "└"
-                + ("─" * l)
-                + "┘\n"
-            ),
+            color_fn("┌" + ("─" * l) + "┐\n" + "│" + pad_msg + "│\n" + "└" + ("─" * l) + "┘\n"),
             cr=False,
         )
 
@@ -421,12 +404,8 @@ current_dir = os.path.abspath(os.path.dirname(__file__))
 os.chdir(current_dir)
 
 # check if git submodules are loaded properly
-stat = subprocess.check_output(
-    "git submodule status --recursive", shell=True, universal_newlines=True
-)
-submodule_issues = [
-    (l.split()[1], l[0]) for l in stat.split("\n") if len(l) and l[0] != " "  # noqa
-]
+stat = subprocess.check_output("git submodule status --recursive", shell=True, universal_newlines=True)
+submodule_issues = [(l.split()[1], l[0]) for l in stat.split("\n") if len(l) and l[0] != " "]  # noqa
 
 if submodule_issues:
     stat_messages = {"+": "needs update", "-": "not initialized", "U": "conflict!"}
@@ -446,11 +425,7 @@ if submodule_issues:
         git_submodule_update_cmd = "git submodule update --init --recursive"
         # git 2.8+ supports parallel submodule fetching
         try:
-            git_version = str(
-                subprocess.check_output(
-                    """git --version | awk '{print $3}'""", shell=True
-                )
-            )
+            git_version = str(subprocess.check_output("""git --version | awk '{print $3}'""", shell=True))
             if git_version >= "2.8":
                 git_submodule_update_cmd += " --jobs 8"
         except Exception:
@@ -496,9 +471,7 @@ for target, item in sorted(tasks.items()):
 
     # if --force option is given, delete and override the previous symlink
     if os.path.lexists(target):
-        is_broken_link = os.path.islink(target) and not os.path.exists(
-            os.readlink(target)
-        )
+        is_broken_link = os.path.islink(target) and not os.path.exists(os.readlink(target))
         err = ""
 
         if is_broken_link:  # safe to remove
@@ -515,9 +488,7 @@ for target, item in sorted(tasks.items()):
             err = RED("already exists, please remove " + target + " manually.")
         else:
             if args.force:
-                err = YELLOW(
-                    "already exists but not a symbolic link; --force option ignored"
-                )
+                err = YELLOW("already exists but not a symbolic link; --force option ignored")
             else:
                 err = YELLOW("exists, but not a symbolic link. Check by yourself!!")
         if err:
@@ -532,11 +503,7 @@ for target, item in sorted(tasks.items()):
             makedirs(mkdir_target)
             log(GREEN("Created directory : %s" % mkdir_target))
         os.symlink(source, target)
-        log(
-            "{:60s} : {}".format(
-                BLUE(target), GREEN("symlink created from '%s'" % source)
-            )
-        )
+        log("{:60s} : {}".format(BLUE(target), GREEN("symlink created from '%s'" % source)))
 
 errors = []
 for action in post_actions:
@@ -549,9 +516,7 @@ for action in post_actions:
 
     log("\n", cr=False)
     log_boxed("Executing: " + action_title, color_fn=CYAN)
-    ret = subprocess.call(
-        ["bash", "-e", "-c", action], preexec_fn=lambda: signal(SIGPIPE, SIG_DFL)
-    )
+    ret = subprocess.call(["bash", "-e", "-c", action], preexec_fn=lambda: signal(SIGPIPE, SIG_DFL))
 
     if ret:
         errors.append(action_title)
@@ -570,14 +535,8 @@ else:
     log_boxed("✔  You are all set! ", color_fn=GREEN, use_bold=True)
 
 log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
-log(
-    "- To install some packages locally (e.g. neovim, tmux), try "
-    + CYAN("`dotfiles install <package>`")
-)
-log(
-    "- If you want to update dotfiles (or have any errors), try "
-    + CYAN("`dotfiles update`")
-)
+log("- To install some packages locally (e.g. neovim, tmux), try " + CYAN("`dotfiles install <package>`"))
+log("- If you want to update dotfiles (or have any errors), try " + CYAN("`dotfiles update`"))
 log("\n\n", cr=False)
 
 sys.exit(len(errors))
