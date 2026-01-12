@@ -216,9 +216,7 @@ alias gsu='gs -u'
 alias gu='git pull --autostash'
 alias gmb='git merge-base HEAD master'
 
-## Authentication helpers
-alias a='assume ai --exec --'
-alias sa='assume ai --exec -- summon --provider summon-aws-secrets'
+
 
 function ghad() {
   # Run gha (git history) and refresh if anything in .git/ changes
@@ -304,8 +302,6 @@ if alias gpt > /dev/null; then unalias gpt; fi
 
 # Python ======================================= {{{
 
-# anaconda
-alias sa='conda activate'   # source activate is deprecated.
 alias ca='conda activate'
 function deactivate() {
   # In anaconda/miniconda, use `conda deactivate`. In virtualenvs, `source deactivate`.
@@ -570,3 +566,8 @@ if (( ! $+commands[tb] )); then
 fi
 
 # }}}
+
+## Authentication helpers
+alias a='assume ai --exec --'
+alias sa='assume ai --exec -- summon --provider summon-aws-secrets'
+
