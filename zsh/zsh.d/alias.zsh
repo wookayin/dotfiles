@@ -218,12 +218,6 @@ alias gmb='git merge-base HEAD master'
 alias gp='git push'
 alias gpc='git push --set-upstream origin "$(git-branch-current 2> /dev/null)"'
 
-## Authentication helpers
-alias a='assume ai-developers --exec --'
-alias s='summon -p summon-aws-secrets'
-alias sa='assume ai-developers --exec -- summon -p summon-aws-secrets'
-
-
 function ghad() {
   # Run gha (git history) and refresh if anything in .git/ changes
   local GIT_DIR=$(git rev-parse --git-dir)
@@ -571,6 +565,11 @@ if (( ! $+commands[tb] )); then
     alias tb='python -m tbtools.tb'
 fi
 
+# Authentication helpers
+unalias a s 2>/dev/null
+unfunction a s 2>/dev/null
+alias a='assume ai-developers --exec --'
+alias s='summon -p summon-aws-secrets'
+alias sa='assume ai-developers --exec -- summon -p summon-aws-secrets'
+
 # }}}
-
-
