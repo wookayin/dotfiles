@@ -2,7 +2,7 @@
 --- LSP config
 --------------
 -- See 'plugins.ide' for the Plug specs
--- nvim-cmp config has been moved to nvim/lua/config/completion.lua
+-- See $DOTVIM/after/lsp/ for individual LSP config overrides
 
 ---@class config.lsp
 local M = {}
@@ -270,7 +270,8 @@ end
 -- see(config): https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 -- see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
 ---@type table<lspserver_name, false | table | fun():(table|false)>
----@deprecated We will use vim.lsp.config() and per-lsp configuration for nvim 0.11
+---@deprecated We will use vim.lsp.config() and per-lsp configuration for nvim 0.11.
+---  See the `$DOTVIM/after/lsp/` directory.
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
 
@@ -279,93 +280,8 @@ M.lsp_setup_opts = lsp_setup_opts
 local on_init = {}
 M.on_init = on_init
 
-lsp_setup_opts['basedpyright'] = function()
-  -- https://docs.basedpyright.com/latest/configuration/language-server-settings/
-  -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
-  return {
-    settings = {
-      python = {
-        -- Always use the current python in $PATH (the current conda/virtualenv).
-        -- NOTE: python.pythonPath (not basedpyright.pythonPath), see the basedpyright docs
-        pythonPath = vim.fn.exepath("python3"),
-      },
-      basedpyright = {
-        -- in favor of ruff's import organizer
-        disableOrganizeImports = true,
-        -- use auto-import (which is also by default)
-        autoImportCompletions = true,
-
-        -- NOTE: the "discouraged settings" here will be ignored if the project root contains
-        -- either a pyproject.toml ([tool.pyright]) or pyrightconfig.json configuration file.
-        -- https://docs.basedpyright.com/latest/configuration/config-files/#overriding-language-server-settings
-        -- https://docs.basedpyright.com/latest/configuration/language-server-settings/#discouraged-settings
-        analysis = {
-          typeCheckingMode = "standard",
-          -- see https://docs.basedpyright.com/latest/usage/import-resolution/#configuring-your-python-environment
-          -- see https://github.com/microsoft/pyright/blob/main/docs/import-resolution.md#resolution-order
-          extraPaths = { "./python" },
-        },
-
-        inlayHints = {
-          callArgumentNames = true,
-          callArgumentNamesMathcing = false,
-          functionReturnTypes = true,
-          variableTypes = true,
-          genericTypes = true,  --(override)
-        },
-      },
-    },
-  }
-end
-lsp_setup_opts['pyright'] = false  -- disable even if it's installed, in favor of basedpyright
-
+lsp_setup_opts['pyright'] = false  -- deprecated, should never setup
 lsp_setup_opts['ruff_lsp'] = false  -- deprecated, should never setup
-lsp_setup_opts['ruff'] = function()
-  local init_options = {
-    -- https://github.com/astral-sh/ruff-lsp#settings
-    -- https://github.com/astral-sh/ruff-lsp/blob/main/ruff_lsp/server.py
-    -- Note: use pyproject.toml to configure ruff per project.
-    settings = {
-      fixAll = true,
-      organizeImports = false, -- in favor of Conform (:Format ruff_organize_imports)
-      -- extra CLI arguments
-      -- https://docs.astral.sh/ruff/configuration/#command-line-interface
-      -- https://docs.astral.sh/ruff/rules/
-      args = {
-        "--preview", -- Use experimental features
-        "--ignore", table.concat({
-          "E111", -- indentation-with-invalid-multiple
-          "E114", -- indentation-with-invalid-multiple-comment
-          "E402", -- module-import-not-at-top-of-file
-          "E501", -- line-too-long
-          "E702", -- multiple-statements-on-one-line-semicolon
-          "E731", -- lambda-assignment
-          "F401", -- unused-import  (note: should be handled by pyright as 'hint')
-        }, ','),
-      },
-    },
-  };
-  return {
-    init_options = init_options,
-    capabilities = {
-      general = {
-        -- pyright uses utf-16, and ruff uses utf-8 by default.
-        -- To avoid 'multiple different client offset_encodings ...', we tell ruff to use 'utf-16' only
-        -- https://github.com/astral-sh/ruff/issues/14483
-        positionEncodings = { "utf-16" },
-      },
-    }
-  }
-end
-on_init['ruff'] = function(client, _)
-  if client.server_capabilities then
-    -- Disable ruff hover in favor of Pyright
-    client.server_capabilities.hoverProvider = false
-    -- Disable ruff formatting in favor of Conform (ruff_format)
-    -- NOTE: ruff-lsp's formatting is a bit buggy, doesn't respect indent_size
-    client.server_capabilities.documentFormattingProvider = false
-  end
-end
 
 lsp_setup_opts['lua_ls'] = function()
   local settings = {
@@ -508,6 +424,9 @@ local function setup_lsp(lsp_name)
 
   if opts == false then
     -- Explicitly configured to disable this LSP (after evaluation). Stop.
+    if vim.lsp.enable then
+      vim.lsp.enable(lsp_name, false)
+    end
     return
   end
 
