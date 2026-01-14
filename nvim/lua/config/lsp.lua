@@ -579,6 +579,7 @@ function M._setup_lspconfig()
   -- Add backward-compatible lsp installation related commands
   vim.cmd [[
     command! LspInstallInfo   Mason
+    command! LspInfo          checkhealth vim.lsp
   ]]
 end
 
