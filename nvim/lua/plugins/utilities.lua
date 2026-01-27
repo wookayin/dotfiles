@@ -32,7 +32,8 @@ return {
 
   -- Indent Guideline and Scrollbar
   Plug 'lukas-reineke/indent-blankline.nvim' { tag = 'v2.20.8', init = PlugConfig, event = 'VeryLazy' };
-  Plug 'dstein64/nvim-scrollview' { event = 'VeryLazy' };
+  -- v6.2.2 has a bug in setting &diff (avoid commit 316c37c9)
+  Plug 'dstein64/nvim-scrollview' { event = 'VeryLazy', tag = 'v6.2.1' };
 
   -- Tmux support
   Plug 'christoomey/vim-tmux-navigator' { init = PlugConfig, event = 'VeryLazy' };
