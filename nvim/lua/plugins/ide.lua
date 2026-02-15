@@ -120,6 +120,12 @@ return {
 
   -- Build
   Plug 'skywind3000/asyncrun.vim' { event = 'VeryLazy' };
+  Plug 'stevearc/overseer.nvim' {
+    event = 'VeryLazy',
+    config = function()
+      require('config.overseer').setup()
+    end,
+  };
 
   -- Testing
   Plug 'nvim-neotest/neotest' {
