@@ -12,6 +12,14 @@ function M.setup()
         -- Remove default keymaps for CTRL-{j,k} so that these can work as window navigation
         ["<C-k>"] = false,
         ["<C-j>"] = false,
+      },
+    },
+    component_aliases = {
+      default = {
+        "on_exit_set_status",
+        -- Make the default notification triggered only upon FAILURE, in favor of statusline
+        { "on_complete_notify", statuses = { "FAILURE" } },
+        { "on_complete_dispose", require_view = { "SUCCESS", "FAILURE" } },
       }
     },
   }
@@ -19,6 +27,28 @@ function M.setup()
   -- Register handy aliases
   vim.fn.CommandAlias('OS', 'OverseerShell')
   vim.fn.CommandAlias('OT', 'OverseerToggle')
+end
+
+--- Lualine integration (see nvim/lua/config/statusline.lua)
+--- @return string
+function M.statusline()
+  local overseer = require('overseer')
+  local tasks = overseer.list_tasks()  ---@type overseer.Task[]
+
+  local icons = vim.iter(tasks):filter(function(task) ---@param task overseer.Task
+    if task.time_end == nil then return true end
+    -- show only active tasks, ended no more than 3 seconds ago
+    return task.time_end > os.time() - 3.0
+  end):map(function(task) ---@param task overseer.Task
+    return ({
+      ['PENDING'] = '⏳',
+      ['RUNNING'] = '⏳',
+      ['SUCCESS'] = '✅',
+      ['FAILURE'] = '❌',
+      ['CANCELED'] = '⛔';
+    })[task.status] or ''
+  end):totable()
+  return table.concat(icons, ' ')
 end
 
 --- Additional batteries wrapped around overseer.

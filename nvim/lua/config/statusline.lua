@@ -60,7 +60,11 @@ local custom_components = {
     local ret, _ = vim.bo.fileformat:gsub("^unix$", "")
     return ret
   end,
-  -- asyncrun job status
+  -- overseer.run job status
+  overseer_status = function()
+    return require('config.overseer').statusline()
+  end,
+  -- asyncrun job status (DEPRECATED in favor of overseer)
   asyncrun_status = function()
     local status = table.concat(vim.tbl_values(vim.tbl_map(function(job)
       return job and ({
@@ -158,6 +162,7 @@ function M.setup_lualine()
       },
       lualine_b = {
         { 'branch', cond = min_statusline_width(120) },
+        { custom_components.overseer_status },
         { custom_components.asyncrun_status },
       },
       lualine_c = {
