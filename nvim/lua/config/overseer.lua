@@ -13,6 +13,16 @@ function M.setup()
         ["<C-k>"] = false,
         ["<C-j>"] = false,
       },
+      render = function(task)
+        local render = require("overseer.render")
+        return {
+          render.join(
+            render.status_and_name(task),
+            render.duration(task),
+            '  '
+          )
+        }
+      end,
     },
     component_aliases = {
       default = {
