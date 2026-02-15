@@ -24,6 +24,17 @@ function M.setup()
     },
   }
 
+  -- F5, F6, Make, etc.
+  -- <F6>   :Output       => Show the overseer task window (or quickfix/terminal, if overriden)
+  vim.keymap.set({'n', 'i'}, '<F6>', '<Cmd>Output<CR>', { remap = false })
+  vim.api.nvim_create_user_command('Output', function()
+    vim.cmd [[ OverseerToggle ]]
+    vim.cmd [[ wincmd p ]]  -- let the cursor stay in the working window
+  end, {
+    nargs = 0,
+    desc = 'Output (overseer)',
+  })
+
   -- Register handy aliases
   vim.fn.CommandAlias('OS', 'OverseerShell')
   vim.fn.CommandAlias('OT', 'OverseerToggle')

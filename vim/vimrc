@@ -671,20 +671,7 @@ command! -nargs=1 MakeprgLocal  let &l:makeprg="<args>" | echo "&l:makeprg = <ar
 " }}}
 
 
-" :OutputToggle or <F6> (Toggle quickfix)
-" ---------------------------------------
-
-" <F6>   :Output       => Show the output or build status window (quickfix, terminal, etc.)
-map               <F6>   <Cmd>Output<CR>
-imap              <F6>   <Cmd>Output<CR>
 nnoremap <silent> <C-Q>  <Cmd>call QuickfixToggle()<CR>
-
-" By default, :Output opens or closes the quickfix (copen) window
-" filetype plugin or individual buffers may override the command :Output (or :COpen)
-command! -nargs=0 -bar  Output          QuickfixToggle
-if !has('nvim')
-  command! -nargs=0 -bar  Output        botright copen
-endif
 
 " <leader><F6>: Copen no matter what  (note: <F6> might be overridden, e.g. neotest)
 nnoremap <silent> <leader><F6>   <cmd>Copen<CR>
