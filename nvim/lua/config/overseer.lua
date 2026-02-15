@@ -21,9 +21,24 @@ function M.setup()
   vim.fn.CommandAlias('OT', 'OverseerToggle')
 end
 
+--- Additional batteries wrapped around overseer.
+function M.setup_extra()
+  -- :just, :Just
+  vim.cmd [[
+    autocmd CmdlineEnter * ++once call CommandAlias('just', 'Just')
+  ]]
+  vim.api.nvim_create_user_command('Just', function(opts)
+    vim.cmd.OverseerShell('just ' .. opts.args)
+  end, {
+    nargs = '*',
+    desc = 'Just (overseer)',
+  })
+end
+
 -- Resourcing support
 if ... == nil then
   M.setup()
+  M.setup_extra()
 end
 
 return M

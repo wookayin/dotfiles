@@ -124,6 +124,7 @@ return {
     event = 'VeryLazy',
     config = function()
       require('config.overseer').setup()
+      require('config.overseer').setup_extra()
     end,
   };
 
