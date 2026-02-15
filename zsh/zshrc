@@ -87,6 +87,36 @@ if (( $+commands[virtualenvwrapper_lazy.sh] )); then
     source "$commands[virtualenvwrapper_lazy.sh]"
 fi
 
+# Anaconda3
+# see ~/.zshenv for $CONDA_EXE detection
+# non-standard conda (e.g. mamba) would need to have a proper setup script to make conda work
+function _conda_initialize() {
+# >>> conda initialize >>>
+if [ -n "${CONDA_EXE}" ] && [[ "${CONDA_EXE}" == *conda ]]; then
+  ${CONDA_EXE} config --set auto_activate_base false
+  __conda_setup="$(${CONDA_EXE} 'shell.zsh' 'hook' 2> /dev/null)"
+  if [ $? -eq 0 ]; then
+      eval "$__conda_setup"
+  fi
+  unset __conda_setup
+fi
+# <<< conda initialize <<<
+}
+# Note: conda initialize is slow (0.3 sec), so execute lazily
+# Note: This should precede antidote plugins, so zsh-autoswitch-virtualenv can use conda 
+conda() {
+  unfunction conda
+  _conda_initialize
+  conda "$@"
+}
+
+if [[ -z "$CONDA_EXE" && -d "/opt/homebrew/Caskroom/miniconda" ]]; then
+  echo "Warning: Please install miniconda locally on your HOME, not via Homebrew."
+  echo "$ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
+  echo "$ ./Miniconda3-latest-MacOSX-x86_64.sh -p $HOME/.miniconda3"
+fi
+
+
 # nvm -- sourcing is very slow, use lazy load
 if [[ -f "$HOME/.nvm/nvm.sh" ]]; then
   function nvm() {
@@ -225,34 +255,6 @@ if (( $+commands[iterm-tab-color] )); then
         fi
     }
     iterm_tab_color_auto
-fi
-
-# Anaconda3
-# see ~/.zshenv for $CONDA_EXE detection
-# non-standard conda (e.g. mamba) would need to have a proper setup script to make conda work
-function _conda_initialize() {
-# >>> conda initialize >>>
-if [ -n "${CONDA_EXE}" ] && [[ "${CONDA_EXE}" == *conda ]]; then
-  ${CONDA_EXE} config --set auto_activate_base false
-  __conda_setup="$(${CONDA_EXE} 'shell.zsh' 'hook' 2> /dev/null)"
-  if [ $? -eq 0 ]; then
-      eval "$__conda_setup"
-  fi
-  unset __conda_setup
-fi
-# <<< conda initialize <<<
-}
-# Note: conda initialize is slow (0.3 sec), so execute lazily
-conda() {
-  unfunction conda
-  _conda_initialize
-  conda "$@"
-}
-
-if [[ -z "$CONDA_EXE" && -d "/opt/homebrew/Caskroom/miniconda" ]]; then
-  echo "Warning: Please install miniconda locally on your HOME, not via Homebrew."
-  echo "$ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
-  echo "$ ./Miniconda3-latest-MacOSX-x86_64.sh -p $HOME/.miniconda3"
 fi
 
 # Optionally, put local startup config (not version controlled) in ~/.zshrc.local
