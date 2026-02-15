@@ -64,6 +64,41 @@ end
 
 --- Additional batteries wrapped around overseer.
 function M.setup_extra()
+  local overseer = require("overseer")
+
+  -- :Make command running with overseer
+  local function Make(opts)
+    local args = vim.fn.expandcmd(opts.args) ---@type string
+    -- TODO: sanitize args, avoid shell pipe and injections, etc.
+    local cmd
+    if vim.o.makeprg == 'make' then
+      cmd = vim.trim("make " .. args)
+    else
+      cmd = vim.fn.expandcmd(vim.o.makeprg)
+    end
+
+    local task = overseer.new_task({
+      cmd = cmd,
+      components = {
+        "on_exit_set_status",
+        -- Disable "on_complete_notify", we have our custom notification callback
+      },
+    }) ---@type overseer.Task
+
+    ---@param status overseer.Status
+    task:subscribe("on_complete", function(_task, status, result)
+      if status ~= "SUCCESS" then
+        vim.notify("Build (make) failed! (Try `:OverseerOpen` or `<F6>`)", vim.log.levels.ERROR,
+          { title = cmd, markdown = true })
+      end
+    end)
+    task:start()
+  end
+  vim.api.nvim_create_user_command(
+    'Make', Make,
+    { nargs = '*', desc = 'Make (overseer)' }
+  )
+
   -- :just, :Just
   vim.cmd [[
     autocmd CmdlineEnter * ++once call CommandAlias('just', 'Just')

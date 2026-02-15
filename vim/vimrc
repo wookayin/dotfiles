@@ -633,34 +633,12 @@ imap <C-F5>  <ESC><C-F5>a
 nmap <leader>m <F5>
 
 " Build commands default to Make
+" (NVIM) see nvim/lua/config/overseer.lua for :Make
 command! -nargs=* -bar Build    Make
 
-" :Make
-" runs a &makeprg job asynchronously in the background.
-"
-" Note that filetype plugins or individual buffers may override the command :Make
-" For instance, ~/.vim/after/ftplugin/python.vim  ~/.vim/after/ftplugin/cpp.vim
-"
-command! -nargs=* -complete=customlist,MakeCommandCompletion -bar Make
-      \ call s:run_make("<bang>", <q-args>)
-function! s:run_make(bang, qargs) abort
-    " Asynchronous job dispatching in the background (output goes to quickfix)
-    exec 'AsyncMake ' . a:qargs
-    echohl Special
-    echom Truncate('Make: ' . &makeprg . (empty(a:qargs) ? "" : " ") . a:qargs, v:echospace)
-    echohl NONE
-endfunction
-
-" Completion for :Make commands
-function! MakeCommandCompletion(A, L, P) abort
-  if &makeprg == 'make'
-    " credit: @pbnj https://dev.to/pbnj/how-to-get-make-target-tab-completion-in-vim-4mj1
-    let l:targets = systemlist('make -qp | awk -F'':'' ''/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}'' | grep -v Makefile | sort -u')
-    return filter(l:targets, 'v:val =~ "^' . a:A . '"')
-  else
-    return []
-  end
-endfunction
+if !has('nvim')
+  command! -nargs=* -bar Make make <args>
+end
 
 " A handy way to set (global) makeprg.
 " See ~/.dotfiles/nvim/lua/config/commands/Makeprg.lua for nvim+lua version
@@ -1582,22 +1560,6 @@ let g:asyncrun_open = 0
 let g:asyncrun_auto = "make"
 
 
-command! -nargs=* -complete=customlist,MakeCommandCompletion AsyncMake
-      \ call AsyncMake(<q-args>)
-function! AsyncMake(qarg) abort
-  let l:qarg = (a:qarg)
-  if &makeprg == 'make'
-    exe 'AsyncRun make ' . l:qarg
-  else
-    if !empty(l:qarg)
-      echohl WarningMsg |
-      echo 'Error: Cannot have arguments with &makeprg = ' . &makeprg
-      echohl None
-      return
-    endif
-    exe 'AsyncRun ' . ExpandCmd(&makeprg)
-  endif
-endfunction
 call CommandAlias('R', 'AsyncRun')
 
 
