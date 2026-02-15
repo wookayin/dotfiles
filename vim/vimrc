@@ -1560,14 +1560,6 @@ let g:asyncrun_open = 0
 let g:asyncrun_auto = "make"
 
 
-call CommandAlias('R', 'AsyncRun')
-
-
-" Alias :Run => :AsyncRun
-if has('nvim')
-  call CommandAlias('Run', 'AsyncRun', v:true)
-endif
-
 " legacy asyncrun.vim autocmd events: notification callback when job finishes
 augroup AsyncRunEvents
   autocmd!

@@ -36,6 +36,8 @@ function M.setup()
   })
 
   -- Register handy aliases
+  vim.fn.CommandAlias('R', 'OverseerShell')
+  vim.fn.CommandAlias('Run', 'OverseerShell')
   vim.fn.CommandAlias('OS', 'OverseerShell')
   vim.fn.CommandAlias('OT', 'OverseerToggle')
 end
