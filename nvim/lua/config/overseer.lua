@@ -34,6 +34,27 @@ function M.setup()
     },
   }
 
+  -- Make running tasks interruptable with double <Ctrl-C>
+  local augroup = vim.api.nvim_create_augroup('config.overseer', { clear = true })
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'OverseerOutput',
+    group = augroup,
+    callback = function(args)
+      local task_id = vim.b[args.buf].overseer_task
+      local task = require'overseer.task_list'.get(task_id) ---@type overseer.Task?
+      if task and task:is_running() then
+        vim.keymap.set('n', '<C-c>', function()
+          print('Press Ctrl-C twice to interrupt the job.')
+        end, { remap = false, buffer = true, silent = true, nowait = true })
+        vim.keymap.set('n', '<C-c><C-c>', function()
+          if task:stop() then
+            print(('Task %d was interrupted and cancelled: %s'):format(task_id, task.name))
+          end
+        end, { remap = false, buffer = true, silent = true, nowait = true })
+      end
+    end,
+  })
+
   -- F5, F6, Make, etc.
   -- <F6>   :Output       => Show the overseer task window (or quickfix/terminal, if overriden)
   vim.keymap.set({'n', 'i'}, '<F6>', '<Cmd>Output<CR>', { remap = false })
