@@ -92,6 +92,7 @@ return {
   -- Python
   Plug 'wookayin/semshi' {
     ft = 'python',
+    enabled = false, -- XXX temporary, until Python 3.14 support
     cond = function()
       return not vim.g.vscode and has_py3()
     end,
