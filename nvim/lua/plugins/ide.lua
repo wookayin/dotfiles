@@ -142,4 +142,13 @@ return {
     event = 'VeryLazy',
     config = require('config.testing').setup,
   };
+
+  -- AI + LLM tools
+  Plug 'coder/claudecode.nvim' {
+    dependencies = { 'folke/snacks.nvim' },
+    cmd = 'Claude',  -- lazy load when :Claude is used for the first time
+    config = function()
+      require('config.ai').setup_claude()
+    end,
+  };
 }
