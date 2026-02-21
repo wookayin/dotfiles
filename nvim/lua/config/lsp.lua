@@ -408,28 +408,6 @@ function M._setup_lspconfig()
 end
 
 
---------------------------
---- LSP Handlers (general)
---------------------------
-function M._setup_lsp_handlers()
-  -- :help lsp-method
-  -- :help lsp-handler
-  -- :help lsp-handler-configuration
-  --  https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization
-  local lsp_handlers_hover = vim.lsp.with(vim.lsp.handlers.hover, {
-    border = 'single'
-  })
-  vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
-    local bufnr, winnr = lsp_handlers_hover(err, result, ctx, config)
-    if winnr ~= nil then
-      -- opacity/alpha for hover window
-      vim.wo[winnr].winblend = 10
-    end
-    return bufnr, winnr
-  end
-end
-
-
 -------------------
 --- LSP diagnostics
 -------------------
@@ -749,7 +727,6 @@ function M.setup_lsp()
   M._setup_lsp_signature()
   M._setup_lsp_keymap()
   M._setup_lsp_commands()
-  M._setup_lsp_handlers()
   M._define_peek_definition()
 end
 
