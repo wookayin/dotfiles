@@ -95,41 +95,5 @@ if b:is_test_file && s:pcall_require('neotest')
   nnoremap <buffer>    <leader>T   <cmd>NeotestSummary<CR>
 
 elseif filereadable('Makefile')
-
-elseif exists('g:loaded_floaterm')
-  let s:ftname = 'makepython'
-  function! MakeInTerminal() abort
-    let l:bufnr = floaterm#terminal#get_bufnr(s:ftname)
-    let l:CTRL_U = nr2char(21)
-    let l:cmd = ExpandCmd(&makeprg)
-    if l:bufnr == -1
-      " floaterm#new(bang, cmd, winopts, jobopts)
-      " floaterm API is fucking capricious and not sensible :(
-      if &columns / (&lines + 0.0) >= 1.6
-        " vertical split (put in the right)
-        let l:winopt = {
-              \ 'position': 'right', 'wintype': 'vsplit',
-              \ 'width': float2nr(&columns / 3.0)}
-      else
-        " horizontal split (put in the below)
-        let l:winopt = {
-              \ 'position': 'below', 'wintype': 'split',
-              \ 'height': float2nr(&lines / 5.0)}
-      endif
-      " floaterm#new(bang, cmd, jobopts, opts) -- this API keeps changing...  :(
-      let l:winopt = extend(l:winopt, {'name': s:ftname, 'autoclose': 1})
-      let l:bufnr = floaterm#new(1, l:cmd, {}, l:winopt)
-      tnoremap <buffer> <silent> <F6>  <c-\><c-n>:FloatermHide<CR>
-      wincmd p        " move back to the python buf
-    else
-      call floaterm#terminal#send(l:bufnr, [l:CTRL_U . l:cmd])
-      " show the window (it could be either hidden or visible)
-      " this works as we are currently on the 'python' buffer
-      call floaterm#toggle(0, 0, s:ftname)
-      wincmd p        " move back to the python buf
-    endif
-  endfunction
-  " <F5> Build (replaces Make), <F6> Output (replaces QuickfixToggle)
-  command! -buffer -bar  Build   w | call MakeInTerminal() | stopinsert
-  command! -buffer -bar  Output  FloatermShow makepython
-endif
+  " do nothing
+end
