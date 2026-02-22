@@ -83,6 +83,13 @@ local custom_components = {
     end
     return status
   end,
+
+  -- copilot. see :Config lsp
+  copilot_indicator = function()
+    local has_copilot = #(vim.lsp.get_clients { bufnr = 0, name = 'copilot' }) > 0
+    return has_copilot and '🤖' or ''
+  end,
+
   -- git objects (fugitive, diffview) for human
   gitobject_bufname = (function()
     local hlgroup = function(name, val)
@@ -167,6 +174,7 @@ function M.setup_lualine()
       },
       lualine_c = {
         { custom_components.neotree_path, color = { fg = '#87afdf' } },
+        { custom_components.copilot_indicator },
         { 'filename', path = 1, color = { fg = '#eeeeee' } },
         { custom_components.lsp_context, fmt = truncate(180, 60, 100, true) },
       },

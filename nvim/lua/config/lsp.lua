@@ -128,6 +128,7 @@ end
 --- @type table<lspserver_name, boolean|vim_filetype[]>
 local auto_lsp_servers = {
   -- @see $VIMPLUG/mason-lspconfig.nvim/lua/mason-lspconfig/mappings/filetype.lua
+  ['copilot'] = false, -- do not automatically enable copilot; attach to buffers w/ opt-in
   ['basedpyright'] = true,
   ['ruff'] = true, -- Note: ruff_lsp is deprecated, :MasonUninstall ruff-lsp
   ['vimls'] = true,
@@ -407,6 +408,50 @@ function M._setup_lspconfig()
   ]]
 end
 
+------------------------------------------
+--- Inline tab completion, powered by LSP
+------------------------------------------
+function M._setup_inline_completion()
+  if not vim.lsp.inline_completion then  -- requires nvim 0.12+
+    return false
+  end
+
+  --- :Copilot enable / :Copilot disable (works for current buffer)
+  --- NOTE: You might want to do :LspCopilotSignIn for authentication (~/.config/github-copilot)
+  --- NOTE: Install copilot language server via :Mason
+  vim.api.nvim_create_user_command('Copilot', function(opts)
+    local subcmd = opts.args
+    local buf = vim.api.nvim_get_current_buf()
+    if subcmd == 'enable' then
+      vim.lsp.start(vim.lsp.config['copilot'], { bufnr = buf })
+      vim.lsp.inline_completion.enable(true, { bufnr = buf })
+      vim.notify(('Enabled Copilot LSP for the buffer %d'):format(buf),
+        vim.log.levels.INFO, { title = '🤖 Copilot' })
+    elseif subcmd == 'disable' then
+      vim.lsp.inline_completion.enable(false, { bufnr = buf })
+      for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf, name = 'copilot' })) do
+        vim.lsp.buf_detach_client(0, client.id)
+      end
+      vim.notify(('Disabled Copilot LSP for the buffer %d'):format(buf),
+        vim.log.levels.INFO, { title = '🤖 Copilot' })
+    else
+      vim.notify('Usage: :Copilot enable | disable', vim.log.levels.WARN, { title = '🤖 Copilot' })
+    end
+  end, {
+    nargs = 1,
+    desc = 'Enable or disable Copilot LSP for the current buffer',
+    complete = function(arglead)
+      return vim.tbl_filter(function(s)
+        return s:find(arglead, 1, true) == 1
+      end, { 'enable', 'disable' })
+    end,
+  })
+  vim.fn.CommandAlias('copilot', 'Copilot')
+
+  -- See also (related config)
+  -- $DOTVIM/lua/config/statusline.lua: statusline integration
+  -- $DOTVIM/lua/config/completion.lua: <Tab> imap
+end
 
 -------------------
 --- LSP diagnostics
@@ -727,6 +772,7 @@ function M.setup_lsp()
   M._setup_lsp_signature()
   M._setup_lsp_keymap()
   M._setup_lsp_commands()
+  M._setup_inline_completion()
   M._define_peek_definition()
 end
 

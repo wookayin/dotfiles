@@ -77,6 +77,9 @@ M.setup_cmp = function()
       ['<CR>'] = cmp.mapping.confirm({ select = false }),
       ['<Tab>'] = { -- see GH-880, GH-897
         i = function(fallback) -- see GH-231, GH-286
+          if vim.lsp.inline_completion and vim.lsp.inline_completion.get() then  -- NVIM 0.12+
+            return  -- try accepting inline completion. Otherwise, fallback to cmp
+          end
           if cmp.visible() then cmp.select_next_item()
           elseif has_words_before() then cmp.complete()
           else fallback() end
