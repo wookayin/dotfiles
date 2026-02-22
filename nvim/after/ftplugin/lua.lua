@@ -53,6 +53,9 @@ else
   vim.api.nvim_buf_create_user_command(0, 'Build', 'SourceThis', {})
 end
 
+-- Misc buffer commands for lua
+vim.api.nvim_buf_create_user_command(0, 'REPL', 'LuaREPL', { nargs = 0, desc = 'LuaREPL' })
+
 --- :SourceThis executes the lua file as a script, or reload as a lua package in package.loaded[...]
 local function SourceThis()
   if lua_package then

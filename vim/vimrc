@@ -992,7 +992,6 @@ if has('nvim')
       call nvim_input(a:args .. "<CR>")
     endif
   endfunction
-  call CommandAlias('REPL', 'LuaREPL', v:true)
   call CommandAlias('Lua', 'LuaREPL', v:true)
 endif
 

@@ -74,7 +74,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+------------------------------------------------------------------------------
+-- Misc buffer commands for python
+------------------------------------------------------------------------------
 local bufcmd = function(...) return vim.api.nvim_buf_create_user_command(0, ...) end
+
 bufcmd('RuffFixAll', function(_)
   vim.lsp.buf.code_action {
     apply = true,
@@ -83,6 +87,8 @@ bufcmd('RuffFixAll', function(_)
     end,
   }
 end, { })
+
+bufcmd('REPL', 'Pyrepl', { nargs = '*' })
 
 ------------------------------------------------------------------------------
 -- More Keymaps (see $DOTVIM/lua/lib/python.lua)
