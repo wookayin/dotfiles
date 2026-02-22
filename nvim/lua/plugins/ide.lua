@@ -103,6 +103,11 @@ return {
     build = UpdateRemotePlugins,
   };
   Plug 'wookayin/vim-autoimport' { cond = has_py3, ft = 'python' };
+  Plug 'dangooddd/pyrepl.nvim' {
+    config = function()
+      require('config.python').setup_pyrepl()
+    end,
+  };
 
   -- Other languages
   Plug 'editorconfig/editorconfig-vim' { cond = not has('nvim') };
