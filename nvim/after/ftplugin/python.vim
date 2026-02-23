@@ -96,4 +96,4 @@ if b:is_test_file && s:pcall_require('neotest')
 
 elseif filereadable('Makefile')
   " do nothing
-end
+endif
