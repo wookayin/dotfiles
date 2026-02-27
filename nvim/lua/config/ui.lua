@@ -3,8 +3,9 @@
 
 local M = {}
 
--- Experimental: highlight cmdline, messages in a real buffer.
--- See https://github.com/neovim/neovim/pull/27811 and :help vim._extui
+-- Experimental: ui2 (a.k.a. extui)
+-- highlight cmdline, messages in a real buffer.
+-- See https://github.com/neovim/neovim/pull/27811 and :help ui2 ($VIMRUNTIME/doc/lua.txt)
 -- NOTE: Use 'g<' to see more messages!
 function M.setup_extui()
   if vim.fn.has('nvim-0.12') == 0 then
@@ -12,7 +13,7 @@ function M.setup_extui()
   end
 
   vim.schedule(function()
-    require('vim._extui').enable {
+    require('vim._core.ui2').enable {
       enable = true,
       msg = {
         target = 'cmd', -- for now I'm happy with 'cmd'; 'box' seems buggy
