@@ -270,43 +270,15 @@ install_bazel() {
   echo ""
 }
 
-install_mambaforge() {
-  # Mambaforge.
-  # https://conda-forge.org/miniforge/
-  _template_github_latest "mambaforge" "conda-forge/miniforge" "Mambaforge-Linux-x86_64.sh"
-
-  local MAMBAFORGE_PREFIX="$HOME/.mambaforge"
-  bash "Mambaforge-Linux-x86_64.sh" -b -p "${MAMBAFORGE_PREFIX}"
-  _which $MAMBAFORGE_PREFIX/bin/python3
-  $MAMBAFORGE_PREFIX/bin/python3 --version
-}
-
 install_miniforge() {
   # Miniforge3.
   # https://github.com/conda-forge/miniforge
-  _template_github_latest "mambaforge" "conda-forge/miniforge" "Miniforge3-Linux-x86_64.sh"
+  _template_github_latest "miniforge" "conda-forge/miniforge" "Miniforge3-Linux-x86_64.sh"
 
   local MINIFORGE_PREFIX="$HOME/.miniforge3"
   bash "Miniforge3-Linux-x86_64.sh" -b -p ${MINIFORGE_PREFIX}
   _which $MINIFORGE_PREFIX/bin/python3
   $MINIFORGE_PREFIX/bin/python3 --version
-}
-
-install_miniconda() {
-  # installs Miniconda3. (Deprecated: Use miniforge3)
-  # https://conda.io/miniconda.html
-  local MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
-
-  local TMP_DIR="$DOTFILES_TMPDIR/miniconda/"; mkdir -p $TMP_DIR && cd ${TMP_DIR}
-  wget -nc $MINICONDA_URL
-
-  local MINICONDA_PREFIX="$HOME/.miniconda3/"
-  bash "Miniconda3-latest-Linux-x86_64.sh" -b -p ${MINICONDA_PREFIX}
-
-  # 3.9.5 as of Nov 2021
-  $MINICONDA_PREFIX/bin/python3 --version
-
-  echo -e "${COLOR_YELLOW}Warning: miniconda is deprecated, consider using miniforge3.${COLOR_NONE}"
 }
 
 install_vim() {
