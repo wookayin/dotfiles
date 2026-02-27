@@ -364,12 +364,7 @@ install_neovim() {
   sleep 1;  # allow users to read above comments
 
   local TMP_NVIM_DIR="$DOTFILES_TMPDIR/neovim"; mkdir -p $TMP_NVIM_DIR
-  if _version_check "$NEOVIM_VERSION" "v0.10.4"; then
-    # Assume we use x86_64 linux; I never used arm64 linux machines before.
-    NVIM_APPIMAGE="nvim-linux-x86_64.appimage"
-  else
-    NVIM_APPIMAGE="nvim.appimage"
-  fi
+  NVIM_APPIMAGE="nvim-linux-x86_64.appimage"  # always x86_64, since 0.10.4
   local NVIM_DOWNLOAD_URL="https://github.com/${NEOVIM_REPO}/releases/download/${NEOVIM_VERSION}/$NVIM_APPIMAGE"
 
   set -x
