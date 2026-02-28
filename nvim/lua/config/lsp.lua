@@ -157,7 +157,7 @@ local function maybe_refresh_mason_registry_and_then(callback, opts)
 
   local should_update = false
   local update_msg = nil
-  if opts.force then
+  if opts.force then  -- NOTE: not used anymore (grep with mason_need_refresh)
     should_update, update_msg = true, 'Initializing mason.nvim registry for the first time, please wait a bit until LSP servers are installed.'
   elseif vim.tbl_count(mason_registry.get_all_package_names()) == 0 then
     -- TODO: get_all_package_names() still involves blocking file API, avoid duplicate calls
@@ -367,16 +367,12 @@ function M._setup_lspconfig()
     return require('mason-lspconfig.mappings.server').lspconfig_to_package
   end) or {}
   local lsp_uninstalled = {}   --- { lspconfig name => mason package name }
-  local mason_need_refresh = false
 
   for lsp_name, package_name in pairs(all_known_lsps) do
     if require('mason-registry').is_installed(package_name) then
       -- Perform lspconfig[lsp_name].setup {}
       setup_lsp(lsp_name)
     else
-      if not require('mason-registry').has_package(package_name) then
-        mason_need_refresh = true
-      end
       lsp_uninstalled[lsp_name] = package_name
     end
   end
@@ -396,7 +392,7 @@ function M._setup_lspconfig()
 
     -- Make sure LSP clients are attached to already existing buffers prior to this config.
     attach_lsp_to_existing_buffers()
-  end, { force = mason_need_refresh })
+  end)
 
   -- Use a border for the floating :LspInfo window
   require("lspconfig.ui.windows").default_options.border = 'single'
