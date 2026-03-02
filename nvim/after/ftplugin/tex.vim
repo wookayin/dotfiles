@@ -43,3 +43,7 @@ nmap <buffer> <leader>A viega*&
 " }}
 
 inoremap <buffer> <C-b>  <cmd>Build<CR>
+
+" vimtex overrides <F6>, which I don't want.
+" Since <F5> (:Build) is done by vimtex, we use quickfix window
+nnoremap <buffer> <F6> <cmd>CToggle<CR>
