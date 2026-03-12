@@ -11,6 +11,7 @@ function M.setup_render()
     render_modes = { 'n', 'c', 't', 'i' },
 
     heading = {
+      setext = false, -- Allow #, ## only (no ===, ---)
       border = { true, true, true, false, false, false }, -- only h1, h2, and h3
       backgrounds = nil,  ---@see render.md.Colors, e.g. RenderMarkdownH1Bg; see below
       position = 'inline',
