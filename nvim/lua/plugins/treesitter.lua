@@ -4,23 +4,14 @@
 local Plug = require('utils.plug_utils').Plug
 local function has(f) return vim.fn.has(f) > 0 end
 
-local treesitter_version
--- Use the old, stable version that is compatible with the minimum supported neovim verison
--- There are often a lot of breaking changes in treesitter;
--- when versions bumped up, check whether treesitter highlighter works OK.
--- When `query: invalid node type` error happens, run :TSUpdate or :TSInstall! [lang] manu>
--- see https://github.com/nvim-treesitter/nvim-treesitter/issues/3092
-if has('nvim-0.9.2') then
-  treesitter_version = nil  -- Use the 'master' branch (0.x versions); not 'main' (1.x)
-end
-
 return {
   Plug 'nvim-treesitter/nvim-treesitter' {
-    version = treesitter_version, -- master, must be >0.9.2
-    branch = (treesitter_version == nil) and 'master' or nil,
+    branch = 'main',  -- Compatible with nvim 0.11+, no longer 'master'!
     build = function(_)
-      -- :TSUpdateSync (blocks UI)
-      (require('nvim-treesitter.install').update { with_sync = true })()
+      -- Uses blocking call to wait until installation is complete.
+      local MINUTE_MS = 1000
+      require('nvim-treesitter').update():wait(1 * 60 * 1000)  -- 60 sec
+      -- (require('nvim-treesitter.install').update { with_sync = true })()
     end,
     event = 'VeryLazy',  -- lazy, or on demand (vim.treesitter call) via ftplugin
     init = function()

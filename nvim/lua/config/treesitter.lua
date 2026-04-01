@@ -10,7 +10,66 @@ local has = function(feature) return vim.fn.has(feature) > 0 end
 --- Entrypoint.
 ---------------------------------------------------------------------------
 
-function M.setup()
+-- nvim-treesitter v1.0, the 'main' branch (requires nvim 0.11+)
+-- https://github.com/nvim-treesitter/nvim-treesitter/blob/main/README.md
+function M.setup_main()
+  -- NOTE: $ brew install tree-sitter-cli
+  -- TODO: Ensure tree-sitter CLI (0.25.0 or later required) installation;
+  -- without it we can't install parsers. But this seems tricky!
+  -- However, we don't want to do it every single time on setup because it can slow down startup;
+
+  -- Use a custom install_dir, typically at $HOME/.local/share/nvim/treesitter, other than
+  -- the default path ($HOME/.local/share/nvim/site). This is because this 'site' directory is
+  -- also a valid &runtimepath that might be used by other NVIM instances with the legacy
+  -- treesitter setup. Otherwise, loading nvim-treesitter 1.0+ parsers with incompatible (pre-1.0)
+  -- queries and other runtime files will cause a lot of problems and flooding errors.
+  local install_dir = vim.fs.joinpath(vim.fn.stdpath('data') --[[@as string]], 'treesitter')
+  local VIMRUNTIME = assert(vim.fs.normalize('$VIMRUNTIME'))
+
+  -- v1.0(main): https://github.com/nvim-treesitter/nvim-treesitter?tab=readme-ov-file#setup
+  require('nvim-treesitter').setup {
+    install_dir = install_dir,
+  }
+
+  -- Automatically essential parsers (if uninstalled yet)
+  M.ensure_parsers_installed(M.parsers_to_install)
+
+  -- Regarding install_dir as a &runtimepath:
+  -- We want to have the same and reasonable semantics of runtimepath ordering as before;
+  -- as described in :help treesitter-query-modeline, so the nvim-treesitter install_dir
+  -- should be properly placed somewhere **after** ~/.config/nvim and ~/.local/share/nvim/site
+  -- (which is not satisfied by default! it just prepends and thus have a different ordering),
+  -- but before ~/.config/nvim/after (the user config).
+  -- The current implementation is to put right before $VIMRUNTIME.
+  -- See https://github.com/nvim-treesitter/nvim-treesitter/issues/7881
+  ---@diagnostic disable-next-line: undefined-field
+  local rtp = vim.opt.runtimepath:get() ---@type string[]
+  for i, dir in ipairs(rtp) do
+    if vim.fs.normalize(dir) == VIMRUNTIME then
+      table.insert(rtp, i, install_dir)
+      vim.opt.runtimepath = rtp
+      break
+    end
+  end
+
+  -- mkdir -p install_dir
+  require('nvim-treesitter.config').get_install_dir('')
+
+  -- Revive some commands that were removed in v1.0!
+  vim.api.nvim_create_user_command('TSInstallInfo', function(opts)
+    local installed = require('nvim-treesitter.config').get_installed('parsers')
+    require('fzf-lua').fzf_exec(installed, {
+      complete = false,
+      winopts = {
+        title = " List of installed TS parsers ",
+      },
+    })
+  end, { nargs = 0, desc = 'List installed treesitter parsers.' })
+end
+
+---@deprecated Having for (potentially) temporary fallback
+function M.setup_legacy()
+  -- for the legacy 'master' (v0.x branch)
   local ts_configs = require("nvim-treesitter.configs")
 
   ts_configs.define_modules {
@@ -20,6 +79,7 @@ function M.setup()
   -- @see https://github.com/nvim-treesitter/nvim-treesitter#modules
   ---@diagnostic disable-next-line: missing-fields
   ts_configs.setup {
+    -- Note: parsers are installed at $VIMPLUG/nvim-treesitter/parser/
     ensure_installed = M.parsers_to_install,
     reattach_after_install = { enable = true },
 
@@ -60,8 +120,30 @@ function M.setup()
       },
     },
   }
+end
+
+
+function M.setup()
+  local use_new_nvim_treesitter = M.is_v1()
+  -- use_new_nvim_treesitter = false  -- for debugging
+
+  if use_new_nvim_treesitter then
+    M.setup_main()
+  else
+    vim.notify(
+      "nvim-treesitter needs to be on the 'main' branch (>=v1.0); please update the plugin.",
+      vim.log.levels.ERROR, { title = "config/treesitter" }
+    )
+    ---@diagnostic disable-next-line: deprecated
+    M.setup_legacy()
+  end
 
   M.setup_keymap()
+end
+
+--- Returns true if using nvim-treesitter v1.0 (the 'main' branch).
+function M.is_v1()
+  return pcall(require, 'nvim-treesitter.config') == true
 end
 
 --- Manually setup treesitter highlight (for neovim >= 0.8),
@@ -69,6 +151,8 @@ end
 --- Compared against `vim.treesitter.start()`, it adds some more "safe-guards";
 --- This works only if treesitter parser has been already installed *through* nvim-treesitter
 --- because the neovim core's built-in parser queries may not be compatible (see M.has_parser)
+--- TODO: note this guardrail may no longer needed for nvim-treesitter v1.0+ (main).
+---       just enough to have vim.treesitter.start(0)?
 --- @param lang string
 --- @param bufnr? integer
 function M.setup_highlight(lang, bufnr)
@@ -89,7 +173,8 @@ function M.setup_highlight(lang, bufnr)
     return ok and true or false
   else
     -- Maybe start later when parsers become available
-    vim.notify_once("Treesitter parser does not exist for lang = " .. lang,
+    vim.notify_once(
+      string.format("Treesitter parser for lang = '%s' does not exist; will auto-install it", lang),
       vim.log.levels.WARN, { title = "config.treesitter" })
     M._reattach_after_install._deferred[bufnr] = lang
     return false
@@ -98,14 +183,24 @@ end
 
 -- A hack module to reattach vim.treesitter.start (highlight)
 -- as soon as TS parsers are installed asynchronously.
+---@deprecated remove it, we need to overhaul the installation logic for nvim-treesitter 1.x
 M._reattach_after_install = {
   _deferred = { },
   attach = function(bufnr, lang)
     local _deferred = M._reattach_after_install._deferred
-    if _deferred[bufnr] == lang then
+    if _deferred[bufnr] == lang and vim.api.nvim_buf_is_valid(bufnr) then
       vim.treesitter.start(bufnr, lang)
       _deferred[bufnr] = nil
     end
+  end,
+  attach_all = function()
+    local _deferred = M._reattach_after_install._deferred
+    for bufnr, lang in pairs(_deferred) do
+      if vim.api.nvim_buf_is_valid(bufnr) then
+        vim.treesitter.start(bufnr, lang)
+      end
+    end
+    M._reattach_after_install._deferred = {}
   end,
   detach = function(bufnr) end,
 }
@@ -114,7 +209,6 @@ M._reattach_after_install = {
 --- Treesitter Parsers (automatic installation and repair)
 ---------------------------------------------------------------------------
 
--- Note: parsers are installed at $VIMPLUG/nvim-treesitter/parser/
 M.parsers_to_install = vim.tbl_flatten {
   false and { -- regular (not applied; using minimal)
     "bash", "bibtex", "c", "cmake", "cpp", "css", "cuda", "dockerfile", "fish", "glimmer", "go", "graphql",
@@ -134,24 +228,41 @@ M.parsers_to_install = vim.tbl_flatten {
 ---This is because neovim's default TS parsers can be incompatible with
 ---runtime query files shipped with nvim-treesitter, causing lots of errors.
 ---See also "Conflicting parser paths": https://github.com/nvim-treesitter/nvim-treesitter/issues/3970
----@return boolean
+---@return boolean true if parser is available.
+---@return string|nil path of the parser, if applicable; or (optionally) error message if any.
 function M.has_parser(lang)
   -- first make sure nvim-treesitter is eagerly loaded so &rtp always contains $VIMPLUG/nvim-treesitter
   pcall(require, "nvim-treesitter")
 
+  if M.is_v1() then
+    local parsers_dir = require("nvim-treesitter.config").get_install_dir("parser")
+    local parser_path = vim.fs.joinpath(parsers_dir, lang .. '.so')
+    if vim.fn.filereadable(parser_path) > 0 then
+      return true, parser_path
+    else
+      return false, nil
+    end
+  end
+
+  -- Now, the below code is for legacy nvim-treesitter v0.x
   -- `all=false` assumes $VIMPLUG/nvim-treesitter precedes $VIMRUNTIME in &runtimepath.
   local parsers_so = vim.tbl_filter(function(path)
     return vim.startswith(path, os.getenv("VIMPLUG") or '???')  -- ignore built-in parsers
   end, vim.api.nvim_get_runtime_file(('parser/%s.so'):format(lang), false))
   if #parsers_so == 0 then
-    return false
+    return false, nil
   end
 
   local ok, has_parser = pcall(function()
     -- Note: unlike get_parser, has_parser doesn't perform treesitter parsing.
     return require("nvim-treesitter.parsers").has_parser(lang)
   end)
-  return ok and has_parser == true
+  if ok then
+    return has_parser, nil
+  else
+    local err = has_parser --[[@as string]]
+    return false, err
+  end
 end
 
 --- Install treesitter parsers if not have been installed yet.
@@ -164,7 +275,25 @@ function M.ensure_parsers_installed(langs)
 
   vim.validate { langs = { langs, 'table' } }
   if vim.tbl_contains(vim.tbl_map(M.has_parser, langs), false) then
-    require("nvim-treesitter.install").ensure_installed(langs)
+    -- TODO this seems way too complex. can we refactor, or remove the callback/reattach pattern?
+    if M.is_v1() then
+      -- Get a list of parsers that are uninstalled, and start installing them asynchronously
+      local to_install = require("nvim-treesitter.config").norm_languages(langs, { installed = true })
+      local task = require("nvim-treesitter").install(to_install)
+      task:await(function(err)
+        if err then
+          vim.notify(err, vim.log.levels.ERROR, { title = 'config.treesitter' })
+          return
+        end
+        -- Execute a callback to reattach all buffers with new treesitter parser installed.
+        vim.schedule(function()
+          M._reattach_after_install.attach_all()
+        end)
+      end)
+    else
+      -- v0.x, nvim-treesitter legacy
+      require("nvim-treesitter.install").ensure_installed(langs)
+    end
   end
 end
 
