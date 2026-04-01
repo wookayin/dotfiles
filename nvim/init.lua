@@ -57,10 +57,10 @@ vim.cmd [[
 ]]
 
 -- Check neovim version
-if vim.fn.has('nvim-0.10') == 0 then
+if vim.fn.has('nvim-0.11') == 0 then
   vim.cmd [[
     echohl WarningMsg
-    echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.10+ or higher.'
+    echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.11+ or higher.'
     echohl None
   ]]
   vim.cmd [[ filetype plugin off ]]
@@ -69,6 +69,7 @@ if vim.fn.has('nvim-0.10') == 0 then
   vim.o.shadafile = "NONE"
   return
 
+-- TODO Deprecate NVIM 0.11 (in favor of 0.12) in 2026 H2
 elseif vim.fn.has('nvim-0.11') == 0 then
   ---@type string  e.g. "NVIM v0.11.0"
   local nvim_version = vim.split(vim.api.nvim_exec2('version', { output = true }).output, '\n', { trimempty = true })[1]
