@@ -13,11 +13,6 @@ local has = function(feature) return vim.fn.has(feature) > 0 end
 -- nvim-treesitter v1.0, the 'main' branch (requires nvim 0.11+)
 -- https://github.com/nvim-treesitter/nvim-treesitter/blob/main/README.md
 function M.setup_main()
-  -- NOTE: $ brew install tree-sitter-cli
-  -- TODO: Ensure tree-sitter CLI (0.25.0 or later required) installation;
-  -- without it we can't install parsers. But this seems tricky!
-  -- However, we don't want to do it every single time on setup because it can slow down startup;
-
   -- Use a custom install_dir, typically at $HOME/.local/share/nvim/treesitter, other than
   -- the default path ($HOME/.local/share/nvim/site). This is because this 'site' directory is
   -- also a valid &runtimepath that might be used by other NVIM instances with the legacy
@@ -280,11 +275,23 @@ function M.ensure_parsers_installed(langs)
       -- Get a list of parsers that are uninstalled, and start installing them asynchronously
       local to_install = require("nvim-treesitter.config").norm_languages(langs, { installed = true })
       local task = require("nvim-treesitter").install(to_install)
-      task:await(function(err)
-        if err then
+      ---@param err string? error message if an exception (error) happened.
+      ---@param is_successful boolean the return value of nvim-treesitter.install(...) call: true iff success.
+      task:await(function(err, is_successful)
+        if err then  -- err is like a exception/stacktrace, result 
           vim.notify(err, vim.log.levels.ERROR, { title = 'config.treesitter' })
           return
         end
+        if not is_successful then
+          local msg = 'Installing treesitter parser failed. See `:message` or `:checkhealth nvim-treesitter` for more details.'
+          -- Ensure tree-sitter CLI (0.25.0 or later required) installation
+          if vim.fn.executable('tree-sitter') == 0 then
+            msg = msg .. '\nYou do not have tree-sitter CLI installed. Run `brew install tree-sitter-cli` or `npm install -g tree-sitter-cli`.'
+          end
+          vim.notify(msg, vim.log.levels.WARN, { title = 'config.treesitter', markdown = true, timeout = 20000 })
+          return
+        end
+        vim.notify("Installed treesitter parsers: " .. vim.inspect(to_install), { title = 'config.treesitter' })
         -- Execute a callback to reattach all buffers with new treesitter parser installed.
         vim.schedule(function()
           M._reattach_after_install.attach_all()
