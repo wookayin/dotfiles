@@ -6,7 +6,8 @@ local function has(f) return vim.fn.has(f) > 0 end
 
 return {
   Plug 'nvim-treesitter/nvim-treesitter' {
-    branch = 'main',  -- Compatible with nvim 0.11+, no longer 'master'!
+    -- branch = 'main',  -- Compatible with nvim 0.12+, no longer 'master'!
+    commit = '90cd6580', -- the last nvim-treesitter version compatible with Nvim 0.11
     build = function(_)
       -- Uses blocking call to wait until installation is complete.
       local MINUTE_MS = 1000
