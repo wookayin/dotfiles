@@ -223,9 +223,14 @@ install_node() {
   node --version
 
   # install some useful nodejs based utility (~/.local/lib/node_modules)
-  $HOME/.local/bin/npm install -g pnpm
+  local NPM="$HOME/.local/bin/npm"
+  "$NPM" install -g pnpm
   _which pnpm && pnpm --version
-  $HOME/.local/bin/npm install -g http-server diff-so-fancy || true;
+
+  "$NPM" install -g http-server diff-so-fancy || true;
+
+  # Required by neovim
+  "$NPM" install -g tree-sitter-cli'@>=0.26.0'
 }
 
 install_tmux() {
