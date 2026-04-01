@@ -8,8 +8,9 @@
 # General
 ####################################################################################################
 
-# some programs do not recognize TERM=xterm-ghostty, so use the classic one
-term = xterm-256color
+# Use to xterm-ghostty (not xterm-256color) to enable modern terminal features,
+# including SGR (Select Graphic Rendition (SGR) sequences.
+term = xterm-ghostty
 
 ####################################################################################################
 # Fonts
