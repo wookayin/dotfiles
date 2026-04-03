@@ -367,9 +367,11 @@ function M.setup_fzf()
         -- Put in the :ex command line or /search, but do not run yet
         ['default'] = action,
       },
-      fzf_opts = {
-        -- see ibhagwan/fzf-lua#883 for shellescape() behavior
+      fzf_args = {  --- (raw args)
         ['--query'] = vim.fn.shellescape(init_query or ''),
+      },
+      fzf_opts = {  --- (will be converted and/or escaped)
+        -- see ibhagwan/fzf-lua#883 for shellescape() behavior
         ['--layout'] = 'default', -- put prompt in the below
         ['--header'] = false, -- no header (nil means using the default header msg)
         ['--margin'] = 0,
