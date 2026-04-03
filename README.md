@@ -12,20 +12,26 @@
 curl -fsSL https://dotfiles.wook.kr/etc/install | bash
 ```
 
-<details><summary>
+<details>
+<summary>
 💡 (Tip) You only need to remember <code>curl dotfiles.wook.kr</code> (Click to expand)
-</summary></p>
+</summary>
+<p>
 
-* Every file is accessible through `dotfiles.wook.kr` (via `curl -L` or `wget`), e.g.,
+- Every file is accessible through `dotfiles.wook.kr` (via `curl -L` or `wget`), e.g.,
   * https://dotfiles.wook.kr/vimrc
   * https://dotfiles.wook.kr/vimrc?raw=true
   * https://dotfiles.wook.kr/bin/tb
 
-<p></details>
+</p>
+</details>
 
-<details><summary>
+<details>
+<summary>
 🤔 Want to manually clone and install? (Click to expand)
-</summary><p>
+</summary>
+
+<p>
 
 ```bash
 $ git clone --recursive https://github.com/wookayin/dotfiles.git ~/.dotfiles
@@ -37,7 +43,8 @@ Note: The option `-j8` (`--jobs 8`) works with Git >= 2.8 (parallel submodule fe
 For older versions of Git, try without `-j` option.
 -->
 
-</p></details>
+</p>
+</details>
 
 <br>
 
