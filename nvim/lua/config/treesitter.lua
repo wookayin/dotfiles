@@ -262,13 +262,15 @@ end
 
 --- Install treesitter parsers if not have been installed yet.
 --- Note that this works in an asynchronous manner, so doesn't block until installation is complete.
----@param langs string[]
+---@param langs string|string[]
 function M.ensure_parsers_installed(langs)
   if not pcall(require, "nvim-treesitter") then
     return  -- treesitter not available, ignore errors
   end
 
-  vim.validate { langs = { langs, 'table' } }
+  if type(langs) == 'string' then langs = { langs } end
+  vim.validate('langs', langs, 'table')
+
   if vim.tbl_contains(vim.tbl_map(M.has_parser, langs), false) then
     -- TODO this seems way too complex. can we refactor, or remove the callback/reattach pattern?
     if M.is_v1() then
