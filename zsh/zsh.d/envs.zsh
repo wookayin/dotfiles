@@ -3,7 +3,7 @@
 
 
 # fzf {{{
-#https://github.com/junegunn/fzf/wiki/Configuring-shell-key-bindings
+# https://github.com/junegunn/fzf/wiki/Configuring-shell-key-bindings
 
 # fzf-powered CTRL-R: launch fzf with sort enabled
 # @see https://github.com/junegunn/fzf/issues/526
@@ -20,9 +20,9 @@ if (( $+commands[bat] )); then
     export FZF_CTRL_T_OPTS="--preview 'bat {} --color=always --line-range :30'"
 fi
 
-# ALT-C: FASD_CD with preview
-export FZF_ALT_C_COMMAND='fasd_cd -d -l -R'
-export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200' --prompt 'cd> '"
+# ALT-C: FASD_CD (recent directories as in 'z') with preview
+export FZF_ALT_C_COMMAND='fasd -d -l -R'
+export FZF_ALT_C_OPTS="--tmux=70% --preview 'tree -C {} | head -200' --prompt 'cd> ' --bind 'ctrl-/:toggle-preview'"
 
 # Color and appearances for fzf
 # background color: use brighter and more visible color.
