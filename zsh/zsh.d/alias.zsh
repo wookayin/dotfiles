@@ -454,6 +454,9 @@ rgfzf () {
         --reverse --multi --preview "rg --ignore-case --pretty --context 10 '$1' {}"
 }
 
+# see also ~/.dotfiles/bin/pid.fzf, etc.
+alias pidpick='pid.fzf'
+
 # }}}
 
 # Etc ======================================= {{{

@@ -1,0 +1,20 @@
+#!/bin/bash
+set -eu -o pipefail
+
+# sort by pcpu (col 3), but except for the header line
+pscmd='
+  ps -e -o "pid,user,pcpu,pmem,start,etime,args" \
+    | (IFS=""; read -r header; echo "\$header"; sort --reverse --sort=general-numeric -k 3 )
+'
+
+eval "bash -c \"$pscmd\"" \
+| fzf \
+  --prompt 'PID Picker> ' --layout=reverse \
+  --bind "ctrl-r:reload(bash -c \"$pscmd\")" \
+  --bind "ctrl-x:become(echo kill {1} && kill {1})" \
+  --header-lines 1 \
+  --footer 'CTRL-r: reload | CTRL-x: kill the process' \
+  --scroll-off 3 \
+  --multi --accept-nth 1 --freeze-left 3 --nth 1,7.. \
+  --color "fg:dim,nth:regular" \
+  "$@"
