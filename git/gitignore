@@ -43,6 +43,8 @@ __pycache__
 *.py[cod]
 .condaenv
 .virtual_documents/
+.jupyter/
+.jupyter_ystore.db
 
 # Node
 node_modules/
