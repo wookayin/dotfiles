@@ -5,9 +5,20 @@
 # fzf {{{
 # https://github.com/junegunn/fzf/wiki/Configuring-shell-key-bindings
 
+FZF_DEFAULT_OPTS=""
+# Use tmux popup and reverse layout (prompt on the top) by default.
+FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --height=50% --tmux=center,80% --layout=reverse --border=rounded"
+# Color and appearances for fzf
+# background color: use brighter and more visible color.
+# marker: use yellow-ish color to make it more appearant
+FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --color 'bg+:239,marker:226'"
+export FZF_DEFAULT_OPTS
+
+
 # fzf-powered CTRL-R: launch fzf with sort enabled
 # @see https://github.com/junegunn/fzf/issues/526
-export FZF_CTRL_R_OPTS="--sort --prompt 'History> '"
+# For CTRL-R, we do not use the 'reverse' layout so that recent lines come at the bottom (consistent with history)
+export FZF_CTRL_R_OPTS="--sort --layout=default --prompt 'History> ' --no-tmux --no-border"
 
 # Ctrl-T: Setting ripgrep or fd as the default source for Ctrl-T fzf
 if (( $+commands[rg] )); then
@@ -15,19 +26,18 @@ if (( $+commands[rg] )); then
 elif (( $+commands[fd] )); then
     export FZF_CTRL_T_COMMAND='fd --type f'
 fi
+
+export FZF_CTRL_T_OPTS="--no-tmux --no-border"
 if (( $+commands[bat] )); then
-    # if bat is available, use it as a preview tool
-    export FZF_CTRL_T_OPTS="--preview 'bat {} --color=always --line-range :30'"
+  # if bat is available, use it as a preview tool
+  export FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --preview 'bat {} --color=always --line-range :30'"
 fi
 
 # ALT-C: FASD_CD (recent directories as in 'z') with preview
 export FZF_ALT_C_COMMAND='fasd -d -l -R'
-export FZF_ALT_C_OPTS="--tmux=70% --preview 'tree -C {} | head -200' --prompt 'cd> ' --bind 'ctrl-/:toggle-preview'"
+export FZF_ALT_C_OPTS="--tmux=70% --preview 'tree -C {} -I \"node_modules|.git|__pycache__\" | head -200' --prompt 'cd> ' --bind 'ctrl-/:toggle-preview'"
 
-# Color and appearances for fzf
-# background color: use brighter and more visible color.
-# marker: use yellow-ish color to make it more appearant
-export FZF_DEFAULT_OPTS="--color 'bg+:239,marker:226'"
+export FZF_COMPLETION_OPTS="$FZF_CTRL_T_OPTS --no-preview"
 
 # }}}
 
