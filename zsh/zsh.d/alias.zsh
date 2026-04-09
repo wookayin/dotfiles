@@ -443,7 +443,12 @@ function gcp-instances-fzf() {
 
 # FZF magics ======================================= {{{
 
-rgfzf () {
+F() {
+  # something can be used as a interactive pager... e.g. fzf --help | F
+  fzf --reverse --no-sort "$@"
+}
+
+rgfzf() {
     # ripgrep
     if [ ! "$#" -gt 0 ]; then
         echo "Usage: rgfzf <query>"
