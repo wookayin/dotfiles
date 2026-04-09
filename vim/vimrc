@@ -674,8 +674,10 @@ nnoremap <S-F4> <cmd>cprevious<CR>
 inoremap <F2> <cmd>stopinsert<CR><cmd>w<CR>
 noremap  <F2> <cmd>w<CR>
 
-" save in the insert mode like in other editors
-inoremap <C-S> <cmd>update<CR><cmd>redraw<CR>
+" Save in insert mode like other editors,
+" with autocmds disabled (e.g. strip whitespace, auto-format on save, etc.).
+" This hotkey is intended as a 'fast' save during editing rather than a 'full' save.
+inoremap <C-S> <cmd>noautocmd update<CR><cmd>redraw<CR>
 
 " Sudo Save (:Wsudo command)
 command! Wsudo w !sudo tee % > /dev/null
