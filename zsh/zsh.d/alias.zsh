@@ -448,6 +448,13 @@ F() {
   fzf --reverse --no-sort "$@"
 }
 
+fzf-raw() {
+  # fzf's "raw" mode: show non-matching items. Useful for seeing context around matches.
+  # https://junegunn.github.io/fzf/releases/0.66.0/#1-introducing-raw-mode
+  fzf --raw --multi --bind 'result:best' --bind 'alt-r:toggle-raw' --footer "Press alt-r to toggle the raw mode" "$@"
+}
+alias FR='fzf-raw'
+
 rgfzf() {
     # ripgrep
     if [ ! "$#" -gt 0 ]; then
