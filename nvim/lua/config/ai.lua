@@ -78,6 +78,22 @@ function M.setup_claude()
       return matches
     end,
   })
+
+  --- Additional keymaps
+  -- <F8> for Claude
+  vim.keymap.set('n', '<F8>', '<Cmd>Claude<CR>')
+  vim.keymap.set('i', '<F8>', '<Cmd>Claude<CR>')
+  vim.keymap.set('x', '<F8>', '<Cmd>Claude send<CR>')
+
+  local augroup = vim.api.nvim_create_augroup('config.keymap', { clear = true })
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'snacks_terminal',  -- assuming :Claude runs on snacks terminal
+    group = augroup,
+    callback = function()
+      vim.keymap.set('t', '<F8>', '<Cmd>Claude<CR>', { buffer = true })
+    end,
+  })
+
 end
 
 
