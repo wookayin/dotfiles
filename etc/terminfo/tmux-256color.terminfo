@@ -1,0 +1,30 @@
+# TERMINFO for tmux-256color
+# overrides default (built-in) tmux-256color terminfo, which lacks smxx/rmxx (strikethrough), etc.
+#
+# The main rationale is that while we use TERM=tmux-256color is being used,
+# the built-in terminfo (from /usr/share/terminfo) for tmux-256color does not contain
+# some modern terminal capabilities, such as smxx/rmxx (strikethrough).
+# Therefore, some applications (e.g. neovim) may not recognize term capabilities properly in tmux.
+# One problem is that we don't know which terminal emulator is used outside tmux.
+# So our best effort is to patch terminfo for tmux-256color to be as similar as one reference xterm-compatible terminal.
+#
+# To see the list of all terminal capabilities, see `man terminfo` (Predefined Capabilities).
+#
+# Install (see ~/.dotfiles/etc/terminfo.sh):
+#   $ tic -x -o ~/.terminfo tmux-256color.terminfo
+#
+# Test:
+#   $ infocmp -1x tmux-256color | grep -E 'infocmp|smxx|rmxx'
+#
+# ... compared to the "built-in" terminfo lacking term capabilities:
+#   $ infocmp -A /usr/share/terminfo -1x tmux-256color | grep -E 'infocmp|smxx|rmxx'
+
+tmux-256color|tmux with 256 colors patched by dotfiles,
+    Tc,
+    Ms=\E52;%p1%s;%p2%s\007,
+    kend=\E[4~,
+    khome=\E[1;2F,
+    k=\E[4~,
+    smxx=\E[9m,
+    rmxx=\E[29m,
+    use=xterm-256color,

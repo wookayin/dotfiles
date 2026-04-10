@@ -2,13 +2,16 @@
 # Install terminfo for kitty, wezterm, alacritty, etc.
 # $ infocmp <TERM name>
 
-set -e
+set -eu -o pipefail
+
+SCRIPT="$(readlink -f $0)"
+SCRIPTPATH="$(dirname $SCRIPT)"
 
 CSI="\x1b["
 
 test() {
   echo -e "TERM = $TERM"
-  echo -e "TMUX = $TMUX"
+  echo -e "TMUX = ${TMUX:-(no tmux)}"
   echo ""
 
   # CSI escape sequences
@@ -50,9 +53,31 @@ test() {
 }
 
 install() {
-  echo "Installing terminfo ..."
-  infocmp wezterm >/dev/null && echo -e "wezterm: ${CSI}32mOK${CSI}0m" || wezterm
-  echo ""
+  echo -e "Installing terminfo for some TERMs (into ~/.terminfo) ...\n"
+  _check() {
+    local termname="$1"
+    if infocmp "$termname" >/dev/null; then
+      echo -e "$termname: ${CSI}32mOK${CSI}0m"
+      echo -en "${CSI}2m"  # faint
+      infocmp $termname | head -n1
+      echo -en "${CSI}0m"
+    else
+      "$SCRIPT" $termname
+    fi
+    echo ""
+  }
+  _check wezterm
+  _check tmux-256color
+}
+
+# tmux-256color: Patch terminfo for tmux so that it can support modern features.
+# The built-in terminfo database for tmux-256color in macOS is outdated, it does not support SGR!
+# See `./terminfo/tmux-256color.terminfo` for more details
+tmux-256color() {
+  set -x
+  tic -x -o ~/.terminfo "$SCRIPTPATH/terminfo/tmux-256color.terminfo"
+  { set +x; } 2>/dev/null
+  infocmp tmux-256color | head -n1 && echo "tmux-256color (patched): Installed."
 }
 
 # https://wezfurlong.org/wezterm/faq.html#how-do-i-enable-undercurl-curly-underlines
@@ -62,18 +87,19 @@ wezterm() {
     && curl -fsSL -o $tempfile https://raw.githubusercontent.com/wez/wezterm/master/termwiz/data/wezterm.terminfo \
     && tic -x -o ~/.terminfo $tempfile \
     && rm $tempfile
-  infocmp wezterm > /dev/null && echo "wezterm: Installed."
-  set +x
+  { set +x; } 2>/dev/null
+  infocmp wezterm | head -n1 && echo "wezterm: Installed."
 }
 
 # https://sw.kovidgoyal.net/kitty/kittens/ssh/
-kitty() {
+xterm-kitty() {
   echo 'Run the following command to copy terminfo to a remote server:'
   echo 'infocmp -a xterm-kitty | ssh myserver tic -x -o \~/.terminfo /dev/stdin'
 }
 
-if [[ -n "$1" && "$1" != "--help" ]] && declare -f "$1" >/dev/null; then
-  $@
+arg="${1:-}"
+if [[ -n "$arg" && "$arg" != "--help" ]] && declare -f "$arg" >/dev/null; then
+  "$@"
 elif [[ -z "$@" ]]; then
   install
   test
