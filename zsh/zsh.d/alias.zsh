@@ -455,18 +455,7 @@ fzf-raw() {
 }
 alias FR='fzf-raw'
 
-rgfzf() {
-    # ripgrep
-    if [ ! "$#" -gt 0 ]; then
-        echo "Usage: rgfzf <query>"
-        return 1
-    fi
-    rg --files-with-matches --no-messages "$1" | \
-        fzf --prompt "$1 > " \
-        --reverse --multi --preview "rg --ignore-case --pretty --context 10 '$1' {}"
-}
-
-# see also ~/.dotfiles/bin/pid.fzf, etc.
+# see also ~/.dotfiles/bin: pid.fzf, rg.fzf, etc.
 alias pidpick='pid.fzf'
 
 # }}}

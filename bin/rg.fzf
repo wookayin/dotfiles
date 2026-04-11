@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+set -eu -o pipefail
+
+rg.fzf() {
+  # ripgrep
+  if [[ ! "$#" -gt 0 ]] || [[ "$1" == "--help" ]]; then
+      echo "Usage: rg.fzf <query>"
+      return 1
+  fi
+
+  # TODO: accept other arguments to rg and/or fzf. How?
+  { rg --files-with-matches --no-messages "$1" } \
+  | fzf \
+      --border-label " rg: $1 " \
+      --reverse --multi \
+      --preview "rg --ignore-case --pretty --context 10 '$1' {}" \
+      --bind 'ctrl-/:toggle-preview' \
+      --bind 'ctrl-o:become(echo {+}; ${EDITOR:-nvim} {+})' \
+      --footer 'CTRL-/: toggle-preview | CTRL-o: Open with NVIM'
+}
+
+rg.fzf "$@"
