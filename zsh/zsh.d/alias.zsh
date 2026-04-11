@@ -503,7 +503,7 @@ function site-packages() {
     # print the path to the site packages from current python environment,
     # e.g. ~/.anaconda3/envs/XXX/lib/python3.6/site-packages/
 
-    local base=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+    local base=$(python -c "import sysconfig; print(sysconfig.get_path('platlib'))")
     if [[ -n "$1" ]] && [[ ! -d "$base/$1" ]]; then
         echo "Does not exist: $base/$1" >&2;
         return 1
