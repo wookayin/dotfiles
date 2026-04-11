@@ -307,6 +307,11 @@ function M.setup_fzf()
     })
   end):alias("RTP")
 
+  -- Spell checking (:help z=)
+  vim.keymap.set('n', 'z=', function() fzf.spell_suggest() end, {
+    desc = 'spell suggestion by fzf-lua'
+  })
+
   -- [[ Insert-mode Keymaps ]]
   -- similar to i_CTRL-X (:help ins-completion)
   vim.cmd [[
