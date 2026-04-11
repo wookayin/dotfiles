@@ -6,6 +6,10 @@
 
 local has = function(feature) return vim.fn.has(feature) > 0 end
 
+-- PUC Lua / LuaJIT compatibility?
+if not table.unpack then
+  table.unpack = assert(unpack)
+end
 
 -- for nvim < 0.10
 if vim.lsp.get_clients == nil then
