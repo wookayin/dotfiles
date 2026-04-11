@@ -79,13 +79,16 @@ main() {
 
 cpu-usage() {
   if [ `uname` == "Darwin" ]; then
-    # Sum of user + sys CPU usage
-    # https://stackoverflow.com/questions/30855440/how-to-get-cpu-utilization-in-in-terminal-mac
-    # On MacOS: top is CPU-greedy in the first run,
-    # so we stream in a loop (so that component-cpu can print line-by-line)
-    top -l 60 -s 2 | grep --line-buffered -E "^CPU" | while read line; do
-        echo "$line" | awk '{ printf "%.2f\n", $3 + $5 }'
-    done
+    # Sum of user + sys CPU usage via iostat (much lighter than top)
+    # (old w/ top: https://stackoverflow.com/questions/30855440/how-to-get-cpu-utilization-in-in-terminal-mac)
+    # iostat -w 2 streams samples every 2s; parse column headers dynamically
+    # since column positions shift depending on the number of disks present.
+    # skip=1 after finding the header row to discard the boot-average sample.
+    iostat -c 60 -w 2 | awk '
+      /us/ && us==0 { for(i=1;i<=NF;i++) { if($i=="us") us=i; if($i=="sy") sy=i }; skip=1; next }
+      skip { skip=0; next }
+      us>0 { printf "%.2f\n", $us + $sy; fflush() }
+    '
   else
     # https://unix.stackexchange.com/questions/69185/getting-cpu-usage-same-every-time/
     cat <(grep 'cpu ' /proc/stat) <(sleep 1 && grep 'cpu ' /proc/stat) | \
