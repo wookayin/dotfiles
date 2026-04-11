@@ -208,6 +208,13 @@ post_actions += [  # default shell
     fi
 ''']
 
+post_actions += [  # patch and test TERMINFO
+    r'''#!/bin/bash
+    # Run etc/terminfo.sh to keep terminfo Up-to-date
+    bash "etc/terminfo.sh" install
+    '''
+]
+
 post_actions += [  # install some essential packages (linux)
     '''#!/bin/bash
     # Install node, rg, fd locally

@@ -56,8 +56,27 @@ install() {
   echo -e "Installing terminfo for some TERMs (into ~/.terminfo) ...\n"
   _check() {
     local termname="$1"
-    if infocmp "$termname" >/dev/null; then
-      echo -e "$termname: ${CSI}32mOK${CSI}0m"
+    local required="${2:-}"
+    local ok=true
+    echo -en "$termname: "
+    if ! infocmp "$termname" >/dev/null 2>&1; then
+      ok=false
+    elif [[ -n "$required" ]]; then
+      local feature missing=()
+      IFS='|' read -ra features <<< "$required"
+      for feature in "${features[@]}"; do
+        if ! infocmp -x1 "$termname" | grep -qE "$feature"; then
+          missing+=("$feature")
+        fi
+      done
+      if [[ ${#missing[@]} -gt 0 ]]; then
+        echo -e "${CSI}33m""missing features: ${missing[*]}""${CSI}0m"
+        ok=false
+      fi
+    fi
+
+    if $ok; then
+      echo -e "${CSI}32m"'OK'"${CSI}0m"
       echo -en "${CSI}2m"  # faint
       infocmp $termname | head -n1
       echo -en "${CSI}0m"
@@ -67,7 +86,7 @@ install() {
     echo ""
   }
   _check wezterm
-  _check tmux-256color
+  _check tmux-256color 'smxx|rmxx|Smulx|Setulc'
 }
 
 # tmux-256color: Patch terminfo for tmux so that it can support modern features.

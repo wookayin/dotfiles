@@ -1,9 +1,9 @@
 # TERMINFO for tmux-256color
-# overrides default (built-in) tmux-256color terminfo, which lacks smxx/rmxx (strikethrough), etc.
+# overrides default (built-in) tmux-256color terminfo, which lacks modern SGR features, etc.
 #
 # The main rationale is that while we use TERM=tmux-256color is being used,
 # the built-in terminfo (from /usr/share/terminfo) for tmux-256color does not contain
-# some modern terminal capabilities, such as smxx/rmxx (strikethrough).
+# some modern terminal capabilities and SGR codes, such as smxx/rmxx (strikethrough) and Smulx (curly underline).
 # Therefore, some applications (e.g. neovim) may not recognize term capabilities properly in tmux.
 # One problem is that we don't know which terminal emulator is used outside tmux.
 # So our best effort is to patch terminfo for tmux-256color to be as similar as one reference xterm-compatible terminal.
@@ -14,10 +14,12 @@
 #   $ tic -x -o ~/.terminfo tmux-256color.terminfo
 #
 # Test:
-#   $ infocmp -1x tmux-256color | grep -E 'infocmp|smxx|rmxx'
+#   $ infocmp -1x tmux-256color | grep -E 'infocmp|smxx|rmxx|Smulx|Setulc'
+#       --> (it should print rmul=, smul=, and Smulx=, etc.)
 #
 # ... compared to the "built-in" terminfo lacking term capabilities:
-#   $ infocmp -A /usr/share/terminfo -1x tmux-256color | grep -E 'infocmp|smxx|rmxx'
+#   $ infocmp -A /usr/share/terminfo -1x tmux-256color | grep -E 'infocmp|smxx|rmxx|Smulx|Setulc'
+#       --> (prints nothing)
 
 tmux-256color|tmux with 256 colors patched by dotfiles,
     Tc,
@@ -27,4 +29,6 @@ tmux-256color|tmux with 256 colors patched by dotfiles,
     k=\E[4~,
     smxx=\E[9m,
     rmxx=\E[29m,
+    Smulx=\E[4:%p1%dm,
+    Setulc=\E[58:2::%p1%{65536}%/%d:%p1%{256}%/%{255}%&%d:%p1%{255}%&%dm,
     use=xterm-256color,
