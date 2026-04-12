@@ -271,11 +271,20 @@ function M.ensure_parsers_installed(langs)
   if type(langs) == 'string' then langs = { langs } end
   vim.validate('langs', langs, 'table')
 
-  if vim.tbl_contains(vim.tbl_map(M.has_parser, langs), false) then
+  if not M.is_v1() then
+    -- TODO remove when dropping v0.x support
+    local needs_install = vim.tbl_contains(vim.tbl_map(M.has_parser, langs), false)
+    require("nvim-treesitter.install").ensure_installed(needs_install)
+    return
+  end
+
+  -- NOTE: There are some langs (e.g. html_tags) that are only queries without parsers,
+  -- so norm_languages() -> is_installed() and M.has_parser() can behave differently.
+  local to_install = require("nvim-treesitter.config").norm_languages(langs, { installed = true })
+  if #to_install > 0  then
     -- TODO this seems way too complex. can we refactor, or remove the callback/reattach pattern?
-    if M.is_v1() then
+    if true then
       -- Get a list of parsers that are uninstalled, and start installing them asynchronously
-      local to_install = require("nvim-treesitter.config").norm_languages(langs, { installed = true })
       local task = require("nvim-treesitter").install(to_install)
       ---@param err string? error message if an exception (error) happened.
       ---@param is_successful boolean the return value of nvim-treesitter.install(...) call: true iff success.
@@ -300,9 +309,6 @@ function M.ensure_parsers_installed(langs)
           M._reattach_after_install.attach_all()
         end)
       end)
-    else
-      -- v0.x, nvim-treesitter legacy
-      require("nvim-treesitter.install").ensure_installed(langs)
     end
   end
 end
