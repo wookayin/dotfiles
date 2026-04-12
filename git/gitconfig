@@ -133,6 +133,10 @@
 	binary = true
 	textconv = "echo .dump | sqlite3"
 
+[grep]
+	# git grep: -n (--line-number) by default
+	lineNumber = true
+
 [merge]
 	# https://www.ductile.systems/zdiff3/ -- better than diff3! (Git 2.35+, 2022)
 	conflictstyle = zdiff3
