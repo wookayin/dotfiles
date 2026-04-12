@@ -134,7 +134,8 @@
 	textconv = "echo .dump | sqlite3"
 
 [merge]
-	conflictstyle = diff3
+	# https://www.ductile.systems/zdiff3/ -- better than diff3! (Git 2.35+, 2022)
+	conflictstyle = zdiff3
 
 [rebase]
 	# always perform like: git rebase --autosquash --autostash
