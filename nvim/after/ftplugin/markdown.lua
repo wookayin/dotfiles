@@ -51,3 +51,6 @@ vim.cmd [[
   nnoremap <buffer> <leader>4 m`^i#### <esc>``5l
   nnoremap <buffer> <leader>5 m`^i##### <esc>``6l
 ]]
+
+-- buffer-local keymap
+vim.keymap.set('n', '<M-i>', '<cmd>Inspect<CR>', { buffer = true, desc = ':Inspect' })
