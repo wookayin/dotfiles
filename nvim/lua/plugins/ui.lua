@@ -41,7 +41,8 @@ return {
     cmd = 'FZF', func = 'fzf#*',
   };
   Plug 'ibhagwan/fzf-lua' {
-    version = '>=0.7', -- see fzf-lua:7cede182 (2025.2+)
+    -- We require >=0.7 (2025.2), but tagged v0.7 doesn't work because it's buggy on nvim-nightly (0.12)
+    branch = 'main',  -- use HEAD version
     event = { 'VeryLazy', 'CmdlineEnter' },
     config = require('config.fzf').setup,
   };
