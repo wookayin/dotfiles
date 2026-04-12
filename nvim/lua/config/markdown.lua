@@ -4,6 +4,7 @@ local M = {}
 
 function M.setup_render()
   -- :help render-markdown-setup
+  -- See $VIMPLUG/render-markdown.nvim/README.md
   ---@type render.md.UserConfig
   local opts = {
     -- Include the insert mode as well (to avoid flickering during mode change),
@@ -35,6 +36,12 @@ function M.setup_render()
       -- Nvim 0.11 can completely conceal vertical lines, hiding the lines (```) around codeblocks.
       -- This can be inconvenient while scrolling, so we don't want to hide the entire line.
       border = 'thin',
+    },
+    html = {
+      comment = {
+        -- Do not conceal and hide <!-- ... --> comments; they are often useful to show
+        conceal = false,
+      }
     },
     on = {
       attach = function(_)
