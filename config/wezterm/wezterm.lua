@@ -72,6 +72,8 @@ function M.setup_keys()
     -- Toggle fullscreen: not cmd-Enter, use cmd-Enter
     { mods = 'ALT', key = 'Enter', action = act.DisableDefaultAssignment },
     { mods = 'CMD', key = 'Enter', action = act.ToggleFullScreen },
+    -- Fix S-Enter for wezterm+tmux
+    { mods = 'SHIFT', key = 'Enter', action = act.SendString('\x1b[13;2u') },
   }
 
   -- https://wezfurlong.org/wezterm/config/lua/config/use_ime.html
