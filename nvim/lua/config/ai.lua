@@ -12,16 +12,25 @@ function M.setup_claude()
   end
 
   ---@see ClaudeCodeConfig
+  ---@diagnostic disable: missing-fields
   require('claudecode').setup {
     auto_start = false,  -- TODO race condition
 
-    ---@diagnostic disable: missing-fields
     terminal = {
       split_side = "right", -- "left" or "right"
       split_width_percentage = 0.36,
     },
-    ---@diagnostic enable: missing-fields
+
+    -- After sending some text, move focus to the claude terminal
+    focus_after_send = true,
+
+    diff_opts = {
+      -- Moves focus back to terminal after diff opens
+      keep_terminal_focus = true,
+    },
+
   }
+  ---@diagnostic enable: missing-fields
 
   -- Keymaps: <leader>C as the main prefix for Claude Code
   vim.keymap.set('n', "<leader>CC", "<cmd>Claude <cr>",            { desc = "Toggle Claude" })
