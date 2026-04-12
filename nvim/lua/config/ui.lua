@@ -188,6 +188,12 @@ function M.setup_image()
       "*.png", "*.jpg", "*.jpeg", "*.gif", "*.svg", "*.pdf",
       "*.webp", "*.avif",
     },
+    integrations = {
+      markdown = {
+        -- otherwise (false by default), trying to render all the images can slow down
+        only_render_image_at_cursor = true,
+      },
+    },
   }
 end
 
