@@ -54,6 +54,11 @@ function M.setup_claude()
     if #fargs == 0 then vim.cmd('ClaudeCode'); return end
     local sub = table.remove(fargs, 1):lower()
     local name = subcmds[sub]
+
+    -- If it was never opened before, 'send' does not work. Open first!
+    if name == 'send' then
+      vim.cmd 'ClaudeCodeOpen'
+    end
     if name then
       local cmd = 'ClaudeCode' .. name
       if opts.range > 0 then
