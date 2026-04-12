@@ -139,17 +139,32 @@ function M.setup_gitsigns()
       ---@diagnostic enable: assign-type-mismatch
     },
     on_attach = function(bufnr)
+      local gitsigns = require('gitsigns')
       vim.b[bufnr].gitsigns_attached = true
 
       local function map(mode, lhs, rhs, opts)
         opts = vim.tbl_extend('force', { remap = false, silent = true, buffer = bufnr }, opts or {})
         vim.keymap.set(mode, lhs, rhs, opts)
       end
+
       -- Navigation
-      map('n', ']c', function() return vim.wo.diff and ']c' or '<Cmd>Gitsigns next_hunk<CR>' end,
-        { expr = true, desc = "goto next hunk (or next diff)" })
-      map('n', '[c', function() return vim.wo.diff and '[c' or '<Cmd>Gitsigns prev_hunk<CR>' end,
-        { expr = true, desc = "goto previous hunk (or previous diff)" })
+      map('n', ']c', function()
+        if vim.wo.diff then vim.cmd('normal! ]c')
+        else gitsigns.nav_hunk('next', { target = 'unstaged' })
+        end
+      end, { desc = "goto next unstaged hunk (or next diff, if &diff)" })
+      map('n', '[c', function()
+        if vim.wo.diff then vim.cmd('normal! [c')
+        else gitsigns.nav_hunk('prev', { target = 'unstaged' })
+        end
+      end, { desc = "goto previous unstaged hunk (or previous diff, if &diff)" })
+      map('n', ']C', function()
+        gitsigns.nav_hunk('next', { target = 'staged' })
+      end, { desc = "goto next staged hunk" })
+      map('n', '[C', function()
+        gitsigns.nav_hunk('prev', { target = 'staged' })
+      end, { desc = "goto previous staged hunk" })
+
       -- Actions
       -- TODO: Also call reload_fugitive_index() after gitsigns operations (even if it's not on the "diff mode")
       map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')
