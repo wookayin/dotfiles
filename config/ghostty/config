@@ -1,7 +1,7 @@
 # ghostty +show-config --default --docs
 # https://ghostty.org/docs/config/reference
 
-# Based on Ghostty 1.2.0
+# Based on Ghostty 1.3.1
 # To reload, Press <Shift+Cmd+,>
 
 ####################################################################################################
@@ -83,6 +83,14 @@ keybind = unconsumed:ctrl+cmd+j=goto_split:bottom
 keybind = unconsumed:ctrl+cmd+h=goto_split:left
 keybind = unconsumed:ctrl+cmd+l=goto_split:right
 
+####################################################################################################
+# UI/UX
+####################################################################################################
+
+# https://ghostty.org/docs/config/reference#selection-word-chars
+# Different from the default value, I've removed ':' so we a full URL/URI with arbitrary schemes
+# can be selected in a single double-click. e.g., s3://bucket/file gs://bucket/foo-bar/file.baz
+selection-word-chars = " \t'\"│`|,()[]{}<>$"
 
 ####################################################################################################
 # Etc.
