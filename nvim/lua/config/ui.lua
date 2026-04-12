@@ -69,8 +69,14 @@ function M.setup_notify()
   --- @field lang? string If given, highlight the message window in the given lang with treesitter.
   ---
   --- vim.notify with additional extensions on opts
+  --- @param msg string Content of the notification to show to the user.
+  --- @param level integer|nil One of the values from |vim.log.levels|.
   --- @param opts config.ui.notify.Config?
   vim.notify = function(msg, level, opts)
+    vim.validate('msg', msg, 'string')
+    vim.validate('level', level, {'number', 'string'}, true)  -- allows string for convenience
+    vim.validate('opts', opts, 'table', true)  -- opts can be optional
+
     opts = opts or {}
     if opts.print or opts.echom then
       local hlgroup = ({

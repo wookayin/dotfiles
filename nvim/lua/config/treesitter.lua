@@ -293,7 +293,8 @@ function M.ensure_parsers_installed(langs)
           vim.notify(msg, vim.log.levels.WARN, { title = 'config.treesitter', markdown = true, timeout = 20000 })
           return
         end
-        vim.notify("Installed treesitter parsers: " .. vim.inspect(to_install), { title = 'config.treesitter' })
+        vim.notify("Installed treesitter parsers: " .. vim.inspect(to_install),
+          vim.log.levels.INFO, { title = 'config.treesitter' })
         -- Execute a callback to reattach all buffers with new treesitter parser installed.
         vim.schedule(function()
           M._reattach_after_install.attach_all()
