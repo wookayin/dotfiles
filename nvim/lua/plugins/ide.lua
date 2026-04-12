@@ -152,6 +152,9 @@ return {
   Plug 'coder/claudecode.nvim' {
     dependencies = { 'folke/snacks.nvim' },
     cmd = 'Claude',  -- lazy load when :Claude is used for the first time
+    keys = {
+      { '<F8>', mode = {'n', 'i', 'x'} },
+    },
     config = function()
       require('config.ai').setup_claude()
     end,
