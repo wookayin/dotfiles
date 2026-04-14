@@ -112,39 +112,27 @@ function M.setup_notify()
   end)
 end
 
-function M.setup_dressing()
-  -- Prettier vim.ui.select() and vim.ui.input()
-  -- https://github.com/stevearc/dressing.nvim#configuration
-  -- default config: $VIMPLUG/dressing.nvim/lua/dressing/config.lua
-  require('dressing').setup {
-
+function M.setup_snacks()
+  -- https://github.com/folke/snacks.nvim?tab=readme-ov-file#-usage
+  require('snacks').setup {
+    --- $VIMPLUG/snacks.nvim/docs/input.md
     input = {
-      -- the greater of 140 columns or 90% of the width
-      prefer_width = 80,
-      max_width = { 140, 0.9 },
-
-      border = 'double',
-
-      -- Allow per-instance dynamic option. See stevearc/dressing.nvim#71
-      -- merge the current input config with the runtime dynamic opts
-      get_config = function(opts)
-        local current_opts = require("dressing.config").input
-        return vim.tbl_deep_extend("force", current_opts, opts or {})
-      end,
+      -- Use as vim.ui.input()
+      enabled = true,
     },
-
-    select = {
-      -- Note: fzf_lua backend is buggy, does not trigger on_choice upon abort()
-      backend = { "telescope", "builtin" },
-
-      -- Allow per-instance dynamic option. See stevearc/dressing.nvim#71
-      -- merge the current input config with the runtime dynamic opts
-      get_config = function(opts)
-        local current_opts = require("dressing.config").input
-        return vim.tbl_deep_extend("force", current_opts, opts or {})
-      end,
+    --- $VIMPLUG/snacks.nvim/docs/styles.md
+    styles = {
+      input = {
+        keys = {
+          i_ctrl_c = { "<C-c>", "cancel", mode = { "i", "n" } },
+        },
+      },
     },
-
+    --- $VIMPLUG/snacks.nvim/docs/picker.md
+    picker = {
+      -- Use as vim.ui.select()
+      ui_select = true,
+    },
   }
 end
 
@@ -200,7 +188,7 @@ end
 -- Resourcing support
 if ... == nil then
   M.setup_notify()
-  M.setup_dressing()
+  -- M.setup_snacks()  -- does not support setup() again
   M.init_quickui()
   M.setup_quickui()
 end

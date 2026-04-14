@@ -10,7 +10,10 @@ local has_py3 = function(p) return require('config.pynvim')() end
 return {
   -- Basic UI Components
   Plug 'MunifTanjim/nui.nvim' { lazy = true };  -- see config/ui.lua
-  Plug 'stevearc/dressing.nvim' { event = 'VeryLazy', config = require 'config.ui'.setup_dressing };
+  Plug 'folke/snacks.nvim' {
+    priority = 1000,
+    config = require('config.ui').setup_snacks,
+  };
   Plug 'skywind3000/vim-quickui' {
     event = 'VeryLazy',
     init = require('config.ui').init_quickui,
