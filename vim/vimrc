@@ -2390,12 +2390,8 @@ let g:semshi#error_sign = 0
 
 let g:fugitive_legacy_commands = 0
 
-" command aliases
-command! -nargs=* GCommit   call s:GCommit('<mods>', <q-args>)
-function! s:GCommit(mods, args) abort
-  let l:mods = empty(a:mods) ? "tab" : a:mods   " defaults to a new tab
-  exec printf("%s Git commit -v %s", l:mods, a:args)
-endfunction
+" git command aliases
+call CommandAlias('GCommit', 'Git commit', v:true)
 
 " Remove or replace some fugitive commands
 if has('nvim') || has('patch-8.1.1113')

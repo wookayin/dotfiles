@@ -37,17 +37,82 @@ function M.setup_fugitive()
     })
   end, { nargs = '*' })
 
+  -- More git-related user commands
+  M._setup_git_commands()
+
+  --- Events
+  local augroup = vim.api.nvim_create_augroup('config.git.fugitive', { clear = true })
+
   -- Force-reload fugitive buffer upon enter, because it does not reload upon external changes.
   vim.api.nvim_create_autocmd('BufEnter', {
     pattern = 'fugitive://*/.git//0/*',
-    group = vim.api.nvim_create_augroup('fugitive-index-reload', { clear = true }),
+    group = augroup,
     callback = function()
       M.reload_fugitive_index()
     end,
   })
 
-  -- More git-related user commands
-  M._setup_git_commands()
+  -- floating window commit message editor on :Git commit
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'FugitiveEditor',
+    group = augroup,
+    callback = function()
+      local oldwin = vim.api.nvim_get_current_win()
+      local buf = vim.api.nvim_get_current_buf()
+      local filetype = vim.bo[buf].filetype  -- gitcommit or gitrebase
+
+      ---@type table | { args: string[], mods: string }
+      local state = vim.g.fugitive_result
+      local mods = vim.trim(state.mods or '')
+
+      if mods == 'tab' then
+        -- Do not use floating window, use tab as requested
+        -- other mods (default:botright, hor, etc.) will be ignored.
+        return
+      end
+
+      local win = Snacks.win.new({
+        buf = buf, fixbuf = true, enter = true,
+        width = 0.85, height = 0.85,
+        zindex = 49, -- nvim-notify uses 50 (the default zindex for floating windows)
+        border = 'rounded', minimal = false, resize = true,
+        title = (' Git %s '):format(({
+          gitcommit = 'Commit',
+          gitrebase = 'Rebase',  -- TODO show args
+        })[filetype]),
+        title_pos = 'center',
+        wo = {
+          winbar = table.concat({
+            "%#lualine_c_inactive#",
+            'Ctrl-t: Edit on a new tab',
+          })
+        },
+        keys = {
+          -- Ctrl-t: Edit on a new tab
+          ['<c-t>'] = function(self) ---@param self snacks.win
+            vim.cmd('tabnew %')
+          end
+        },
+      })
+
+      -- When the buffer is moved to any window other than the floating win, close it.
+      vim.api.nvim_create_autocmd('WinEnter', {
+        buffer = buf,
+        once = true,
+        callback = function()
+          local cur = vim.api.nvim_get_current_win()
+          vim.wo.winbar = nil  -- recover winbar to the global one
+          if cur ~= win.win and win:win_valid() then
+            win:close()
+          end
+        end,
+      })
+
+      if vim.api.nvim_win_is_valid(oldwin) then
+        vim.api.nvim_win_close(oldwin, false)
+      end
+    end,
+  })
 end
 
 function M.setup_flog()
