@@ -662,7 +662,8 @@ _G.preview_floating = function(filepath, line, opts)
 end
 
 _G.PeekDefinition = function(lsp_request_method)
-  local params = vim.lsp.util.make_position_params()
+  local offset_encoding = (vim.lsp.get_clients({ bufnr = 0 })[1] or {}).offset_encoding or 'utf-16'
+  local params = vim.lsp.util.make_position_params(0, offset_encoding)
   local definition_callback = function(_, result, ctx, config)
     -- This handler previews the jump location instead of actually jumping to it
     -- see $VIMRUNTIME/lua/vim/lsp/handlers.lua, function location_handler
@@ -685,7 +686,7 @@ _G.PeekDefinition = function(lsp_request_method)
         return dist1 > dist2
       end)
       return result[1]
-    end)(vim.tbl_islist(result) and result or { result })
+    end)(vim.islist(result) and result or { result })
 
     -- Peek defintion. Currently, use quickui but a better alternative should be found.
     -- vim.lsp.util.preview_location(result[1])
