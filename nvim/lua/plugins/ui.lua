@@ -14,11 +14,6 @@ return {
     priority = 1000,
     config = require('config.ui').setup_snacks,
   };
-  Plug 'skywind3000/vim-quickui' {
-    event = 'VeryLazy',
-    init = require('config.ui').init_quickui,
-    config = require('config.ui').setup_quickui,
-  };
 
   -- Image
   Plug '3rd/image.nvim' {

@@ -601,6 +601,66 @@ end
 ------------------------------
 --- Configs for PeekDefinition
 ------------------------------
+
+--- Open a floating preview window for a file at a given line, positioned
+--- above or below the cursor depending on available screen space, and
+--- auto-closes when the cursor moves in the calling buffer.
+---@param filepath string  absolute file path to preview
+---@param line integer     1-indexed target line to show
+---@param opts? { width?: number, height?: number }
+---@return snacks.win
+_G.preview_floating = function(filepath, line, opts)
+  opts = opts or {}
+  local caller_buf = vim.api.nvim_get_current_buf()
+  local win_width = opts.width or 100
+  local win_height = opts.height or 25
+
+  -- Use screenpos to determine how much room is above the cursor, so we can
+  -- pick the right side. relative='cursor' is then used for actual positioning
+  -- to avoid coordinate-system mismatches with nvim_open_win relative='editor'.
+  local cursor_screenrow = vim.fn.screenpos(0, vim.fn.line('.'), 1).row
+  local show_above = cursor_screenrow > win_height + 3
+  -- With relative='cursor': row is signed offset from cursor (outer window top).
+  -- Above: top border at -(height + 2 borders), bottom border at -1 (just above cursor).
+  -- Below: top border at +1 (just below cursor).
+  local row_opt = show_above and -(win_height + 2) or 1
+
+  return Snacks.win.new({
+    file = filepath,
+    enter = false,
+    focusable = true,
+    relative = 'cursor', row = row_opt, col = 0,
+    width = win_width, height = win_height,
+    border = 'rounded', minimal = false,
+    title = ' ' .. vim.fn.fnamemodify(filepath, ':~:.') .. ' ',
+    title_pos = 'left',
+    wo = {
+      number = true,
+      cursorline = true,
+    },
+    zindex = Snacks.win.zindex({ all = true }) + 1,
+    on_win = function(self)
+      vim.api.nvim_win_call(self.win, function()
+        vim.api.nvim_win_set_cursor(self.win, { line, 0 })
+        vim.cmd('normal! zz')  -- Show the target line at the center
+        vim.wo.winhl = 'Normal:QuickPreview,EndOfBuffer:QuickPreview' -- needs to set here
+      end)
+
+      -- Auto-close when the cursor moves or focus leaves the originating window
+      vim.api.nvim_create_autocmd({ 'CursorMoved' }, {
+        once = true,
+        buffer = caller_buf,
+        callback = function()
+          if vim.api.nvim_get_current_win() == self.win then
+            return  -- allow entering the preview window itself
+          end
+          self:close()
+        end,
+      })
+    end,
+  })
+end
+
 _G.PeekDefinition = function(lsp_request_method)
   local params = vim.lsp.util.make_position_params()
   local definition_callback = function(_, result, ctx, config)
@@ -631,11 +691,7 @@ _G.PeekDefinition = function(lsp_request_method)
     -- vim.lsp.util.preview_location(result[1])
     local def_uri = def_result.uri or def_result.targetUri
     local def_range = def_result.range or def_result.targetSelectionRange
-    vim.fn['quickui#preview#open'](vim.uri_to_fname(def_uri), {
-      cursor = def_range.start.line + 1,
-      number = 1, -- show line number
-      persist = 0,
-    })
+    _G.preview_floating(vim.uri_to_fname(def_uri), def_range.start.line + 1)
   end
 
   -- Asynchronous request doesn't work very smoothly, so we use synchronous one with timeout;
@@ -662,6 +718,12 @@ function M._define_peek_definition()
     " Preview type definition.
     nmap <silent> gT   <cmd>lua _G.PeekDefinition('textDocument/typeDefinition')<CR>
   ]]
+
+  require("utils.rc_utils").RegisterHighlights(function()
+    vim.cmd [[
+      hi! QuickPreview guibg=#262d2d
+    ]]
+  end)
 
   -- workaround a bug where quickpreview winhighlight (background) is not cleaned up
   -- for the buffer that was opened in the preview window for the first time.
