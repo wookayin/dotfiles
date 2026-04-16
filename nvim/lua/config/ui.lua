@@ -136,6 +136,21 @@ function M.setup_snacks()
     --- $VIMPLUG/snacks.nvim/docs/image.md
     image = {
       enabled = true,
+      doc = {
+        enabled = true,
+        -- Do not render math and images inline for now -- but use floating
+        -- window preview. While inline images are really great, it's a bit
+        -- aggressive as we don't have a full control of display layout on many
+        -- small icon-ish images which can look quite messy on some documents.
+        -- Also, for now there is no good way to toggle or configure the
+        -- behavior per buffer or per filetype.
+        -- See also https://github.com/folke/snacks.nvim/issues/1739
+        inline = false,
+        float = true,
+      },
+      math = {
+        enabled = true,
+      },
     }
   }
 end
