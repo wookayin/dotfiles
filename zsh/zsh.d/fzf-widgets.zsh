@@ -13,9 +13,9 @@ bindkey '^z' fzf-cd-widget
 
 
 # Advanced, customized <TAB> (^I) completion through fzf widgets
-# This overrides the default 'fzf-complete' widget (see ~/.fzf/shell/completion.zsh)
-zle -A fzf-complete _orig_fzf-complete 2>/dev/null ||
-  zle -A expand-or-complete _orig_fzf-complete
+# This overrides fzf's default tab binding widget (fzf-completion): see ~/.fzf/shell/completion.zsh
+zle -A 'fzf-completion' _orig_fzf-complete 2>/dev/null ||
+  zle -A 'expand-or-complete' _orig_fzf-complete
 
 fzf-complete-custom() {
   # {v,vim,nvim} <TAB>: use fzf file finder (like Ctrl-T), with the trailing word as initial query
