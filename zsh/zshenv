@@ -116,6 +116,11 @@ if [[ $(uname) == "Darwin" ]]; then
     # Note that we need to pin an exact version of ruby
     prepend_path "$HOMEBREW/opt/ruby@3.0/bin"
     prepend_path "$HOMEBREW/lib/ruby/gems/3.0.0/bin"
+
+    fpath=(
+      "$HOMEBREW/share/zsh/site-functions"
+      $fpath
+    )
   fi
 fi
 
