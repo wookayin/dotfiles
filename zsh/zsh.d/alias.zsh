@@ -27,7 +27,7 @@ function fpath() {
   if [ $# == 0 ]; then
     print -l $fpath
   else  # fpath _something: find _something within all $fpath's
-    local f; for f in `fpath`; do find -L $f -maxdepth 1 -type f -name "$@" | xargs exa; done
+    local f; for f in `fpath`; do find -L $f -maxdepth 1 -type f -name "$@" | xargs eza; done
   fi
 }
 
