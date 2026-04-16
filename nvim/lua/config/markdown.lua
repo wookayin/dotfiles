@@ -43,6 +43,10 @@ function M.setup_render()
         conceal = false,
       }
     },
+    latex = {
+      -- Disable latex (text) rendering, in favor of snacks' image rendering
+      enabled = false,
+    },
     on = {
       attach = function(_)
         -- <Ctrl-/> to toggle markdown rendering (local to buffer)
