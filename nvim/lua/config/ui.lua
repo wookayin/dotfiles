@@ -133,32 +133,10 @@ function M.setup_snacks()
       -- Use as vim.ui.select()
       ui_select = true,
     },
-  }
-end
-
-function M.setup_image()
-  -- setup for image.nvim
-  -- requirements: ImageMagick and kitty-graphics compatible terminal emulator
-  local has_magick = vim.fn.executable('magick') == 1
-  local is_compat_term = vim.iter and vim.iter({ 'tmux', 'kitty', 'ghostty', 'WezTerm' }):find(vim.env.TERM_PROGRAM)
-  if not (has_magick and is_compat_term) then
-    return false
-  end
-
-  -- see $VIMPLUG/image.nvim/lua/image/init.lua for default_options
-  require('image').setup {
-    backend = 'kitty',  -- kitty backend only for now (ghostty, kitty, and wezterm).
-    processor = 'magick_cli',
-    hijack_file_patterns = {
-      "*.png", "*.jpg", "*.jpeg", "*.gif", "*.svg", "*.pdf",
-      "*.webp", "*.avif",
-    },
-    integrations = {
-      markdown = {
-        -- otherwise (false by default), trying to render all the images can slow down
-        only_render_image_at_cursor = true,
-      },
-    },
+    --- $VIMPLUG/snacks.nvim/docs/image.md
+    image = {
+      enabled = true,
+    }
   }
 end
 
