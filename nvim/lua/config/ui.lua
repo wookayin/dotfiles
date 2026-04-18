@@ -153,14 +153,31 @@ function M.setup_snacks()
       },
     }
   }
+
+  -- misc.
+  --- misc setup for Snacks
+  -- :bd[elete] => :BDelete (but preserves the window layout)
+  -- :bdelete => raw built-in :bdelete, just in case we need it
+  vim.fn.CommandAlias('bd', 'BDelete')
+  vim.fn.CommandAlias('bdel', 'BDelete')
+  vim.api.nvim_create_user_command('BDelete', function(opts)
+    local buf
+    if vim.trim(opts.args) == '' then buf = 0
+    elseif tonumber(opts.args) == nil then
+      return error("Invalid argument")
+    else buf = tonumber(opts.args) end
+
+    Snacks.bufdelete { buf = buf, force = opts.bang }
+  end, {
+    desc = ':bufdelete, but preserves window layout',
+    nargs = '?', bang = true,
+  })
 end
 
 -- Resourcing support
 if ... == nil then
   M.setup_notify()
   -- M.setup_snacks()  -- does not support setup() again
-  M.init_quickui()
-  M.setup_quickui()
 end
 
 return M
