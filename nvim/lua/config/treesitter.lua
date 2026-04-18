@@ -133,6 +133,7 @@ function M.setup()
     M.setup_legacy()
   end
 
+  M.setup_query()
   M.setup_keymap()
 end
 
@@ -427,6 +428,30 @@ end
 --
 -- If vim.treesitter.query.set() is used, ANY query files on runtimepath will be ignored.
 
+--- Custom query predicates and directives.
+--- @see TSPredicate
+--- @see TSDirective
+
+function M.setup_query()
+  -- Backward compatibility for (#make-range!), which is gone since nvim-treesitter v1.0+
+  -- This is just a NO-OP directive to simply silence errors: "unsupported directive"
+  -- Also, vim.treesitter.foldexpr() would throw errors and folding silent does nothing
+  if not vim.tbl_contains(vim.treesitter.query.list_directives(), "make-range!") then
+    vim.treesitter.query.add_directive("make-range!", function() end)
+  end
+
+  --[[ Custom predicates and queries. ]]
+  -- (#if-first? @node)
+  vim.treesitter.query.add_predicate("if-first-row?", function(match, pattern, source, predicate)
+    local node = match[predicate[2]]  ---@type TSNode?
+    if not node then
+      return true -- allows no captured (comment) node
+    end
+    local start_row
+    start_row, _, _, _ = node:range()  -- 0-indexed
+    return start_row == 0
+  end, true)
+end
 
 ---------------------------------------------------------------------------
 --- Utilities
