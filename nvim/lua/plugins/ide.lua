@@ -121,6 +121,13 @@ return {
   Plug 'Tyilo/applescript.vim' { ft = 'applescript' };
   Plug 'rdolgushin/groovy.vim' { ft = 'groovy' };
 
+  Plug 'ghostty' {
+    name = 'ghostty',
+    dir = '/Applications/Ghostty.app/Contents/Resources/vim/vimfiles',
+    enabled = (vim.fn.has("mac") == 1),
+    ft = 'ghostty',
+  };
+
   -- Lua REPL
   Plug 'ii14/neorepl.nvim' { lazy = true };  -- :LuaREPL
 

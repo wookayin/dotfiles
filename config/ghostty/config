@@ -107,4 +107,4 @@ macos-non-native-fullscreen = visible-menu
 # see ~/.config/ghostty/config.local
 config-file = ?config.local
 
-# vim: set ft=conf:
+# vim: set ft=ghostty:
