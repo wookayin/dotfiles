@@ -64,6 +64,20 @@ imap('<c-k>', function()
 end, { desc = "Move backward in snippet context, otherwise stopinsert.", silent = true })
 
 
+--- Visual Mode  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+-- treesitter "incremental selection" vmap
+-- see: $VIMRUNTIME/lua/vim/_core/defaults.lua
+if vim.fn.has('nvim-0.12') == 1 then
+  nmap('vv', 'van', { remap = true, desc = 'Select the current treesitter node on the cursor' })
+  xmap('+', 'an', { remap = true, desc = 'Expand and select parent (outer) node' })
+  xmap('-', 'in', { remap = true, desc = 'Shrink and select child (inner) node' })
+  xmap('_', '-', { remap = true, desc = 'Shrink and select child (inner) node'  })
+end
+
+
+--- Command Mode  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 -- In the command mode, <CTRL-/> will toggle the Ex command
 -- between `:lua` and `:lua=`, or between `:py` and `:py=`, etc.
 cmap('<c-_>', '<c-/>', { remap = true })
