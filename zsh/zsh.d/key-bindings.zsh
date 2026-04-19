@@ -1,4 +1,5 @@
 # Custom key bindings for ZSH
+# TODO: change to keymap.zsh, use zsh(keymap): convention
 
 # In default settings, we use 'vi-mode' (bindkey -v)
 
@@ -36,8 +37,17 @@ fi
 bindkey '\e.' insert-last-word # Alt-.
 
 
-# Vi mode key bindings
-# CTRL-X CTRL-E: Edit command in an external editor (even in insert mode)
+# vi normal mode
+# ==============
+
+# CTRL-g, CTRL-v: Edit in an external editor
+bindkey -M vicmd '^g' edit-command-line
+bindkey -M vicmd '^v' edit-command-line
+
+# vi insert mode
+# ==============
+
+# CTRL-x CTRL-e: Edit command in an external editor
 bindkey -M viins "$key_info[Control]X$key_info[Control]E" edit-command-line
 
 
