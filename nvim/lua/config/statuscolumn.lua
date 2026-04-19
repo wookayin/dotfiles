@@ -59,11 +59,7 @@ function M.statuscolumn()
   local is_num = vim.wo[win].number
   local is_relnum = vim.wo[win].relativenumber
   if (is_num or is_relnum) and vim.v.virtnum == 0 then
-    if vim.v.relnum == 0 then
-      components.line_num = is_num and "%l" or "%r" -- the current line
-    else
-      components.line_num = is_relnum and "%r" or "%l" -- other lines
-    end
+    components.line_num = (is_num or is_relnum) and "%l" or "%r"
     components.line_num = "%=" .. components.line_num -- right align
     components.line_num = components.line_num .. " "
   end
