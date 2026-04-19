@@ -20,7 +20,8 @@ term = xterm-ghostty
 # Tip: $ ghostty +list-fonts  (which lists fixed-width fonts only)
 # $ brew install --cask font-jetbrains-mono-nerd-font font-sarasa-gothic
 font-family = "JetBrainsMono Nerd Font Mono"
-font-family = "Sarasa Mono K"  # for Korean (한글) letters, in gothic
+# fallback: for Korean (한글) letters, in gothic
+font-family = "Sarasa Mono K"
 font-size = 17
 
 # Disable ligatures
