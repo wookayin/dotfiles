@@ -45,8 +45,8 @@ end, { nargs = 0 })
 
 -- Markdown headings-
 vim.cmd [[
-  nnoremap <buffer> <leader>1 m`yypVr=``
-  nnoremap <buffer> <leader>2 m`yypVr-``
+  nnoremap <buffer> <leader>1 m`^i# <esc>``2l
+  nnoremap <buffer> <leader>2 m`^i## <esc>``3l
   nnoremap <buffer> <leader>3 m`^i### <esc>``4l
   nnoremap <buffer> <leader>4 m`^i#### <esc>``5l
   nnoremap <buffer> <leader>5 m`^i##### <esc>``6l
