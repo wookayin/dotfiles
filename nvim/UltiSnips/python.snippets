@@ -62,6 +62,18 @@ snippet "^%" "# %% cell marker for jupyter repl" rA
 # %% ${1}
 endsnippet
 
+# https://docs.astral.sh/uv/guides/scripts/
+snippet /// "uv script TOML section"
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#    "$1",
+# ]
+# ///
+$0
+endsnippet
+
 ################################################################################
 # Class
 ################################################################################
