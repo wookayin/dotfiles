@@ -19,6 +19,14 @@ alias cp='nocorrect cp -ivp'
 alias mv='nocorrect mv -iv'
 alias rm='nocorrect rm -iv'
 
+wh() {
+  # where? whence + which.
+  if [ $# == 0 ]; then
+    echo "wh: argument required"; return 1
+  fi
+  whence -v "$1" && which -a "$1"
+}
+
 # sudo, but inherits $PATH from the current shell
 alias sudoenv='sudo env PATH=$PATH'
 
