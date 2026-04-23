@@ -50,5 +50,9 @@ __pycache__
 node_modules/
 npm-debug.log
 
+# AI Tools
+.claude/*.local.json
+*.local.md
+
 # Log files
 events.out.tfevents.*
