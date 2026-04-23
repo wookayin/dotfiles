@@ -173,6 +173,8 @@
 [pull]
 	# Always use rebase when git pull, do not create merge commits
 	rebase = true
+	# Always git pull --autostash
+	autoStash = true
 
 [fetch]
 	# Use parallel jobs for fetching submodules
