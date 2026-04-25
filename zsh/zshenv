@@ -124,7 +124,8 @@ if [[ $(uname) == "Darwin" ]]; then
   fi
 fi
 
-# Node + Yarn
+# Node: Bun, Yarn, etc.
+prepend_path "$HOME/.bun/bin"
 prepend_path "$HOME/.yarn/bin"
 
 # GO
