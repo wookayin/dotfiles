@@ -95,18 +95,21 @@ snippet DEBUG
 vim.log.levels.DEBUG
 endsnippet
 
-# Defining User Commands and Keymaps (neovim 0.7.0+)
-# https://github.com/nanotee/nvim-lua-guide/blob/master/README.md#defining-user-commands
-snippet command
-vim.api.nvim_create_user_command('${1:CommandName}', ${2:function(opts) end}, {
-	nargs = ${3:'?'},
-	desc = '$1',
+# Defining User Commands and Keymaps 
+snippet command "nvim_create_user_command"
+vim.api.nvim_create_user_command('${1:CommandName}', function(opts)
+	$0
+end, {
+	nargs = '${2:*}',
+	desc = '$3',
 })
 endsnippet
-snippet commandbuf
-vim.api.nvim_buf_create_user_command(bufnr, '${1:CommandName}', ${2:function(opts) end}, {
-	nargs = ${3:'?'},
-	desc = '$1',
+snippet bufcommand "nvim_buf_create_user_command"
+vim.api.nvim_buf_create_user_command(${1:0}, '${2:CommandName}', function(opts)
+	$0
+end, {
+	nargs = '${3:*}',
+	desc = '$4',
 })
 endsnippet
 snippet augroup
