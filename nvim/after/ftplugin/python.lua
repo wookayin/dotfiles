@@ -23,9 +23,9 @@ require("config.treesitter").setup_highlight('python')
 -- (can't set here because filetype plugin will reset b:did_indent)
 
 -- Formatting
+vim.api.nvim_buf_create_user_command(0, "Isort", "RuffIsort", {})
 require("config.formatting").create_buf_command("RuffIsort", "ruff_organize_imports")
 require("config.formatting").create_buf_command("OrganizeImports", "ruff_organize_imports")
-require("config.formatting").create_buf_command("Isort", "isort")  -- slow, deprecated
 require("config.formatting").create_buf_command("Yapf", "yapf")  -- deprecated in favor of ruff format
 require("config.formatting").create_buf_command("Black", "black")
 
