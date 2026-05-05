@@ -22,3 +22,37 @@ header-includes: |
 ---
 
 endsnippet
+
+# GitHub Markdown Alerts (a.k.a. Callouts)
+# https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts
+# https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki/Callouts
+snippet >! "GitHub Alert (Generic)"
+> [!${1:NOTE}]
+> $1
+$0
+endsnippet
+snippet NOTE "GitHub Alert: [!NOTE]"
+> [!NOTE]
+> ${1:Useful information that users should know, even when skimming content.}
+$0
+endsnippet
+snippet TIP "GitHub Alert: [!TIP]"
+> [!TIP]
+> ${1:Helpful advice for doing things better or more easily.}
+$0
+endsnippet
+snippet IMPORTANT "GitHub Alert: [!IMPORTANT]"
+> [!IMPORTANT]
+> ${1:Key information users need to know to achieve their goal.}
+$0
+endsnippet
+snippet WARNING "GitHub Alert: [!WARNING]"
+> [!WARNING]
+> ${1:Urgent info that needs immediate user attention to avoid problems.}
+$0
+endsnippet
+snippet CAUTION "GitHub Alert: [!CAUTION]"
+> [!CAUTION]
+> ${1:Advises about risks or negative outcomes of certain actions.}
+$0
+endsnippet
