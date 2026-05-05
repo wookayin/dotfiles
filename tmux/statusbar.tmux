@@ -40,19 +40,21 @@ main() {
   local TMUX_STATUS_HOST_BG="#0a0a0a"
 
   # [left status] session name (#S)
-  tmux set -g status-left "\
-#[fg=#000000,bg=$TMUX_STATUS_BG,bold] #S \
-#[bg=$TMUX_STATUS_HOST_BG,fg=$TMUX_STATUS_BG,nobold,nounderscore,noitalics]\
-";
+  local status_left=""
+  status_left+="#[fg=#000000,bg=$TMUX_STATUS_BG,bold] #S "
+  status_left+="#[bg=$TMUX_STATUS_HOST_BG,fg=$TMUX_STATUS_BG,nobold,nounderscore,noitalics]"
+
   # [left status] hostname (#h)
   # hostname is displayed only on remote machines (e.g. SSH)
-  tmux set -ga status-left "#[fg=$TMUX_STATUS_BG,bg=$TMUX_STATUS_HOST_BG,bold]"
+  status_left+="#[fg=$TMUX_STATUS_BG,bg=$TMUX_STATUS_HOST_BG,bold]"
   if [[ -n "${SSH_CONNECTION:-}" ]]; then
-    tmux set -ga status-left " #h "
+    status_left+=" #h "
   else  # localhost
-    tmux set -ga status-left " 💻 "
+    status_left+=" 💻 "
   fi
-  tmux set -ga status-left "#[fg=$TMUX_STATUS_HOST_BG,bg=#1c1c1c,nobold]"
+  status_left+="#[fg=$TMUX_STATUS_HOST_BG,bg=#1c1c1c,nobold]"
+
+  tmux set -g status-left "$status_left"
 
   # [right status]
   # Set a limit on width to suppress an excessive message '... is not ready' until the first execution is done
@@ -64,26 +66,26 @@ main() {
   tmux set -g status-right-length $STATUS_RIGHT_LENGTH
   tmux set-hook -g client-attached "set -g status-right-length 1; run-shell 'sleep 1.1'; set -g status-right-length $STATUS_RIGHT_LENGTH;"
 
-  # [right status] prefix, datetime, etc.
-  tmux set -g status-right "\
-#[fg=#ffffff,bg=#005fd7]#{s/^(.+)$/ \\1 :#{s/root//:client_key_table}}\
-#[default]\
-";
+  # [right status] prefix, datetime
+  local status_right=""
+  status_right+="#[fg=#ffffff,bg=#005fd7]#{s/^(.+)$/ \\1 :#{s/root//:client_key_table}}"
+  status_right+="#[default]"
 #[fg=#303030,bg=#1c1c1c,nobold,nounderscore,noitalics]\
 #[fg=#9e9e9e,bg=#303030] %Y-%m-%d  %H:%M \
 #[fg=#ffffff,bg=#303030,nobold,nounderscore,noitalics]\
 #";
-
   local session_name=$(tmux display-message -p '#S')
 
   # [right status] CPU Usage
-  tmux set -ga status-right "#($cwd/statusbar.tmux component-cpu -S $session_name)"
+  status_right+="#($cwd/statusbar.tmux component-cpu -S $session_name)"
   # [right status] Memory Usage
-  tmux set -ga status-right "#($cwd/statusbar.tmux component-ram -S $session_name)"
+  status_right+="#($cwd/statusbar.tmux component-ram -S $session_name)"
   # [right status] GPU Usage
   if command -v gpustat &> /dev/null && (lsmod 2>/dev/null | grep -q nvidia); then
-    tmux set -ga status-right "#($cwd/statusbar.tmux component-gpu -S $session_name)"
+    status_right+="#($cwd/statusbar.tmux component-gpu -S $session_name)"
   fi
+
+  tmux set -g status-right "$status_right"
 
   # [window] number (#I), window flag (#F), window name (#W)
   #   - #F: e.g., Marked or Zoomed. If marked (i.e. #F contains 'M'), highlight it.
