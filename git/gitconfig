@@ -192,6 +192,10 @@
 	# Sort branches by committer date, latest comes first.
 	sort = -committerdate
 
+[tag]
+	# Numeric sort, e.g. v0.10 doesn't precede v0.9 (git tag --sort)
+	sort = version:refname
+
 [stash]
 	# Show diff when running 'git stash show <SHA>'.
 	showPatch = true
