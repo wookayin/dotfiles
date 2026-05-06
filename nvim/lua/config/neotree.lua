@@ -6,6 +6,10 @@ function M.setup_neotree()
   require('neo-tree').setup {
     filesystem = {
       hijack_netrw_behavior = "open_current",
+
+      -- group empty folders together (e.g. src/main/java)
+      group_empty_dirs = true,
+
       window = {
         width = 30,
 
