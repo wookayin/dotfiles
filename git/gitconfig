@@ -152,6 +152,9 @@
 	autoSquash = true
 	autoStash = true
 
+	# --update-refs: auto update other branches that point to commits being rebased.
+	updateRefs = true
+
 [rerere]
 	# https://git-scm.com/book/en/v2/Git-Tools-Rerere
 	enabled = true
