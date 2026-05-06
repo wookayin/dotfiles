@@ -171,7 +171,12 @@ function M.setup_snacks()
     }
   }
 
-  -- misc.
+  -- Turn off animations (for zen mode and everything else), it's annoying
+  vim.g.snacks_animate = false
+  require("utils.rc_utils").RegisterHighlights(function()
+    vim.api.nvim_set_hl(0, 'SnacksDim', { fg = 'NONE', dim = true })
+  end)
+
   --- misc setup for Snacks
   -- :bd[elete] => :BDelete (but preserves the window layout)
   -- :bdelete => raw built-in :bdelete, just in case we need it
