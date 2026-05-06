@@ -27,7 +27,9 @@ function M.setup_extui()
     pattern = 'pager',
     group = augroup_extui,
     callback = function(args)
+      -- <Esc>, <C-c>: Close the pager window
       vim.keymap.set('n', '<C-c>', '<cmd>close<CR>', { buffer = true, remap = false })
+      vim.keymap.set('n', '<Esc>', '<cmd>close<CR>', { buffer = true, remap = false, nowait = true })
     end,
   })
 end
