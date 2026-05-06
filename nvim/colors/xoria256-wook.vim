@@ -140,10 +140,15 @@ hi def link @markup.environment.name   Function
 hi def link @markup.environment.name   Keyword
 
 " Diagnostics
-hi!     DiagnosticUnnecessary           gui=underline guifg=#87d7ff
 hi!     DiagnosticUnderlineError        gui=undercurl guisp=#e03131
 hi!     DiagnosticUnderlineWarn         gui=undercurl guisp=#fce094
 hi!     DiagnosticUnderlineInfo         gui=underline guisp=#777777
+hi!     DiagnosticUnderlineHint         gui=underdotted guisp=NvimLightBlue
+if has('nvim-0.12.0')  " gui=dim support
+  hi!   DiagnosticUnnecessary           gui=dim guifg=NONE
+else
+  hi!   DiagnosticUnnecessary           gui=underline guifg=#87d7ff
+endif
 
 if index(["wezterm", "alacritty", "xterm-kitty"], $TERM) < 0
   " if TERM does not support colored underline (e.g. xterm-256color),
