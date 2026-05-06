@@ -174,7 +174,10 @@ function M.setup_snacks()
   -- Turn off animations (for zen mode and everything else), it's annoying
   vim.g.snacks_animate = false
   require("utils.rc_utils").RegisterHighlights(function()
-    vim.api.nvim_set_hl(0, 'SnacksDim', { fg = 'NONE', dim = true })
+    vim.api.nvim_set_hl(0, 'SnacksDim', {
+      fg = 'NONE',
+      dim = vim.fn.has('nvim-0.12.0') > 0 and true or nil,
+    })
   end)
 
   --- misc setup for Snacks
