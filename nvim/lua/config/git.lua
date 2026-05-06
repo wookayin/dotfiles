@@ -29,7 +29,7 @@ function M.setup_fugitive()
   command_alias "gdc" "GDiffTerm --cached"
   vim.api.nvim_create_user_command("GDiffTerm", function(e)
     local args = vim.fn.expandcmd(vim.trim(e.args))  -- supports '%'
-    local cmd = "git diff --color " .. args
+    local cmd = "LESS=-+F git diff --color " .. args
     vim.fn['floaterm#new'](0, cmd, vim.empty_dict(), {
       name = 'git', autoclose = 1,
       title = " " .. cmd .. " ",
