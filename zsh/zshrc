@@ -95,7 +95,7 @@ fi
 # <<< conda initialize <<<
 }
 # Note: conda initialize is slow (0.3 sec), so execute lazily
-# Note: This should precede antidote plugins, so zsh-autoswitch-virtualenv can use conda 
+# Note: This should precede antidote setup, so zsh-autoswitch-virtualenv can use conda 
 conda() {
   unfunction conda
   _conda_initialize
@@ -125,16 +125,19 @@ fi
 
 # Misc plugin configs {{{
 # -----------------------
+# some configuration for plugins need to be set before the plugin is being sourced.
 
-# fzf-marks
+# fzf-marks {{{
 export FZF_MARKS_JUMP='^g'
 
 # }}}
 
-# ------------------------------------------------------ }}}
 
+# ------------------------------------------------------
+# zsh plugins (antidote)
 # antidote: zsh plugin specifications.
 # antidote-managed plugins will be stored at $ANTIDOTE_HOME
+local PLUGINS_SPEC="$HOME/.zsh/plugins.zsh"
 export ANTIDOTE_HOME="$HOME/.zsh/antidote-plugins"
 export ANTIDOTE_BUNDLE="$HOME/.zsh/antidote.bundled.zsh"
 zstyle ':antidote:bundle' use-friendly-names on
@@ -159,7 +162,6 @@ local _ANTIDOTE_SAVING=""
 
 function _antidote_compile_bundles() {
   echo -e "$fg[yellow]Writing antidote cache file into $ANTIDOTE_BUNDLE ...$reset_color"
-  local PLUGINS_SPEC="$HOME/.zsh/plugins.zsh"
 
   # run $PLUGINS_SPEC and get the list of plugins line-by-line
   local -a bundles; bundles=("${(@f)$(zsh $PLUGINS_SPEC)}")
