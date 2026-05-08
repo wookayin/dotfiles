@@ -131,6 +131,21 @@ fi
 export FZF_MARKS_JUMP='^g'
 
 # }}}
+# zsh-vi-mode {{{
+
+function zvm_config() {
+  # Do not use lazy init, to prevent zvm from overriding keybindings and other useful settings
+  # https://github.com/jeffreytse/zsh-vi-mode/issues/297
+  ZVM_INIT_MODE='sourcing'
+  # A new prompt should always start with the insert mode (even if the last was in the vi mode)
+  ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+}
+function zvm_after_init() {
+  # Turn off zvm highlighting, see jeffreytse/zsh-vi-mode#348
+  eval 'zvm_highlight() { }'
+}
+
+# }}}
 
 
 # ------------------------------------------------------

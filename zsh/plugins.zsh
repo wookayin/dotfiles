@@ -16,6 +16,9 @@ function plugin() {
 # see ~/.zpreztorc for prezto config
 plugin 'sorin-ionescu/prezto'
 
+# Better vi mode
+plugin 'jeffreytse/zsh-vi-mode'
+
 # zsh theme: powerlevel10k + customization
 plugin 'romkatv/powerlevel10k'
 
