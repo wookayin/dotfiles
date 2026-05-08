@@ -5,6 +5,8 @@
 # Based on Ghostty 1.3.1
 # To reload, Press <Shift+Cmd+,>
 
+# Optional local config: ~/.config/ghostty/config.local
+
 ####################################################################################################
 # General
 ####################################################################################################
@@ -24,13 +26,13 @@ font-family = "JetBrainsMono Nerd Font Mono"
 font-family = "Sarasa Mono K"
 font-size = 17
 
+adjust-cell-width = -18%
+adjust-cell-height = -16%
+
 # Disable ligatures
 font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
-
-adjust-cell-width = -4
-adjust-cell-height = -7
 
 ####################################################################################################
 # Colors and Appearances
