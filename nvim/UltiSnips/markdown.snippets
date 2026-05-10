@@ -1,9 +1,18 @@
 extends tex
 
+# Comments
+snippet <! "comment" A
+<!-- $1 -->$0
+endsnippet
+snippet nospell "add vim nospell modeline"
+<!-- vim: set nospell: -->
+$0
+endsnippet
 snippet ltex "Disable: LTeX"
 <!-- LTeX: enabled=false -->
 endsnippet
 
+# Frontmatters
 snippet pandocmeta "Insert yaml metadata header for pandoc-latex."
 ---
 title: ${1:Insert Document Title Here}
