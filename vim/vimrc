@@ -1748,7 +1748,10 @@ endfunction
 
 " Command :F (FzfSmart)
 function! FzfSmart(path) abort
-  doautocmd CmdlineEnter  " for lazy-loaded plugins
+  if exists("##CmdlineEnter")
+    " for lazy-loaded plugins. not applicable to vanilla vim
+    doautocmd CmdlineEnter
+  endif
 
   " If neovim, try to load fzf-lua early because this can be executed much before
   let l:fzf_lua = has('nvim') && luaeval('pcall(require, "fzf-lua")')
