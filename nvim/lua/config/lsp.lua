@@ -284,13 +284,6 @@ M.on_init = on_init
 lsp_setup_opts['pyright'] = false  -- deprecated, should never setup
 lsp_setup_opts['ruff_lsp'] = false  -- deprecated, should never setup
 
-lsp_setup_opts['clangd'] = {
-  -- Make sure to use utf-8 offset. clangd defaults to utf-16 (see jose-elias-alvarez/null-ls.nvim#429)
-  -- against "multiple different client offset_encodings detected for buffer" error
-  capabilities = {
-    offsetEncoding = 'utf-8',
-  }
-}
 
 --- Call lspconfig[...].setup for all installed LSP servers with common opts
 local function setup_lsp(lsp_name)
