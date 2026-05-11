@@ -37,7 +37,7 @@ local settings = {
       -- See := vim.lsp.get_clients({ name = 'lua_ls' })[1].settings.Lua.workspace.library
       library = (function()
         local library = {}
-        library[vim.env.VIMRUNTIME] = true  -- always include $VIMRUNTIME
+        library[vim.env.VIMRUNTIME .. '/lua'] = true  -- always include $VIMRUNTIME
 
         -- add support for all the plugins loaded by lazy.nvim
         -- We got duplicates. vim/plugged in ignoreDir didn't work?
