@@ -84,8 +84,13 @@ alias plugs='vim +"cd ~/.dotfiles" ~/.dotfiles/vim/plugins.vim'
 alias zshrc='vim +cd\ ~/.zsh -O ~/.zsh/zshrc ~/.zsh/zsh.d/alias.zsh'
 
 function plugged() {
-    [ -z "$1" ] && { echo "plugged: args required"; return 1; }
-    cd "$HOME/.vim/plugged/$1"
+  local selected
+  selected=$(ls -1 "$HOME/.vim/plugged" \
+    | fzf --no-tmux --query="${1:-}" --select-1 \
+      --preview 'tree -C --gitignore $HOME/.vim/plugged/{}' --bind 'ctrl-/:toggle-preview' \
+    ) || return 1;
+  echo $selected;
+  cd "$HOME/.vim/plugged/$selected"
 }
 
 # Running lua tests for neovim in the command line
