@@ -39,7 +39,6 @@ return {
     version = 'v1.32.0',  -- TODO v2.0 support
     event = LspSetup,
   };
-  Plug 'folke/neodev.nvim' { event = LspSetup };
   Plug 'ray-x/lsp_signature.nvim' { event = LspSetup };
   Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim' { lazy = true };
   Plug 'nvim-lua/lsp-status.nvim' { event = LspSetup, config = require('config.lsp').setup_lsp_status };

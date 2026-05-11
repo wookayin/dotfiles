@@ -301,23 +301,6 @@ local function setup_lsp(lsp_name)
     return
   end
 
-  -- Configure lua_ls to support neovim Lua runtime APIs
-  if lsp_name == 'lua_ls' then
-    local resolve_path = function(p) return assert(vim.loop.fs_realpath(vim.fs.normalize(p))) end
-    local dotfiles_path = resolve_path('$HOME/.dotfiles')
-    require("neodev").setup {
-      -- Always add neovim plugins into lua_ls library, for any lua files (even if they are not nvim configs)
-      -- see also: neodev.lsp.on_new_config(...), folke/neodev.nvim#158
-      override = function(root_dir, library)
-        root_dir = resolve_path(root_dir)
-        if vim.startswith(root_dir, dotfiles_path) then
-          library.enabled = true
-          library.plugins = true
-        end
-      end,
-    }
-  end
-
   local opts = M.lsp_setup_opts[lsp_name]
   if opts == false then
     -- Explicitly configured to disable this LSP. Stop.

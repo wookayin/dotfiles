@@ -188,7 +188,6 @@ local find_project_root = function(buf)
   end
 
   -- Determine project root. Relies on vim.b.project_root set in ftplugins
-  ---@diagnostic disable-next-line: redundant-return-value  Note: false positive of neodev
   local path = vim.api.nvim_buf_call(buf, function() return vim.fn.expand("%:p") end)
   local project_root = (
     vim.b[buf].project_root or
