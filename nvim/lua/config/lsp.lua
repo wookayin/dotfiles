@@ -8,8 +8,17 @@
 local M = {}
 
 --- A callback executed when LSP engine attaches to a buffer.
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("config.lsp.attach", { clear = true }),
+  callback = function(args)
+    if args.data ~= nil then
+      local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+      M.on_attach(client, args.buf)
+    end
+  end,
+})
 ---@type fun(client: vim.lsp.Client, bufnr: integer)
-local on_attach = function(client, bufnr)
+M.on_attach = function(client, bufnr)
 
   -- Activate LSP status on attach (see a configuration below).
   require('lsp-status').on_attach(client)
@@ -272,26 +281,25 @@ end
 -- see $VIMPLUG/nvim-lspconfig/lua/lspconfig/server_configurations/
 ---@type table<lspserver_name, false | table | fun():(table|false)>
 ---@deprecated We will use vim.lsp.config() and per-lsp configuration for nvim 0.11.
----  See the `$DOTVIM/after/lsp/` directory.
+---  See the `$DOTVIM/after/lsp/` directory. `lsp/*.lua` files will be sourced at the time
+---  vim.lsp.config() is called.
 local lsp_setup_opts = {}
 M.lsp_setup_opts = lsp_setup_opts
-
----@see lsp.ClientConfig :help vim.lsp.start_client()
----@type table<lspserver_name, fun(client: vim.lsp.Client, init_result: table)>
-local on_init = {}
-M.on_init = on_init
 
 lsp_setup_opts['pyright'] = false  -- deprecated, should never setup
 lsp_setup_opts['ruff_lsp'] = false  -- deprecated, should never setup
 
 
---- Call lspconfig[...].setup for all installed LSP servers with common opts
+--- Call vim.lsp.config() for all installed LSP servers with common opts
+--- @param lsp_name lspserver_name|'*'
 local function setup_lsp(lsp_name)
-  local common_opts = {
-    on_init = on_init[lsp_name],
-    on_attach = on_attach,
-    capabilities = M.lsp_default_capabilities(),
-  }
+  if lsp_name == '*' then
+    -- Common/base config to be applied and merged to ALL LSPs.
+    vim.lsp.config('*', {
+      capabilities = M.lsp_default_capabilities(),
+    })
+    return
+  end
 
   -- Configure lua_ls to support neovim Lua runtime APIs
   if lsp_name == 'lua_ls' then
@@ -313,31 +321,13 @@ local function setup_lsp(lsp_name)
   local opts = M.lsp_setup_opts[lsp_name]
   if opts == false then
     -- Explicitly configured to disable this LSP. Stop.
+    vim.lsp.enable(lsp_name, false)
     return
   end
 
-  opts = opts or {} -- 'nil' means using the default opts
-  if type(opts) == 'function' then
-    opts = opts()
-  end
-
-  if opts == false then
-    -- Explicitly configured to disable this LSP (after evaluation). Stop.
-    if vim.lsp.enable then
-      vim.lsp.enable(lsp_name, false)
-    end
-    return
-  end
-
-  -- Merge with lang-specific options
-  opts = vim.tbl_extend("force", {}, common_opts, opts)
-  if vim.lsp.config ~= nil then  -- requires NVIM 0.11+
-    vim.lsp.config(lsp_name, opts)
-    vim.lsp.enable(lsp_name)
-  else  -- prior to NVIM 0.11 (requires lspconfig<3.0)
-    -- Deprecated, will be removed soon
-    require('lspconfig')[lsp_name].setup(opts)
-  end
+  opts = opts or {}
+  vim.lsp.config(lsp_name, opts)
+  vim.lsp.enable(lsp_name)
 end
 
 -- lsp configs are lazy-loaded or can be triggered after LSP installation,
@@ -361,6 +351,7 @@ function M._setup_lspconfig()
   end) or {}
   local lsp_uninstalled = {}   --- { lspconfig name => mason package name }
 
+  setup_lsp('*')
   for lsp_name, package_name in pairs(all_known_lsps) do
     if require('mason-registry').is_installed(package_name) then
       -- Perform lspconfig[lsp_name].setup {}
