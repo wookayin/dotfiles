@@ -22,8 +22,8 @@ function M.setup_render()
       icons = { '•', '◦', '‣', '-' },
     },
     checkbox = {
-      checked = { icon = '• ✅', },  -- raw = '[x]'
-      unchecked = { icon = '• ⬜️', }, -- raw = '[ ]'
+      checked = { icon = '• ✅ ', },    -- raw = '[x]'
+      unchecked = { icon = '• ⬜️ ', },  -- raw = '[ ]'
       custom = {
         todo = { rendered = '• ⏳', raw = '[-]', },
       }
