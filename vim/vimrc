@@ -828,6 +828,8 @@ nmap  <leader>s~ ysiw~l
 nmap  <leader>s$ ysiw$
 nmap  <leader>s( ysiw(
 nmap  <leader>s) ysiw)
+nmap  <leader>s< ysiW<
+nmap  <leader>s> ysiW>
 nmap  <leader>s[ ysiw[
 nmap  <leader>s] ysiw]
 nmap  <leader>s{ ysiw{
@@ -845,6 +847,8 @@ vmap  <leader>s~ S~
 vmap  <leader>s$ S$
 vmap  <leader>s( S(
 vmap  <leader>s) S)
+vmap  <leader>s< S<
+vmap  <leader>s> S>
 vmap  <leader>s[ S[
 vmap  <leader>s] S]
 vmap  <leader>s{ S{
