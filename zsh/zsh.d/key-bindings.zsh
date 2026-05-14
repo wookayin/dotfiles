@@ -47,6 +47,10 @@ bindkey -M vicmd '^v' edit-command-line
 # vi insert mode
 # ==============
 
+# zsh-vi-mode eats CTRL-g which is a prefix of all fzf-git-* keybindings,
+# so we have to explicitly remove it. jeffreytse/zsh-vi-mode#24
+bindkey -M viins -r '^g'
+
 # CTRL-x CTRL-e: Edit command in an external editor
 bindkey -M viins "$key_info[Control]X$key_info[Control]E" edit-command-line
 
