@@ -22,9 +22,10 @@ term = xterm-ghostty
 # Tip: $ ghostty +list-fonts  (which lists fixed-width fonts only)
 # $ brew install --cask font-jetbrains-mono-nerd-font font-sarasa-gothic
 font-family = "JetBrainsMono Nerd Font Mono"
-# fallback: for Korean (한글) letters, in gothic
-font-family = "Sarasa Mono K"
 font-size = 17
+
+# NOTE: If CJK (in particular, 한글) letters do not look like a "Gothic" font, your system probably
+# does not have any fixed-width Gothic fonts. Install "Sarasa Mono K" (font-sarasa-gothic)
 
 adjust-cell-width = -18%
 adjust-cell-height = -16%
