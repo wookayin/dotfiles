@@ -17,8 +17,8 @@ return {
   Plug 'windwp/nvim-autopairs' {
     version = '*',
     event = 'InsertEnter',
-    opts = { 
-      ignored_next_char = '[%w]',  -- Don't add pairs if the next char is a 'word' character
+    opts = {
+      ignored_next_char = '[^%s]',  -- Add pairs only around whitespaces
     },
   };
 
