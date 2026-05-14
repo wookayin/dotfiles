@@ -34,6 +34,23 @@ font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
 
+# Some emoji (unicode) characters are covered by Sarasa Mono K, but should be rendered as Emoji.
+# We explicitly map some codepoints that should be a standalone emoji (without VS16).
+# e.g. BMP emoji-bearing blocks: Misc Technical, Geometric Shapes, Misc Symbols & Arrows
+font-codepoint-map = U+231A-U+231B=Apple Color Emoji
+font-codepoint-map = U+23E9-U+23EC=Apple Color Emoji
+font-codepoint-map = U+23F0-U+23F0=Apple Color Emoji
+font-codepoint-map = U+23F3-U+23F3=Apple Color Emoji
+font-codepoint-map = U+25FD-U+25FE=Apple Color Emoji
+font-codepoint-map = U+26AA-U+26BE=Apple Color Emoji
+font-codepoint-map = U+274C-U+274C=Apple Color Emoji
+font-codepoint-map = U+27B0-U+27BF=Apple Color Emoji
+font-codepoint-map = U+2B1B-U+2B55=Apple Color Emoji
+font-codepoint-map = U+1F0CF-U+1F0CF=Apple Color Emoji
+font-codepoint-map = U+1F18E-U+1F201=Apple Color Emoji
+font-codepoint-map = U+1F21A-U+1F236=Apple Color Emoji
+font-codepoint-map = U+1F238-U+1F251=Apple Color Emoji
+
 ####################################################################################################
 # Colors and Appearances
 ####################################################################################################
