@@ -172,11 +172,10 @@ end
 require("lazy.view.config").keys.profile_filter = "<C-g>"
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "lazy",
-  callback = function(args)
-    local buf = args.buf
+  callback = function()
     vim.defer_fn(function()
       -- Ctrl+C: to quit the window (only if it's floating)
-      vim.keymap.set("n", "<C-c>", function()
+      vim.keymap.set('n', '<C-c>', function()
         local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
         return is_float and "q" or ""
       end, { buffer = true, remap = true, expr = true })
@@ -194,10 +193,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
       -- folding support
       vim.cmd [[ setlocal sw=2 foldmethod=expr foldexpr=v:lua.lazy_foldexpr() ]]
-      pcall(function()
-        -- UFO somehow doesn't get attached automatically, so manually enable folding
-        require("ufo").attach(buf)
-      end)
     end, 0)
   end,
 })
