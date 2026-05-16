@@ -257,19 +257,33 @@ function M.setup_fzf()
   command("GitStatus", { nargs = 0 }, "FzfLua git_status")
     :alias("GStatus"):alias("GS"):alias("gs")
     :nmap("<leader>gs")
+
+  -- :GitFiles[!] <args>
+  -- Search and list files in the git repository <args> belongs to.
+  -- If <args> is not given, the current buffer's path (not local cwd) is used.
+  -- bang(!) means include untracked files as well (shown as '?').
   command("GitFiles", { nargs = "*", bang = true, complete = "dir", desc = "FzfLua git_files" }, function(e)
     e.args = vim.trim(e.args or "")
-    if e.args == "?" then  -- GFiles?
+    if e.args == "?" then  -- GitFiles? ==> :GitStatus
       return vim.cmd [[ GitStatus ]]
     end
-    vim.api.nvim_echo({ {':GitFiles! ('}, {vim.fn.getcwd(), 'Directory'}, {')'} }, false, {})
+    vim.api.nvim_echo({
+      { (':GitFiles%s '):format(e.bang and '!' or '') },
+      { '(' }, { vim.fn.getcwd(), 'Directory' }, { ')' },
+    }, --[[history:]] false, {})
+
     ---@diagnostic disable-next-line: param-type-mismatch
     if #e.args > 0 and vim.loop.fs_stat(vim.fn.expand(e.args) or "") == nil then
       return vim.notify("Not found: " .. e.args, vim.log.levels.WARN, { title = "config.fzf" })
     end
-    local opts = { cwd = empty_then_nil(e.args) }
+
+    local cwd = vim.fs.dirname(empty_then_nil(e.args))
+    cwd = require("utils.path_utils").project_root(cwd or 0)
+    local opts = {
+      cwd = cwd,
+      prompt = ("GitFiles%s❯ "):format(e.bang and '!' or ''),
+    }
     if e.bang then  -- GFiles!: include untracked files as well
-      opts.prompt = "GitFiles!❯ "
       opts.cmd = "git ls-files --exclude-standard --cached --modified --others "
       if GIT_VERSION >= 2.31 then
         opts.cmd = opts.cmd .. "--deduplicate "
