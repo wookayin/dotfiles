@@ -8,14 +8,14 @@ require('config.treesitter').setup_highlight('latex')
 -- Configure :Build
 require('config.tex').setup_compiler_commands()
 
-local path = require("utils.path_utils")
-vim.b.project_root = path.find_project_root({ 'Makefile', '.latexmkrc', '.git' }, { buf = 0 })
+local path_utils = require("utils.path_utils")
+vim.b.project_root = path_utils.project_root(0, { 'Makefile', '.latexmkrc', '.git' })
 if vim.b.project_root then vim.cmd.lcd(vim.b.project_root) end
 
 --[[ Make and build support ]]
-if vim.fn.filereadable(path.join(vim.b.project_root, "Makefile")) > 0 then
+if vim.fn.filereadable(vim.fs.join(vim.b.project_root, "Makefile")) > 0 then
   vim.opt_local.makeprg = 'make'
-elseif vim.fn.filereadable(path.join(vim.fn.expand("%:p:h"), "Makefile")) > 0 then
+elseif vim.fn.filereadable(vim.fs.join(vim.fn.expand("%:p:h"), "Makefile")) > 0 then
   vim.opt_local.makeprg = 'make'
 else
   vim.opt_local.makeprg = '(latexmk -pdf -pdflatex="pdflatex -halt-on-error -interaction=nonstopmode -file-line-error -synctex=1" "%:r" && latexmk -c "%:r")'

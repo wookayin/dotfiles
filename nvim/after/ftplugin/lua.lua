@@ -27,7 +27,7 @@ if is_test then
   vim.api.nvim_buf_create_user_command(0, "Build", "echon ':Test' | Test", {})
   vim.api.nvim_buf_create_user_command(0, "Output", "TestOutput", {})
 
-  local project_root = require("utils.path_utils").find_project_root({ ".git" }) ---@type string?
+  local project_root = require("utils.path_utils").project_root(0, { ".git" }) ---@type string?
   local filename = assert(vim.fn.bufname('%'))  -- e.g. test/functional/lua/api_spec.lua
 
   -- exception: neovim tests do not use plenary-busted but the original busted

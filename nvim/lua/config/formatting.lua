@@ -191,7 +191,8 @@ local find_project_root = function(buf)
   local path = vim.api.nvim_buf_call(buf, function() return vim.fn.expand("%:p") end)
   local project_root = (
     vim.b[buf].project_root or
-    require("utils.path_utils").find_project_root({ ".git" }, { path = path }))
+    require("utils.path_utils").project_root(path, { ".git" })
+  )
 
   project_root = project_root and vim.fn.resolve(project_root) or nil
   return project_root
