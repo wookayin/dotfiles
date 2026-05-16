@@ -11,11 +11,13 @@ config = config or setmetatable({}, {
   __index = function(self, key)
     local modname = 'config.' .. key
     if package.loaded[modname] then
-      return require(modname)
+      rawset(self, key, require(modname))
+      return self[key]
     else
       return nil
     end
-  end
+  end,
+  __newindex = function() error("config is a read-only table", 2) end,
 })
 _G.config = config
 
