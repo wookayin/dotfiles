@@ -1746,7 +1746,7 @@ endfunction
 " TODO REFACTOR into fzf.lua
 " Command :F (FzfSmart)
 function! FzfSmart(path) abort
-  if exists("##CmdlineEnter")
+  if has('nvim')
     " for lazy-loaded plugins. not applicable to vanilla vim
     doautocmd CmdlineEnter
   endif
