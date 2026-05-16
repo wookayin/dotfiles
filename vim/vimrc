@@ -1660,6 +1660,10 @@ if !has('nvim') && has('patch-8.2.194')
   hi def link FZFFloatBorder Comment
 endif
 
+" FZF_DEFAULT_OPTS coming from zsh may have '--tmux',
+" so we disable the option inside vim because fzf will open in a floating window
+let $FZF_DEFAULT_OPTS = $FZF_DEFAULT_OPTS . ' --no-tmux'
+
 " neovim 0.4+: FZF + floating window.
 if has('nvim-0.4')
   " On floating windows, we use reverse layout, i.e. prompt is at the above.
