@@ -38,6 +38,7 @@ local settings = {
       library = (function()
         local library = {}
         library[vim.env.VIMRUNTIME .. '/lua'] = true  -- always include $VIMRUNTIME
+        library[vim.env.DOTVIM .. '/lua'] = true
 
         -- add support for all the plugins loaded by lazy.nvim
         -- We got duplicates. vim/plugged in ignoreDir didn't work?
