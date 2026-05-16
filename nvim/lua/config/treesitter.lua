@@ -97,23 +97,6 @@ function M.setup_legacy()
       additional_vim_regex_highlighting = { "python" },
     },
 
-    -- Deprecated as of neovim 0.10+ in favor of :InspectTree, only used for neovim <= 0.9
-    playground = {
-      enable = not has('nvim-0.10'),
-      updatetime = 30,
-      keybindings = {
-        toggle_query_editor = 'o',
-        toggle_hl_groups = 'i',
-        toggle_injected_languages = 't',
-        toggle_anonymous_nodes = 'a',
-        toggle_language_display = 'I',
-        focus_language = 'f',
-        unfocus_language = 'F',
-        update = 'R',
-        goto_node = '<cr>',
-        show_help = '?',
-      },
-    },
   }
 end
 
