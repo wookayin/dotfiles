@@ -709,23 +709,6 @@ function! CD_to(dir, cmd) abort
   endif
 endfunction
 
-function! DetermineProjectRoot(...) abort
-  let l:arg = a:0 >= 1 ? a:000[0]: '%'
-  " If the current file is under a git repository, that's it!
-  let l:git_dir = s:get_git_workdir(l:arg)
-  if !empty(l:git_dir)
-    return l:git_dir
-  endif
-
-  " Not a git repository. Use heuristic and domain knowledge as much as you can
-  let l:base_dir = expand(l:arg . ":p")
-  if l:base_dir =~ 'python[^/]*/site-packages/[^/]\+/'
-    return resolve(substitute(l:base_dir, '\(python[^/]*/site-packages/[^/]\+/\).*$', '\1', 'g'))
-  else
-    return ''
-  endif
-endfunction
-
 " CDRoot: switch to the project root directory of the current buffer
 command! -nargs=?   CDRoot  :call s:CDRoot(<f-args>)
 nmap <silent> <leader>cd     <cmd>CDRoot<CR>
@@ -733,11 +716,16 @@ nmap <silent> <leader>lcd    <cmd>CDRoot lcd<CR>
 function! s:CDRoot(...) abort
   let l:cd_cmd = a:0 >= 1 ? a:000[0] : 'tcd'
 
-  let l:project_root = DetermineProjectRoot()
-  if empty(l:project_root)
-    echohl WarningMsg | echom 'Cannot determine project root directory. (Want :CD?)' | echohl None
-  else
+  if has('nvim')
+    let l:project_root = luaeval("require('utils.path_utils').project_root(0)")
+    if empty(l:project_root)
+      echohl WarningMsg | echom 'Cannot determine project root directory. (Want :CD?)' | echohl None
+      return
+    endif
     return CD_to(l:project_root, l:cd_cmd)
+  else
+    " for vanilla vim, project root detection is not supported.
+    let l:project_root = expand('%:p:h')
   endif
 endfunction
 

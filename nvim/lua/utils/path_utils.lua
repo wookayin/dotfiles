@@ -48,8 +48,26 @@ function M.project_root(start_path, marker_patterns)
       path = vim.fs.abspath(start_path),
     })[1]
 
-  -- fnamemodify: don't use :p, it addes trailing slashes when matched .git
-  return marker and vim.fn.fnamemodify(marker, ":h") or nil
+  if marker then
+    -- fnamemodify: don't use :p, it adds trailing slashes when matched .git
+    return vim.fn.fnamemodify(marker, ":h")
+  end
+
+  local abs_path = vim.fs.abspath(start_path)
+
+  -- python site-packages: return the top-level package directory
+  local pkg_root = abs_path:match("(.*python[^/]*/site%-packages/[^/]+)")
+  if pkg_root then
+    return vim.uv.fs_realpath(pkg_root) or pkg_root
+  end
+
+  -- $VIMRUNTIME: return $VIMRUNTIME itself
+  local vimruntime = vim.env.VIMRUNTIME
+  if vimruntime and vim.startswith(abs_path, vimruntime) then
+    return vimruntime
+  end
+
+  return nil
 end
 
 ---Convert a file path to a Lua module name.

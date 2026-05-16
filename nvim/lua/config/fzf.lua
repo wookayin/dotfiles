@@ -519,9 +519,9 @@ function M.setup_custom()
     -- try to resolve path argument
     path = (function(path)
       path = path or ""
-      if path == "^" then path = vim.fn.DetermineProjectRoot("%") or "" end
+      if path == "^" then path = require('utils.path_utils').project_root(0) or "" end
       if path == "" then path = "." end
-      return vim.fn.expand(path or ".") --[[ @as string ]]
+      return vim.fn.expand(path or ".") --[[@as string]]
     end)(path)
 
     if vim.fn.isdirectory(path) == 0 then

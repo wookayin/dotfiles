@@ -19,7 +19,7 @@ endif
 if has('nvim')
   " TODO: Remove this config, should use .editorconfig
   function! AutoTabsizePython(...) abort
-    let l:project_root = DetermineProjectRoot()
+    let l:project_root = luaeval("require('utils.path_utils').project_root(0) or '.'")
     let l:pylintrc_path = filereadable(".pylintrc") ? ".pylintrc" : l:project_root . '/.pylintrc'
     if !filereadable(l:pylintrc_path)
       return -1  " no pylintrc found
