@@ -193,6 +193,7 @@ function M.setup_fzf()
   --               e.g., :Grep \b(foo|bar)\b => search word either "foo" or "bar"
   -- :LiveGrep  => grep with <as-you-type> (CTRL-G). Uses "regex mode"
   -- fzf-lua grep uses rg internally
+  -- NOTE: these always should have the (local) CWD or the project root of the buffer.
   command("Grep", { nargs = "*", bang = true, desc = "FzfLua grep" }, function(e)
     if e.args == "" then  -- no args were given, prompt and ask
       return vim.ui.input({ prompt = "Grep string ❯ ", relative = "editor" }, function(input)
@@ -207,13 +208,17 @@ function M.setup_fzf()
       prompt = ("Rg%s❯ "):format(e.bang and '!' or ''),
       search = args,
       no_esc = not should_escape,
+      cwd = require('utils.path_utils').project_root(0) or vim.fn.getcwd(),
     }, ( -- see core.set_header()
       e.bang and { headers = {}, fzf_opts = { ["--header"] = "foo" } } -- :Grep! (regex)
       or {} -- :Grep, just the use default header
     )))
   end):alias("Rg")
   command("LiveGrep", { nargs = "?", desc = "FzfLua live_grep" }, function(e)
-    fzf.live_grep({ search = vim.trim(e.args) })
+    fzf.live_grep({
+      search = vim.trim(e.args),
+      cwd = require('utils.path_utils').project_root(0) or vim.fn.getcwd(),
+    })
   end):alias("RG")
 
   if vim.fn.executable("rg") == 0 then
@@ -227,6 +232,7 @@ function M.setup_fzf()
     fzf.grep({
       no_esc = true, -- use raw regex, and manual escaping
       search = "\\b(" .. vim.fn.expand("<cword>") .. ")\\b",  --TODO:escape?
+      cwd = require('utils.path_utils').project_root(0) or vim.fn.getcwd(),
     })
   end, { desc = ':Grep with <cword>' })
   vim.keymap.set('x', '<C-g>', '<leader>rg', { remap = true, silent = true,
@@ -236,7 +242,8 @@ function M.setup_fzf()
     local selected_text = vim.fn.getreg("g")
     fzf.grep({
       no_esc = true,
-      search = "\\b(" .. selected_text .. ")\\b"  -- TODO:escape?
+      search = "\\b(" .. selected_text .. ")\\b",  -- TODO:escape?
+      cwd = require('utils.path_utils').project_root(0) or vim.fn.getcwd(),
     })
   end, { silent = true, desc = ':Grep with visual selection' } )
 
