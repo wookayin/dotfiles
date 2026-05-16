@@ -344,13 +344,6 @@ function! ToggleVerbose()
   endif
 endfunction
 
-" :lua vim.notify / VimNotify
-if has('nvim') && luaeval('vim.notify == nil')
-  " Backward compatibility for neovim < 0.5
-  " see nvim-notify plugin settings below
-  lua vim.notify = function(msg, log_level, opts) print(msg) end
-endif
-
 if has('nvim')
   function! VimNotify(msg, ...)
     " Compatible with vanilla vim, neovim 0.4.x, and 0.5.0+ (native)
