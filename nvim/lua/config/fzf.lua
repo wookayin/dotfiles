@@ -324,6 +324,8 @@ function M.setup_fzf()
     fzf.buffers(opts)
   end):alias("B")
   vim.keymap.set('n', '<leader>B', '<Cmd>Buffers<CR>')
+
+  command("Autocmds", { nargs = "?" }, bind_query(fzf.autocmds))
   command("Colors", { nargs = "?", complete = "color" }, bind_query(fzf.colorschemes)):alias("Co")
   command("Highlights", { nargs = "?", complete = "highlight" }, bind_query(fzf.highlights)):alias("Hi")
   command("Help", { nargs = "?", complete = "help" }, bind_query(fzf.help_tags)):alias("He")
