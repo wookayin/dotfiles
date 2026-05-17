@@ -11,6 +11,20 @@ local nmap = function(...) vim.keymap.set('n', ...) end
 local imap = function(...) vim.keymap.set('i', ...) end
 local cmap = function(...) vim.keymap.set('c', ...) end
 local xmap = function(...) vim.keymap.set('x', ...) end
+local tmap = function(...) vim.keymap.set('t', ...) end
+
+
+--- Window Movement (normal, terminal) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+do  -- Alt-Shift-{h,j,k,l}: move window to far edge 
+  vim.keymap.set({'n', 't'}, '<M-H>', '<cmd>wincmd H<CR>')
+  vim.keymap.set({'n', 't'}, '<M-J>', '<cmd>wincmd J<CR>')
+  vim.keymap.set({'n', 't'}, '<M-K>', '<cmd>wincmd K<CR>')
+  vim.keymap.set({'n', 't'}, '<M-L>', '<cmd>wincmd L<CR>')
+end
+
+
+--- Insert Mode  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 -- Insert mode: emacs-like navigation (Ctrl-A, Ctrl-E)
 imap('<c-a>', '<c-o>^', { silent = true })  -- beginning-of-line
