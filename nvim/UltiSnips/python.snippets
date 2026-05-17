@@ -210,6 +210,14 @@ snippet PATH "script path (using pathlib)"
 __PATH__ = Path(__file__).resolve().parent
 endsnippet
 
+snippet tic "time.monotonic()"
+t0 = time.monotonic()
+$0
+endsnippet
+snippet toc "time.monotonic()" w
+time.monotonic() - t0
+endsnippet
+
 # Add a typecheck if-raise statement.
 # TODO: auto-retrieve type annotation from the current python context.
 snippet typecheck
