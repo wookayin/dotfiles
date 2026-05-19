@@ -18,7 +18,8 @@ function M.buf_dir(buf)
     end
   end
 
-  if vim.bo[buf].buftype ~= "" then
+  local buftype = vim.bo[buf].buftype
+  if not vim.tbl_contains({ "" , "help" }, buftype) then
     return nil
   end
   local bufname = vim.api.nvim_buf_get_name(buf)
