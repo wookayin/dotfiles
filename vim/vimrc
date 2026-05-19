@@ -2332,6 +2332,9 @@ endfunction
 " Make the scrollbar aware of foldings (see dstein64/nvim-scrollview#11).
 let g:scrollview_mode = 'virtual'
 
+" opacity/winblned for the scrollbar
+let g:scrollview_winblend_gui = 30
+
 " Do not use signs, it looks a bit messy without proper configs (see dstein64/nvim-scrollview#85).
 let g:scrollview_signs_on_startup = ['']
 
