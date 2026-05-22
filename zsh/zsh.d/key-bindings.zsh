@@ -51,6 +51,12 @@ bindkey -M vicmd '^v' edit-command-line
 # so we have to explicitly remove it. jeffreytse/zsh-vi-mode#24
 bindkey -M viins -r '^g'
 
+# Shift-Enter: line break (add newline)
+line-break() { LBUFFER+=$'\n' }
+zle -N line-break
+bindkey -M viins $'\e[13;2u' line-break
+bindkey -M viins $'\e[27;2;13~' line-break
+
 # CTRL-x CTRL-e: Edit command in an external editor
 bindkey -M viins "$key_info[Control]X$key_info[Control]E" edit-command-line
 
