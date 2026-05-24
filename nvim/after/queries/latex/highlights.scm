@@ -3,6 +3,9 @@
 ; highlight \iffalse .. \fi comments differently
 ((block_comment) @comment.special)
 
+; highlight $ delimiters in inline math
+(inline_formula
+  "$" @markup.math.delimiter)
 
 ;; Formatting (extended)
 
