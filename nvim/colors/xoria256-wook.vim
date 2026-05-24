@@ -139,6 +139,8 @@ hi def link @markup.environment        PreProc
 hi def link @markup.environment.name   Function
 hi def link @markup.environment.name   Keyword
 
+hi! @markup.math.latex                 guifg=white
+
 " Diagnostics
 hi!     DiagnosticUnderlineError        gui=undercurl guisp=#e03131
 hi!     DiagnosticUnderlineWarn         gui=undercurl guisp=#fce094
