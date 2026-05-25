@@ -42,3 +42,7 @@ if has('nvim-0.12') then
     return vim.iter(t):filter(function(truthy) return truthy end):flatten(math.huge):totable()
   end
 end
+
+-- until nvim 0.13
+vim.npcall = vim.npcall or vim.F.npcall
+vim.nonnil = vim.nonnil or vim.F.if_nil
