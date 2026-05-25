@@ -10,7 +10,10 @@ function M.in_mathzone()
   -- Get the treesitter node (offsets col position when in insert mode)
   -- When treesitter parse is not available, don't throw errors but simply return false.
   ---@type TSNode?
-  local node = vim.F.npcall(require("utils.ts_utils").get_node_at_cursor)
+  local node = vim.npcall(function()
+    -- also include injections because latex snippets can be called from markdown, etc.
+    return require("utils.ts_utils").get_node_at_cursor(0, { ignore_injections = false })
+  end)
 
   while node do
     if node:type() == 'text_mode' then
