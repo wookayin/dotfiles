@@ -25,16 +25,15 @@ local M = {}
 ---    original get_node_at_cursor() implementation will return the `string` node at col = 8.
 ---    But in the insert mode, we would want to get the `string_content` node at col = 7.
 ---
---- 2. When parser is not available or mis-configured, it will raise errors.
----
----    Use vim.F.npcall() to make error-safe!
----
+--- 2. When parser is not available or mis-configured, they will raise errors.
+---    This version does not error but returns nil; we use vim.npcall() to make it error-safe.
 ---
 ---@param winnr? integer window number, 0 (the current window) by default
----@param ignore_injections? boolean defaults true
+---@param opts vim.treesitter.get_node.Opts?
 ---@return TSNode|nil
-function M.get_node_at_cursor(winnr, ignore_injections)
+function M.get_node_at_cursor(winnr, opts)
   winnr = winnr or 0
+  local bufnr = vim.api.nvim_win_get_buf(winnr)
   local cursor = vim.api.nvim_win_get_cursor(winnr)  -- line: 1-indexed, col: 0-indexed
   local insert_offset = ((winnr == 0 or winnr == vim.api.nvim_get_current_win()) and vim.fn.mode() == 'i') and 1 or 0
 
@@ -42,7 +41,11 @@ function M.get_node_at_cursor(winnr, ignore_injections)
   local cursor_pos = { cursor[1] - 1, cursor[2] - insert_offset }
   assert(vim.treesitter.get_node, "nvim < 0.9 is unsupported.")
 
-  return vim.treesitter.get_node { pos = cursor_pos, ignore_injections = ignore_injections }
+  opts = vim.tbl_deep_extend("error", opts or {}, {
+    bufnr = bufnr,
+    pos = cursor_pos,
+  })
+  return vim.treesitter.get_node(opts)
 end
 
 
