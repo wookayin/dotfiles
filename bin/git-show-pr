@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# git show-pr <revision>
+# git show-pr <revision> --verbose
+# git show-pr <revision> --web
+#
+# Requires git, curl, jq, and gh (with the Github CLI auth enabled).
+
+set -eu
+set -o pipefail
+
+YELLOW="\033[0;33m"
+MAGENTA="\033[0;35m"
+LINK_COLOR="\033[38;5;31m"  # DeepSkyBlue3
+RESET="\e[0m"
+
+if [[ ! -t 1 && ! -p /dev/stdout ]] ; then  # stdout is not a terminal, suppress color
+  YELLOW=""
+  MAGENTA=""
+  LINK_COLOR=""
+  RESET=""
+fi
+
+# flag variables
+verbose=""
+web=""
+
+function git-show-pr() {
+  # e.g. neovim/neovim, wookayin/dotfiles. empty string if the pattern not found
+  local repospec=$(git remote show origin -n | grep Fetch | sed -n -E 's#.*github.com[/:]([^.]+/[^.]+)(\.git)?#\1#p')
+  if [ -z "$repospec" ]; then
+    echo "No remote repository origin found."; return 1;
+  fi
+  local commit="${1:-}"
+  local err=0
+  if [ -z "$commit" ]; then
+    commit="$(git rev-parse HEAD)"; err=$?;
+  else
+    commit=$(git rev-parse "$commit"); err=$?; shift;
+  fi
+  if [ ! $err -eq 0 ]; then
+    return 1;
+  fi
+
+  local pr_json=$(curl -fsSL "https://api.github.com/repos/$repospec/commits/$commit/pulls" 2>/dev/null || true)
+  local pr_number=$(echo "$pr_json" | jq '.[0].number')
+  local pr_title=$(echo "$pr_json" | jq -r '.[0].title')
+  local pr_url=$(echo "$pr_json" | jq -r '.[0].html_url')
+  if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
+    >&2 echo "No PR found for the commit $commit, repospec = $repospec"
+    return 1;
+  fi
+
+  if [ -t 1 ]; then
+    echo -e "${MAGENTA}#$pr_number${RESET} $pr_title"
+    echo -e "${LINK_COLOR}${pr_url}${RESET}"
+    echo -e "commit: ${YELLOW}${commit}${RESET}"
+    git name-rev "${commit}" --name-only --tags
+  else
+    echo -e "#$pr_number $pr_title"
+  fi
+
+  if [ -n "$verbose" ] || [ -n "$web" ]; then
+    echo ''
+    command gh pr view "$pr_number" --comments "$@" $web
+  fi
+}
+
+
+declare -a POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --verbose) verbose="1"; shift;;
+    --web) web="--web"; shift;;
+    *)
+      POSITIONAL_ARGS+=("$1")  # Save positional arg
+      shift;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]}"
+git-show-pr "$@"
