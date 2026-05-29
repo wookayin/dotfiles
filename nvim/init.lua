@@ -67,7 +67,10 @@ if vim.fn.has('nvim-0.11') == 0 then
     echom 'This version of neovim is unsupported. Please upgrade to Neovim 0.11+ or higher.'
     echohl None
   ]]
-  vim.cmd [[ filetype plugin off ]]
+  vim.cmd [[
+    filetype plugin off
+    colorscheme xoria256-wook
+  ]]
   vim.o.loadplugins = false
   vim.o.swapfile = false
   vim.o.shadafile = "NONE"
