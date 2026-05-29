@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # git show-pr <revision>
 # git show-pr <revision> --verbose
@@ -12,7 +12,7 @@ set -o pipefail
 YELLOW="\033[0;33m"
 MAGENTA="\033[0;35m"
 LINK_COLOR="\033[38;5;31m"  # DeepSkyBlue3
-RESET="\e[0m"
+RESET="\033[0m"
 
 if [[ ! -t 1 && ! -p /dev/stdout ]] ; then  # stdout is not a terminal, suppress color
   YELLOW=""
@@ -77,5 +77,5 @@ while [[ $# -gt 0 ]]; do
       shift;;
   esac
 done
-set -- "${POSITIONAL_ARGS[@]}"
+set -- "${POSITIONAL_ARGS[@]+"${POSITIONAL_ARGS[@]}"}"
 git-show-pr "$@"
