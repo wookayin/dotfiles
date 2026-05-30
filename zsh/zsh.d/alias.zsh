@@ -128,14 +128,13 @@ alias tmuxnew='tmux new -s'
 alias tnew='tmuxnew'
 # list sessions
 alias tmuxl='tmux list-sessions'
-# tmuxa <session> : attach to <session> (force 256color and detach others)
-alias tmuxa='tmux -2 attach-session -d -t'
 # tmux kill-session -t
 alias tmuxkill='tmux kill-session -t'
 
 # t <session>: attach to <session> (if exists) or create a new session with the name
-alias t='tmux new-session -AD -s'
-alias T='TMUX= tmuxa'
+# see ~/.dotfiles/bin/tmux-attach
+alias t='tmux-attach'
+alias tmuxa='tmux-attach'
 
 # tmuxp
 function tmuxp {

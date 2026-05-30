@@ -1,0 +1,72 @@
+#!/bin/bash
+# tmux-attach [query]
+#
+# Attach to (or switch into) a tmux session, with fuzzy matching via fzf.
+#
+# tmux-attach: pick a session with fzf
+# tmux-attach <query>: find a session, and attach to it.
+#
+# Outside tmux: creates or attaches to the session (and detach others).
+# Inside tmux: switch the current client to the session (and detach others).
+set -eu -o pipefail
+
+function tmux-attach() {
+  # tmux-attach <session>: attach (or switch client) to the session.
+  local target="$1"
+
+  if [[ -z "${TMUX:-}" ]]; then
+    tmux new-session -AD -s "$target"
+    return
+  fi
+
+  if ! tmux has-session -t "$target" 2>/dev/null; then
+    echo "tmux-attach: no session named '$target'" >&2
+    return 1
+  fi
+  local current_session="$(tmux display-message -p '#{session_name}')"
+  if [[ "$current_session" == "$target" ]]; then
+    echo "tmux-attach: already on session '$target'" >&2
+    return 0
+  fi
+
+  echo "tmux-attach: switching to session '$target'" >&2
+
+  # switch to the target session,
+  # but deattach all *other* clients previously attached to it (not ourselves)
+  local self_tty
+  self_tty="$(tmux display-message -p '#{client_tty}')"
+  tmux list-clients -t "$target" -F '#{client_tty}' | while read -r tty; do
+    [[ "$tty" == "$self_tty" ]] && continue
+    tmux detach-client -t "$tty"
+  done
+  tmux switch-client -t "$target"
+}
+
+function tmux-attach-main() {
+  # The main entrypoint allows fuzzy matching
+  local query="${1:-}"
+  local chosen
+
+  # Pre-filter without UI: avoids popup blink on single match, and handles no-match early.
+  if [[ -n "$query" ]]; then
+    local -a matches
+    matches=( $(
+      tmux list-sessions 2>/dev/null |
+      fzf --filter="$query" --delimiter=':' --nth=1 --accept-nth=1 || true) )
+    case ${#matches[@]} in
+      0) chosen="$query" ;;
+      1) chosen="${matches[0]}" ;;
+    esac
+  fi
+
+  if [[ -z "$chosen" ]]; then
+    chosen=$(
+      tmux list-sessions 2>/dev/null |
+      fzf --query "$query" --delimiter=':' --nth=1 --accept-nth=1 --color 'fg:dim,nth:regular' \
+        --tmux='60%' --prompt 'tmux attach: '
+    ) || return $?
+  fi
+  tmux-attach "$chosen"
+}
+
+tmux-attach-main "$@"
