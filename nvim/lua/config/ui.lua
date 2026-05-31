@@ -183,20 +183,32 @@ function M.setup_snacks()
   --- misc setup for Snacks
   -- :bd[elete] => :BDelete (but preserves the window layout)
   -- :bdelete => raw built-in :bdelete, just in case we need it
+  local H = {}
   vim.fn.CommandAlias('bd', 'BDelete')
   vim.fn.CommandAlias('bdel', 'BDelete')
   vim.api.nvim_create_user_command('BDelete', function(opts)
-    local buf
-    if vim.trim(opts.args) == '' then buf = 0
-    elseif tonumber(opts.args) == nil then
-      return error("Invalid argument")
-    else buf = tonumber(opts.args) end
-
+    local buf = H.parse_buf(opts)
     Snacks.bufdelete { buf = buf, force = opts.bang }
   end, {
-    desc = ':bufdelete, but preserves window layout',
+    desc = ':bdelete, but preserves window layout',
     nargs = '?', bang = true,
   })
+  -- :bw[ipeout] => :BWipeout
+  vim.fn.CommandAlias('bw', 'BWipeout')
+  vim.api.nvim_create_user_command('BWipeout', function(opts)
+    local buf = H.parse_buf(opts)
+    Snacks.bufdelete { buf = buf, force = opts.bang, wipe = true }
+  end, {
+    desc = ':bwipeout, but preserves window layout',
+    nargs = '?', bang = true,
+  })
+  H.parse_buf = function(opts)
+    if vim.trim(opts.args) == '' then return 0
+    elseif tonumber(opts.args) == nil then
+      return error("Invalid argument")
+    else return tonumber(opts.args)
+    end
+  end
 end
 
 -- Resourcing support
