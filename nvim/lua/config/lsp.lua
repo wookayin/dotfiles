@@ -455,7 +455,7 @@ function M._setup_diagnostic()
         end or nil,
     },
     underline = {
-      severity = { min = vim.diagnostic.severity.INFO },
+      severity = { min = vim.diagnostic.severity.HINT },
     },
     float = {
       source = 'always',
