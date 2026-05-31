@@ -87,7 +87,10 @@ M.on_attach = function(client, bufnr)
       if vim.fn.executable("delta") == 0 then
         vim.notify_once("delta (git-delta) not found. Please install delta to enable preview.", vim.log.levels.WARN)
       end
-      require("fzf-lua").lsp_code_actions()  -- see config/fzf.lua
+      -- see config/fzf.lua
+      require("fzf-lua").lsp_code_actions {
+        silent = true, -- no warning message for vim.ui.select()
+      }
     else
       return vim.lsp.buf.code_action()
     end
