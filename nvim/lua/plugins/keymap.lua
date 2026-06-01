@@ -22,7 +22,14 @@ return {
   Plug 'junegunn/vim-easy-align' {
     keys = { '<Plug>(EasyAlign)', { '<Plug>(EasyAlign)', mode = 'v' } },
   };
-  Plug 'tpope/vim-surround' { event = 'VeryLazy' };
+  Plug 'kylechui/nvim-surround' {
+    version = "^4.0.0",
+    event = 'VeryLazy',
+    opts = {
+      -- the cursor should stick to the current character after surroundings are added
+      move_cursor = 'sticky',
+    },
+  };
   Plug 'tpope/vim-repeat' { lazy = true, func = 'repeat#*' };
   Plug 'haya14busa/vim-asterisk' { init = PlugConfig, event = 'VeryLazy' };
   Plug 'unblevable/quick-scope' {

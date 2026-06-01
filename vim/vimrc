@@ -798,8 +798,9 @@ nnoremap <leader>S <Cmd>Strip<CR>
 nnoremap <leader>df <Cmd>diffthis<CR>
 
 " Surround a word with quotes, single quotes, parens, brackets, braces, etc.
-"   requires and powered by the plugin surround.vim :-)
-" (Note) for visual blocks, use S command from surround.vim
+"   requires and powered by the plugin nvim-surround (vim-surround)
+" (Note) for visual blocks, use S (e.g. visual block then S")
+" See also :h nvim-surround.usage
 nmap  <leader>s" ysiw"
 nmap  <leader>s' ysiw'
 nmap  <leader>s` ysiw`
