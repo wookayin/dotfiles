@@ -54,3 +54,4 @@ vim.cmd [[
 
 -- buffer-local keymap
 vim.keymap.set('n', '<M-i>', '<cmd>Inspect<CR>', { buffer = true, desc = ':Inspect' })
+vim.keymap.set('x', '<leader>|', 'ga*|', { buffer = true, remap = true, desc = 'Align markdown table' })
