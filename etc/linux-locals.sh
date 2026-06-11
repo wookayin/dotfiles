@@ -10,7 +10,7 @@ set -o pipefail
 PREFIX="$HOME/.local"
 mkdir -p $PREFIX/share/zsh/site-functions
 
-DOTFILES_TMPDIR="/tmp/$USER/linux-locals"
+DOTFILES_TMPDIR="${TMPDIR:-/tmp}/$USER/linux-locals"
 
 COLOR_NONE="\033[0m"
 COLOR_RED="\033[0;31m"
