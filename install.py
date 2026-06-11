@@ -108,12 +108,12 @@ post_actions += [  # Check symbolic link at $HOME
     for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
         if ! readlink $f >/dev/null; then
             echo -e "\033[0;31m\
-WARNING: $f is not a symbolic link to ~/.dotfiles.
+ERROR: $f is not a symbolic link to ~/.dotfiles.
 Please remove your local folder/file $f and try again.\033[0m"
             echo -n "(Press any key to continue) "; read user_confirm
-            exit 1;
+            exit 100;
         else
-            echo "$f --> $(readlink $f)"
+            echo "OK: $f --> $(readlink $f)"
         fi
     done
 ''']
@@ -483,6 +483,8 @@ for action in post_actions:
     if exitcode != 0:
         errors.append(action_title)
         log(RED("FAILED (exit code: %d): %s" % (exitcode, action_title)))
+    if exitcode == 100:  # FATAL, should abort
+        sys.exit(100)
 
 log("\n")
 if errors:
