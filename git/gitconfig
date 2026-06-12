@@ -1,5 +1,6 @@
 # vim: set ft=gitconfig noet:
 # @seealso https://www.kernel.org/pub/software/scm/git/docs/git-config.html
+# @seealso ~/.gitconfig.secret for local config (not git-tracked)
 
 [core]
 	excludesfile = ~/.gitignore
