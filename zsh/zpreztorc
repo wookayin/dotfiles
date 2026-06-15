@@ -34,11 +34,11 @@ zstyle ':prezto:load' pmodule \
   'archive' \
   'rsync' \
   'completion' \
-  'prompt' \
   'fasd' \
-  'ruby' \
   'git'
   # Disabled:
+  # 'prompt' \
+  # 'ruby' \
   # 'node' \
 
 #
