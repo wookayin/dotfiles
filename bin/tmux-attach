@@ -45,7 +45,7 @@ function tmux-attach() {
 function tmux-attach-main() {
   # The main entrypoint allows fuzzy matching
   local query="${1:-}"
-  local chosen
+  local chosen=""
 
   # Pre-filter without UI: avoids popup blink on single match, and handles no-match early.
   if [[ -n "$query" ]]; then
