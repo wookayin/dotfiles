@@ -230,6 +230,34 @@ install_node() {
   "$NPM" install -g http-server diff-so-fancy || true;
 }
 
+install_bun() {
+  # Install bun javascript runtime at ~/.bun/bin/bun (Linux x86-64 only)
+  # Ported from https://bun.com/install (I don't want it to touch zshrc for PATH & completion)
+
+  local target=linux-x64
+  # Use baseline build if AVX2 is not supported
+  if [[ $(grep -c avx2 /proc/cpuinfo 2>/dev/null || echo 0) -eq 0 ]]; then
+    target="$target-baseline"
+  fi
+
+  local install_dir="${BUN_INSTALL:-$HOME/.bun}"
+  local bin_dir="$install_dir/bin"
+  local exe="$bin_dir/bun"
+  local bun_uri="https://github.com/oven-sh/bun/releases/latest/download/bun-$target.zip"
+
+  mkdir -p "$bin_dir"
+
+  echo "Downloading bun: $bun_uri ..."
+  curl --fail --location --progress-bar --output "$exe.zip" "$bun_uri"
+  unzip -oqd "$bin_dir" "$exe.zip"
+  mv -f "$bin_dir/bun-$target/bun" "$exe"
+  chmod +x "$exe"
+  rm -rf "$bin_dir/bun-$target" "$exe.zip"
+
+  _which bun
+  bun --version
+}
+
 install_tree-sitter() {
   # Ensure node
   if ! type "npm" >/dev/null 2>&1; then

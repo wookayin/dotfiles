@@ -127,6 +127,7 @@ fi
 # Node: Bun, Yarn, etc.
 prepend_path "$HOME/.bun/bin"
 prepend_path "$HOME/.yarn/bin"
+fpath=("$HOME/.bun/completions" $fpath)
 
 # GO
 # $GOPATH is where go-installed libraries or command line utilities will be installed.
