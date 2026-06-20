@@ -81,7 +81,7 @@ function M.setup_notify()
   --- @param msg string Content of the notification to show to the user.
   --- @param level integer|nil One of the values from |vim.log.levels|.
   --- @param opts config.ui.notify.Config?
-  vim.notify = function(msg, level, opts)
+  local vim_notify = function(msg, level, opts)
     vim.validate('msg', msg, 'string')
     vim.validate('level', level, {'number', 'string'}, true)  -- allows string for convenience
     vim.validate('opts', opts, 'table', true)  -- opts can be optional
@@ -113,6 +113,11 @@ function M.setup_notify()
     end
 
     return require("notify")(msg, level, opts)
+  end
+
+  local is_headless = #vim.api.nvim_list_uis() == 0
+  if not is_headless then
+    vim.notify = vim_notify
   end
 
   require("config.telescope").on_ready(function()
