@@ -11,6 +11,7 @@
 
 local TERM = os.getenv('TERM') or ''
 local condition = vim.fn.has('nvim-0.7.0') > 0 and (
+  TERM == "tmux-256color" or
   TERM == "wezterm" or
   TERM == "alacritty" or
   TERM:match("^xterm")
