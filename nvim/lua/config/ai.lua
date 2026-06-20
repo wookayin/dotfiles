@@ -99,7 +99,7 @@ function M.setup_claude()
   vim.keymap.set('i', '<F8>', '<Cmd>Claude<CR>')
   vim.keymap.set('x', '<F8>', '<Cmd>Claude send<CR>')
 
-  local augroup = vim.api.nvim_create_augroup('config.keymap', { clear = true })
+  local augroup = vim.api.nvim_create_augroup('config.ai.keymap', { clear = true })
   vim.api.nvim_create_autocmd('FileType', {
     pattern = 'snacks_terminal',  -- assuming :Claude runs on snacks terminal
     group = augroup,
@@ -107,6 +107,18 @@ function M.setup_claude()
       vim.keymap.set('t', '<F8>', '<Cmd>Claude<CR>', { buffer = true })
     end,
   })
+
+  --- Keymaps to remote control Claude Code
+
+  -- Send a keystroke (e.g. answering a menu prompt) to the Claude terminal without moving focus
+  local function claude_send_key(text)
+    require('claudecode.terminal').send_to_terminal(text, { submit = false, focus = false })
+  end
+  vim.keymap.set('n', '<leader>C1', function() claude_send_key('1') end, { desc = 'Send "1" to Claude' })
+  vim.keymap.set('n', '<leader>C2', function() claude_send_key('2') end, { desc = 'Send "2" to Claude' })
+  vim.keymap.set('n', '<leader>C3', function() claude_send_key('3') end, { desc = 'Send "3" to Claude' })
+  vim.keymap.set('n', '<leader>C4', function() claude_send_key('4') end, { desc = 'Send "4" to Claude' })
+  vim.keymap.set('n', '<leader>C<CR>', function() claude_send_key('\n') end, { desc = 'Send <CR> (Enter) to Claude' })
 
 end
 
