@@ -11,14 +11,22 @@ alias sf='fasd -sif'     # interactive file selection
 alias zz='fasd_cd -d -i' # cd with interactive selection
 
 function z() {
-    # cd, same functionality as j in autojump
-    # need to strip trailing '/' or recognize the existing path as-is
-    # because fasd_cd won't accept absolute path
-    local arg=${@%$'/'}
-    fasd_cd -d "$arg"
+  # Need to strip trailing '/' or recognize the existing path as-is
+  # because fasd_cd won't accept absolute path
+  local arg=${@%$'/'}
+  fasd_cd -d "$arg"
 
-    # rename tmux window after jump (unless manually set, and if it's the only pane)
-    if [[ -n "$TMUX" ]] && [[ $(tmux list-panes | wc -l) == "1" ]]; then
-        tmux rename-window "${PWD##*/}"
+  # Auto-rename tmux window after jump
+  # if it's the only pane for the current window and not manually set (distinguished by prefix)
+  local autotitle_prefix="󰉋 "
+  if [[ -n "$TMUX" ]]; then
+    local num_panes=$(tmux display-message -p '#{window_panes}')
+    if [[ $num_panes -eq 1 ]]; then
+      local current_pane_name=$(tmux display-message -p '#W')
+      # auto-renamed tmux window names should have a prefix
+      if [[ "$current_pane_name" == "zsh" || "$current_pane_name" == "$autotitle_prefix"* ]]; then
+        tmux rename-window "$autotitle_prefix${PWD##*/}"
+      fi
     fi
+  fi
 }
