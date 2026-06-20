@@ -121,13 +121,39 @@ function M.setup_notify()
   end)
 end
 
+function M.setup_input()
+  -- https://github.com/r0nsha/multinput.nvim#configuration
+  -- $VIMPLUG/multinput.nvim/lua/multinput/config.lua
+  ---@diagnostic disable-next-line: missing-fields
+  require('multinput').setup {
+    opts = {
+      numbers = 'multiline',
+    },
+    completion = true,
+    win = {
+      title = 'Input: ',
+      border = 'rounded',
+      relative = 'cursor',
+      col = -1,
+    },
+  }
+
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'multinput',
+    callback = function(ev)
+      -- <C-c> cancels without confirming
+      vim.keymap.set('i', '<C-c>', '<Esc>q', { buffer = ev.buf, remap = true })
+    end,
+  })
+end
+
 function M.setup_snacks()
   -- https://github.com/folke/snacks.nvim?tab=readme-ov-file#-usage
   require('snacks').setup {
     --- $VIMPLUG/snacks.nvim/docs/input.md
     input = {
-      -- Use as vim.ui.input()
-      enabled = true,
+      -- Do NOT use as vim.ui.input()
+      enabled = false,
     },
     --- $VIMPLUG/snacks.nvim/docs/styles.md
     styles = {
@@ -215,6 +241,7 @@ end
 if ... == nil then
   M.setup_extui()
   M.setup_notify()
+  M.setup_input()
   -- M.setup_snacks()  -- does not support setup() again
 end
 

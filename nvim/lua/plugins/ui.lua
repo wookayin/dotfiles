@@ -15,6 +15,13 @@ return {
     config = require('config.ui').setup_snacks,
   };
 
+  -- for vim.ui.input() with multiline support
+  Plug 'wookayin/multinput.nvim' {
+    config = function()
+      require('config.ui').setup_input()
+    end
+  };
+
   -- FZF & Grep
   Plug 'junegunn/fzf' {
     name = 'fzf',
