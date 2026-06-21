@@ -1,7 +1,8 @@
 # Custom alias and functions for ZSH
 # see also: ~/.zsh/zsh.d/alias.local.zsh
 
-# -------- Utilities ----------
+# ----------------------------------------------------------------
+# Utilities {{{
 _version_check() {
     # _version_check curver targetver: returns true (zero exit code) if $curver >= $targetver
     curver="$1"; targetver="$2";
@@ -38,6 +39,9 @@ function fpath() {
     local f; for f in `fpath`; do find -L $f -maxdepth 1 -type f -name "$@" | xargs eza; done
   fi
 }
+
+# ---------------------------------------------------------------- }}}
+# Linux Commands {{{
 
 function just() {
   if [ $# == 0 ]; then
@@ -104,7 +108,8 @@ function plenary-busted() {
     fi
 }
 
-# Tmux ========================================= {{{
+# ---------------------------------------------------------------- }}}
+# tmux {{{
 
 function tmux-wrapper() {
     if [ $# -lt 1 ]; then
@@ -156,8 +161,8 @@ alias set-pane-title='set-window-title'
 alias tmux-pane-title='set-window-title'
 alias tmux-window-title='tmux rename-window'
 
-# }}}
-# SSH ========================================= {{{
+# ---------------------------------------------------------------- }}}
+# SSH {{{
 
 if [[ "$(uname)" == "Darwin" ]] && (( $+commands[iterm-tab-color] )); then
   ssh() {
@@ -181,9 +186,8 @@ compdef '_hosts' ssh-tmuxa
 # skip ssh host key verification
 alias ssh-noverify='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
 
-# }}}
-
-# More Git aliases ============================= {{{
+# ---------------------------------------------------------------- }}}
+# Git {{{
 # (overrides prezto's default git/alias.zsh)
 
 GIT_VERSION=$(git --version | awk '{print $3}')
@@ -313,10 +317,8 @@ function cd-git-root() {
 # Unalias some prezto aliases due to conflict
 if alias gpt > /dev/null; then unalias gpt; fi
 
-# }}}
-
-
-# Python ======================================= {{{
+# ---------------------------------------------------------------- }}}
+# Python {{{
 
 # anaconda
 alias sa='conda activate'   # source activate is deprecated.
@@ -413,8 +415,9 @@ function pipdeptree-vim() {   # e.g. pipdeptree -p <package>
   python -m pipdeptree "$@" | vim - +"set ft=config foldmethod=indent" +"norm zR"
 }
 
-# }}}
 
+# ---------------------------------------------------------------- }}}
+# Misc. {{{
 
 # Some useful aliases for CLI scripting (pipe, etc)
 alias awk1="awk '{print \$1}'"
@@ -429,7 +432,8 @@ alias awk9="awk '{print \$9}'"
 alias awklast="awk '{print \$\(NF\)}'"
 
 
-# Codes ===================================== {{{
+# ---------------------------------------------------------------- }}}
+# Coding {{{
 
 alias prettyxml='xmllint --format - | pygmentize -l xml'
 
@@ -438,9 +442,9 @@ if (( $+commands[cdiff] )); then
     alias sdiff="cdiff -s -w0"
 fi
 
-# }}}
 
-# Google Cloud ============================== {{{
+# ---------------------------------------------------------------- }}}
+# Google Cloud (gcloud) {{{
 
 function gscat() {
   gsutil cat "$@"
@@ -457,10 +461,9 @@ function gcp-instances-fzf() {
     | awk '{print $1}'
 }
 
-# }}}
+# ---------------------------------------------------------------- }}}
+# FZF Magics {{{
 
-
-# FZF magics ======================================= {{{
 
 F() {
   # something can be used as a interactive pager... e.g. fzf --help | F
@@ -477,9 +480,9 @@ alias FR='fzf-raw'
 # see also ~/.dotfiles/bin: pid.fzf, rg.fzf, etc.
 alias pidpick='pid.fzf'
 
-# }}}
 
-# Etc ======================================= {{{
+# ---------------------------------------------------------------- }}}
+# Misc. {{{
 
 alias iterm-tab-color="noglob iterm-tab-color"
 
@@ -519,6 +522,9 @@ function site-packages() {
         echo "$base/$1"
     fi;
 }
+
+# ---------------------------------------------------------------- }}}
+# MacOS specific {{{
 
 # open some macOS applications
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -585,3 +591,5 @@ if (( ! $+commands[tb] )); then
 fi
 
 # }}}
+
+# vim: set foldmethod=marker:
