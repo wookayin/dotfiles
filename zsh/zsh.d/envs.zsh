@@ -35,7 +35,9 @@ fi
 
 # ALT-C: FASD_CD (recent directories as in 'z') with preview
 export FZF_ALT_C_COMMAND='fasd -d -l -R'
-export FZF_ALT_C_OPTS="--tmux=70% --preview 'tree -C {} -I \"node_modules|.git|__pycache__\" | head -200' --prompt 'cd> ' --bind 'ctrl-/:toggle-preview'"
+export FZF_ALT_C_OPTS="--no-tmux --delimiter='\t' --prompt 'Z> ' \
+  --preview 'tree -C {-1} -I \"node_modules|.git|__pycache__\" | head -200' --preview-window 'right,30%' \
+  --bind 'ctrl-/:toggle-preview' --footer '<ctrl-/> to toggle preview'"
 
 export FZF_COMPLETION_OPTS="$FZF_CTRL_T_OPTS --no-preview"
 

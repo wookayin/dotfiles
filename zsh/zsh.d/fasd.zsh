@@ -10,7 +10,29 @@ alias sd='fasd -sid'     # interactive directory selection
 alias sf='fasd -sif'     # interactive file selection
 alias zz='fasd_cd -d -i' # cd with interactive selection
 
+function highlight_last_path_segment() {
+  local color="$(tput setaf 3)"  # color_yellow
+  local reset="$(tput sgr0)"  # reset, i.e. \033[0m
+  sed -e "s#\(.*\)/\(.*\)#\1/${color}\2${reset}#"
+}
+
 function z() {
+  # cd, same functionality as j in autojump
+
+  # When no argument is provided, launch fzf to select interactively
+  if [[ -z "$@" ]]; then
+    # TODO consolidate with fzf-cd-widget (FZF_ALT_C_COMMAND)
+    local dir=$(
+      fasd -d -R \
+        | sed -E 's/^([0-9.]+)[[:space:]]+/\1\t/' \
+        | highlight_last_path_segment \
+        | fzf --ansi --scheme=path --no-sort --height='50%' --reverse \
+          --delimiter='\t' --nth 2 --accept-nth 2 --color "fg:dim,nth:regular" \
+          "${(@Q)${(z)FZF_ALT_C_OPTS:-}}"
+    ) && echo "$dir" && cd "$dir"
+    return $?
+  fi
+
   # Need to strip trailing '/' or recognize the existing path as-is
   # because fasd_cd won't accept absolute path
   local arg=${@%$'/'}
