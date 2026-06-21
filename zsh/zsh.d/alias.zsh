@@ -431,6 +431,11 @@ alias awk8="awk '{print \$8}'"
 alias awk9="awk '{print \$9}'"
 alias awklast="awk '{print \$\(NF\)}'"
 
+# ---------------------------------------------------------------- }}}
+# AI Tools {{{
+
+# RIP Gemini => Antigravity
+alias gemini='agy'
 
 # ---------------------------------------------------------------- }}}
 # Coding {{{
