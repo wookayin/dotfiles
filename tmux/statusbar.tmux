@@ -134,7 +134,7 @@ component-cpu() {
   local colors=(${reds[1]} ${reds[2]} ${reds[3]} ${reds[4]} ${reds[7]})  # not linear
 
   cpu-usage | while IFS= read -r cpu_percentage; do
-    local bgcolor="${colors[$(echo "$cpu_percentage/20" | bc)]:-${colors[-1]}}"
+    local bgcolor="${colors[$(( ${cpu_percentage%.*} / 20 ))]:-${colors[-1]}}"
     local colorfmt="bg=$bgcolor,fg=white"
 
     printf "#[bg=#1c1c1c,fg=$bgcolor,nobold,nounderscore,noitalics]"
@@ -149,11 +149,12 @@ component-gpu() {
       print("%.1f" % (sum(c.utilization for c in G) / len(G)))' \
   )  # average gpu utilization. range: 0~100
   if [ -n "$gpu_utilization" ]; then
-    if   (( $(echo "$gpu_utilization >= 90" | bc -l) )); then bgcolor='#40C057'; fgcolor='black';
-    elif (( $(echo "$gpu_utilization >= 75" | bc -l) )); then bgcolor='#3EAE51'; fgcolor='black';
-    elif (( $(echo "$gpu_utilization >= 50" | bc -l) )); then bgcolor='#398A44'; fgcolor='black';
-    elif (( $(echo "$gpu_utilization >= 25" | bc -l) )); then bgcolor='#356537'; fgcolor='white';
-    else                                                      bgcolor='#30412A'; fgcolor='white';
+    local gpu_int="${gpu_utilization%.*}"  # integer part, for bc-less comparison
+    if   (( gpu_int >= 90 )); then bgcolor='#40C057'; fgcolor='black';
+    elif (( gpu_int >= 75 )); then bgcolor='#3EAE51'; fgcolor='black';
+    elif (( gpu_int >= 50 )); then bgcolor='#398A44'; fgcolor='black';
+    elif (( gpu_int >= 25 )); then bgcolor='#356537'; fgcolor='white';
+    else                           bgcolor='#30412A'; fgcolor='white';
     fi
   fi
   local colorfmt="bg=$bgcolor,fg=$fgcolor"
