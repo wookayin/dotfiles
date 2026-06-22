@@ -431,6 +431,14 @@ alias awk8="awk '{print \$8}'"
 alias awk9="awk '{print \$9}'"
 alias awklast="awk '{print \$\(NF\)}'"
 
+# ncdu: stay one the same disk (-x), use multithreading by default
+# macOS => -x is not enough, exclude /System/Volumes/Data, otherwise infinite loop
+if [[ "$(uname)" == "Darwin" ]]; then
+  alias ncdu='ncdu -t8 -x --exclude /System/Volumes/Data'
+else
+  alias ncdu='ncdu -t8 -x'
+fi
+
 # ---------------------------------------------------------------- }}}
 # AI Tools {{{
 
