@@ -76,6 +76,11 @@ function M.setup_neotree()
         indent_size = 2,
         padding = 0, -- extra padding on the left hand side
       },
+      symlink_target = {
+        enabled = true,
+        target_display = "auto", -- see GH-1609
+      },
+      ---@diagnostic disable-next-line: missing-fields
       icon = {
         default = "󰈙",  -- nf-md-file_document
         folder_closed = "󰉋",  -- nf-md-folder
