@@ -258,6 +258,27 @@ install_bun() {
   bun --version
 }
 
+install_rust() {
+  # rust toolchain, via rustup https://rustup.rs/
+  # https://rust-lang.github.io/rustup/concepts/profiles.html
+  local profile="default"
+
+  curl --proto '=https' --tlsv1.2 https://sh.rustup.rs | bash -s -- \
+    --no-modify-path --profile "$profile" -y
+
+  # zsh shell completions
+  source "$HOME/.cargo/env"
+  echo -e "\nInstalling shell completions..."
+  ( PS4="\033[1;33m>>>\033[0m "; set -x;
+    "$HOME/.cargo/bin/rustup" completions zsh > "$HOME/.local/share/zsh/site-functions/_rustup"
+    "$HOME/.cargo/bin/rustup" completions zsh cargo > "$HOME/.local/share/zsh/site-functions/_cargo"
+  )
+
+  _which rustup && rustup --version
+  _which rustc && rustc --version
+  _which cargo && cargo --version
+}
+
 install_tree-sitter() {
   # Ensure node
   if ! type "npm" >/dev/null 2>&1; then
