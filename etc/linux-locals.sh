@@ -594,6 +594,21 @@ install_lazygit() {
   $PREFIX/bin/lazygit --version
 }
 
+install_ncdu() {
+  # https://dev.yorhel.nl/ncdu/changes2 (downloads static linux binary)
+  local VERSION="2.9.1"  # 2025-08-21
+  local URL="https://dev.yorhel.nl/download/ncdu-${VERSION}-linux-x86_64.tar.gz"
+  local TMP_DIR="$DOTFILES_TMPDIR/ncdu"; mkdir -p $TMP_DIR
+
+  wget -N -O $TMP_DIR/ncdu.tar.gz "$URL"
+  tar -xvzf $TMP_DIR/ncdu.tar.gz -C $TMP_DIR
+  cp -v "$TMP_DIR/ncdu" "$PREFIX/bin"
+  chmod +x "$PREFIX/bin/ncdu"
+
+  _which ncdu
+  $PREFIX/bin/ncdu --version
+}
+
 install_rsync() {
   local URL="https://www.samba.org/ftp/rsync/src/rsync-3.2.4.tar.gz"
   local TMP_DIR="$DOTFILES_TMPDIR/rsync"; mkdir -p $TMP_DIR
