@@ -437,6 +437,9 @@ alias awklast="awk '{print \$\(NF\)}'"
 # RIP Gemini => Antigravity
 alias gemini='agy'
 
+# Do not need to connect internet to fetch embedded pricing (for gemini)
+alias ccusage='ccusage --offline'
+
 # ---------------------------------------------------------------- }}}
 # Coding {{{
 
