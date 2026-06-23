@@ -25,6 +25,7 @@ Thumbs.db
 *.iml
 .project
 .classpath
+.factorypath
 .settings/
 .ipynb_checkpoints/
 tags
