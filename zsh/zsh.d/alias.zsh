@@ -208,6 +208,11 @@ if _version_check $GIT_VERSION "2.0"; then
 else
   alias gha='gh --all'   # git < 1.9 has no --exclude option
 fi
+
+alias gl='ghn'   # mnemonic: git log
+alias gla='gl --exclude=refs/stash --all'  # requires Git 2.0+
+alias glA='gl --all'
+
 function ghb() {
   local branch="HEAD"
   if [[ "$#" -gt 0 && "$1" != -* ]]; then
