@@ -115,7 +115,7 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
     Use Ghostty, wezterm, kitty, or iTerm. Don't use built-in Terminal.
   - Run `:set notermguicolors` to temporarily disable 24-bit colors.
 
-- Does tmux look weird? Make sure that tmux version is [3.3](etc/linux-locals.sh) or higher.
+- Does tmux look weird? Make sure that tmux version is [3.4](etc/linux-locals.sh) or higher.
     - Run `$ dotfiles install tmux` to install `tmux` into `$HOME/.local/bin`, if you do not have sudo.
 
 - If you are still lost, or you've found a bug, please feel free to contact me or raise an issue ---
