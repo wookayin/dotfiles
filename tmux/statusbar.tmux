@@ -7,6 +7,9 @@ set -o pipefail
 
 cwd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+theme_color_base="$(tmux show-options -gqv @theme_color_base)"
+theme_color_base="${theme_color_base:-"#0087af"}"
+
 main_debounced() {
   # Call `main`, but with some debouncing because the script will be called many times successively on resizing.
   local current_tick=$(tmux show-option -gqv @statusbar_debounce_tick 2>/dev/null)
@@ -29,7 +32,7 @@ main() {
   # Left status: background color w.r.t per-host prompt color
   local TMUX_STATUS_BG
   if [[ -z "$PROMPT_HOST_COLOR" ]]; then
-      TMUX_STATUS_BG="#0087af"   # default
+      TMUX_STATUS_BG="$theme_color_base"   # default
   elif [[ "$PROMPT_HOST_COLOR" =~ ^\#[0-9A-Za-z]{6}$ ]]; then
       TMUX_STATUS_BG="$PROMPT_HOST_COLOR"
   elif [[ "$PROMPT_HOST_COLOR" =~ ^[0-9]+$ ]]; then
