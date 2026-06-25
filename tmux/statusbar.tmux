@@ -208,11 +208,12 @@ component-ram() {
   if [ ! $? -eq 0 ]; then return; fi
   sleep 0.9;  # do not query too frequently
 
+  mem_percentage="${mem_percentage%.*}"  # integer part, for bc-less comparison
   local bgcolor fgcolor
-  if   (( $(echo "$mem_percentage >= 90" | bc -l) )); then bgcolor='#e67700'; fgcolor='black';
-  elif (( $(echo "$mem_percentage >= 75" | bc -l) )); then bgcolor='#B57A0A'; fgcolor='black';
-  elif (( $(echo "$mem_percentage >= 50" | bc -l) )); then bgcolor='#755515'; fgcolor='white';
-  else                                                     bgcolor='#35301F'; fgcolor='white';
+  if   (( mem_percentage >= 90 )); then bgcolor='#E67700'; fgcolor='black';
+  elif (( mem_percentage >= 75 )); then bgcolor='#B57A0A'; fgcolor='black';
+  elif (( mem_percentage >= 50 )); then bgcolor='#755515'; fgcolor='white';
+  else                                  bgcolor='#35301F'; fgcolor='white';
   fi
   local colorfmt="bg=$bgcolor,fg=$fgcolor"
   printf "#[$colorfmt] 󰍛 %.1f/%.0f GB #[default]" $mem_used $mem_total
