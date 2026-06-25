@@ -81,12 +81,13 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
       they will not be overwritten.
       In such cases you should delete these files *manually*.
 
-- Q: I see some weird icons like `⍰` in (neo)vim or in the [statusline](https://github.com/powerline/powerline#vim-statusline).
+- Q: I see some weird icons like `⍰` in (neo)vim [statusline](https://github.com/powerline/powerline#vim-statusline), or in tmux statusbar.
   - A: Install [Nerd fonts](https://github.com/ryanoasis/nerd-fonts).
        e.g., `JetBrainsMono Nerd Font Mono`
-  - Mac users can install nerd fonts via: `brew install --cask font-*-nerd-font`.
-    - Minimal fonts only: `brew install --cask font-jetbrains-mono-nerd-font`
-  - To upgrade existing font installations, try `brew reinstall --cask $(brew list | grep nerd-font)`.
+    - Mac users can install nerd fonts via: `brew install --cask font-*-nerd-font`
+      (or `brew install --cask font-jetbrains-mono-nerd-font` to install minimal fonts only)
+    - To upgrade existing font installations, try `brew reinstall --cask $(brew list | grep nerd-font)`.
+  - A: Alternatively, iTerm (3.3.7+) users may want to use an option: Text → Use built-in Powerline glyphs.
 
 - If neovim + treesitter emits an error like `query: invalid node type`, run `:TSUpdate` (and wait for installation is done).
   - See [nvim-treesitter#3092](https://github.com/nvim-treesitter/nvim-treesitter/issues/3092) for more details.
