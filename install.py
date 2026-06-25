@@ -178,7 +178,7 @@ post_actions += [  # tmux plugins
     '~/.tmux/plugins/tpm/bin/install_plugins',
 
     r'''#!/bin/bash
-    # Check tmux version >= 2.3 (or use `dotfiles install tmux`)
+    # Check tmux version >= 3.2 (or use `dotfiles install tmux`)
     _version_check() {    # target_ver current_ver
         [ "$1" = "$(echo -e "$1\n$2" | sort -s -t- -k 2,2n | sort -t. -s -k 1,1n -k 2,2n | head -n1)" ]
     }
@@ -186,10 +186,11 @@ post_actions += [  # tmux plugins
         echo -e "\033[0;33mInstalling tmux because not installed globally.\033[0m"
         bin/dotfiles install tmux
         export PATH="$PATH:~/.local/bin"
-    elif ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
+    elif ! _version_check "3.2" "$(tmux -V | cut -d' ' -f2)"; then
         echo -en "\033[0;33m"
-        echo -e "$(tmux -V) is too old. Contact system administrator, or:"
-        echo -e "  $ dotfiles install tmux  \033[0m (installs to ~/.local/, if you don't have sudo)"
+        echo -e "$(tmux -V) is too old. tmux 3.2+ is required.\n"
+        echo -e "Contact system administrator, or run:"
+        echo -e "\033[0m  $ dotfiles install tmux  \033[0;33m # (installs to ~/.local/, if you don't have sudo)"
         exit 1;
     else
         echo "$(which tmux): $(tmux -V)"
