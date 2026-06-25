@@ -117,6 +117,7 @@ $ dotfiles install ripgrep        # -> ~/.local/bin/rg
 
 - Does tmux look weird? Make sure that tmux version is [3.4](etc/linux-locals.sh) or higher.
     - Run `$ dotfiles install tmux` to install `tmux` into `$HOME/.local/bin`, if you do not have sudo.
+    - Install "Nerd font"s if your font cannot render unicode glyphs properly (e.g. ``, ``).
 
 - If you are still lost, or you've found a bug, please feel free to contact me or raise an issue ---
   I will be happy to assist.

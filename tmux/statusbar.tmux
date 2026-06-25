@@ -56,7 +56,7 @@ main() {
   else  # localhost
     status_left+=" 💻 "
   fi
-  status_left+="#[fg=$TMUX_STATUS_HOST_BG,bg=#1c1c1c,nobold]"
+  # status_left+="#[fg=$TMUX_STATUS_HOST_BG,bg=#1c1c1c,nobold]"
 
   tmux set -g status-left "$status_left"
 
@@ -104,19 +104,25 @@ main() {
   _window_status_format+=(
     "#[fg=#{@status_window_color},bg=#1c1c1c] ${window_status_activity}${window_status_marked_style}#I#F"
     "#[fg=#bcbcbc,bg=#1c1c1c] #W"
-    "#[bg=#1c1c1c,nodotted-underscore] "
+    "#[fg=#3f3f3f,bg=#1c1c1c,nodotted-underscore]▕"
   )
   tmux setw -g window-status-format "$(printf "%s" "${_window_status_format[@]}")"
 
   # [active window]
-  #   - #W: use blue-ish color.
-  #   - If panes are synchronized, display the information (SYNC).
-  local -a _window_status_current_format=(
-    "#[fg=#1c1c1c,bg=#{@status_window_color},nobold,nounderscore,noitalics]"
-    "#[fg=#{@status_window_num_color},bg=#{@status_window_color}] #{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F"
+  local -a _window_status_current_format=() 
+  local border_mask R="#[reverse]"
+  border_mask=("${R}" "${R}")       # rounded
+  # border_mask=("${R}🭅" "${R}🭡")       # slant
+  # border_mask=(" " " ")             # powerline
+  # border_mask=(" " "#[fg=#3f3f3f]▕")  # filled
+
+  _window_status_current_format+=(
+    "#[fg=#1c1c1c,bg=#{@status_window_color},nobold,nounderscore,noitalics]${border_mask[0]}#[noreverse]"
+    "#[fg=#{@status_window_num_color},bg=#{@status_window_color}]#{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F"
     "#[fg=#ffffff,bg=#{@status_window_color},bold] #W"
-    "#{?pane_synchronized,#[fg=#d7ff00] (SYNC),} "
-    "#[fg=#{@status_window_color},bg=#1c1c1c,nobold,nounderscore,noitalics]"
+    # If panes are synchronized, display the information (SYNC)
+    "#{?pane_synchronized,#[fg=#d7ff00] (SYNC),}"
+    "#[fg=#1c1c1c,bg=#{@status_window_color},nobold,nounderscore,noitalics]${border_mask[1]}#[noreverse]"
   )
   tmux setw -g window-status-current-format "$(printf "%s" "${_window_status_current_format[@]}")"
 
