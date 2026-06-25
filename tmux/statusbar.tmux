@@ -26,6 +26,7 @@ main_debounced() {
 }
 
 main() {
+  # This will be called once on startup and when the statusbar is resized, run shortly (not as a daemon).
   # NOTE: upon resizing, call the script (`main_debounced`) in the background: multiple concurrent invocations.
   tmux set-hook -g client-resized "run-shell -b '~/.tmux/statusbar.tmux main_debounced'"
 
@@ -69,6 +70,11 @@ main() {
   tmux set -g status-right-length $STATUS_RIGHT_LENGTH
   tmux set-hook -g client-attached "set -g status-right-length 1; run-shell 'sleep 1.1'; set -g status-right-length $STATUS_RIGHT_LENGTH;"
 
+  # Window colors (@status_window_color): defaults to the tmux theme's base color.
+  # Per-window customization is allowed, use 'tmux-window-color <color> [num-color]'
+  tmux set -g @status_window_color "${theme_color_base}"
+  tmux set -g @status_window_num_color "#5fffff"
+
   # [right status] prefix, datetime
   local status_right=""
   status_right+="#[fg=#ffffff,bg=#005fd7]#{s/^(.+)$/ \\1 :#{s/root//:client_key_table}}"
@@ -92,22 +98,25 @@ main() {
 
   # [window] number (#I), window flag (#F), window name (#W)
   #   - #F: e.g., Marked or Zoomed. If marked (i.e. #F contains 'M'), highlight it.
-  tmux setw -g window-status-format "\
-#[fg=#0087af,bg=#1c1c1c] #{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F\
-#[fg=#bcbcbc,bg=#1c1c1c] #W\
-#[bg=#1c1c1c] \
-";
+  local -a _window_status_format=(
+    "#[fg=#{@status_window_color},bg=#1c1c1c] #{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F"
+    "#[fg=#bcbcbc,bg=#1c1c1c] #W"
+    "#[bg=#1c1c1c] "
+  )
+  tmux setw -g window-status-format "$(printf "%s" "${_window_status_format[@]}")"
 
   # [active window]
   #   - #W: use blue-ish color.
   #   - If panes are synchronized, display the information (SYNC).
-  tmux setw -g window-status-current-format "\
-#[fg=#1c1c1c,bg=#0087af,nobold,nounderscore,noitalics]\
-#[fg=#5fffff,bg=#0087af] #{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F\
-#[fg=#ffffff,bg=#0087af,bold] #W\
-#{?pane_synchronized,#[fg=#d7ff00] (SYNC),} \
-#[fg=#0087af,bg=#1c1c1c,nobold,nounderscore,noitalics]\
-";
+  local -a _window_status_current_format=(
+    "#[fg=#1c1c1c,bg=#{@status_window_color},nobold,nounderscore,noitalics]"
+    "#[fg=#{@status_window_num_color},bg=#{@status_window_color}] #{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F"
+    "#[fg=#ffffff,bg=#{@status_window_color},bold] #W"
+    "#{?pane_synchronized,#[fg=#d7ff00] (SYNC),} "
+    "#[fg=#{@status_window_color},bg=#1c1c1c,nobold,nounderscore,noitalics]"
+  )
+  tmux setw -g window-status-current-format "$(printf "%s" "${_window_status_current_format[@]}")"
+
 }
 
 cpu-usage() {

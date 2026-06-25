@@ -160,6 +160,22 @@ function tmuxp {
 alias set-pane-title='set-window-title'
 alias tmux-pane-title='set-window-title'
 alias tmux-window-title='tmux rename-window'
+function tmux-window-color {
+  local color="${1:-}" num_color="${2:-}"
+  if [[ -z "$color" ]]; then
+    tmux show-option -wq @status_window_color
+    tmux show-option -wq @status_window_num_color
+  elif [[ "$color" != *reset* ]]; then
+    # TODO input validation for $color
+    tmux setw @status_window_color $color
+    if [[ -n "$num_color" ]]; then
+      tmux setw @status_window_num_color $num_color
+    fi
+  else
+    tmux setw -u @status_window_color
+    tmux setw -u @status_window_num_color
+  fi
+}
 
 # ---------------------------------------------------------------- }}}
 # SSH {{{
