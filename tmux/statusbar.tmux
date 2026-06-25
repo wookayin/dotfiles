@@ -98,10 +98,13 @@ main() {
 
   # [window] number (#I), window flag (#F), window name (#W)
   #   - #F: e.g., Marked or Zoomed. If marked (i.e. #F contains 'M'), highlight it.
-  local -a _window_status_format=(
-    "#[fg=#{@status_window_color},bg=#1c1c1c] #{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F"
+  local -a _window_status_format=()
+  local window_status_activity="#{?window_activity_flag,#[dotted-underscore]#[us=#7c7c7c],}"
+  local window_status_flag_style="#{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}"  # for '#F'
+  _window_status_format+=(
+    "#[fg=#{@status_window_color},bg=#1c1c1c] ${window_status_activity}${window_status_marked_style}#I#F"
     "#[fg=#bcbcbc,bg=#1c1c1c] #W"
-    "#[bg=#1c1c1c] "
+    "#[bg=#1c1c1c,nodotted-underscore] "
   )
   tmux setw -g window-status-format "$(printf "%s" "${_window_status_format[@]}")"
 
