@@ -1,7 +1,7 @@
 --- javascript.lua ftplugin
 
 -- Treesitter highlight
-require("config.treesitter").ensure_parsers_installed { "javascript" }
+require("config.treesitter").ensure_parsers_installed { "javascript", "jsdoc" }
 require("config.treesitter").setup_highlight("javascript")
 
 -- Use tab size 2
