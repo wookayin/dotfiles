@@ -150,6 +150,7 @@ local auto_lsp_servers = {
   ['cssls'] = true,
   ['clangd'] = true,
   ['rust_analyzer'] = true,
+  ['gopls'] = true,  -- go lang
   ['texlab'] = true,
   ['yamlls'] = true,
   ['taplo'] = true,  -- toml
