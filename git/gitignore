@@ -32,6 +32,10 @@ tags
 .vimspector.json
 .cache/
 
+# AI Tools
+*.local.json
+*.local.md
+
 # Build artifacts
 *.dSYM
 *.so
@@ -50,10 +54,6 @@ __pycache__
 # Node
 node_modules/
 npm-debug.log
-
-# AI Tools
-.claude/*.local.json
-*.local.md
 
 # Git
 .worktrees/
