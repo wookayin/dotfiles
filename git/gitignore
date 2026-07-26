@@ -35,6 +35,7 @@ tags
 # AI Tools
 *.local.json
 *.local.md
+**/.claude/.cc-writes/
 
 # Build artifacts
 *.dSYM
