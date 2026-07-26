@@ -6,6 +6,11 @@ local augroup = vim.api.nvim_create_augroup('config.options', { clear = true })
 -- Allow exrc
 vim.o.exrc = true
 
+-- Mouse Options
+-- You should also adjust OS-level mouse/trackpad wheel speed
+-- (using LinearMouse, Scroll Reverser, macOS builtin Pref "Scroll speed", etc.)
+vim.o.mousescroll = 'ver:1,hor:3'
+
 -- Automatically reload files changed externally, when focus is gained
 vim.o.autoread = true
 vim.api.nvim_create_autocmd('WinEnter', {
