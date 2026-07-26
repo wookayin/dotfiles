@@ -55,5 +55,8 @@ npm-debug.log
 .claude/*.local.json
 *.local.md
 
+# Git
+.worktrees/
+
 # Log files
 events.out.tfevents.*
