@@ -214,6 +214,9 @@ hi!      @command.bash             guifg=white
 hi! link @variable.bash            PreProc
 hi!      @variable.parameter.bash  guifg=NONE
 
+" YAML
+hi! link @property.yaml                      Identifier
+
 " Markdown
 hi!      @markup.raw.block.markdown          guibg=#222222                  " ```codeblock``` (injection)
 hi!      @markup.raw.markdown_inline         guifg=#ff5f87 guibg=#222222    " `code` (injection), fg is from Constant
