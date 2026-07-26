@@ -79,10 +79,7 @@ main() {
   local status_right=""
   status_right+="#[fg=#ffffff,bg=#005fd7]#{s/^(.+)$/ \\1 :#{s/root//:client_key_table}}"
   status_right+="#[default]"
-#[fg=#303030,bg=#1c1c1c,nobold,nounderscore,noitalics]\
-#[fg=#9e9e9e,bg=#303030] %Y-%m-%d  %H:%M \
-#[fg=#ffffff,bg=#303030,nobold,nounderscore,noitalics]\
-#";
+
   local session_name=$(tmux display-message -p '#S')
 
   # [right status] CPU Usage
@@ -94,6 +91,18 @@ main() {
     status_right+="#($cwd/statusbar.tmux component-gpu -S $session_name)"
   fi
 
+  # [hidden] AI agent status integration (background scan)
+  # Prints nothing, but run the command periodically (status-interval) as a side effect:
+  # window-scoped varaibles: @agent_kind_color, @agent_status_emoji
+  # TODO: separate this out to a `tmux-agents` plugin.
+  if command -v "tmux-agent-update" 2>&1 > /dev/null; then  # private preview for now :)
+    status_right+="#(tmux-agent-update -S $session_name)"
+    tmux set -g @status_window_color "#{?#{@agent_kind_color},#{@agent_kind_color},${theme_color_base}}"
+    tmux set -g @status_window_num_color "#{?#{@agent_kind_color},#ffffff,#5fffff}"
+  else
+    tmux set -g @agent_status_emoji ''
+  fi
+
   tmux set -g status-right "$status_right"
 
   # [window] number (#I), window flag (#F), window name (#W)
@@ -102,7 +111,9 @@ main() {
   local window_status_activity="#{?window_activity_flag,#[dotted-underscore]#[us=#7c7c7c],}"
   local window_status_flag_style="#{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}"  # for '#F'
   _window_status_format+=(
-    "#[fg=#{@status_window_color},bg=#1c1c1c] ${window_status_activity}${window_status_marked_style}#I#F"
+    " "
+    "#[fg=#{E:@status_window_color},bg=#1c1c1c]"
+    "#{@agent_status_emoji}${window_status_activity}${window_status_marked_style}#I#F"
     "#[fg=#bcbcbc,bg=#1c1c1c] #W"
     "#[fg=#3f3f3f,bg=#1c1c1c,nodotted-underscore]▕"
   )
@@ -117,12 +128,13 @@ main() {
   # border_mask=(" " "#[fg=#3f3f3f]▕")  # filled
 
   _window_status_current_format+=(
-    "#[fg=#1c1c1c,bg=#{@status_window_color},nobold,nounderscore,noitalics]${border_mask[0]}#[noreverse]"
-    "#[fg=#{@status_window_num_color},bg=#{@status_window_color}]#{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F"
-    "#[fg=#ffffff,bg=#{@status_window_color},bold] #W"
+    "#[fg=#1c1c1c,bg=#{E:@status_window_color},nobold,nounderscore,noitalics]${border_mask[0]}#[noreverse]"
+    "#[fg=#{E:@status_window_num_color},bg=#{E:@status_window_color}]"
+    "#{@agent_status_emoji}#{?#{m:*M*,#F},#[fg=#121212]#[bg=#5faf5f],}#I#F"
+    "#[fg=#ffffff,bg=#{E:@status_window_color},bold] #W"
     # If panes are synchronized, display the information (SYNC)
     "#{?pane_synchronized,#[fg=#d7ff00] (SYNC),}"
-    "#[fg=#1c1c1c,bg=#{@status_window_color},nobold,nounderscore,noitalics]${border_mask[1]}#[noreverse]"
+    "#[fg=#1c1c1c,bg=#{E:@status_window_color},nobold,nounderscore,noitalics]${border_mask[1]}#[noreverse]"
   )
   tmux setw -g window-status-current-format "$(printf "%s" "${_window_status_current_format[@]}")"
 
