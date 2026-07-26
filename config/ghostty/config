@@ -105,6 +105,7 @@ selection-word-chars = " \t'\"│`|,()[]{}<>$"
 # Etc.
 ####################################################################################################
 
+mouse-scroll-multiplier = precision:1,discrete:1
 macos-non-native-fullscreen = visible-menu
 
 
