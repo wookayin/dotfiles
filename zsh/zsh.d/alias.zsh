@@ -208,28 +208,34 @@ alias ssh-noverify='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/n
 
 GIT_VERSION=$(git --version | awk '{print $3}')
 
+# The github CLI: https://cli.github.com/
 alias github='\gh'
 
 function ghn() {
-    # git history, but truncate w.r.t the terminal size. Assumes not headless.
+    # git log (with graph), but truncate w.r.t the terminal size. Assumes not headless.
     # A few lines to subtract from the height: previous prompt (2) + blank (1) + current prompt (2)
     local num_lines=$(($(stty size | cut -d" " -f1) - 5))
     if [[ $num_lines -gt 25 ]]; then num_lines=$((num_lines - 5)); fi  # more margin
     git history --color=always -n$num_lines "$@" | head -n$num_lines | less --QUIT-AT-EOF -F
 }
-alias gh='ghn'
-alias ghA='gh --all'
-if _version_check $GIT_VERSION "2.0"; then
-  alias gha='gh --exclude=refs/stash --all'
-else
-  alias gha='gh --all'   # git < 1.9 has no --exclude option
-fi
 
+# The aliases 'gh*' (git history) are deprecated due to a conflict with the github CLI ('gh'),
+# and the new 'git history' command introduced in Git 2.54. Use 'gl' (git log) instead.
+function gh() {
+  if [[ "$#" -eq 0 ]]; then command gh --version;
+  else command gh "$@"; fi
+}
 alias gl='ghn'   # mnemonic: git log
 alias gla='gl --exclude=refs/stash --all'  # requires Git 2.0+
 alias glA='gl --all'
 
-function ghb() {
+function gha { echo "zsh(alias): Use 'gla' instead." >&2; gla "$@" }
+function ghA { echo "zsh(alias): Use 'glA' instead." >&2; glA "$@" }
+
+# glb: git log on the merge-base
+if alias glb > /dev/null; then unalias glb; fi
+function ghb() { echo "zsh(alias): Use 'glb' instead." >&2; glb "$@" }
+function glb() {
   local branch="HEAD"
   if [[ "$#" -gt 0 && "$1" != -* ]]; then
     branch="$1"; shift;
