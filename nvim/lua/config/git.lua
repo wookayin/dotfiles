@@ -120,7 +120,7 @@ function M.setup_flog()
     order = 'date',  -- same as: git log --date-order ...
     date = 'short',  -- same as: git log --date=short ... for %ad (author-date)
 
-    -- see ~/.gitconfig: git history
+    -- see ~/.gitconfig: git lg
     format = '%ad %h %d %s %an'
   }
 end

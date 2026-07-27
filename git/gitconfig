@@ -29,7 +29,8 @@
 	mailmap = true
 
 [alias]
-	history = log --graph --decorate \
+	# git commit history (log --graph ...). Previously 'git history', which conflicts with a builtin-command since git 2.54
+	lg = log --graph --decorate \
 		--pretty=format:'%C(yellow)%h%Creset  %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
 		--abbrev-commit --date=short --date-order
 
