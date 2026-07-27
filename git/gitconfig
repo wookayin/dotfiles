@@ -33,6 +33,8 @@
 	lg = log --graph --decorate \
 		--pretty=format:'%C(yellow)%h%Creset  %C(auto)%d%Creset %s  %Cgreen(%ar) %C(bold blue)<%an>%Creset' \
 		--abbrev-commit --date=short --date-order
+	# 'git history' for Git <2.54; instruct users to use the new `git lg` command.
+	history = "!f() { echo 'Use `git lg` instead.' && exit 1; }; f"
 
 	partial-clone = clone --filter=blob:none
 
