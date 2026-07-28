@@ -81,6 +81,13 @@ function M.define_commands()
       default_text = vim.trim(e.args),
     })
   end)
+  local VimOptions = function(e)
+    require("telescope.builtin").vim_options({
+      default_text = vim.trim(e.args),
+    })
+  end
+  command("Set", { nargs='?', complete='option' }, VimOptions)
+  command("Options", { nargs='?', complete='option' }, VimOptions)
 
   command("LspSymbols", { nargs='?' }, function(e)
     require("telescope.builtin").lsp_dynamic_workspace_symbols({
@@ -110,6 +117,11 @@ function M.setup()
   M.on_ready = function(callback)
     xpcall(callback, vim.api.nvim_err_writeln)
   end
+end
+
+-- Resourcing support
+if ... == nil then
+  M.setup()
 end
 
 return M
