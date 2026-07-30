@@ -36,6 +36,24 @@ fi
 
 bindkey '\e.' insert-last-word # Alt-.
 
+# Alt-{h,j,k,l}: navigate tmux panes, vim-tmux-navigator style
+# @see tmux.conf's C-{h,j,k,l} pane, vim keymap for M-{h,j,k,l}
+if [[ -n "$TMUX" ]]; then
+  _tmux-select-pane-left()  { tmux select-pane -L }
+  _tmux-select-pane-down()  { tmux select-pane -D }
+  _tmux-select-pane-up()    { tmux select-pane -U }
+  _tmux-select-pane-right() { tmux select-pane -R }
+  zle -N _tmux-select-pane-left
+  zle -N _tmux-select-pane-down
+  zle -N _tmux-select-pane-up
+  zle -N _tmux-select-pane-right
+
+  bindkey '\eh' _tmux-select-pane-left
+  bindkey '\ej' _tmux-select-pane-down
+  bindkey '\ek' _tmux-select-pane-up
+  bindkey '\el' _tmux-select-pane-right
+fi
+
 
 # vi normal mode
 # ==============
