@@ -13,7 +13,7 @@ setlocal.iskeyword:append({'_', ':'})
 setlocal.conceallevel = 0
 
 -- Use treesitter highlight.
-require("config.treesitter").ensure_parsers_installed { "markdown" }
+require("config.treesitter").ensure_parsers_installed { "markdown", "latex" }
 require("config.treesitter").setup_highlight("markdown")
 
 -- Use spell checking (only for normal files)
