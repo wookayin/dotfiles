@@ -43,13 +43,6 @@ function fpath() {
 # ---------------------------------------------------------------- }}}
 # Linux Commands {{{
 
-function just() {
-  if [ $# == 0 ]; then
-    command just --choose
-  else
-    command just "$@"
-  fi
-}
 alias j='just'
 
 if (( $+commands[htop] )); then
