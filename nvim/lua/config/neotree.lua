@@ -3,6 +3,7 @@ local M = {}
 function M.setup_neotree()
   -- https://github.com/nvim-neo-tree/neo-tree.nvim#quickstart
   -- $VIMPLUG/neo-tree.nvim/lua/neo-tree/defaults.lua
+  ---@type neotree.Config
   require('neo-tree').setup {
     filesystem = {
       hijack_netrw_behavior = "open_current",
@@ -47,6 +48,7 @@ function M.setup_neotree()
           ".agents", ".claude",
           ".env",
           ".git", ".github", ".gitignore",
+          ".worktrees",
         },
         never_show = {
           ".DS_Store",
@@ -185,7 +187,6 @@ end
 
 -- Resourcing support
 if ... == nil then
-  vim.notify("oops")
   M.setup_neotree()
 end
 
