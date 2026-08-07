@@ -69,7 +69,8 @@ tasks = {
     # GTK
     '~/.gtkrc-2.0' : 'gtkrc-2.0',
 
-    # terminal emulators (kitty, alacritty, wezterm)
+    # terminal emulators
+    '~/.config/ghostty': dict(src='config/ghostty', cond=not IS_SSH),
     '~/.config/kitty': dict(src='config/kitty', cond=not IS_SSH),
     '~/.config/alacritty': dict(src='config/alacritty', cond=not IS_SSH),
     '~/.config/wezterm': dict(src='config/wezterm', cond=not IS_SSH),
