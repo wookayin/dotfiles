@@ -47,7 +47,10 @@ function M.setup_claude()
     add = 'Add', send = 'Send', stop = 'Stop', open = 'Open', focus = 'Focus',
     start = 'Start', close = 'Close', status = 'Status',
     deny = 'DiffDeny', accept = 'DiffAccept', diff_deny = 'DiffDeny', diff_accept = 'DiffAccept',
-    select_model = 'SelectModel', model = 'SelectModel'
+    select_model = 'SelectModel', model = 'SelectModel',
+    -- custom subcommand
+    resume = ' ' .. '--resume',        -- => :ClaudeCode --resume
+    continue = ' ' .. '--continue',    -- => :ClaudeCode --continue
   }
 
   local claudecode = require('claudecode')
@@ -61,7 +64,10 @@ function M.setup_claude()
     end
 
     local fargs = opts.fargs
-    if #fargs == 0 then vim.cmd('ClaudeCode'); return end
+    if #fargs == 0 then -- :Claude with no args => toggle
+      vim.cmd('ClaudeCode')
+      return
+    end
     local sub = table.remove(fargs, 1):lower()
     local name = subcmds[sub]
 
