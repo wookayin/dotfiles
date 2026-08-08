@@ -238,6 +238,9 @@ post_actions += [  # install some essential packages (linux)
 post_actions += [  # macOS
     '''#!/bin/bash
     # macOS: homebrew installation
+
+    # Allow local installation (as a fallback)
+    PATH="$PATH:$HOME/.local/bin:$HOME/.homebrew/bin"
     type brew || { echo "Homebrew not found. Install: https://brew.sh/" && exit 1; }
 
     # Required by neovim
@@ -251,13 +254,14 @@ post_actions += [  # macOS
 
 post_actions += [  # neovim
     '''#!/bin/bash
+    PATH="$PATH:$HOME/.local/bin"
     bash "etc/install-neovim.sh"
 ''']
 
 post_actions += [  # vim-plug
     # Run lazy.nvim installation
     {'update'  : '''# vim plugins: install and update via Lazy
-        PATH="$PATH:~/.local/bin" \
+        PATH="$PATH:$HOME/.local/bin" \
         nvim --headless \
             -c "lua require('lazy').update { wait = true }" \
             -c "lua require('config.plugins').report_errors { exit = true }"
