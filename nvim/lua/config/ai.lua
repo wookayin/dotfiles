@@ -127,6 +127,11 @@ function M.setup_claude()
   vim.keymap.set('n', '<leader>C4', function() claude_send_key('4') end, { desc = 'Send "4" to Claude' })
   vim.keymap.set('n', '<leader>C<CR>', function() claude_send_key('\n') end, { desc = 'Send <CR> (Enter) to Claude' })
 
+  vim.keymap.set('n', '<leader>c1', function() claude_send_key('1') end, { desc = 'Send "1" to Claude' })
+  vim.keymap.set('n', '<leader>c2', function() claude_send_key('2') end, { desc = 'Send "2" to Claude' })
+  vim.keymap.set('n', '<leader>c3', function() claude_send_key('3') end, { desc = 'Send "3" to Claude' })
+  vim.keymap.set('n', '<leader>c4', function() claude_send_key('4') end, { desc = 'Send "4" to Claude' })
+  vim.keymap.set('n', '<leader>c<CR>', function() claude_send_key('\n') end, { desc = 'Send <CR> (Enter) to Claude' })
 end
 
 
