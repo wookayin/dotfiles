@@ -483,10 +483,9 @@ endfunction
 
 " in terminal mode (neovim)
 if has('nvim')
-  " <C-\><C-n> is the key sequence for escaping form terminal mode
-  " double <ESC> and double <C-\> also goes for escaping from terminal,
-  " whereas single <ESC> would be directly passed inside the terminal.
-  tnoremap <silent> <C-[><C-[> <C-\><C-n>
+  " <C-\><C-n> is the key sequence for escaping from the terminal mode
+  " Ctrl-Esc and double Ctrl-\ are also mapped to escaping from the terminal mode
+  tnoremap <silent> <C-Esc> <C-\><C-n>
   tnoremap <silent> <C-\><C-\> <C-\><C-n>
 
   " Automatically enter insert mode when entering neovim terminal buffer
