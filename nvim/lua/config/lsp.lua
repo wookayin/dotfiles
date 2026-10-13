@@ -146,6 +146,7 @@ local auto_lsp_servers = {
   ['copilot'] = false, -- do not automatically enable copilot; attach to buffers w/ opt-in
   ['basedpyright'] = true,
   ['ruff'] = true, -- Note: ruff_lsp is deprecated, :MasonUninstall ruff-lsp
+  ['pyrefly'] = true,
   ['vimls'] = true,
   ['lua_ls'] = true,
   ['bashls'] = true,
