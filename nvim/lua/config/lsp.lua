@@ -23,11 +23,6 @@ M.on_attach = function(client, bufnr)
   -- Activate LSP status on attach (see a configuration below).
   require('lsp-status').on_attach(client)
 
-  -- Activate nvim-navic
-  if client.server_capabilities.documentSymbolProvider then
-    require('nvim-navic').attach(client, bufnr)
-  end
-
   -- Keybindings
   -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
   local bufmap = function(mode, lhs, rhs, opts)
@@ -769,9 +764,20 @@ end
 --- navic (LSP context)
 -----------------------------------
 function M.setup_navic()
+  ---@diagnostic disable-next-line: missing-fields,param-type-mismatch
   require('nvim-navic').setup {
     -- Use the same separator as lualine.nvim
     separator = '  ',
+
+    lsp = {
+      auto_attach = true,
+
+      -- When multiple LSP servers are attached, prefer the first one in this list
+      preference = {
+        'basedpyright', 'pyrefly', 'ty',  -- python
+        'lua_ls', 'emmylua_ls',  -- lua
+      },
+    }
   }
 end
 
