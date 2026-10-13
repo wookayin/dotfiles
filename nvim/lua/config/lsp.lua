@@ -139,7 +139,6 @@ end
 --- LSP servers will be installed locally via mason at: ~/.local/share/nvim/mason/packages/
 --- @type table<lspserver_name, boolean|vim_filetype[]>
 local auto_lsp_servers = {
-  -- @see $VIMPLUG/mason-lspconfig.nvim/lua/mason-lspconfig/mappings/filetype.lua
   ['copilot'] = false, -- do not automatically enable copilot; attach to buffers w/ opt-in
   ['basedpyright'] = true,
   ['ruff'] = true, -- Note: ruff_lsp is deprecated, :MasonUninstall ruff-lsp
@@ -157,6 +156,14 @@ local auto_lsp_servers = {
   ['jsonls'] = true,
   ['lemminx'] = true,  -- xml
 }
+
+--- Get the lspconfig name of a mason package, if the package is an LSP server.
+--- Each package spec in the mason registry declares it as `neovim.lspconfig`.
+--- @param pkg_spec RegistryPackageSpec
+--- @return lspserver_name?
+local function get_lspconfig_name(pkg_spec)
+  return vim.tbl_get(pkg_spec, 'neovim', 'lspconfig')
+end
 
 --- Refresh or force-update mason-registry if needed (e.g. pkgs are missing)
 --- and execute the callback *asynchronously*.
@@ -199,7 +206,6 @@ function M._setup_mason()
       }
     },
   }
-  require("mason-lspconfig").setup()
 
   -- ensure_installed: Install auto_lsp_servers on demand (FileType)
   maybe_refresh_mason_registry_and_then(M._ensure_mason_installed)
@@ -208,59 +214,69 @@ end
 --- Install auto_lsp_servers on demand (FileType)
 function M._ensure_mason_installed()
   local augroup = vim.api.nvim_create_augroup('mason_autoinstall', { clear = true })
-
-  -- Hotfix against mason_lspconfig v2.0 breaking changes
-  local lspconfig_to_package = vim.F.npcall(function()
-    return require("mason-lspconfig.mappings.server").lspconfig_to_package
-  end)
-  local filetype_mappings = vim.F.npcall(function()
-    return require("mason-lspconfig.mappings.filetype")
-  end)
-  if lspconfig_to_package == nil then
-    vim.notify("mason-lspconfig is broken in v2.0; please downgrade to v1.32.0 by manual checkout",
-      vim.log.levels.ERROR, { title = "config/lsp" })
+  local registry = require("mason-registry")
+  local function notify(msg, level)
+    vim.notify(msg, level or vim.log.levels.INFO, { title = "config/lsp" })
   end
 
-  local _requested = {}
+  -- Previously from mason-lspconfig, but mason packages now have internal metadata
+  local lspconfig_to_package = {}  --- { lspconfig name => mason package name }
+  local all_specs = registry.get_all_package_specs() ---@type RegistryPackageSpec[]
+  for _, spec in ipairs(all_specs) do
+    local lsp_name = get_lspconfig_name(spec)
+    if lsp_name then lspconfig_to_package[lsp_name] = spec.name end
+  end
 
-  local ft_handler = {}
-  for ft, lsp_names in pairs(filetype_mappings or {}) do
-    lsp_names = vim.tbl_filter(function(lsp_name)
-      ---@diagnostic disable-next-line: param-type-mismatch
-      return auto_lsp_servers[lsp_name] == true or vim.tbl_contains(auto_lsp_servers[lsp_name] or {}, ft)
-    end, lsp_names)
-
-    ft_handler[ft] = vim.schedule_wrap(function()
-      for _, lsp_name in pairs(lsp_names) do
-        local pkg_name = (lspconfig_to_package or {})[lsp_name]
-        local ok, pkg = pcall(require("mason-registry").get_package, pkg_name)
-        if ok and not pkg:is_installed() and not _requested[pkg_name] then
-          _requested[pkg_name] = true
-          require("mason-lspconfig.install").install(pkg)  -- async
-        end
-        -- TODO: uninstall deprecated packages, e.g. ruff-lsp => ruff
+  -- Install the LSP server (async);
+  -- LSPs will be enabled upon installation, see _setup_lspconfig()
+  local install = vim.schedule_wrap(function(lsp_name)
+    local pkg = registry.get_package(lspconfig_to_package[lsp_name])
+    if pkg:is_installed() or pkg:is_installing() then
+      return
+    end
+    notify(("Installing LSP server: %s"):format(lsp_name))
+    pkg:install({}, vim.schedule_wrap(function(success)
+      if success then
+        notify(("Installed LSP server: %s"):format(lsp_name))
+      else
+        notify(("Failed to install LSP server: %s. See :Mason and :MasonLog"):format(lsp_name),
+          vim.log.levels.ERROR)
       end
-    end)
+    end))
+  end)
 
-    -- Create FileType handler to auto-install LSPs for the &filetype
-    if vim.tbl_count(lsp_names) > 0 then
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = ft,
-        group = augroup,
-        desc = string.format('Auto-install LSP server: %s (for %s)', table.concat(lsp_names, ","), ft),
-        callback = function() ft_handler[ft]() end,
-        once = true,
-      })
+  ---@param filetypes string[]
+  local function has_buffer_of(filetypes)
+    return vim.iter(vim.api.nvim_list_bufs()):any(function(buf)
+      return vim.bo[buf].buflisted and vim.tbl_contains(filetypes, vim.bo[buf].filetype)
+    end)
+  end
+
+  for lsp_name, opt in pairs(auto_lsp_servers) do
+    local filetypes = opt  ---@type boolean|vim_filetype[]?
+    if opt == true then
+      filetypes = (vim.lsp.config[lsp_name] or {}).filetypes
+    end
+    if filetypes == false then
+      -- skip, never auto-install
+    elseif not lspconfig_to_package[lsp_name] then
+      notify(("Unknown LSP server `%s`: not found in the mason registry"):format(lsp_name),
+        vim.log.levels.WARN)
+    elseif type(filetypes) == 'table' then
+      -- Since this works asynchronously, apply on the already opened buffers as well
+      if has_buffer_of(filetypes) then
+        install(lsp_name)
+      else
+        vim.api.nvim_create_autocmd('FileType', {
+          pattern = filetypes,
+          group = augroup,
+          desc = ('Auto-install LSP server: %s'):format(lsp_name),
+          callback = function() install(lsp_name) end,
+          once = true,
+        })
+      end
     end
   end
-
-  -- Since this works asynchronously, apply on the already opened buffer as well
-  vim.tbl_map(function(buf)
-    local valid = vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted
-    if not valid then return end
-    local handler = ft_handler[vim.bo[buf].filetype]
-    if handler then handler() end
-  end, vim.api.nvim_list_bufs())
 end
 
 --- Create the default capabilities to use for LSP server configuration.
@@ -317,53 +333,43 @@ local function setup_lsp(lsp_name)
   vim.lsp.enable(lsp_name)
 end
 
--- lsp configs are lazy-loaded or can be triggered after LSP installation,
--- so we need a way to make LSP clients attached to already existing buffers.
-local attach_lsp_to_existing_buffers = vim.schedule_wrap(function()
-  -- this can be easily achieved by firing an autocmd event for the open buffers.
-  -- See lspconfig.configs (config.autostart)
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    local valid = vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted
-    if valid and vim.bo[bufnr].buftype == "" then
-      local augroup_lspconfig = vim.api.nvim_create_augroup('lspconfig', { clear = false })
-      vim.api.nvim_exec_autocmds("FileType", { group = augroup_lspconfig, buffer = bufnr })
-    end
-  end
-end)
-
---- setup all known and available LSP servers that are installed
+--- Enable all LSP servers installed via mason, including those installed or uninstalled later
+--- (either by auto-install or manually via :Mason), except those disabled in auto_lsp_servers.
+---
 function M._setup_lspconfig()
-  local all_known_lsps = vim.F.npcall(function()
-    return require('mason-lspconfig.mappings.server').lspconfig_to_package
-  end) or {}
-  local lsp_uninstalled = {}   --- { lspconfig name => mason package name }
+  local registry = require('mason-registry')
 
-  setup_lsp('*')
-  for lsp_name, package_name in pairs(all_known_lsps) do
-    if require('mason-registry').is_installed(package_name) then
-      -- Perform lspconfig[lsp_name].setup {}
+  ---@param pkg Package
+  ---@param enable boolean
+  local function on_package(pkg, enable)
+    local lsp_name = get_lspconfig_name(pkg.spec)
+    if lsp_name == nil or auto_lsp_servers[lsp_name] == false then
+      return  -- not an LSP server, or explicitly opted out (e.g. copilot)
+    end
+    if enable then
+      -- Note: No need to manually attach LSP clients to the already existing buffers.
+      -- vim.lsp.enable() re-triggers FileType (`doautoall nvim.lsp.enable FileType`) for all
+      -- buffers, if called after VimEnter (LspSetup is always fired after VimEnter), so clients
+      -- get attached to the existing buffers of matching filetypes.
       setup_lsp(lsp_name)
     else
-      lsp_uninstalled[lsp_name] = package_name
+      -- disable the LSP (upon uninstallation)
+      vim.lsp.enable(lsp_name, false)
     end
   end
 
-  maybe_refresh_mason_registry_and_then(function()
-    -- mason.nvim does not launch lsp when installed for the first time
-    -- we attach a manual callback to setup LSP and launch
-    for lsp_name, package_name in pairs(lsp_uninstalled) do
-      local ok, pkg = pcall(require('mason-registry').get_package, package_name)
-      if ok then
-        pkg:on("install:success", vim.schedule_wrap(function()
-          setup_lsp(lsp_name)
-          attach_lsp_to_existing_buffers()  -- TODO: reload only the buffers that matches filetype.
-        end))
-      end
+  setup_lsp('*')
+  for _, pkg_name in ipairs(registry.get_installed_package_names()) do
+    local ok, pkg = pcall(registry.get_package, pkg_name)
+    if ok then  -- may fail if the installed package is gone from the registry
+      on_package(pkg, true)
     end
+  end
 
-    -- Make sure LSP clients are attached to already existing buffers prior to this config.
-    attach_lsp_to_existing_buffers()
-  end)
+  -- mason.nvim does not enable LSP servers upon (un)installation; do it on our own.
+  -- These are registry-wide events, so they also cover packages installed via :Mason.
+  registry:on("package:install:success", vim.schedule_wrap(function(pkg) on_package(pkg, true) end))
+  registry:on("package:uninstall:success", vim.schedule_wrap(function(pkg) on_package(pkg, false) end))
 
   -- Use a border for the floating :LspInfo window
   require("lspconfig.ui.windows").default_options.border = 'single'

@@ -32,12 +32,8 @@ return {
     config = require('config.lsp').setup_lsp, -- mason, lspconfig, etc.
   };
   Plug 'mason-org/mason.nvim' {
-    version = 'v1.11.0',  -- TODO v2.0 support
+    version = 'v2.3.1',
     event = LspSetup, -- as a dependency for nvim-lspconfig
-  };
-  Plug 'mason-org/mason-lspconfig.nvim' {
-    version = 'v1.32.0',  -- TODO v2.0 support
-    event = LspSetup,
   };
   Plug 'ray-x/lsp_signature.nvim' { event = LspSetup };
   Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim' { lazy = true };
