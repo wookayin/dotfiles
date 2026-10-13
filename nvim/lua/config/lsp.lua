@@ -137,6 +137,10 @@ end
 
 --- List LSP servers that will be automatically installed upon entering filetype for the first time.
 --- LSP servers will be installed locally via mason at: ~/.local/share/nvim/mason/packages/
+---   true: install on the filetypes of the LSP config (`vim.lsp.config[name].filetypes`)
+---   vim_filetype[]: install on the given filetypes only
+---   false: never auto-install, and do not auto-enable even if installed
+--- Any other LSP server installed via mason (e.g. with :Mason) is also enabled automatically.
 --- @type table<lspserver_name, boolean|vim_filetype[]>
 local auto_lsp_servers = {
   ['copilot'] = false, -- do not automatically enable copilot; attach to buffers w/ opt-in
@@ -145,7 +149,7 @@ local auto_lsp_servers = {
   ['vimls'] = true,
   ['lua_ls'] = true,
   ['bashls'] = true,
-  ['tsserver'] = true,
+  ['ts_ls'] = true,
   ['cssls'] = true,
   ['clangd'] = true,
   ['rust_analyzer'] = true,
