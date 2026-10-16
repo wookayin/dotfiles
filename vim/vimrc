@@ -520,7 +520,6 @@ if has('nvim')
           \ | startinsert | endif
 
     " mouse click puts into normal mode even in terminal; disable this
-    autocmd TermOpen * tnoremap <buffer><silent> <LeftRelease> <Nop>
     autocmd TermOpen * tnoremap <buffer><silent> <LeftMouse> <cmd>startinsert<CR>
   augroup END
 
