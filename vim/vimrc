@@ -113,7 +113,6 @@ if has('nvim')
     autocmd!
     " Disable scrolloff in terminal buffers (see neovim/neovim#11915)
     autocmd TermOpen,TermEnter * setlocal scrolloff=0 sidescrolloff=0
-    autocmd TermOpen           * setlocal signcolumn=no
   augroup end
 endif
 
