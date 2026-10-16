@@ -543,9 +543,6 @@ if has('nvim')
   tnoremap <silent> <M-j> <cmd>wincmd j<CR>
   tnoremap <silent> <M-k> <cmd>wincmd k<CR>
   tnoremap <silent> <M-l> <cmd>wincmd l<CR>
-
-  " Ctrl-/ requires key remapping (neovim 0.8.0, see neovim/neovim#18735)
-  tmap <c-/> <c-_>
 endif
 
 if has('nvim')
