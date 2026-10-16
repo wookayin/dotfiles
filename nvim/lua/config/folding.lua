@@ -21,6 +21,9 @@ function M.setup()
 end
 
 
-M.setup()
+-- Resourcing support
+if ... == nil then
+  M.setup()
+end
 
 return M
