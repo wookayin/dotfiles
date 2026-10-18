@@ -134,6 +134,7 @@ _require 'config.commands'
 _require 'config.statuscolumn'
 
 require('config.folding').setup()
+require('config.terminal').setup()
 
 -- Neovim 0.12+, :help vim._extui
 require('config.ui').setup_extui()
