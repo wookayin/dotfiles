@@ -33,13 +33,21 @@ function M.setup_autoinsert()
     end,
   })
 
+  -- Unless the program within the terminal (e.g. fzf, htop, or nvim recursively)
+  -- enables mouse events, a left mouse click on the terminal window would leave terminal mode and
+  -- enter the terminal-normal mode. (see :h terminal-input).
+  -- Workaround: Swallow left clicks on the text area of the current terminal window only.
+  -- Clicks elsewhere (other windows, statusline, separators) would work as usual.
+  -- Caveat: mouse-aware programs no longer receive left clicks inside neovim terminals.
   vim.api.nvim_create_autocmd('TermOpen', {
     group = augroup,
     pattern = '*',
     callback = function(args)
-      -- Mouse click puts into normal mode even in the terminal mode;
-      -- Disable this behavior: neovim should keep in the terminal-insert mode.
-      vim.keymap.set('t', '<LeftMouse>', '<Cmd>startinsert<CR>', { buffer = args.buf, silent = true })
+      vim.keymap.set('t', '<LeftMouse>', function()
+        local pos = vim.fn.getmousepos()
+        local on_curwin_text = pos.winid == vim.api.nvim_get_current_win() and pos.line > 0
+        return on_curwin_text and '' or '<LeftMouse>'
+      end, { buffer = args.buf, silent = true, expr = true, remap = false })
     end,
   })
 end
