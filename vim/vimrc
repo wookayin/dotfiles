@@ -2272,7 +2272,10 @@ nmap ga <Plug>(EasyAlign)
 let g:PlugConfig['indent-blankline.nvim'] = 's:init_indent_blankline'
 function! s:init_indent_blankline() abort
   let g:indent_blankline_char = '┊'
-  let g:indent_blankline_filetype_exclude = ['help', 'NvimTree', 'markdown']
+  let g:indent_blankline_filetype_exclude = [
+        \ 'help', 'NvimTree', 'markdown',
+        \ 'pager', 'msg', 'cmd',
+        \]
   let g:indent_blankline_buftype_exclude = ['terminal']
   let g:indent_blankline_show_first_indent_level = v:false
 endfunction
